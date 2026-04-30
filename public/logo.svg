@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Top Dogs">
+  <defs>
+    <linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E0BE6B"/>
+      <stop offset="50%" stop-color="#C9A24A"/>
+      <stop offset="100%" stop-color="#8B6F2C"/>
+    </linearGradient>
+    <linearGradient id="felt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1F6E3D"/>
+      <stop offset="100%" stop-color="#0a2a20"/>
+    </linearGradient>
+    <radialGradient id="ball6" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.8)"/>
+      <stop offset="20%" stop-color="rgba(255,255,255,0.1)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.5)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Shield -->
+  <path d="M120 12 L216 36 L216 132 Q216 192 120 228 Q24 192 24 132 L24 36 Z"
+        fill="url(#felt)" stroke="url(#brass)" stroke-width="6"/>
+  <path d="M120 22 L208 44 L208 132 Q208 184 120 218 Q32 184 32 132 L32 44 Z"
+        fill="none" stroke="url(#brass)" stroke-width="2" opacity="0.6"/>
+
+  <!-- 6-ball -->
+  <g transform="translate(120,108)">
+    <circle r="42" fill="#1F6E3D"/>
+    <circle r="42" fill="url(#ball6)"/>
+    <circle r="16" fill="#f7efd7"/>
+    <text y="6" text-anchor="middle" font-family="Inter, system-ui, sans-serif"
+          font-size="22" font-weight="700" fill="#0a0a0a">6</text>
+  </g>
+
+  <!-- TOP DOGS banner -->
+  <rect x="20" y="160" width="200" height="44" rx="6" fill="url(#brass)"/>
+  <rect x="24" y="164" width="192" height="36" rx="4" fill="#0a0a0a"/>
+  <text x="120" y="190" text-anchor="middle"
+        font-family="'Bebas Neue', Oswald, Impact, sans-serif"
+        font-size="28" letter-spacing="6" fill="url(#brass)">TOP DOGS</text>
+
+  <!-- Stars -->
+  <g fill="url(#brass)">
+    <polygon points="60,214 63,221 70,222 65,227 66,234 60,231 54,234 55,227 50,222 57,221"/>
+    <polygon points="90,214 93,221 100,222 95,227 96,234 90,231 84,234 85,227 80,222 87,221"/>
+    <polygon points="120,214 123,221 130,222 125,227 126,234 120,231 114,234 115,227 110,222 117,221"/>
+    <polygon points="150,214 153,221 160,222 155,227 156,234 150,231 144,234 145,227 140,222 147,221"/>
+    <polygon points="180,214 183,221 190,222 185,227 186,234 180,231 174,234 175,227 170,222 177,221"/>
+  </g>
+</svg>
