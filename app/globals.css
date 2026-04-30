@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette — derived from the Top Dogs logo */
+  --color-felt-deep: #0a2a20;
+  --color-felt: #143d2c;
+  --color-felt-mid: #1b5e3f;
+  --color-felt-bright: #2e8b57;
+  --color-brass: #c9a24a;
+  --color-brass-bright: #e0be6b;
+  --color-brass-dim: #8b6f2c;
+  --color-cream: #ece1c4;
+  --color-cream-dim: #b9ad8d;
+  --color-ink: #070707;
+  --color-ink-soft: #111111;
+  --color-ink-card: #161616;
+  --color-six-ball: #1f6e3d;
+  --color-pop: #c8362f;
+  --color-pop-bright: #e85248;
+
+  /* Typography */
+  --font-display: "Bebas Neue", "Oswald", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Radii + shadows */
+  --radius-card: 1rem;
+  --shadow-brass: 0 0 0 1px rgba(201, 162, 74, 0.45), 0 10px 30px -10px rgba(201, 162, 74, 0.3);
+  --shadow-felt: 0 30px 80px -30px rgba(20, 61, 44, 0.7);
+}
+
+/* Light theme overrides via [data-theme="light"] on <html> (managed by next-themes) */
+:root {
+  color-scheme: dark;
+  --bg: var(--color-ink);
+  --bg-soft: var(--color-ink-soft);
+  --bg-card: var(--color-ink-card);
+  --fg: var(--color-cream);
+  --fg-dim: var(--color-cream-dim);
+  --border: rgba(201, 162, 74, 0.18);
+  --border-strong: rgba(201, 162, 74, 0.45);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f8f3e3;
+  --bg-soft: #efe7cf;
+  --bg-card: #ffffff;
+  --fg: #0a2a20;
+  --fg-dim: #4a5a4f;
+  --border: rgba(20, 61, 44, 0.18);
+  --border-strong: rgba(20, 61, 44, 0.4);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-image:
+    radial-gradient(1200px 600px at 80% -10%, rgba(46, 139, 87, 0.18), transparent 60%),
+    radial-gradient(800px 500px at -10% 90%, rgba(201, 162, 74, 0.1), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100dvh;
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(1200px 600px at 80% -10%, rgba(46, 139, 87, 0.25), transparent 60%),
+    radial-gradient(800px 500px at -10% 90%, rgba(201, 162, 74, 0.18), transparent 60%);
+}
+
+::selection {
+  background: var(--color-brass);
+  color: var(--color-ink);
+}
+
+/* Felt texture utility */
+.felt-texture {
+  background-color: var(--color-felt);
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0.25) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 6px 6px, 11px 11px;
+  background-position: 0 0, 3px 5px;
+}
+
+/* Brass underline used by section headings */
+.brass-rule {
+  background: linear-gradient(90deg, transparent, var(--color-brass) 20%, var(--color-brass-bright) 50%, var(--color-brass) 80%, transparent);
+}
+
+/* Subtle cue-tip cursor on interactive brass elements */
+.cursor-cue {
+  cursor: pointer;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-brass-dim), var(--color-brass));
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Utility: card surface */
+.surface {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+.surface-hover:hover {
+  border-color: var(--border-strong);
+}
+
+/* 8-ball spinner */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 2.4s linear infinite;
+}
+
+/* Pulsing live dot */
+@keyframes pulse-pop {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(232, 82, 72, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(232, 82, 72, 0);
+  }
+}
+.animate-pulse-pop {
+  animation: pulse-pop 1.6s ease-out infinite;
+}
