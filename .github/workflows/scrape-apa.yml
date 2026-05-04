@@ -12,7 +12,10 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Workflow cap is higher than the scrape's own time budget
+    # (APA_TIME_BUDGET_MIN=45 by default) so we always have headroom for
+    # the projection step + commit + push to finish cleanly.
+    timeout-minutes: 75
 
     permissions:
       contents: write

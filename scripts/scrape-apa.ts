@@ -23,7 +23,12 @@
  *   APA_TEAM_URL                 — current team URL (defaults to Top Dogs)
  *   APA_HEADFUL=1                — visible browser (debug)
  *   APA_MEMBER_TTL_DAYS=7        — re-fetch members older than N days
+ *   APA_OPPONENT_TTL_DAYS=5      — re-fetch opp teams older than N days
  *   APA_MAX_PAST_SESSIONS=N      — cap past-team backfill (default: all)
+ *   APA_MAX_OPP_PAST_SESSIONS=3  — cap opp past-team backfill per member
+ *   APA_TIME_BUDGET_MIN=45       — soft wall-clock cap; long-tail steps
+ *                                  bail at this point so partial progress
+ *                                  is committed (next run resumes). 0 disables.
  */
 import { chromium } from "playwright";
 import { config as loadEnv } from "dotenv";
@@ -63,6 +68,15 @@ const MAX_PAST_SESSIONS = parseInt(process.env.APA_MAX_PAST_SESSIONS ?? "0", 10)
 // Opponent teams are re-fetched more often than past teams since their
 // roster + record changes weekly during the active session.
 const OPPONENT_TTL = parseInt(process.env.APA_OPPONENT_TTL_DAYS ?? "5", 10) * ONE_DAY;
+// Wall-clock budget. The scrape always saves to cache as it goes, so a
+// partial run is still useful — subsequent runs pick up where this one
+// stopped. Default 45 min keeps GitHub Actions' 60-min cap from killing us
+// mid-write. Set APA_TIME_BUDGET_MIN=0 to disable the soft cap entirely.
+const TIME_BUDGET_MS =
+  parseInt(process.env.APA_TIME_BUDGET_MIN ?? "45", 10) * 60 * 1000;
+const startedAt = Date.now();
+const budgetExceeded = () =>
+  TIME_BUDGET_MS > 0 && Date.now() - startedAt > TIME_BUDGET_MS;
 
 const TEAM_ID = (() => {
   const m = TEAM_URL.match(/\/team\/(\d+)/);
@@ -262,12 +276,50 @@ async function main() {
     `   discovered ${opponentTeamIds.size} opponent team(s) in this session's schedule`,
   );
 
-  // Opponent teams: refresh on a 5-day TTL. Past-team backfill from member
+  // Opponent teams: refresh on a 5-day TTL. The CURRENT opponent (next
+  // scheduled match) is fetched first so it's always populated even if the
+  // wall-clock budget cuts the rest off. Past-team backfill from member
   // histories already covered the once-and-done case; this loop keeps
   // active opponents current.
+  //
+  // Determine the next scheduled opponent first so we prioritize them.
+  const nextOpponentTeamId = (() => {
+    type ScheduleMatch = {
+      id?: number;
+      isFinalized?: boolean;
+      isBye?: boolean;
+      startTime?: string;
+      home?: { id?: number };
+      away?: { id?: number };
+    };
+    type ScheduleShape = { team?: { matches?: ScheduleMatch[] } };
+    const sched = (currentTeam.teamSchedule as ScheduleShape).team?.matches ?? [];
+    const upcoming = sched
+      .filter((m) => !m.isFinalized && !m.isBye && m.startTime)
+      .sort(
+        (a, b) =>
+          +new Date(a.startTime ?? 0) - +new Date(b.startTime ?? 0),
+      );
+    for (const m of upcoming) {
+      const oid =
+        m.home?.id === TEAM_ID ? m.away?.id : m.away?.id === TEAM_ID ? m.home?.id : null;
+      if (typeof oid === "number") return oid;
+    }
+    return null;
+  })();
+  const orderedOppTeamIds = [...opponentTeamIds].sort((a, b) => {
+    if (a === nextOpponentTeamId) return -1;
+    if (b === nextOpponentTeamId) return 1;
+    return 0;
+  });
   const opponentMemberIds = new Set<number>();
-  for (const oid of opponentTeamIds) {
+  let oppTeamsSkipped = 0;
+  for (const oid of orderedOppTeamIds) {
     if (oid === TEAM_ID) continue;
+    if (budgetExceeded()) {
+      oppTeamsSkipped++;
+      continue;
+    }
     const cached = await cache.read<TeamCacheEntry>("teams", oid);
     const stale = !cached || olderThan(cached, OPPONENT_TTL);
     let teamEntry: TeamCacheEntry | null = cached?.data ?? null;
@@ -285,14 +337,26 @@ async function main() {
     if (!teamEntry) continue;
     for (const mid of memberIdsFromTeam(teamEntry)) opponentMemberIds.add(mid);
   }
+  if (oppTeamsSkipped > 0) {
+    console.log(
+      `   ⏱  budget exceeded — skipped ${oppTeamsSkipped} opp team(s); they'll be picked up next run`,
+    );
+  }
   console.log();
 
-  // 5d. Opponent members — same TTL as our roster.
+  // 5d. Opponent members — same TTL as our roster. Skipped entirely once
+  // we hit the time budget; partial-cache state is still useful (current
+  // opp's members have already been collected from step 5c above).
   console.log("==> fetching opponent members");
   console.log(
     `   ${opponentMemberIds.size} unique opp member(s) discovered`,
   );
+  let oppMembersSkipped = 0;
   for (const id of opponentMemberIds) {
+    if (budgetExceeded()) {
+      oppMembersSkipped++;
+      continue;
+    }
     const cached = await cache.read<MemberCacheEntry>("members", id);
     const stale = !cached || olderThan(cached, MEMBER_TTL);
     if (!stale) {
@@ -307,6 +371,11 @@ async function main() {
       console.warn(`   ✗ opp member #${id}: ${(e as Error).message}`);
     }
   }
+  if (oppMembersSkipped > 0) {
+    console.log(
+      `   ⏱  budget exceeded — skipped ${oppMembersSkipped} opp member(s); they'll be picked up next run`,
+    );
+  }
   console.log();
 
   // 5e. Opp-member past-team backfill.
@@ -317,10 +386,11 @@ async function main() {
   // + empty SL trajectory in the scouting report.
   //
   // Fix: walk each opp member's history, queue every team id we haven't
-  // already cached, fetch them. Capped by APA_MAX_OPP_PAST_SESSIONS so a
-  // first-run doesn't crawl decades of inactive teams (default 8).
+  // already cached, fetch them. Capped by APA_MAX_OPP_PAST_SESSIONS (low
+  // default since this is the long tail and respects no TTL — once cached,
+  // never re-fetched). Bails entirely once the wall-clock budget runs out.
   const MAX_OPP_PAST_SESSIONS = parseInt(
-    process.env.APA_MAX_OPP_PAST_SESSIONS ?? "8",
+    process.env.APA_MAX_OPP_PAST_SESSIONS ?? "3",
     10,
   );
   console.log("==> backfilling opp members' past teams");
@@ -336,9 +406,14 @@ async function main() {
     .sort((a, b) => b - a) // newest first
     .slice(0, MAX_OPP_PAST_SESSIONS * Math.max(1, opponentMemberIds.size));
   console.log(
-    `   ${oppPastTeamIds.size} past team(s) referenced; backfilling ${toBackfillOpp.length}`,
+    `   ${oppPastTeamIds.size} past team(s) referenced; backfilling up to ${toBackfillOpp.length}`,
   );
+  let oppPastSkipped = 0;
   for (const id of toBackfillOpp) {
+    if (budgetExceeded()) {
+      oppPastSkipped++;
+      continue;
+    }
     const cached = await cache.read<TeamCacheEntry>("teams", id);
     if (cached) {
       stats.teamsCached++;
@@ -352,6 +427,13 @@ async function main() {
       console.warn(`   ✗ opp past team #${id}: ${(e as Error).message}`);
     }
   }
+  if (oppPastSkipped > 0) {
+    console.log(
+      `   ⏱  budget exceeded — skipped ${oppPastSkipped} past team(s); they'll be picked up next run`,
+    );
+  }
+  const elapsedMin = (Date.now() - startedAt) / 60000;
+  console.log(`   total scrape time so far: ${elapsedMin.toFixed(1)} min`);
   console.log();
 
   // 6. Persist meta.
