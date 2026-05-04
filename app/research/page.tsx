@@ -32,6 +32,7 @@ import {
   reliabilityRanking,
   suggestedLineup,
   teamSummary,
+  calibrationBacktest,
   throwAdvisorOpponents,
   venueRecords,
   vsOpponents,
@@ -41,6 +42,7 @@ import {
 import { CounterPickWidget } from "@/components/research/CounterPickWidget";
 import { PlayerComparison } from "@/components/research/PlayerComparison";
 import { ThrowAdvisor } from "@/components/research/ThrowAdvisor";
+import { CalibrationView } from "@/components/research/CalibrationView";
 import type { CounterPickRow } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
@@ -226,6 +228,9 @@ export default async function ResearchPage({ searchParams }: Props) {
   const nextScheduledMatch = snap.schedule
     .filter((m) => m.status === "upcoming" && m.opponent !== "BYE")
     .sort((a, b) => +new Date(a.date) - +new Date(b.date))[0];
+  // Calibration backtest — replays the engine on every historical match
+  // using only-prior-data, to measure how accurate our predictions are.
+  const calibration = calibrationBacktest(matches, roster);
 
   // Sort lineups various ways for "best/worst" sections.
   const lineupsByWins = [...lineups].sort((a, b) =>
@@ -281,6 +286,16 @@ export default async function ResearchPage({ searchParams }: Props) {
             defaultLocation={nextScheduledMatch?.location}
             knownLocations={throwLocations}
           />
+        </Section>
+
+        <Section
+          title="Calibration check"
+          subtitle="Replays the recommendation engine over every past individual match using only-prior-data. Measures how accurate the win-probability predictions actually are: Brier score (lower = better), reliability bins (do 70%-predictions actually win 70% of the time?), and a confusion-style breakdown. This is a trust-meter — verifies the numbers you see during the night are honest."
+          anchor="calibration"
+          forTab="throw"
+          activeTab={tab}
+        >
+          <CalibrationView calibration={calibration} />
         </Section>
 
         {briefing && (

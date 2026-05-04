@@ -877,6 +877,7 @@ function PickOursStep({
           rows={result.candidates}
           topPickId={top?.playerId}
           onPick={onPick}
+          recommendedNightProb={result.context.nightWinProbability}
         />
       )}
       {top?.saveForLater && (
@@ -988,6 +989,11 @@ function EnterTheirsStep({
                     <div className="truncate font-semibold">{p.name}</div>
                     <div className="text-xs text-[var(--fg-dim)]">
                       {p.latestSL ? `SL${p.latestSL}` : "SL unknown"}
+                      {p.preferredPosition && (
+                        <span className="ml-1.5 opacity-80">
+                          · usually M{p.preferredPosition}
+                        </span>
+                      )}
                       {used && " · already thrown"}
                     </div>
                   </button>
@@ -1081,6 +1087,7 @@ function PickCounterStep({
         onPick={onPick}
         opponentName={live.oppName}
         opponentSL={live.oppSL}
+        recommendedNightProb={result.context.nightWinProbability}
       />
       {top?.saveForLater && (
         <SaveForLaterCallout
@@ -1641,6 +1648,7 @@ function CandidateList({
   onPick,
   opponentName,
   opponentSL,
+  recommendedNightProb,
 }: {
   heading: string;
   rows: ThrowCandidate[];
@@ -1648,6 +1656,8 @@ function CandidateList({
   onPick: (c: ThrowCandidate) => void;
   opponentName?: string;
   opponentSL?: number | null;
+  /** Recommended pick's night-win-prob — passed to rows for what-if delta. */
+  recommendedNightProb?: number;
 }) {
   return (
     <div>
@@ -1663,9 +1673,51 @@ function CandidateList({
             onPick={() => onPick(c)}
             opponentName={opponentName}
             opponentSL={opponentSL}
+            recommendedNightProb={recommendedNightProb}
           />
         ))}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * What-if delta strip — shown in expanded non-top candidate rows.
+ * Displays "If you throw X here: night prob 70% (−4 vs the recommended pick)".
+ * Helps the captain make an informed override decision.
+ */
+function WhatIfStrip({
+  ifPicked,
+  recommended,
+  candidateName,
+}: {
+  ifPicked: number;
+  recommended: number;
+  candidateName: string;
+}) {
+  const delta = Math.round((ifPicked - recommended) * 10) / 10;
+  const tone =
+    delta >= -1
+      ? "text-[var(--color-felt-bright)]"
+      : delta >= -5
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]";
+  const sign = delta > 0 ? "+" : "";
+  return (
+    <div className="mt-3 rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/40 px-3 py-2">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+        What if you throw {candidateName.split(" ")[0]}?
+      </div>
+      <div className="mt-1 flex items-baseline gap-2 text-sm">
+        <span className="font-[family-name:var(--font-display)] text-2xl tabular-nums">
+          {ifPicked.toFixed(1)}%
+        </span>
+        <span className={cn("text-xs font-semibold tabular-nums", tone)}>
+          {sign}
+          {delta.toFixed(1)} vs rec
+        </span>
+        <span className="text-[10px] text-[var(--fg-dim)]">night prob</span>
+      </div>
     </div>
   );
 }
@@ -1676,12 +1728,15 @@ function CandidateRow({
   onPick,
   opponentName,
   opponentSL,
+  recommendedNightProb,
 }: {
   candidate: ThrowCandidate;
   isTop: boolean;
   onPick: () => void;
   opponentName?: string;
   opponentSL?: number | null;
+  /** Recommended pick's night-win-prob, for the "what-if" delta. */
+  recommendedNightProb?: number;
 }) {
   const [open, setOpen] = useState(false);
   const pct = Math.round(candidate.matchupScore);
@@ -1813,6 +1868,33 @@ function CandidateRow({
               )}
             </div>
           </div>
+
+          {/* What-if: how does picking THIS candidate change night-win-prob? */}
+          {!isTop && recommendedNightProb !== undefined && (
+            <WhatIfStrip
+              ifPicked={candidate.nightWinProbIfPicked}
+              recommended={recommendedNightProb}
+              candidateName={candidate.playerName}
+            />
+          )}
+
+          {candidate.currentStreak && candidate.currentStreak.length >= 3 && (
+            <p className="mt-2 text-xs text-[var(--fg-dim)]">
+              {candidate.currentStreak.type === "W" ? "🔥" : "❄️"}{" "}
+              <span
+                className={cn(
+                  "font-semibold",
+                  candidate.currentStreak.type === "W"
+                    ? "text-[var(--color-felt-bright)]"
+                    : "text-[var(--color-pop-bright)]",
+                )}
+              >
+                {candidate.currentStreak.length}{" "}
+                {candidate.currentStreak.type === "W" ? "W" : "L"} streak
+              </span>{" "}
+              — recent run of consecutive {candidate.currentStreak.type === "W" ? "wins" : "losses"}.
+            </p>
+          )}
 
           <LookaheadStrip
             teamValue={candidate.components.lookahead}
