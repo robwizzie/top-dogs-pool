@@ -9,6 +9,7 @@
  * "Order" = the per-position assignment (matchPosition 1..5).
  */
 import type { Match, MatchResult, Player } from "@/lib/apa/schemas";
+import { winsRequired } from "@/lib/apa/race";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -2484,5 +2485,737 @@ export function playerPointsTrajectories(
     }
     out.set(id, series);
   }
+  return out;
+}
+
+/* ============================================================ THROW ADVISOR
+ *
+ * Live during pool night: given who the opponent just put up (name + SL),
+ * which match-of-the-night this is, the bar we're at, and which of our
+ * players are (a) here tonight and (b) haven't already been thrown — rank
+ * the remaining roster by their fit and explain *why*.
+ *
+ * The scoring blends six recency-weighted components:
+ *   1. Head-to-head record vs *this specific opponent player*
+ *   2. Record vs opponents at this exact skill level
+ *   3. Record vs this opponent team (any of their players)
+ *   4. Record at this venue
+ *   5. Recent form (last-N individual matches, exp-decayed)
+ *   6. Win % at this match position (lead/anchor/etc.)
+ * Plus a race-chart equity bonus: the APA 8-ball race chart hands the lower
+ * SL fewer games to win, which is real "free equity" we should respect.
+ *
+ * Strategy layer: the APA 8-ball "23 rule" caps any 5-player lineup at
+ * skill-level total ≤ 23. The advisor projects the remaining SL budget after
+ * each throw so far tonight, flags candidates whose SL would make the rest of
+ * the night infeasible, and surfaces "save for later" picks when burning a
+ * stud here would force weak SLs into anchor slots.
+ */
+
+const THROW_RECENCY_HALFLIFE_DAYS = 180;
+const THROW_FORM_WINDOW = 12;
+const APA_SL_BUDGET = 23; // 8-ball: sum of SLs in a 5-player lineup ≤ 23
+
+export type ThrowMatchLog = {
+  /** 1..5 — which slot was filled. */
+  position: number;
+  ourPlayerId: string;
+  ourSkillLevel: number | null;
+  oppName: string;
+  oppSkillLevel: number | null;
+  /** "W" if we won this individual match; "L" if we lost; "pending" if mid-game. */
+  outcome: "W" | "L" | "pending";
+};
+
+export type ThrowAdvisorInput = {
+  opponentTeam: string;
+  location?: string;
+  /** 1..5. The slot we're picking for right now. */
+  currentPosition: number;
+  /** Opponent's putup for this slot. */
+  opponentName: string;
+  opponentSkillLevel: number;
+  /** Players who are physically at the bar tonight. */
+  availablePlayerIds: Set<string>;
+  /** Throws already locked in earlier tonight. */
+  log: ThrowMatchLog[];
+};
+
+export type ThrowComponentScore = {
+  /** Beta(2,2)-smoothed win-rate, 0..100. Used in the composite. */
+  smoothed: number;
+  /** Raw win rate, 0..100 (for display). */
+  rate: number;
+  /** Sample size. */
+  matches: number;
+  wins: number;
+  losses: number;
+  /** True when no data exists for this candidate × component. */
+  noData: boolean;
+  /** "high" ≥4 matches, "medium" 2-3, "low" 1, "none" 0 — drives the weight. */
+  confidence: "high" | "medium" | "low" | "none";
+};
+
+export type ThrowVerdict =
+  | "top-pick"
+  | "strong"
+  | "viable"
+  | "save"
+  | "stretch"
+  | "infeasible";
+
+export type ThrowCandidate = {
+  playerId: string;
+  playerName: string;
+  skillLevel: number | null;
+  /** Composite 0..100. */
+  overall: number;
+  /** Tier label. */
+  verdict: ThrowVerdict;
+  components: {
+    h2h: ThrowComponentScore;
+    vsSL: ThrowComponentScore;
+    vsTeam: ThrowComponentScore;
+    venue: ThrowComponentScore;
+    form: ThrowComponentScore;
+    position: ThrowComponentScore;
+    /**
+     * Race-chart equity: 0..100. Their required wins ÷ (mine + theirs).
+     * Above 50 = race favors us.
+     */
+    raceEquity: number;
+  };
+  /** Bullet reasons, ordered from strongest to weakest. */
+  reasoning: string[];
+  /** Caveats / yellow flags. */
+  flags: string[];
+  /** Would using this player here keep the rest of the night SL-feasible? */
+  feasible: boolean;
+  feasibilityNote?: string;
+  /** True if this player should be kept dry for a later slot. */
+  saveForLater: boolean;
+};
+
+export type MatchUrgency = "must-win" | "leverage" | "comfortable" | "even";
+
+export type ThrowAdvisorResult = {
+  candidates: ThrowCandidate[];
+  topPick: ThrowCandidate | null;
+  context: {
+    /** Slots remaining AFTER this one. */
+    remainingPositionsAfter: number;
+    /** Sum of SLs for the slots already locked in. */
+    usedSLBudget: number;
+    /** What's left of the 23-budget, BEFORE this pick is applied. */
+    remainingSLBudget: number;
+    /** Worst-case minimum SL average needed for the slots after this one if a given SL is used here. */
+    minAvgSLAfter: number;
+    /** Running team score from the throws-so-far log. */
+    ourScore: number;
+    theirScore: number;
+    /** Pool nights are race to 5; we map score gap onto urgency. */
+    urgency: MatchUrgency;
+    /** Heuristic narrative the UI prints up top. */
+    narrative: string;
+  };
+};
+
+/**
+ * Beta(2,2)-smoothed rate, percent. 1-0 → 60, 0-0 → 50, 5-0 → ~78.
+ * Keeps tiny samples from dominating on raw 100% / 0% rates.
+ */
+function smoothedRate(wins: number, losses: number): number {
+  const n = wins + losses;
+  if (n === 0) return 50; // prior: coin flip
+  return Math.round(((wins + 2) / (n + 4)) * 1000) / 10;
+}
+
+function rawRate(wins: number, losses: number): number {
+  const n = wins + losses;
+  if (n === 0) return 0;
+  return Math.round((wins / n) * 1000) / 10;
+}
+
+function confidenceFor(matches: number): ThrowComponentScore["confidence"] {
+  if (matches >= 4) return "high";
+  if (matches >= 2) return "medium";
+  if (matches >= 1) return "low";
+  return "none";
+}
+
+function emptyComponent(): ThrowComponentScore {
+  return {
+    smoothed: 50,
+    rate: 0,
+    matches: 0,
+    wins: 0,
+    losses: 0,
+    noData: true,
+    confidence: "none",
+  };
+}
+
+function buildComponent(
+  weighted: { wins: number; losses: number; rawWins: number; rawLosses: number },
+): ThrowComponentScore {
+  const matches = weighted.rawWins + weighted.rawLosses;
+  if (matches === 0) return emptyComponent();
+  // Smoothing operates on the recency-weighted counts (so a recent match
+  // carries more weight than a 2-year-old one) — but `matches` and confidence
+  // use raw counts so the UI shows real W-L totals.
+  return {
+    smoothed: smoothedRate(weighted.wins, weighted.losses),
+    rate: rawRate(weighted.rawWins, weighted.rawLosses),
+    matches,
+    wins: weighted.rawWins,
+    losses: weighted.rawLosses,
+    noData: false,
+    confidence: confidenceFor(matches),
+  };
+}
+
+/** Confidence multiplier — high samples lift component weight, none zeroes it. */
+function confidenceWeight(c: ThrowComponentScore["confidence"]): number {
+  switch (c) {
+    case "high":
+      return 1.0;
+    case "medium":
+      return 0.65;
+    case "low":
+      return 0.35;
+    case "none":
+      return 0;
+  }
+}
+
+/**
+ * Race-chart equity. APA 8-ball uses an asymmetric race chart so the lower
+ * skill level needs fewer wins to clinch. Equity above 50 means our racetable
+ * advantage favors us BEFORE any skill is applied.
+ */
+function raceEquity(mySL: number | null, oppSL: number): number {
+  if (typeof mySL !== "number") return 50;
+  const mine = winsRequired(mySL, oppSL);
+  const theirs = winsRequired(oppSL, mySL);
+  if (!mine || !theirs) return 50;
+  // Theirs/(mine+theirs): if I race to 2 and they race to 4, equity=66.
+  return Math.round((theirs / (mine + theirs)) * 1000) / 10;
+}
+
+function urgencyFor(ourScore: number, theirScore: number, remainingAfter: number): MatchUrgency {
+  // Pool team matches are typically race to ~3 team points (or first to 5
+  // depending on format) but at the per-individual level we have 5 points to
+  // give. We classify on the gap relative to remaining matches.
+  const gap = ourScore - theirScore;
+  const remaining = remainingAfter + 1; // include this match
+  if (gap === 0) return "even";
+  if (gap > 0 && gap >= remaining) return "comfortable";
+  if (gap < 0 && Math.abs(gap) >= remaining - 1) return "must-win";
+  if (gap > 0) return "leverage";
+  return "must-win";
+}
+
+/**
+ * Build per-candidate component scores from cached match history.
+ *
+ * `matches` should be the in-scope completed matches (typically the current
+ * session, with a recency half-life applied so older sessions still count
+ * but not as much).
+ */
+function scoreCandidate(
+  player: Player,
+  ctx: {
+    matches: Match[];
+    input: ThrowAdvisorInput;
+    refDate: Date;
+  },
+): ThrowCandidate {
+  const { matches, input, refDate } = ctx;
+  const oppNameKey = input.opponentName.trim().toLowerCase();
+  const oppTeamKey = input.opponentTeam.trim().toLowerCase();
+  const venueKey = (input.location ?? "").trim().toLowerCase();
+
+  const acc = {
+    h2h: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+    vsSL: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+    vsTeam: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+    venue: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+    position: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+  };
+  // Form = chronological recent outcomes (recency-weighted).
+  const formOutcomes: Array<{ date: string; outcome: "W" | "L" }> = [];
+
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    const w = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    for (const r of m.results) {
+      if (r.playerId !== player.id) continue;
+      const won = r.outcome === "W";
+      const isWin = won ? 1 : 0;
+      const isLoss = won ? 0 : 1;
+
+      // Form (any match — uses chronology, weighted at score time)
+      formOutcomes.push({ date: m.date, outcome: r.outcome });
+
+      // H2H vs this opponent player
+      if (
+        oppNameKey &&
+        (r.opponentName ?? "").trim().toLowerCase() === oppNameKey
+      ) {
+        acc.h2h.wins += isWin * w;
+        acc.h2h.losses += isLoss * w;
+        acc.h2h.rawWins += isWin;
+        acc.h2h.rawLosses += isLoss;
+      }
+      // vs this exact SL bracket
+      if (
+        typeof r.opponentSkillLevel === "number" &&
+        r.opponentSkillLevel === input.opponentSkillLevel
+      ) {
+        acc.vsSL.wins += isWin * w;
+        acc.vsSL.losses += isLoss * w;
+        acc.vsSL.rawWins += isWin;
+        acc.vsSL.rawLosses += isLoss;
+      }
+      // vs this opponent team (any of their players)
+      if (oppTeamKey && (m.opponent ?? "").trim().toLowerCase() === oppTeamKey) {
+        acc.vsTeam.wins += isWin * w;
+        acc.vsTeam.losses += isLoss * w;
+        acc.vsTeam.rawWins += isWin;
+        acc.vsTeam.rawLosses += isLoss;
+      }
+      // at this venue
+      if (venueKey && (m.location ?? "").trim().toLowerCase() === venueKey) {
+        acc.venue.wins += isWin * w;
+        acc.venue.losses += isLoss * w;
+        acc.venue.rawWins += isWin;
+        acc.venue.rawLosses += isLoss;
+      }
+      // at this position
+      if (r.matchPosition === input.currentPosition) {
+        acc.position.wins += isWin * w;
+        acc.position.losses += isLoss * w;
+        acc.position.rawWins += isWin;
+        acc.position.rawLosses += isLoss;
+      }
+    }
+  }
+
+  // Compute form
+  const sortedForm = formOutcomes
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date))
+    .slice(-THROW_FORM_WINDOW);
+  const formWeighted = { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 };
+  for (const f of sortedForm) {
+    const w = recencyWeight(f.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    if (f.outcome === "W") {
+      formWeighted.wins += w;
+      formWeighted.rawWins += 1;
+    } else {
+      formWeighted.losses += w;
+      formWeighted.rawLosses += 1;
+    }
+  }
+
+  const components = {
+    h2h: buildComponent(acc.h2h),
+    vsSL: buildComponent(acc.vsSL),
+    vsTeam: buildComponent(acc.vsTeam),
+    venue: buildComponent(acc.venue),
+    form: buildComponent(formWeighted),
+    position: buildComponent(acc.position),
+    raceEquity: raceEquity(player.skillLevel, input.opponentSkillLevel),
+  };
+
+  // Composite weighting. Components without data drop out — the remaining
+  // weights are renormalized so the score stays in 0..100.
+  const baseWeights = {
+    h2h: 0.32,
+    vsSL: 0.18,
+    vsTeam: 0.10,
+    venue: 0.05,
+    form: 0.18,
+    position: 0.10,
+    raceEquity: 0.07,
+  } as const;
+  const weights: Record<keyof typeof baseWeights, number> = {
+    h2h: baseWeights.h2h * confidenceWeight(components.h2h.confidence),
+    vsSL: baseWeights.vsSL * confidenceWeight(components.vsSL.confidence),
+    vsTeam: baseWeights.vsTeam * confidenceWeight(components.vsTeam.confidence),
+    venue: baseWeights.venue * confidenceWeight(components.venue.confidence),
+    form: baseWeights.form * confidenceWeight(components.form.confidence),
+    position: baseWeights.position * confidenceWeight(components.position.confidence),
+    raceEquity: baseWeights.raceEquity, // always available
+  };
+  const totalWeight = Object.values(weights).reduce((s, v) => s + v, 0);
+  // If literally nothing has data, fall back to race-equity only.
+  const effectiveWeights = totalWeight === 0
+    ? { h2h: 0, vsSL: 0, vsTeam: 0, venue: 0, form: 0, position: 0, raceEquity: 1 }
+    : Object.fromEntries(
+        Object.entries(weights).map(([k, v]) => [k, v / totalWeight]),
+      ) as Record<keyof typeof baseWeights, number>;
+
+  const overall = Math.round(
+    (effectiveWeights.h2h * components.h2h.smoothed +
+      effectiveWeights.vsSL * components.vsSL.smoothed +
+      effectiveWeights.vsTeam * components.vsTeam.smoothed +
+      effectiveWeights.venue * components.venue.smoothed +
+      effectiveWeights.form * components.form.smoothed +
+      effectiveWeights.position * components.position.smoothed +
+      effectiveWeights.raceEquity * components.raceEquity) * 10,
+  ) / 10;
+
+  // Reasoning. Ordered: strongest evidence first.
+  const reasons: string[] = [];
+  const flags: string[] = [];
+  const verb = (rate: number) => {
+    if (rate >= 70) return "strong";
+    if (rate >= 55) return "solid";
+    if (rate >= 45) return "even";
+    if (rate >= 30) return "below-even";
+    return "rough";
+  };
+
+  if (!components.h2h.noData) {
+    reasons.push(
+      `${verb(components.h2h.rate)} head-to-head vs ${input.opponentName} (${components.h2h.wins}-${components.h2h.losses})`,
+    );
+  } else {
+    flags.push(`No prior match vs ${input.opponentName}`);
+  }
+  if (!components.vsSL.noData) {
+    reasons.push(
+      `${components.vsSL.wins}-${components.vsSL.losses} vs SL${input.opponentSkillLevel}s overall (${components.vsSL.rate}%)`,
+    );
+  }
+  if (!components.form.noData) {
+    const recentN = components.form.matches;
+    reasons.push(
+      `Recent form: ${components.form.wins}-${components.form.losses} over last ${recentN} (${components.form.rate}%)`,
+    );
+  }
+  if (!components.position.noData && components.position.matches >= 2) {
+    reasons.push(
+      `Slot ${input.currentPosition} record: ${components.position.wins}-${components.position.losses} (${components.position.rate}%)`,
+    );
+  }
+  if (!components.vsTeam.noData && components.vsTeam.matches >= 2) {
+    reasons.push(
+      `vs ${input.opponentTeam}: ${components.vsTeam.wins}-${components.vsTeam.losses}`,
+    );
+  }
+  if (!components.venue.noData && components.venue.matches >= 2 && input.location) {
+    reasons.push(
+      `${verb(components.venue.rate)} at ${input.location} (${components.venue.wins}-${components.venue.losses})`,
+    );
+  }
+  if (typeof player.skillLevel === "number") {
+    if (components.raceEquity >= 55) {
+      reasons.push(
+        `Race-chart edge: SL${player.skillLevel} → ${winsRequired(player.skillLevel, input.opponentSkillLevel)} games vs ${winsRequired(input.opponentSkillLevel, player.skillLevel)}`,
+      );
+    } else if (components.raceEquity <= 45) {
+      flags.push(
+        `Race chart isn't kind: needs ${winsRequired(player.skillLevel, input.opponentSkillLevel)} games to their ${winsRequired(input.opponentSkillLevel, player.skillLevel)}`,
+      );
+    }
+  }
+  if (typeof player.skillLevel !== "number") {
+    flags.push("Skill level unknown — race equity ignored");
+  }
+  if (
+    components.h2h.noData &&
+    components.vsSL.noData &&
+    components.form.noData
+  ) {
+    flags.push("Thin data — ranking is mostly priors");
+  }
+
+  return {
+    playerId: player.id,
+    playerName: player.name,
+    skillLevel: player.skillLevel,
+    overall,
+    verdict: "viable", // placeholder — re-tagged after we know the field
+    components,
+    reasoning: reasons,
+    flags,
+    feasible: true,
+    saveForLater: false,
+  };
+}
+
+export function recommendThrow(
+  input: ThrowAdvisorInput,
+  matches: Match[],
+  roster: Player[],
+  refDate: Date = new Date(),
+): ThrowAdvisorResult {
+  // Throws-so-far state.
+  const usedSLBudget = input.log.reduce(
+    (s, t) => s + (t.ourSkillLevel ?? 0),
+    0,
+  );
+  const ourScore = input.log.filter((t) => t.outcome === "W").length;
+  const theirScore = input.log.filter((t) => t.outcome === "L").length;
+  const positionsLockedIn = new Set(input.log.map((t) => t.position));
+  const remainingPositions = [1, 2, 3, 4, 5].filter(
+    (p) => !positionsLockedIn.has(p) && p !== input.currentPosition,
+  );
+  const remainingPositionsAfter = remainingPositions.length;
+  const remainingSLBudget = APA_SL_BUDGET - usedSLBudget;
+
+  const urgency = urgencyFor(ourScore, theirScore, remainingPositionsAfter);
+
+  const usedPlayerIds = new Set(input.log.map((t) => t.ourPlayerId));
+  const eligible = roster.filter(
+    (p) =>
+      p.visible !== false &&
+      !usedPlayerIds.has(p.id) &&
+      input.availablePlayerIds.has(p.id),
+  );
+
+  const candidates = eligible.map((p) =>
+    scoreCandidate(p, { matches, input, refDate }),
+  );
+
+  // Feasibility check (23-rule):
+  // After picking this player at SL_p here, the remaining `remainingPositionsAfter`
+  // slots must collectively fit in (remainingSLBudget − SL_p). We estimate
+  // feasibility by (a) the lowest SL combination available among other eligible
+  // players for the remaining slots, and (b) APA's hard floor of SL≥2.
+  const otherSLs = candidates
+    .map((c) => c.skillLevel)
+    .filter((sl): sl is number => typeof sl === "number")
+    .sort((a, b) => a - b);
+
+  for (const c of candidates) {
+    if (typeof c.skillLevel !== "number") continue;
+    const slLeft = remainingSLBudget - c.skillLevel;
+    if (slLeft < 0) {
+      c.feasible = false;
+      c.feasibilityNote = `SL${c.skillLevel} blows the 23-rule budget (${remainingSLBudget} left).`;
+      c.flags.push(c.feasibilityNote);
+      continue;
+    }
+    if (remainingPositionsAfter === 0) continue;
+    // Multiset of remaining-candidate SLs with one instance of c removed.
+    const ms = [...otherSLs];
+    const idx = ms.indexOf(c.skillLevel);
+    if (idx >= 0) ms.splice(idx, 1);
+    const need = remainingPositionsAfter;
+    if (ms.length < need) {
+      // Not enough warm bodies (some slots will be EBP/forfeit or under-staffed)
+      c.flags.push(
+        `Only ${ms.length} other player${ms.length === 1 ? "" : "s"} available for the remaining ${need} slot${need === 1 ? "" : "s"} — confirm subs.`,
+      );
+      continue;
+    }
+    const minSumAfter = ms.slice(0, need).reduce((s, v) => s + v, 0);
+    if (minSumAfter > slLeft) {
+      c.feasible = false;
+      c.feasibilityNote = `Picking SL${c.skillLevel} here forces the rest over the 23-rule budget (need at least ${minSumAfter} more; only ${slLeft} left).`;
+      c.flags.push(c.feasibilityNote);
+    } else {
+      // How tight is it? (For "save for later" reasoning.)
+      const slack = slLeft - minSumAfter;
+      if (slack <= 1) {
+        c.flags.push(
+          `Tight on SL budget after this pick: ${slack} room over the minimum.`,
+        );
+      }
+    }
+  }
+
+  // Sort by overall (feasible first, then highest score).
+  candidates.sort((a, b) => {
+    if (a.feasible !== b.feasible) return a.feasible ? -1 : 1;
+    return b.overall - a.overall;
+  });
+
+  // Verdict tiers + save-for-later reasoning.
+  // Save logic:
+  //   - If a candidate is the only one with a strong record vs an opponent
+  //     player who is *likely* to come up later (i.e. on opp roster, not yet
+  //     thrown), and there are several "good enough" options for THIS putup,
+  //     mark them save-for-later.
+  // We don't have visibility into the opponent's untaken roster here without
+  // more inputs, so the save signal is a SIMPLER heuristic:
+  //   - Top candidate by overall is far ahead of #2 (10+ pts) AND
+  //   - At least 2 other candidates are >= 55 overall (i.e. acceptable subs)
+  //   - AND we're in 'leverage' or 'comfortable' urgency (no must-win pressure)
+  //   - AND it's an early slot (<=3) so a later slot still benefits.
+  const top = candidates.find((c) => c.feasible) ?? null;
+  const second = candidates.filter((c) => c.feasible && c !== top)[0];
+  const acceptableSubs = candidates.filter((c) => c.feasible && c !== top && c.overall >= 55);
+  const isEarlySlot = input.currentPosition <= 3;
+  const noPressure = urgency === "leverage" || urgency === "comfortable";
+  if (
+    top &&
+    second &&
+    top.overall - second.overall >= 10 &&
+    acceptableSubs.length >= 2 &&
+    isEarlySlot &&
+    noPressure
+  ) {
+    top.saveForLater = true;
+    top.reasoning.unshift(
+      `Consider saving — we're ${urgency === "comfortable" ? "ahead" : "even"} and there are ${acceptableSubs.length} acceptable subs for this slot.`,
+    );
+  }
+
+  // Re-tag verdicts.
+  for (let i = 0; i < candidates.length; i++) {
+    const c = candidates[i];
+    if (!c.feasible) {
+      c.verdict = "infeasible";
+      continue;
+    }
+    if (c.saveForLater) {
+      c.verdict = "save";
+      continue;
+    }
+    if (i === 0) c.verdict = "top-pick";
+    else if (c.overall >= 60) c.verdict = "strong";
+    else if (c.overall >= 50) c.verdict = "viable";
+    else c.verdict = "stretch";
+  }
+
+  // The top pick that ISN'T flagged save-for-later — that's what we lead with.
+  const topPick = candidates.find((c) => c.feasible && !c.saveForLater) ?? null;
+
+  // Min average SL across remaining slots if we use top pick — for the
+  // narrative.
+  let minAvgSLAfter = 0;
+  if (topPick && typeof topPick.skillLevel === "number" && remainingPositionsAfter > 0) {
+    const slLeft = remainingSLBudget - topPick.skillLevel;
+    minAvgSLAfter = Math.round((slLeft / remainingPositionsAfter) * 10) / 10;
+  }
+
+  // Narrative.
+  const narrativeBits: string[] = [];
+  if (urgency === "must-win") {
+    narrativeBits.push(
+      `Down ${theirScore}-${ourScore} with ${remainingPositionsAfter + 1} match${remainingPositionsAfter === 0 ? "" : "es"} left — burn your best.`,
+    );
+  } else if (urgency === "comfortable") {
+    narrativeBits.push(
+      `Up ${ourScore}-${theirScore} — you can afford to save a stud for later.`,
+    );
+  } else if (urgency === "leverage") {
+    narrativeBits.push(
+      `Up ${ourScore}-${theirScore} — pressure their lineup.`,
+    );
+  } else if (urgency === "even") {
+    if (input.log.length === 0) {
+      narrativeBits.push("Opening match. Set the tone.");
+    } else {
+      narrativeBits.push(
+        `Tied ${ourScore}-${theirScore} — every slot matters now.`,
+      );
+    }
+  }
+  narrativeBits.push(
+    `${remainingSLBudget} SL left in the 23 budget across ${remainingPositionsAfter + 1} remaining slot${remainingPositionsAfter === 0 ? "" : "s"}.`,
+  );
+  if (topPick && topPick.saveForLater) {
+    narrativeBits.push(
+      `${topPick.playerName} is the highest-rated pick but probably better held for a tougher slot.`,
+    );
+  }
+  const narrative = narrativeBits.join(" ");
+
+  return {
+    candidates,
+    topPick,
+    context: {
+      remainingPositionsAfter,
+      usedSLBudget,
+      remainingSLBudget,
+      minAvgSLAfter,
+      ourScore,
+      theirScore,
+      urgency,
+      narrative,
+    },
+  };
+}
+
+/* ---------------- Server-side prep for the Throw Advisor UI ---------------- */
+
+export type ThrowAdvisorOpponentInfo = {
+  /** Opponent team name we have history against. */
+  team: string;
+  /** Opponent player names we've recorded SLs/positions for. */
+  knownPlayers: Array<{
+    name: string;
+    latestSL: number | null;
+    /** Most-common slot they put up at. */
+    preferredPosition: number | null;
+  }>;
+};
+
+/**
+ * Pre-computes per-opponent autocomplete data for the Throw Advisor UI:
+ * known putup players + their latest skill level. Saves the user from typing
+ * SLs every time and reduces typos. The UI still allows free-form override.
+ */
+export function throwAdvisorOpponents(
+  matches: Match[],
+): ThrowAdvisorOpponentInfo[] {
+  const teams = new Map<
+    string,
+    Map<
+      string,
+      { latestSL: number | null; latestSLDate: number; positions: Map<number, number> }
+    >
+  >();
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if (!m.opponent || m.opponent === "BYE") continue;
+    let team = teams.get(m.opponent);
+    if (!team) {
+      team = new Map();
+      teams.set(m.opponent, team);
+    }
+    const ts = +new Date(m.date);
+    for (const r of m.results) {
+      const name = (r.opponentName ?? "").trim();
+      if (!name || name === "Opponent") continue;
+      let entry = team.get(name);
+      if (!entry) {
+        entry = { latestSL: null, latestSLDate: 0, positions: new Map() };
+        team.set(name, entry);
+      }
+      if (
+        typeof r.opponentSkillLevel === "number" &&
+        r.opponentSkillLevel > 0 &&
+        ts >= entry.latestSLDate
+      ) {
+        entry.latestSL = r.opponentSkillLevel;
+        entry.latestSLDate = ts;
+      }
+      if (typeof r.matchPosition === "number") {
+        entry.positions.set(
+          r.matchPosition,
+          (entry.positions.get(r.matchPosition) ?? 0) + 1,
+        );
+      }
+    }
+  }
+  const out: ThrowAdvisorOpponentInfo[] = [];
+  for (const [teamName, players] of teams) {
+    const knownPlayers = [...players.entries()].map(([name, e]) => {
+      const positions = [...e.positions.entries()].sort((a, b) => b[1] - a[1]);
+      return {
+        name,
+        latestSL: e.latestSL,
+        preferredPosition: positions[0]?.[0] ?? null,
+      };
+    });
+    knownPlayers.sort((a, b) => a.name.localeCompare(b.name));
+    out.push({ team: teamName, knownPlayers });
+  }
+  out.sort((a, b) => a.team.localeCompare(b.team));
   return out;
 }
