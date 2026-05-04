@@ -388,6 +388,7 @@ export function ThrowAdvisor({
         onRewind={rewindToMatch}
         onSwapOrder={swapThrowOrderForCurrent}
         opponentTeam={opponentTeam}
+        activeResult={counterResult ?? openerResult ?? null}
       />
 
       {step === "pick-ours" && openerResult && (
@@ -662,6 +663,7 @@ function NightHeader({
   onRewind,
   onSwapOrder,
   opponentTeam,
+  activeResult,
 }: {
   position: number;
   weThrowFirst: boolean;
@@ -670,6 +672,8 @@ function NightHeader({
   onRewind: (position: number) => void;
   onSwapOrder: () => void;
   opponentTeam: string;
+  /** Latest recommendation result, when one is computed. Drives night win prob + bench display. */
+  activeResult: ThrowAdvisorResult | null;
 }) {
   const ourScore = log.filter((t) => t.outcome === "W").length;
   const theirScore = log.filter((t) => t.outcome === "L").length;
@@ -776,6 +780,15 @@ function NightHeader({
         <ClinchPips count={ourScore} accent="felt" />
         <ClinchPips count={theirScore} accent="pop" alignRight />
       </div>
+
+      {/* Night win probability + opponent's bench */}
+      {activeResult && (
+        <NightProbStrip
+          nightProb={activeResult.context.nightWinProbability}
+          ci={activeResult.context.nightWinProbabilityCI}
+          pendingSLs={activeResult.context.pendingOpponentSLs}
+        />
+      )}
 
       {/* Match progress dots */}
       <div className="mt-3 flex justify-between gap-1">
@@ -1521,7 +1534,15 @@ function RecommendationCard({
             </p>
           )}
         </div>
-        <WinProbGauge pct={top.matchupScore} size={132} />
+        <div className="flex flex-col items-center gap-1">
+          <WinProbGauge pct={top.matchupScore} size={132} />
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)] tabular-nums">
+            ±{Math.round((top.matchupScoreCI[1] - top.matchupScoreCI[0]) / 2)}%
+            <span className="ml-1 normal-case opacity-70">
+              ({top.matchupScoreCI[0]}–{top.matchupScoreCI[1]})
+            </span>
+          </span>
+        </div>
       </div>
 
       {/* Race-chart visual when SLs are known */}
@@ -1585,6 +1606,7 @@ function RecommendationCard({
           <ComponentBar label="Form" c={top.components.form} />
           <ComponentBar label="vs Team" c={top.components.vsTeam} />
           <ComponentBar label="Slot fit" c={top.components.position} />
+          <ComponentBar label="Clutch" c={top.components.clutch} />
           <VenueBar c={top.components.venue} />
         </div>
       </details>
@@ -1693,8 +1715,24 @@ function CandidateRow({
               <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
             )}
             <VerdictBadge verdict={candidate.verdict} />
+            {candidate.specialShotsRate >= 0.25 && (
+              <span
+                title={`${(candidate.specialShotsRate * 100).toFixed(0)}% sweep+B&R+8oB rate per match`}
+                className="rounded-full bg-[var(--color-brass)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]"
+              >
+                ✨ {(candidate.specialShotsRate * 100).toFixed(0)}%
+              </span>
+            )}
+            {candidate.lastPlayedDaysAgo !== null && candidate.lastPlayedDaysAgo > 42 && (
+              <span
+                title={`Hasn't played in ${candidate.lastPlayedDaysAgo} days`}
+                className="rounded-full bg-[var(--color-pop)]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pop-bright)]"
+              >
+                💤 Rusty
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
             {!candidate.components.h2h.noData && (
               <span>
                 H2H {candidate.components.h2h.wins}-{candidate.components.h2h.losses}
@@ -1706,6 +1744,17 @@ function CandidateRow({
                 <span>Form {candidate.components.form.rate}%</span>
               </>
             )}
+            {!candidate.components.clutch.noData && candidate.components.clutch.matches >= 3 && (
+              <>
+                <span>·</span>
+                <span>
+                  Clutch {candidate.components.clutch.wins}-{candidate.components.clutch.losses}
+                </span>
+              </>
+            )}
+            <span className="opacity-70">
+              ±{Math.round((candidate.matchupScoreCI[1] - candidate.matchupScoreCI[0]) / 2)}%
+            </span>
           </div>
         </div>
         <span className="text-xs text-[var(--fg-dim)] shrink-0">
@@ -1775,6 +1824,7 @@ function CandidateRow({
               <ComponentBar label="Form" c={candidate.components.form} />
               <ComponentBar label="vs Team" c={candidate.components.vsTeam} />
               <ComponentBar label="Slot fit" c={candidate.components.position} />
+              <ComponentBar label="Clutch" c={candidate.components.clutch} />
               <VenueBar c={candidate.components.venue} />
             </div>
           </details>
@@ -2426,6 +2476,65 @@ function ClinchPips({
  * Mini horizontal probability bar — used in the candidate list rows for a
  * quick visual scan without expanding.
  */
+/**
+ * Night win-probability strip — shown in the sticky header. Displays the
+ * "probability we win the team match given optimal play from here on" plus
+ * the opponent's still-pending SLs as a small chip row, so the captain can
+ * always see "how good is our position right now" + "what's left on their
+ * bench" at a glance.
+ */
+function NightProbStrip({
+  nightProb,
+  ci,
+  pendingSLs,
+}: {
+  nightProb: number;
+  ci: [number, number];
+  pendingSLs: number[];
+}) {
+  const tone =
+    nightProb >= 70
+      ? "text-[var(--color-felt-bright)]"
+      : nightProb >= 40
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]";
+  return (
+    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/40 px-3 py-2 text-[11px]">
+      <div className="flex items-baseline gap-2">
+        <span className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Tonight
+        </span>
+        <span className={cn("font-[family-name:var(--font-display)] text-xl tabular-nums", tone)}>
+          {nightProb}%
+        </span>
+        <span className="text-[10px] text-[var(--fg-dim)]">
+          ±{Math.round((ci[1] - ci[0]) / 2)}%
+        </span>
+      </div>
+      {pendingSLs.length > 0 && (
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            Their bench
+          </span>
+          {pendingSLs.map((sl, i) => (
+            <span
+              key={`${sl}-${i}`}
+              className={cn(
+                "inline-flex h-5 min-w-[26px] items-center justify-center rounded-md border px-1 text-[10px] font-bold tabular-nums",
+                sl >= 6
+                  ? "border-[var(--color-pop-bright)]/50 bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)]"
+                  : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)]",
+              )}
+            >
+              {sl}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MiniProbBar({ pct }: { pct: number }) {
   const v = Math.max(0, Math.min(100, pct));
   return (
