@@ -4804,10 +4804,16 @@ export type OpponentScoutingPlayer = {
 
 export type OpponentScoutingReport = {
   team: string;
-  /** Our team record vs them across the in-scope sessions. */
-  vsUs: { wins: number; losses: number; winPct: number };
+  /** Our team record vs them across the in-scope sessions. Ties broken out
+   *  separately so an 11-11 doesn't silently disappear. */
+  vsUs: { wins: number; losses: number; ties: number; winPct: number };
   /** Our team record vs them this session only (matches w/ sessionId == currentSessionId). */
-  vsUsThisSession: { wins: number; losses: number; winPct: number } | null;
+  vsUsThisSession: {
+    wins: number;
+    losses: number;
+    ties: number;
+    winPct: number;
+  } | null;
   /** Per-player scouting. */
   players: OpponentScoutingPlayer[];
   /** Their highest-SL putup we've seen — drives strategy. */
@@ -4835,11 +4841,15 @@ export function opponentScoutingReport(
       (m.opponent ?? "").trim().toLowerCase() === teamKey,
   );
 
-  // Team-level record vs them.
+  // Team-level record vs them. Tracks ties separately so the UI can show
+  // hockey-style W-L-T (otherwise an 11-11 tie silently disappears and the
+  // record looks wrong).
   let teamW = 0;
   let teamL = 0;
+  let teamT = 0;
   let teamWThisSession = 0;
   let teamLThisSession = 0;
+  let teamTThisSession = 0;
   for (const m of matchesVsThem) {
     if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number") continue;
     const isThisSession =
@@ -4850,6 +4860,9 @@ export function opponentScoutingReport(
     } else if (m.teamScore < m.opponentScore) {
       teamL++;
       if (isThisSession) teamLThisSession++;
+    } else {
+      teamT++;
+      if (isThisSession) teamTThisSession++;
     }
   }
 
@@ -4947,7 +4960,10 @@ export function opponentScoutingReport(
       .slice(0, 6)
       .reverse()
       .map((o) => (o.theirWon ? "W" : "L"));
-    // Trend: compare last 4 win rate to lifetime.
+    // Trend: compare last 4 win rate vs us to lifetime vs us. Used as a
+    // fallback when we don't have scraped career data — overwritten below
+    // when career enrichment is available, since that's a much stronger
+    // signal than 1-2 vs-us matches.
     const last4 = sorted.slice(0, 4);
     const last4WinPct =
       last4.length > 0
@@ -5027,6 +5043,31 @@ export function opponentScoutingReport(
           }));
       }
     }
+    // Refine trend using career data when available — most opp players have
+    // 1-2 vs-us matches, far too few for the vs-us-only trend to fire.
+    // Career win % vs SL baseline + recent-session form gives us a much
+    // stronger signal: someone hitting 80% over 5+ matches is hot regardless
+    // of how many times we've personally seen them.
+    if (careerEnrichment && careerEnrichment.matchesPlayed >= 5) {
+      // Career calibration vs the league-average ~50%.
+      if (careerEnrichment.winPct >= 60) trend = "hot";
+      else if (careerEnrichment.winPct <= 40) trend = "cold";
+      // Recent form override — if they have a multi-session trajectory and
+      // the latest session diverges sharply from prior sessions, that
+      // dominates the career signal.
+      const sessionsWithPct = slTrajectory.filter(
+        (s) => s.winPct != null && s.matchesPlayed >= 3,
+      );
+      if (sessionsWithPct.length >= 2) {
+        const latest = sessionsWithPct[0]!;
+        const prior = sessionsWithPct.slice(1);
+        const priorAvg =
+          prior.reduce((sum, s) => sum + (s.winPct ?? 0), 0) / prior.length;
+        const delta = (latest.winPct ?? 0) - priorAvg;
+        if (delta >= 15) trend = "hot";
+        else if (delta <= -15) trend = "cold";
+      }
+    }
     // Per-match history vs our roster, newest first.
     const matchHistory = [...b.outcomes]
       .sort((a, c) => +new Date(c.date) - +new Date(a.date))
@@ -5068,23 +5109,23 @@ export function opponentScoutingReport(
     return (b.vsUs.wins + b.vsUs.losses) - (a.vsUs.wins + a.vsUs.losses);
   });
 
+  const teamPlayed = teamW + teamL + teamT;
   const teamWinPct =
-    teamW + teamL > 0 ? Math.round((teamW / (teamW + teamL)) * 1000) / 10 : 0;
+    teamPlayed > 0 ? Math.round((teamW / teamPlayed) * 1000) / 10 : 0;
+  const sessionPlayed = teamWThisSession + teamLThisSession + teamTThisSession;
   const sessionTeamRecord =
-    teamWThisSession + teamLThisSession > 0
+    sessionPlayed > 0
       ? {
           wins: teamWThisSession,
           losses: teamLThisSession,
-          winPct:
-            Math.round(
-              (teamWThisSession / (teamWThisSession + teamLThisSession)) * 1000,
-            ) / 10,
+          ties: teamTThisSession,
+          winPct: Math.round((teamWThisSession / sessionPlayed) * 1000) / 10,
         }
       : null;
 
   return {
     team: opponentTeam,
-    vsUs: { wins: teamW, losses: teamL, winPct: teamWinPct },
+    vsUs: { wins: teamW, losses: teamL, ties: teamT, winPct: teamWinPct },
     vsUsThisSession: sessionTeamRecord,
     players,
     topSL: topSLObserved > 0 ? topSLObserved : null,

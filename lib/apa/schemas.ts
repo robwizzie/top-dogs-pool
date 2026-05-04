@@ -244,6 +244,7 @@ export const OpponentTeamProfile = z.object({
   record: z.object({
     wins: z.number().int().min(0),
     losses: z.number().int().min(0),
+    ties: z.number().int().min(0).default(0),
     points: z.number().min(0).optional(),
     rank: z.number().int().optional(),
   }),

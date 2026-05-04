@@ -1293,6 +1293,7 @@ async function main() {
     leagueSlug?: string;
     perSessionWins: Map<number, number>;
     perSessionLosses: Map<number, number>;
+    perSessionTies: Map<number, number>;
     matchesVsUs: Set<string>;
     lastSeenStartTime: string;
   };
@@ -1354,6 +1355,7 @@ async function main() {
           leagueSlug: side.league?.slug ?? meta.leagueSlug,
           perSessionWins: new Map(),
           perSessionLosses: new Map(),
+          perSessionTies: new Map(),
           matchesVsUs: new Set(),
           lastSeenStartTime: m.startTime ?? "",
         };
@@ -1371,7 +1373,8 @@ async function main() {
       if (oursSideKey && m.id && m.isFinalized) {
         agg.matchesVsUs.add(String(m.id));
       }
-      // Compute their per-session record from this match's results.
+      // Compute their per-session record from this match's results — track
+      // ties too so an 11-11 doesn't silently drop out of their record.
       if (m.isFinalized && m.results) {
         const ourPts = m.results.find((r) => r.homeAway !== key)?.points?.total;
         const theirPts = m.results.find((r) => r.homeAway === key)?.points?.total;
@@ -1385,6 +1388,11 @@ async function main() {
             agg.perSessionLosses.set(
               sessionId,
               (agg.perSessionLosses.get(sessionId) ?? 0) + 1,
+            );
+          else
+            agg.perSessionTies.set(
+              sessionId,
+              (agg.perSessionTies.get(sessionId) ?? 0) + 1,
             );
         }
       }
@@ -1455,9 +1463,11 @@ async function main() {
     const vsUsCurrentTotals = {
       wins: agg.perSessionWins.get(agg.sessionId ?? -1) ?? 0,
       losses: agg.perSessionLosses.get(agg.sessionId ?? -1) ?? 0,
+      ties: agg.perSessionTies.get(agg.sessionId ?? -1) ?? 0,
     };
     let wins = vsUsCurrentTotals.wins;
     let losses = vsUsCurrentTotals.losses;
+    let ties = vsUsCurrentTotals.ties;
     let pointsTotal: number | undefined;
     let rank: number | undefined;
     let divisionName: string | undefined;
@@ -1479,6 +1489,7 @@ async function main() {
       if (sched?.matches?.length) {
         let w = 0;
         let l = 0;
+        let t = 0;
         for (const sm of sched.matches) {
           if (!sm.isFinalized || sm.isBye) continue;
           const ourSide: SideKey | null =
@@ -1495,9 +1506,11 @@ async function main() {
           if (typeof ours !== "number" || typeof opp !== "number") continue;
           if (ours > opp) w++;
           else if (ours < opp) l++;
+          else t++;
         }
         wins = w;
         losses = l;
+        ties = t;
       }
       const meta_ = pickTeamMeta(teamCacheEntry);
       if (meta_?.session) {
@@ -1550,6 +1563,7 @@ async function main() {
       record: {
         wins,
         losses,
+        ties,
         points: pointsTotal,
         rank,
       },

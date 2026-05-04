@@ -36,7 +36,13 @@ export function ScoutingReport({
       </p>
     );
   }
-  const teamRecord = `${report.vsUs.wins}–${report.vsUs.losses}`;
+  const teamRecord = formatRecord(
+    report.vsUs.wins,
+    report.vsUs.losses,
+    report.vsUs.ties,
+  );
+  const teamPlayed =
+    report.vsUs.wins + report.vsUs.losses + report.vsUs.ties;
   const teamRecordTone =
     report.vsUs.winPct >= 60
       ? "text-[var(--color-felt-bright)]"
@@ -44,17 +50,27 @@ export function ScoutingReport({
         ? "text-[var(--color-pop-bright)]"
         : "text-[var(--color-brass-bright)]";
 
+  // If our all-time vs-them and this-session vs-them are identical (i.e. we've
+  // only ever played them this session), don't render the duplicate "this
+  // session" card.
+  const sessionMatchesAllTime =
+    !!report.vsUsThisSession &&
+    report.vsUsThisSession.wins === report.vsUs.wins &&
+    report.vsUsThisSession.losses === report.vsUs.losses &&
+    report.vsUsThisSession.ties === report.vsUs.ties;
+
   // Whether we have rich opp team data (full schedule = scraped team page).
   const hasFullTeamData =
     !!oppTeamProfile && oppTeamProfile.schedule.length > 0;
 
-  // Hot/cold splits for the top-level summary. Only players with enough
-  // recent matches (≥3) to register a meaningful trend show up here.
+  // Hot/cold splits for the top-level summary. Trend now factors in career
+  // win % and per-session form (when scraped), so a player with only 1-2
+  // matches vs us can still light up if their league-wide form warrants it.
   const hotPlayers = report.players
-    .filter((p) => p.trend === "hot" && p.recent.length >= 3)
+    .filter((p) => p.trend === "hot")
     .sort((a, b) => (b.latestSL ?? 0) - (a.latestSL ?? 0));
   const coldPlayers = report.players
-    .filter((p) => p.trend === "cold" && p.recent.length >= 3)
+    .filter((p) => p.trend === "cold")
     .sort((a, b) => (b.latestSL ?? 0) - (a.latestSL ?? 0));
 
   return (
@@ -64,7 +80,11 @@ export function ScoutingReport({
         {oppTeamProfile ? (
           <Stat
             label={`${oppTeamProfile.name} this session`}
-            value={`${oppTeamProfile.record.wins}–${oppTeamProfile.record.losses}`}
+            value={formatRecord(
+              oppTeamProfile.record.wins,
+              oppTeamProfile.record.losses,
+              oppTeamProfile.record.ties ?? 0,
+            )}
             sub={
               hasFullTeamData
                 ? oppTeamProfile.record.rank
@@ -90,16 +110,28 @@ export function ScoutingReport({
           />
         )}
         <Stat
-          label="Our record vs them"
+          label={
+            sessionMatchesAllTime
+              ? "Our record vs them — this session"
+              : "Our record vs them — all time"
+          }
           value={teamRecord}
-          sub={`${report.vsUs.winPct}% across all sessions`}
+          sub={
+            teamPlayed > 0
+              ? `${report.vsUs.winPct}% across ${teamPlayed} match${teamPlayed === 1 ? "" : "es"}${report.vsUs.ties > 0 ? ` (incl. ${report.vsUs.ties} tie${report.vsUs.ties === 1 ? "" : "s"})` : ""}`
+              : "no completed matches yet"
+          }
           tone={teamRecordTone}
         />
-        {report.vsUsThisSession && (
+        {report.vsUsThisSession && !sessionMatchesAllTime && (
           <Stat
             label="Our vs them — this session"
-            value={`${report.vsUsThisSession.wins}–${report.vsUsThisSession.losses}`}
-            sub={`${report.vsUsThisSession.winPct}% so far`}
+            value={formatRecord(
+              report.vsUsThisSession.wins,
+              report.vsUsThisSession.losses,
+              report.vsUsThisSession.ties,
+            )}
+            sub={`${report.vsUsThisSession.winPct}% so far${report.vsUsThisSession.ties > 0 ? ` (${report.vsUsThisSession.ties} tie${report.vsUsThisSession.ties === 1 ? "" : "s"})` : ""}`}
           />
         )}
         <Stat
@@ -379,6 +411,10 @@ function PlayerScoutingCard({
   );
 }
 
+function formatRecord(wins: number, losses: number, ties: number): string {
+  return ties > 0 ? `${wins}–${losses}–${ties}` : `${wins}–${losses}`;
+}
+
 function HotColdBlock({
   kind,
   players,
@@ -409,8 +445,14 @@ function HotColdBlock({
       </div>
       <ul className="mt-3 space-y-2">
         {players.map((p) => {
-          const wins = p.recent.filter((r) => r === "W").length;
-          const losses = p.recent.filter((r) => r === "L").length;
+          // Prefer career stats (much larger sample) when available.
+          const summary = p.career
+            ? `${p.career.winPct}% career (${p.career.wins}–${p.career.losses})`
+            : (() => {
+                const wins = p.recent.filter((r) => r === "W").length;
+                const losses = p.recent.filter((r) => r === "L").length;
+                return `${wins}W / ${losses}L vs us`;
+              })();
           return (
             <li
               key={p.name}
@@ -431,15 +473,13 @@ function HotColdBlock({
                   SL{p.latestSL}
                 </span>
               )}
-              <span className="ml-auto text-[10px] tabular-nums text-[var(--fg-dim)]">
-                last {p.recent.length}:{" "}
-                <span className={cn("font-semibold", accent)}>
-                  {isHot ? wins : losses}
-                </span>
-                {isHot ? "W" : "L"}
-                {" / "}
-                {isHot ? losses : wins}
-                {isHot ? "L" : "W"}
+              <span
+                className={cn(
+                  "ml-auto text-[10px] tabular-nums font-semibold",
+                  accent,
+                )}
+              >
+                {summary}
               </span>
             </li>
           );
