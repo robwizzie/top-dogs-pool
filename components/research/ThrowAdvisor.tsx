@@ -430,6 +430,45 @@ export function ThrowAdvisor({
   }
 
   // Matchup phase
+  const ourPickedName =
+    visibleRoster.find((p) => p.id === live.ourPlayerId)?.name ?? null;
+  const oppPickedName = live.oppName ?? null;
+
+  function editOurs() {
+    haptic(10);
+    // If they've put up, route to informed counter; otherwise blind opener.
+    if (live.oppName && typeof live.oppSL === "number") {
+      setStep("pick-counter");
+    } else {
+      setStep("pick-ours");
+    }
+  }
+
+  function editTheirs() {
+    haptic(10);
+    // If we've put up, route to "enter their counter"; otherwise their opener.
+    if (live.ourPlayerId) {
+      setStep("enter-theirs");
+    } else {
+      setStep("enter-theirs-first");
+    }
+  }
+
+  function clearOurs() {
+    haptic(8);
+    setLive((s) => ({ ...s, ourPlayerId: undefined, ourSkillLevel: undefined }));
+    // Route to the appropriate picker for what's still selected.
+    if (live.oppName && typeof live.oppSL === "number") setStep("pick-counter");
+    else setStep("pick-ours");
+  }
+
+  function clearTheirs() {
+    haptic(8);
+    setLive((s) => ({ ...s, oppName: undefined, oppSL: undefined }));
+    if (live.ourPlayerId) setStep("enter-theirs");
+    else setStep("enter-theirs-first");
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <NightHeader
@@ -443,6 +482,25 @@ export function ThrowAdvisor({
         activeResult={counterResult ?? openerResult ?? null}
       />
 
+      <CurrentMatchup
+        ourName={ourPickedName}
+        ourSL={live.ourSkillLevel ?? null}
+        theirName={oppPickedName}
+        theirSL={live.oppSL ?? null}
+        weThrowFirst={live.weThrowFirst}
+        editingSide={
+          step === "pick-ours" || step === "pick-counter"
+            ? "ours"
+            : step === "enter-theirs" || step === "enter-theirs-first"
+              ? "theirs"
+              : null
+        }
+        onEditOurs={editOurs}
+        onEditTheirs={editTheirs}
+        onClearOurs={clearOurs}
+        onClearTheirs={clearTheirs}
+      />
+
       <Legend />
 
       {step === "pick-ours" && openerResult && (
@@ -450,12 +508,15 @@ export function ThrowAdvisor({
           live={live}
           result={openerResult}
           onPick={(c) => {
+            const oppFilled = !!live.oppName && typeof live.oppSL === "number";
             setLive((s) => ({
               ...s,
               ourPlayerId: c.playerId,
               ourSkillLevel: c.skillLevel ?? undefined,
             }));
-            setStep("enter-theirs");
+            // If opp is already set (user is overriding from CurrentMatchup),
+            // skip straight to result; otherwise continue the wizard.
+            setStep(oppFilled ? "result" : "enter-theirs");
           }}
         />
       )}
@@ -481,13 +542,20 @@ export function ThrowAdvisor({
 
       {step === "enter-theirs-first" && (
         <EnterTheirsStep
-          ourName={null}
+          ourName={
+            live.ourPlayerId
+              ? visibleRoster.find((p) => p.id === live.ourPlayerId)?.name ?? null
+              : null
+          }
           opponentTeam={opponentTeam}
           knownPutups={knownPutups}
           alreadyUsed={oppAlreadyUsed}
           onConfirm={(name, sl) => {
+            const oursFilled = !!live.ourPlayerId;
             setLive((s) => ({ ...s, oppName: name, oppSL: sl }));
-            setStep("pick-counter");
+            // If we've already picked our player (override flow), skip to
+            // result instead of asking for our counter again.
+            setStep(oursFilled ? "result" : "pick-counter");
           }}
           onBack={null}
         />
@@ -703,6 +771,156 @@ function SetupScreen({
       >
         Start the night →
       </button>
+    </div>
+  );
+}
+
+/* ====================================================== Current matchup row */
+
+/**
+ * Always-visible "current matchup" panel during the matchup phase. Shows
+ * who's been picked for this slot on each side with one-tap edit buttons —
+ * lets the captain swap either pick freely (vs. having to navigate the
+ * step wizard back-and-forth).
+ *
+ * The "editingSide" prop subtly highlights whichever side is currently
+ * being picked, so the user has visual continuity with the picker below.
+ */
+function CurrentMatchup({
+  ourName,
+  ourSL,
+  theirName,
+  theirSL,
+  weThrowFirst,
+  editingSide,
+  onEditOurs,
+  onEditTheirs,
+  onClearOurs,
+  onClearTheirs,
+}: {
+  ourName: string | null;
+  ourSL: number | null;
+  theirName: string | null;
+  theirSL: number | null;
+  weThrowFirst: boolean;
+  editingSide: "ours" | "theirs" | null;
+  onEditOurs: () => void;
+  onEditTheirs: () => void;
+  onClearOurs: () => void;
+  onClearTheirs: () => void;
+}) {
+  return (
+    <div className="surface px-3 py-3">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
+        <MatchupSide
+          side="ours"
+          name={ourName}
+          sl={ourSL}
+          editing={editingSide === "ours"}
+          isFirstThrow={weThrowFirst}
+          onEdit={onEditOurs}
+          onClear={onClearOurs}
+        />
+        <div className="flex flex-col items-center justify-center px-1">
+          <span className="text-[10px] uppercase tracking-[0.32em] text-[var(--fg-dim)]">
+            vs
+          </span>
+        </div>
+        <MatchupSide
+          side="theirs"
+          name={theirName}
+          sl={theirSL}
+          editing={editingSide === "theirs"}
+          isFirstThrow={!weThrowFirst}
+          onEdit={onEditTheirs}
+          onClear={onClearTheirs}
+        />
+      </div>
+    </div>
+  );
+}
+
+function MatchupSide({
+  side,
+  name,
+  sl,
+  editing,
+  isFirstThrow,
+  onEdit,
+  onClear,
+}: {
+  side: "ours" | "theirs";
+  name: string | null;
+  sl: number | null;
+  editing: boolean;
+  isFirstThrow: boolean;
+  onEdit: () => void;
+  onClear: () => void;
+}) {
+  const heading = side === "ours" ? "Our throw" : "Their throw";
+  const tone = side === "ours" ? "text-[var(--color-felt-bright)]" : "text-[var(--color-pop-bright)]";
+  return (
+    <div
+      className={cn(
+        "flex flex-col rounded-md border-2 px-3 py-2 transition-colors",
+        editing
+          ? "border-[var(--color-brass)] bg-[var(--color-brass)]/10"
+          : name
+            ? "border-[var(--border)] bg-[var(--bg-soft)]/30"
+            : "border-dashed border-[var(--border)]",
+      )}
+    >
+      <div className="flex items-baseline justify-between gap-1">
+        <span className={cn("text-[10px] font-semibold uppercase tracking-[0.2em]", tone)}>
+          {heading}
+        </span>
+        {isFirstThrow && (
+          <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)]">
+            puts up
+          </span>
+        )}
+      </div>
+      {name ? (
+        <button
+          type="button"
+          onClick={onEdit}
+          className="mt-1 flex items-baseline justify-between gap-2 text-left"
+          title="Tap to change this pick"
+        >
+          <span className="font-[family-name:var(--font-display)] text-base leading-tight tracking-wide truncate">
+            {name}
+          </span>
+          {sl != null && (
+            <span className="text-[10px] tabular-nums text-[var(--fg-dim)]">SL{sl}</span>
+          )}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onEdit}
+          className="mt-1 text-left text-sm font-semibold text-[var(--color-brass-bright)] hover:underline"
+        >
+          {editing ? "Picking…" : "Choose →"}
+        </button>
+      )}
+      {name && (
+        <div className="mt-1 flex gap-3 text-[10px]">
+          <button
+            type="button"
+            onClick={onEdit}
+            className="text-[var(--color-brass)] hover:underline"
+          >
+            ✎ change
+          </button>
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-[var(--fg-dim)] hover:text-[var(--fg)]"
+          >
+            ✕ clear
+          </button>
+        </div>
+      )}
     </div>
   );
 }

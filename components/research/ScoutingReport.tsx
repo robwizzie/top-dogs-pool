@@ -44,19 +44,49 @@ export function ScoutingReport({
         ? "text-[var(--color-pop-bright)]"
         : "text-[var(--color-brass-bright)]";
 
+  // Whether we have rich opp team data (full schedule = scraped team page).
+  const hasFullTeamData =
+    !!oppTeamProfile && oppTeamProfile.schedule.length > 0;
+
+  // Hot/cold splits for the top-level summary. Only players with enough
+  // recent matches (≥3) to register a meaningful trend show up here.
+  const hotPlayers = report.players
+    .filter((p) => p.trend === "hot" && p.recent.length >= 3)
+    .sort((a, b) => (b.latestSL ?? 0) - (a.latestSL ?? 0));
+  const coldPlayers = report.players
+    .filter((p) => p.trend === "cold" && p.recent.length >= 3)
+    .sort((a, b) => (b.latestSL ?? 0) - (a.latestSL ?? 0));
+
   return (
     <div className="space-y-5">
       {/* Top-level team record */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {oppTeamProfile && (
+        {oppTeamProfile ? (
           <Stat
             label={`${oppTeamProfile.name} this session`}
             value={`${oppTeamProfile.record.wins}–${oppTeamProfile.record.losses}`}
             sub={
-              oppTeamProfile.record.rank
-                ? `#${oppTeamProfile.record.rank} in division`
-                : "their team record"
+              hasFullTeamData
+                ? oppTeamProfile.record.rank
+                  ? `#${oppTeamProfile.record.rank} in division${oppTeamProfile.record.points ? ` · ${oppTeamProfile.record.points} pts` : ""}`
+                  : `${oppTeamProfile.record.points ?? "—"} pts this session`
+                : "from matches vs us — run sync for full record"
             }
+            tone={
+              hasFullTeamData
+                ? oppTeamProfile.record.wins > oppTeamProfile.record.losses
+                  ? "text-[var(--color-pop-bright)]"
+                  : oppTeamProfile.record.wins < oppTeamProfile.record.losses
+                    ? "text-[var(--color-felt-bright)]"
+                    : "text-[var(--color-brass-bright)]"
+                : undefined
+            }
+          />
+        ) : (
+          <Stat
+            label={`${report.team} this session`}
+            value="—"
+            sub="run sync to scrape their full team page"
           />
         )}
         <Stat
@@ -78,6 +108,23 @@ export function ScoutingReport({
           sub="our players' win % against theirs"
         />
       </div>
+
+      {/* Hot / cold roster summary — quick read on form before diving into
+          per-player cards. */}
+      {(hotPlayers.length > 0 || coldPlayers.length > 0) && (
+        <div className="grid gap-3 md:grid-cols-2">
+          <HotColdBlock
+            kind="hot"
+            players={hotPlayers}
+            label="Avoid — they're rolling"
+          />
+          <HotColdBlock
+            kind="cold"
+            players={coldPlayers}
+            label="Target — recent slump"
+          />
+        </div>
+      )}
 
       {/* Player scouting */}
       {report.players.length > 0 && (
@@ -329,6 +376,76 @@ function PlayerScoutingCard({
         </details>
       )}
     </li>
+  );
+}
+
+function HotColdBlock({
+  kind,
+  players,
+  label,
+}: {
+  kind: "hot" | "cold";
+  players: OpponentScoutingReport["players"];
+  label: string;
+}) {
+  if (players.length === 0) return null;
+  const isHot = kind === "hot";
+  const accent = isHot
+    ? "text-[var(--color-pop-bright)]"
+    : "text-[var(--color-felt-bright)]";
+  const accentBg = isHot
+    ? "bg-[var(--color-pop)]/10 border-[var(--color-pop)]/30"
+    : "bg-[var(--color-felt)]/10 border-[var(--color-felt)]/30";
+  const heading = isHot ? "🔥 Hot players" : "❄️ Cold players";
+  return (
+    <div className={cn("surface border-2 p-4", accentBg)}>
+      <div className="flex items-baseline justify-between gap-2">
+        <h3 className={cn("text-[11px] font-semibold uppercase tracking-[0.32em]", accent)}>
+          {heading}
+        </h3>
+        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          {label}
+        </span>
+      </div>
+      <ul className="mt-3 space-y-2">
+        {players.map((p) => {
+          const wins = p.recent.filter((r) => r === "W").length;
+          const losses = p.recent.filter((r) => r === "L").length;
+          return (
+            <li
+              key={p.name}
+              className="flex flex-wrap items-baseline gap-2 text-sm"
+            >
+              {p.playerId ? (
+                <Link
+                  href={`/players/${p.playerId}`}
+                  className="font-medium hover:text-[var(--color-brass)]"
+                >
+                  {p.name}
+                </Link>
+              ) : (
+                <span className="font-medium">{p.name}</span>
+              )}
+              {p.latestSL != null && (
+                <span className="text-[10px] text-[var(--fg-dim)]">
+                  SL{p.latestSL}
+                </span>
+              )}
+              <span className="ml-auto text-[10px] tabular-nums text-[var(--fg-dim)]">
+                last {p.recent.length}:{" "}
+                <span className={cn("font-semibold", accent)}>
+                  {isHot ? wins : losses}
+                </span>
+                {isHot ? "W" : "L"}
+                {" / "}
+                {isHot ? losses : wins}
+                {isHot ? "L" : "W"}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
