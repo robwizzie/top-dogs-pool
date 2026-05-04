@@ -4783,6 +4783,23 @@ export type OpponentScoutingPlayer = {
   suspectedRealSL: number | null;
   /** Top counter on our roster (the player who beats them most). */
   topCounter: { playerId: string; playerName: string; wins: number; losses: number } | null;
+  /**
+   * Every individual match between our roster and this opp player. Drives
+   * the expandable "match history" dropdown in the scouting card.
+   */
+  matchHistory: Array<{
+    matchId: string;
+    date: string;
+    /** From our perspective. */
+    outcome: "W" | "L";
+    ourPlayerId: string;
+    ourPlayerName: string;
+    ourSL: number | null;
+    theirSL: number | null;
+    /** Game score "ourGames-theirGames" if recorded. */
+    score: string | null;
+    matchPosition: number | null;
+  }>;
 };
 
 export type OpponentScoutingReport = {
@@ -4840,7 +4857,7 @@ export function opponentScoutingReport(
   type Bucket = {
     name: string;
     /** Each individual match outcome from THEIR perspective (W = they won vs us). */
-    outcomes: Array<{ date: string; theirWon: boolean; theirGames: number; ourGames: number; ourSL?: number; theirSL?: number; matchPosition?: number; ourPlayerId: string }>;
+    outcomes: Array<{ matchId: string; date: string; theirWon: boolean; theirGames: number; ourGames: number; ourSL?: number; theirSL?: number; matchPosition?: number; ourPlayerId: string; ourPlayerName: string }>;
     slMap: Map<number, number>; // SL → count
     posMap: Map<number, number>; // position → count
     counters: Map<string, { id: string; name: string; ourWins: number; ourLosses: number }>;
@@ -4874,6 +4891,7 @@ export function opponentScoutingReport(
         if (Number.isFinite(b)) theirGames = b;
       }
       bucket.outcomes.push({
+        matchId: m.id,
         date: m.date,
         theirWon,
         theirGames,
@@ -4882,6 +4900,7 @@ export function opponentScoutingReport(
         theirSL: theirSL ?? undefined,
         matchPosition: r.matchPosition ?? undefined,
         ourPlayerId: r.playerId,
+        ourPlayerName: r.playerName,
       });
       if (typeof theirSL === "number") {
         bucket.slMap.set(theirSL, (bucket.slMap.get(theirSL) ?? 0) + 1);
@@ -5008,6 +5027,23 @@ export function opponentScoutingReport(
           }));
       }
     }
+    // Per-match history vs our roster, newest first.
+    const matchHistory = [...b.outcomes]
+      .sort((a, c) => +new Date(c.date) - +new Date(a.date))
+      .map((o) => ({
+        matchId: o.matchId,
+        date: o.date,
+        outcome: (o.theirWon ? "L" : "W") as "W" | "L",
+        ourPlayerId: o.ourPlayerId,
+        ourPlayerName: o.ourPlayerName,
+        ourSL: o.ourSL ?? null,
+        theirSL: o.theirSL ?? null,
+        score:
+          o.ourGames || o.theirGames
+            ? `${o.ourGames}-${o.theirGames}`
+            : null,
+        matchPosition: o.matchPosition ?? null,
+      }));
     players.push({
       name: b.name,
       playerId,
@@ -5021,6 +5057,7 @@ export function opponentScoutingReport(
       avgWinMargin: Math.round(avgWinMargin * 10) / 10,
       suspectedRealSL,
       topCounter,
+      matchHistory,
     });
   }
   // Sort: hot players first, then by appearances (proxy for "how often we'll see them").
@@ -5055,6 +5092,234 @@ export function opponentScoutingReport(
       totalIndW + totalIndL > 0
         ? Math.round((totalIndW / (totalIndW + totalIndL)) * 1000) / 10
         : 0,
+  };
+}
+
+/* ============================================================ PREDICTED LINEUP
+ *
+ * Build a 5-slot prediction of how the night could play out under each
+ * starting throw order (we-throw-first vs they-throw-first). Each slot
+ * alternates per APA rule. Per slot:
+ *   - If we throw first: pick our blind opener (recommendOpener-style),
+ *     then predict their counter (their not-yet-used player whose race
+ *     equity vs our pick is best for them).
+ *   - If they throw first: predict their putup (their highest-SL not-yet-
+ *     used player, then fall back to preferred-slot heuristics), then
+ *     pick our counter (recommendThrow-style).
+ *
+ * Output is a list of 5 PredictedSlot entries with the matchup, the
+ * predicted win prob, and which side picked first that slot.
+ */
+
+export type PredictedSlot = {
+  position: number;
+  weThrowFirst: boolean;
+  ourPlayerId: string | null;
+  ourPlayerName: string;
+  ourSkillLevel: number | null;
+  oppName: string | null;
+  oppSL: number | null;
+  /** 0..100 win probability for our pick at this slot. */
+  winProb: number;
+};
+
+export type PredictedLineup = {
+  scenario: "we-first" | "they-first";
+  slots: PredictedSlot[];
+  /** Our predicted total team-match points. */
+  ourPoints: number;
+  /** Opp's predicted total team-match points. */
+  theirPoints: number;
+  /** Probability we win the team match. */
+  nightWinProbability: number;
+};
+
+export function predictLineup(
+  scenario: "we-first" | "they-first",
+  matches: Match[],
+  roster: Player[],
+  opponentTeam: string,
+  opponentRoster: Array<{ name: string; latestSL: number | null; preferredPosition?: number | null }>,
+  location?: string,
+  refDate: Date = new Date(),
+): PredictedLineup {
+  const usedOurIds = new Set<string>();
+  const usedOppNames = new Set<string>();
+  const slots: PredictedSlot[] = [];
+  const slotProbs: number[] = [];
+
+  for (let pos = 1; pos <= 5; pos++) {
+    const weThrowFirst =
+      scenario === "we-first" ? pos % 2 === 1 : pos % 2 === 0;
+    const remainingOpp = opponentRoster.filter(
+      (p) => !usedOppNames.has(p.name),
+    );
+
+    if (weThrowFirst) {
+      // Use the opener engine — adversarial picks our minimax pick.
+      const result = recommendOpener(
+        {
+          opponentTeam,
+          location,
+          currentPosition: pos,
+          availablePlayerIds: new Set(
+            roster
+              .filter((p) => p.visible !== false && !usedOurIds.has(p.id))
+              .map((p) => p.id),
+          ),
+          log: [],
+          opponentRoster: remainingOpp.map((p) => ({
+            name: p.name,
+            latestSL: p.latestSL,
+          })),
+        },
+        matches,
+        roster,
+        refDate,
+      );
+      const top = result.topPick;
+      if (!top) {
+        slots.push({
+          position: pos,
+          weThrowFirst,
+          ourPlayerId: null,
+          ourPlayerName: "(no pick)",
+          ourSkillLevel: null,
+          oppName: null,
+          oppSL: null,
+          winProb: 50,
+        });
+        slotProbs.push(0.5);
+        continue;
+      }
+      // Predict their counter — the opp player giving us the worst race.
+      let worstOpp: { name: string; sl: number | null } | null = null;
+      let worstWinProb = top.matchupScore;
+      for (const op of remainingOpp) {
+        if (typeof op.latestSL !== "number") continue;
+        const re = raceEquity(top.skillLevel, op.latestSL);
+        // Use race equity directly as their counter-strength signal.
+        if (re < worstWinProb) {
+          worstWinProb = re;
+          worstOpp = { name: op.name, sl: op.latestSL };
+        }
+      }
+      const finalOpp = worstOpp ?? {
+        name: remainingOpp[0]?.name ?? "TBD",
+        sl: remainingOpp[0]?.latestSL ?? null,
+      };
+      usedOurIds.add(top.playerId);
+      usedOppNames.add(finalOpp.name);
+      slots.push({
+        position: pos,
+        weThrowFirst: true,
+        ourPlayerId: top.playerId,
+        ourPlayerName: top.playerName,
+        ourSkillLevel: top.skillLevel,
+        oppName: finalOpp.name,
+        oppSL: finalOpp.sl,
+        winProb: top.matchupScore,
+      });
+      slotProbs.push(top.matchupScore / 100);
+    } else {
+      // They throw first → predict their putup (highest pending SL,
+      // tie-break by preferred position match), then we counter.
+      const sortedOpp = [...remainingOpp].sort((a, c) => {
+        const slDiff = (c.latestSL ?? 0) - (a.latestSL ?? 0);
+        if (slDiff !== 0) return slDiff;
+        const aPref = a.preferredPosition === pos ? 1 : 0;
+        const cPref = c.preferredPosition === pos ? 1 : 0;
+        return cPref - aPref;
+      });
+      const oppPick = sortedOpp[0];
+      if (!oppPick || typeof oppPick.latestSL !== "number") {
+        slots.push({
+          position: pos,
+          weThrowFirst: false,
+          ourPlayerId: null,
+          ourPlayerName: "(no opp data)",
+          ourSkillLevel: null,
+          oppName: oppPick?.name ?? null,
+          oppSL: oppPick?.latestSL ?? null,
+          winProb: 50,
+        });
+        slotProbs.push(0.5);
+        continue;
+      }
+      const result = recommendThrow(
+        {
+          opponentTeam,
+          location,
+          currentPosition: pos,
+          opponentName: oppPick.name,
+          opponentSkillLevel: oppPick.latestSL,
+          availablePlayerIds: new Set(
+            roster
+              .filter((p) => p.visible !== false && !usedOurIds.has(p.id))
+              .map((p) => p.id),
+          ),
+          log: [],
+          opponentRoster: opponentRoster.map((p) => ({
+            name: p.name,
+            latestSL: p.latestSL,
+          })),
+        },
+        matches,
+        roster,
+        refDate,
+      );
+      const top = result.candidates.find((c) => c.feasible);
+      if (!top) {
+        usedOppNames.add(oppPick.name);
+        slots.push({
+          position: pos,
+          weThrowFirst: false,
+          ourPlayerId: null,
+          ourPlayerName: "(no pick)",
+          ourSkillLevel: null,
+          oppName: oppPick.name,
+          oppSL: oppPick.latestSL,
+          winProb: 50,
+        });
+        slotProbs.push(0.5);
+        continue;
+      }
+      usedOurIds.add(top.playerId);
+      usedOppNames.add(oppPick.name);
+      slots.push({
+        position: pos,
+        weThrowFirst: false,
+        ourPlayerId: top.playerId,
+        ourPlayerName: top.playerName,
+        ourSkillLevel: top.skillLevel,
+        oppName: oppPick.name,
+        oppSL: oppPick.latestSL,
+        winProb: top.matchupScore,
+      });
+      slotProbs.push(top.matchupScore / 100);
+    }
+  }
+
+  // Estimate team-match points from slot probs using the same league-average
+  // sweep/mini/hill distribution the engine uses elsewhere.
+  let ourPts = 0;
+  let theirPts = 0;
+  for (const p of slotProbs) {
+    // Expected ours: p × (0.20×3 + 0.50×2 + 0.30×2) + (1-p) × (0.30×1) =
+    //               p × 2.20 + (1-p) × 0.30
+    // Expected theirs: p × (0.30×1) + (1-p) × (0.20×3 + 0.50×2 + 0.30×2) =
+    //               p × 0.30 + (1-p) × 2.20
+    ourPts += p * 2.2 + (1 - p) * 0.3;
+    theirPts += p * 0.3 + (1 - p) * 2.2;
+  }
+  const nightProb = nightWinProbability(0, 0, slotProbs);
+
+  return {
+    scenario,
+    slots,
+    ourPoints: Math.round(ourPts * 10) / 10,
+    theirPoints: Math.round(theirPts * 10) / 10,
+    nightWinProbability: Math.round(nightProb * 1000) / 10,
   };
 }
 

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import type { OpponentScoutingReport } from "@/lib/research";
-import { cn } from "@/lib/utils";
+import type { OpponentScoutingReport, PredictedLineup } from "@/lib/research";
+import { cn, formatDate } from "@/lib/utils";
 
 /**
  * In-depth scouting report for the opponent we're about to play. Pulled
@@ -13,10 +13,16 @@ import { cn } from "@/lib/utils";
 export function ScoutingReport({
   report,
   teamId,
+  predictedWeFirst,
+  predictedTheyFirst,
 }: {
   report: OpponentScoutingReport;
   /** When provided, the team header links to /opponents/[teamId]. */
   teamId?: number | null;
+  /** Predicted lineup if WE throw first in match 1. */
+  predictedWeFirst?: PredictedLineup | null;
+  /** Predicted lineup if THEY throw first in match 1. */
+  predictedTheyFirst?: PredictedLineup | null;
 }) {
   if (report.players.length === 0 && report.vsUs.wins + report.vsUs.losses === 0) {
     return (
@@ -69,6 +75,29 @@ export function ScoutingReport({
               <PlayerScoutingCard key={p.name} p={p} />
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Predicted lineups — both throw orders */}
+      {(predictedWeFirst || predictedTheyFirst) && (
+        <div>
+          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+            Predicted lineups · {report.team}
+          </h3>
+          <p className="mb-3 text-xs text-[var(--fg-dim)]">
+            Two scenarios depending on who puts up first in match 1. Each
+            row predicts the matchup our engine would build slot-by-slot
+            assuming optimal play. Predicted points use the same league-
+            average sweep/mini/hill distribution as the night-win-prob.
+          </p>
+          <div className="grid gap-3 lg:grid-cols-2">
+            {predictedWeFirst && (
+              <PredictedLineupCard lineup={predictedWeFirst} oppName={report.team} />
+            )}
+            {predictedTheyFirst && (
+              <PredictedLineupCard lineup={predictedTheyFirst} oppName={report.team} />
+            )}
+          </div>
         </div>
       )}
 
@@ -227,6 +256,62 @@ function PlayerScoutingCard({
           ({p.topCounter.wins}–{p.topCounter.losses})
         </p>
       )}
+
+      {/* Match history dropdown — every individual match between our roster
+          and this opp player, newest first. */}
+      {p.matchHistory.length > 0 && (
+        <details className="mt-3">
+          <summary className="cursor-pointer list-none text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] hover:text-[var(--color-brass)]">
+            ↳ Match history vs us ({p.matchHistory.length})
+          </summary>
+          <ul className="mt-2 divide-y divide-[var(--border)] rounded-md border border-[var(--border)] text-xs">
+            {p.matchHistory.map((m, i) => (
+              <li
+                key={`${m.matchId}-${i}`}
+                className="flex flex-wrap items-baseline justify-between gap-2 px-3 py-2"
+              >
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+                    {formatDate(m.date)}
+                    {m.matchPosition ? ` · M${m.matchPosition}` : ""}
+                  </span>
+                  <Link
+                    href={`/roster/${m.ourPlayerId}`}
+                    className="font-medium hover:text-[var(--color-brass)]"
+                  >
+                    {m.ourPlayerName}
+                  </Link>
+                  {m.ourSL != null && (
+                    <span className="text-[10px] text-[var(--fg-dim)]">
+                      SL{m.ourSL}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-2 tabular-nums">
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em]",
+                      m.outcome === "W"
+                        ? "bg-[var(--color-felt)]/20 text-[var(--color-felt-bright)]"
+                        : "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]",
+                    )}
+                  >
+                    {m.outcome}
+                  </span>
+                  {m.score && (
+                    <Link
+                      href={`/matches/${m.matchId}`}
+                      className="text-[var(--fg-dim)] hover:text-[var(--color-brass)]"
+                    >
+                      {m.score}
+                    </Link>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
     </li>
   );
 }
@@ -258,6 +343,105 @@ function Stat({
       {sub && (
         <p className="text-[10px] text-[var(--fg-dim)]">{sub}</p>
       )}
+    </div>
+  );
+}
+
+/**
+ * Single predicted lineup card. Shows 5 slots in order with the matchup
+ * (us vs them), who put up first that slot, and the predicted win prob.
+ * The header summarizes total predicted points + night win prob.
+ */
+function PredictedLineupCard({
+  lineup,
+}: {
+  lineup: PredictedLineup;
+  oppName: string;
+}) {
+  const heading =
+    lineup.scenario === "we-first" ? "If WE throw first M1" : "If THEY throw first M1";
+  const wonProb = lineup.nightWinProbability;
+  const tone =
+    wonProb >= 60
+      ? "text-[var(--color-felt-bright)]"
+      : wonProb >= 40
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]";
+  return (
+    <div className="surface p-4">
+      <div className="flex items-baseline justify-between gap-2">
+        <h4 className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
+          {heading}
+        </h4>
+        <span className={cn("font-[family-name:var(--font-display)] text-2xl tabular-nums", tone)}>
+          {wonProb}%
+        </span>
+      </div>
+      <p className="text-[10px] text-[var(--fg-dim)]">
+        Predicted score:{" "}
+        <span className="font-semibold text-[var(--color-felt-bright)] tabular-nums">
+          {lineup.ourPoints}
+        </span>
+        <span> – </span>
+        <span className="font-semibold text-[var(--color-pop-bright)] tabular-nums">
+          {lineup.theirPoints}
+        </span>{" "}
+        team match points
+      </p>
+      <ol className="mt-3 space-y-1.5">
+        {lineup.slots.map((s) => (
+          <li key={s.position} className="rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/30 px-3 py-2 text-xs">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <span className="flex items-baseline gap-2">
+                <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--color-brass-bright)]">
+                  M{s.position}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+                  {s.weThrowFirst ? "we put up" : "they put up"}
+                </span>
+              </span>
+              <span
+                className={cn(
+                  "font-semibold tabular-nums",
+                  s.winProb >= 60
+                    ? "text-[var(--color-felt-bright)]"
+                    : s.winProb >= 40
+                      ? "text-[var(--color-brass-bright)]"
+                      : "text-[var(--color-pop-bright)]",
+                )}
+              >
+                {s.winProb}%
+              </span>
+            </div>
+            <div className="mt-1 flex flex-wrap items-baseline justify-between gap-2 text-xs">
+              <span>
+                {s.ourPlayerId ? (
+                  <Link
+                    href={`/roster/${s.ourPlayerId}`}
+                    className="font-medium hover:text-[var(--color-brass)]"
+                  >
+                    {s.ourPlayerName}
+                  </Link>
+                ) : (
+                  <span className="font-medium">{s.ourPlayerName}</span>
+                )}
+                {s.ourSkillLevel != null && (
+                  <span className="ml-1 text-[10px] text-[var(--fg-dim)]">
+                    SL{s.ourSkillLevel}
+                  </span>
+                )}
+                <span className="mx-1.5 text-[var(--fg-dim)]">vs</span>
+                <span>{s.oppName ?? "TBD"}</span>
+                {s.oppSL != null && (
+                  <span className="ml-1 text-[10px] text-[var(--fg-dim)]">
+                    SL{s.oppSL}
+                  </span>
+                )}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

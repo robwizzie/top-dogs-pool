@@ -34,6 +34,7 @@ import {
   teamSummary,
   calibrationBacktest,
   opponentScoutingReport,
+  predictLineup,
   throwAdvisorOpponents,
   venueRecords,
   vsOpponents,
@@ -246,11 +247,49 @@ export default async function ResearchPage({ searchParams }: Props) {
     : null;
   // Identify the opp team id (if any) so the scouting report can deep-link
   // to the team page.
-  const scoutingTeamId = scoutingReport
+  const scoutingOppTeam = scoutingReport
     ? Object.values(snap.opponentTeams).find(
         (t) => t.name.trim().toLowerCase() === scoutingReport.team.trim().toLowerCase(),
-      )?.id ?? null
+      ) ?? null
     : null;
+  const scoutingTeamId = scoutingOppTeam?.id ?? null;
+  // Predicted lineups (both throw orders) — built from opp roster when we
+  // have it scraped; falls back to scouting-report player list otherwise.
+  const oppRosterForLineup = scoutingOppTeam
+    ? scoutingOppTeam.roster.map((p) => ({
+        name: p.name,
+        latestSL: p.skillLevel,
+        preferredPosition: undefined,
+      }))
+    : scoutingReport
+      ? scoutingReport.players.map((p) => ({
+          name: p.name,
+          latestSL: p.latestSL,
+          preferredPosition: p.preferredPosition,
+        }))
+      : [];
+  const predictedWeFirst =
+    nextScheduledMatch && oppRosterForLineup.length >= 5
+      ? predictLineup(
+          "we-first",
+          matches,
+          roster,
+          nextScheduledMatch.opponent,
+          oppRosterForLineup,
+          nextScheduledMatch.location,
+        )
+      : null;
+  const predictedTheyFirst =
+    nextScheduledMatch && oppRosterForLineup.length >= 5
+      ? predictLineup(
+          "they-first",
+          matches,
+          roster,
+          nextScheduledMatch.opponent,
+          oppRosterForLineup,
+          nextScheduledMatch.location,
+        )
+      : null;
 
   // Sort lineups various ways for "best/worst" sections.
   const lineupsByWins = [...lineups].sort((a, b) =>
@@ -338,7 +377,12 @@ export default async function ResearchPage({ searchParams }: Props) {
             forTab="briefing"
             activeTab={tab}
           >
-            <ScoutingReport report={scoutingReport} teamId={scoutingTeamId} />
+            <ScoutingReport
+              report={scoutingReport}
+              teamId={scoutingTeamId}
+              predictedWeFirst={predictedWeFirst}
+              predictedTheyFirst={predictedTheyFirst}
+            />
           </Section>
         )}
 

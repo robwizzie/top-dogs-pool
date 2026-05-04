@@ -309,6 +309,51 @@ async function main() {
   }
   console.log();
 
+  // 5e. Opp-member past-team backfill.
+  //
+  // Without this, the projector can't map an opp player's session history:
+  // their per-team `aliasSessionStats` entries reference team ids whose
+  // sessions we haven't cached, so we drop the rows. Result: empty career
+  // + empty SL trajectory in the scouting report.
+  //
+  // Fix: walk each opp member's history, queue every team id we haven't
+  // already cached, fetch them. Capped by APA_MAX_OPP_PAST_SESSIONS so a
+  // first-run doesn't crawl decades of inactive teams (default 8).
+  const MAX_OPP_PAST_SESSIONS = parseInt(
+    process.env.APA_MAX_OPP_PAST_SESSIONS ?? "8",
+    10,
+  );
+  console.log("==> backfilling opp members' past teams");
+  const oppPastTeamIds = new Set<number>();
+  for (const memberId of opponentMemberIds) {
+    const m = await cache.read<MemberCacheEntry>("members", memberId);
+    if (!m) continue;
+    for (const t of teamIdsFromMember(m.data)) oppPastTeamIds.add(t);
+  }
+  // Skip teams already cached (incl. current opp teams) and our own.
+  const toBackfillOpp = [...oppPastTeamIds]
+    .filter((id) => id !== TEAM_ID && !allTeamIds.has(id) && !opponentTeamIds.has(id))
+    .sort((a, b) => b - a) // newest first
+    .slice(0, MAX_OPP_PAST_SESSIONS * Math.max(1, opponentMemberIds.size));
+  console.log(
+    `   ${oppPastTeamIds.size} past team(s) referenced; backfilling ${toBackfillOpp.length}`,
+  );
+  for (const id of toBackfillOpp) {
+    const cached = await cache.read<TeamCacheEntry>("teams", id);
+    if (cached) {
+      stats.teamsCached++;
+      continue;
+    }
+    try {
+      await fetchTeam(page, capture, cache, id, SLUG);
+      stats.teamsFetched++;
+      console.log(`   ✓ fetched opp past team #${id}`);
+    } catch (e) {
+      console.warn(`   ✗ opp past team #${id}: ${(e as Error).message}`);
+    }
+  }
+  console.log();
+
   // 6. Persist meta.
   await cache.writeMeta({
     teamId: TEAM_ID,
