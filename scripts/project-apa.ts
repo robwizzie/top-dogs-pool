@@ -1234,215 +1234,385 @@ async function main() {
   // simplified PlayerProfile per roster member from the cached member data.
   // Only includes opp teams whose data has been scraped; the opp scraper
   // step runs each weekly sync and accumulates over time.
+  // Opp data is built primarily from cached MATCHES — every match's
+  // payload includes both teams' full rosters with per-player stats
+  // (matchesWon/Played, SL, pa, ppm) at the time of that match. Aggregating
+  // across matches gives us per-player session records without needing
+  // to fetch opp member pages at all.
+  //
+  // Optionally enriched by cached opp team pages (which give us their
+  // future schedule + division standing) when available — but the core
+  // per-player and per-session record is purely match-cache-driven.
   const opponentTeams: Record<string, AnyRec> = {};
   const opponentPlayers: Record<string, AnyRec> = {};
-  if (currentSessionId) {
-    type ScheduleShape = { team?: { matches?: Array<{ id?: number }> } };
-    const ourCurrentSchedule =
-      ((currentTeam.teamSchedule as ScheduleShape).team?.matches ?? [])
-        .map((m) => m.id)
-        .filter((id): id is number => typeof id === "number");
-    const oppTeamIdsInSchedule = new Set<number>();
-    for (const mid of ourCurrentSchedule) {
-      const mc = matchCache.get(mid);
-      if (!mc) continue;
-      type MT = { team?: { id?: number } };
-      type M = { matchTeams?: MT[] };
-      for (const mt of (mc.match as M).matchTeams ?? []) {
-        if (typeof mt.team?.id === "number" && mt.team.id !== meta.teamId) {
-          oppTeamIdsInSchedule.add(mt.team.id);
+
+  type MatchSide = {
+    id?: number;
+    name?: string;
+    number?: string;
+    isMine?: boolean;
+    league?: { id?: number; slug?: string };
+    division?: { id?: number; type?: string };
+    roster?: Array<{
+      id?: number;
+      memberNumber?: string;
+      displayName?: string;
+      matchesWon?: number;
+      matchesPlayed?: number;
+      pa?: number;
+      ppm?: number;
+      skillLevel?: number;
+      __typename?: string;
+      member?: { id?: number };
+    }>;
+  };
+  type MatchPayload = {
+    id?: number;
+    isFinalized?: boolean;
+    isBye?: boolean;
+    home?: MatchSide;
+    away?: MatchSide;
+    session?: { id?: number; name?: string };
+    division?: { id?: number; type?: string };
+    league?: { slug?: string };
+    location?: { name?: string };
+    startTime?: string;
+    week?: number;
+    results?: Array<{ homeAway?: SideKey; points?: { total?: number } }>;
+  };
+
+  // Per-opp-team aggregate (built from match cache).
+  type OppTeamAgg = {
+    id: number;
+    name: string;
+    number?: string;
+    divisionId?: number;
+    sessionId?: number;
+    sessionName?: string;
+    format: string;
+    leagueSlug?: string;
+    perSessionWins: Map<number, number>;
+    perSessionLosses: Map<number, number>;
+    matchesVsUs: Set<string>;
+    lastSeenStartTime: string;
+  };
+  const oppTeams = new Map<number, OppTeamAgg>();
+
+  // Per-opp-player aggregate. We track each (memberNumber, sessionId) as a
+  // single record; the most-recent match's roster snapshot is the most up-
+  // to-date session totals.
+  type OppPlayerSession = {
+    sessionId: number;
+    sessionName: string;
+    teamId: number;
+    teamName: string;
+    skillLevel?: number;
+    matchesPlayed: number;
+    wins: number;
+    pa?: number;
+    ppm?: number;
+    /** When this snapshot was observed — to keep the latest. */
+    snapshotAt: number;
+  };
+  type OppPlayerAgg = {
+    id: string; // memberNumber
+    name: string;
+    internalId?: number;
+    format: string;
+    sessions: Map<number, OppPlayerSession>;
+  };
+  const oppPlayers = new Map<string, OppPlayerAgg>();
+
+  for (const mc of matchCache.values()) {
+    const m = mc.match as MatchPayload;
+    if (!m.session?.id) continue;
+    const sessionId = m.session.id;
+    const sessionName = m.session.name ?? `Session ${sessionId}`;
+    const sides: Array<{ side: MatchSide | undefined; key: SideKey }> = [
+      { side: m.home, key: "HOME" },
+      { side: m.away, key: "AWAY" },
+    ];
+    // Identify which side is "us" for THIS match (any of our lineage teams).
+    const oursSideKey = sides.find(
+      (s) => typeof s.side?.id === "number" && oursTeamIds.has(s.side.id),
+    )?.key;
+    for (const { side, key } of sides) {
+      if (!side?.id) continue;
+      if (oursTeamIds.has(side.id)) continue; // skip our team
+      const teamId = side.id;
+      // Init or update team aggregate.
+      let agg = oppTeams.get(teamId);
+      if (!agg) {
+        agg = {
+          id: teamId,
+          name: side.name ?? `Team #${teamId}`,
+          number: side.number,
+          divisionId: side.division?.id,
+          sessionId,
+          sessionName,
+          format: detectFormat(side.division?.type ?? side.roster?.[0]?.__typename),
+          leagueSlug: side.league?.slug ?? meta.leagueSlug,
+          perSessionWins: new Map(),
+          perSessionLosses: new Map(),
+          matchesVsUs: new Set(),
+          lastSeenStartTime: m.startTime ?? "",
+        };
+        oppTeams.set(teamId, agg);
+      }
+      // Keep latest session info.
+      if (!m.startTime || m.startTime >= agg.lastSeenStartTime) {
+        agg.lastSeenStartTime = m.startTime ?? agg.lastSeenStartTime;
+        agg.sessionId = sessionId;
+        agg.sessionName = sessionName;
+        if (side.name) agg.name = side.name;
+        if (side.number) agg.number = side.number;
+      }
+      // Cross-link match if it's vs us.
+      if (oursSideKey && m.id && m.isFinalized) {
+        agg.matchesVsUs.add(String(m.id));
+      }
+      // Compute their per-session record from this match's results.
+      if (m.isFinalized && m.results) {
+        const ourPts = m.results.find((r) => r.homeAway !== key)?.points?.total;
+        const theirPts = m.results.find((r) => r.homeAway === key)?.points?.total;
+        if (typeof ourPts === "number" && typeof theirPts === "number") {
+          if (theirPts > ourPts)
+            agg.perSessionWins.set(
+              sessionId,
+              (agg.perSessionWins.get(sessionId) ?? 0) + 1,
+            );
+          else if (theirPts < ourPts)
+            agg.perSessionLosses.set(
+              sessionId,
+              (agg.perSessionLosses.get(sessionId) ?? 0) + 1,
+            );
+        }
+      }
+      // Aggregate per-roster-entry per-session player stats. The roster
+      // shows season-to-date W/L for that team-session — keep the latest
+      // snapshot.
+      const snapshotAt = m.startTime ? +new Date(m.startTime) : Date.now();
+      for (const r of side.roster ?? []) {
+        if (!r.memberNumber) continue;
+        let pAgg = oppPlayers.get(r.memberNumber);
+        if (!pAgg) {
+          pAgg = {
+            id: r.memberNumber,
+            name: r.displayName ?? r.memberNumber,
+            internalId: r.member?.id,
+            format: detectFormat(r.__typename),
+            sessions: new Map(),
+          };
+          oppPlayers.set(r.memberNumber, pAgg);
+        }
+        // Always update the display name from the most-recent appearance.
+        if (r.displayName && snapshotAt >= (pAgg.sessions.get(sessionId)?.snapshotAt ?? 0)) {
+          pAgg.name = r.displayName;
+        }
+        const existing = pAgg.sessions.get(sessionId);
+        // Take the snapshot with the highest matchesPlayed (latest snapshot
+        // at end of session). Fall back to most-recent if same.
+        const newMP = r.matchesPlayed ?? 0;
+        const newWins = r.matchesWon ?? 0;
+        const isMoreComplete =
+          !existing ||
+          newMP > existing.matchesPlayed ||
+          (newMP === existing.matchesPlayed && snapshotAt > existing.snapshotAt);
+        if (isMoreComplete) {
+          pAgg.sessions.set(sessionId, {
+            sessionId,
+            sessionName,
+            teamId,
+            teamName: side.name ?? `Team #${teamId}`,
+            skillLevel: r.skillLevel,
+            matchesPlayed: newMP,
+            wins: newWins,
+            pa: r.pa !== undefined ? Math.round(r.pa * 1000) / 10 : undefined,
+            ppm: r.ppm !== undefined ? Math.round(r.ppm * 100) / 100 : undefined,
+            snapshotAt,
+          });
         }
       }
     }
-    for (const oid of oppTeamIdsInSchedule) {
-      const team = teams.get(oid);
-      if (!team) continue; // not yet scraped
-      const oMeta = pickTeamMeta(team);
-      if (!oMeta || !oMeta.session) continue;
-      const fmt = detectFormat(oMeta.divisionFormat);
-      const oRosterShape = team.teamRoster as RosterShape;
-      const opponentRoster: RosterPlayer[] = [];
-      const opponentMemberIds: number[] = [];
-      for (const r of oRosterShape?.team?.roster ?? []) {
-        if (!r.memberNumber) continue;
-        if (r.member?.id) opponentMemberIds.push(r.member.id);
+  }
+
+  // Materialize opp team profiles. Roster comes from the most-recent match
+  // we have against them; schedule + full record comes from cached opp team
+  // page when available, otherwise we fall back to the vs-us record.
+  type ScheduleMatchRaw = {
+    id?: number;
+    isFinalized?: boolean;
+    isBye?: boolean;
+    home?: { id?: number };
+    away?: { id?: number };
+    results?: Array<{ homeAway?: SideKey; points?: { total?: number } }>;
+  };
+  type ScheduleShape = { team?: { matches?: ScheduleMatchRaw[]; division?: { name?: string }; sessionTotalPoints?: number } };
+  type TeamPageShape = { team?: { standing?: number; location?: { name?: string }; division?: { name?: string } } };
+
+  for (const [teamId, agg] of oppTeams) {
+    // Default vs-us record (used when we don't have the team's full schedule).
+    const vsUsCurrentTotals = {
+      wins: agg.perSessionWins.get(agg.sessionId ?? -1) ?? 0,
+      losses: agg.perSessionLosses.get(agg.sessionId ?? -1) ?? 0,
+    };
+    let wins = vsUsCurrentTotals.wins;
+    let losses = vsUsCurrentTotals.losses;
+    let pointsTotal: number | undefined;
+    let rank: number | undefined;
+    let divisionName: string | undefined;
+    let homeLocationName: string | undefined;
+
+    // If we have the opp team's cached page, derive full session record from
+    // their schedule (which includes all matches with home/away ids).
+    const teamCacheEntry = teams.get(teamId);
+    let schedule: Match[] = [];
+    if (teamCacheEntry) {
+      const teamPage = (teamCacheEntry.teamPage as TeamPageShape).team;
+      const sched = (teamCacheEntry.teamSchedule as ScheduleShape).team;
+      if (typeof teamPage?.standing === "number") rank = teamPage.standing;
+      divisionName = teamPage?.division?.name;
+      homeLocationName = teamPage?.location?.name;
+      if (typeof sched?.sessionTotalPoints === "number") {
+        pointsTotal = sched.sessionTotalPoints;
+      }
+      if (sched?.matches?.length) {
+        let w = 0;
+        let l = 0;
+        for (const sm of sched.matches) {
+          if (!sm.isFinalized || sm.isBye) continue;
+          const ourSide: SideKey | null =
+            sm.home?.id === teamId
+              ? "HOME"
+              : sm.away?.id === teamId
+                ? "AWAY"
+                : null;
+          if (!ourSide) continue;
+          const ours = sm.results?.find((r) => r.homeAway === ourSide)?.points
+            ?.total;
+          const opp = sm.results?.find((r) => r.homeAway !== ourSide)?.points
+            ?.total;
+          if (typeof ours !== "number" || typeof opp !== "number") continue;
+          if (ours > opp) w++;
+          else if (ours < opp) l++;
+        }
+        wins = w;
+        losses = l;
+      }
+      const meta_ = pickTeamMeta(teamCacheEntry);
+      if (meta_?.session) {
+        schedule = projectScheduleMatches(
+          teamCacheEntry,
+          matchCache,
+          ebpToMemberNumber,
+          meta_.session,
+          detectFormat(meta_.divisionFormat),
+        );
+      }
+    }
+    // Build their roster from the most-recent appearance per session: take
+    // the players whose latest session = current session.
+    const rosterPlayers: RosterPlayer[] = [];
+    for (const p of oppPlayers.values()) {
+      const rec = p.sessions.get(agg.sessionId ?? -1);
+      if (rec && rec.teamId === teamId) {
         const winPct =
-          r.matchesPlayed && r.matchesWon !== undefined
-            ? Math.round((r.matchesWon / r.matchesPlayed) * 1000) / 10
+          rec.matchesPlayed > 0
+            ? Math.round((rec.wins / rec.matchesPlayed) * 1000) / 10
             : undefined;
-        opponentRoster.push({
-          id: r.memberNumber,
-          name: r.displayName ?? "Unknown",
-          skillLevel: r.skillLevel ?? null,
-          format: detectFormat(r.__typename),
+        rosterPlayers.push({
+          id: p.id,
+          name: p.name,
+          skillLevel: rec.skillLevel ?? null,
+          format: p.format,
           visible: true,
           stats: {
-            wins: r.matchesWon,
-            matchesPlayed: r.matchesPlayed,
+            wins: rec.wins,
+            matchesPlayed: rec.matchesPlayed,
             winPct,
-            ppm: r.ppm !== undefined ? Math.round(r.ppm * 100) / 100 : undefined,
-            pa: r.pa !== undefined ? Math.round(r.pa * 1000) / 10 : undefined,
+            ppm: rec.ppm,
+            pa: rec.pa,
           },
         });
       }
-      // Project their schedule using the shared schedule projector.
-      const oppSchedule = projectScheduleMatches(
-        team,
-        matchCache,
-        ebpToMemberNumber,
-        oMeta.session,
-        fmt,
-      );
-      // matchesVsUs: filter their schedule for matches against any "ours" team.
-      const matchesVsUs = oppSchedule
-        .filter((m) => {
-          // Match belongs to "us" if the opponent label matches one of our team names
-          // OR opponent is in our schedule (we already cached the match scoresheet).
-          // Easier: search match's matchTeams for an "ours" id.
-          const mc = m.id ? matchCache.get(parseInt(m.id, 10)) : null;
-          if (!mc) return false;
-          type MT = { team?: { id?: number } };
-          type M = { matchTeams?: MT[] };
-          for (const mt of (mc.match as M).matchTeams ?? []) {
-            if (typeof mt.team?.id === "number" && oursTeamIds.has(mt.team.id))
-              return true;
-          }
-          return false;
-        })
-        .map((m) => m.id);
-      // Compute their record from completed matches in their schedule.
-      let oW = 0;
-      let oL = 0;
-      for (const m of oppSchedule) {
-        if (m.status !== "completed") continue;
-        if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number") continue;
-        // Note: m.teamScore here is the OPP team's score (since this schedule is theirs).
-        if (m.teamScore > m.opponentScore) oW++;
-        else if (m.teamScore < m.opponentScore) oL++;
-      }
-      opponentTeams[String(oid)] = {
-        id: oid,
-        name: oMeta.name,
-        number: oMeta.number,
-        division: oMeta.division,
-        divisionRank: oMeta.standing,
-        sessionId: oMeta.session.id,
-        sessionName: oMeta.session.name,
-        homeLocation: oMeta.homeLocation,
-        format: fmt,
-        url: `https://league.poolplayers.com/${meta.leagueSlug}/team/${oid}`,
-        record: {
-          wins: oW,
-          losses: oL,
-          rank: oMeta.standing,
-        },
-        roster: opponentRoster,
-        schedule: oppSchedule,
-        matchesVsUs,
-        lastFetched: new Date().toISOString(),
-      };
-      // Build a basic PlayerProfile per opp roster member from cached member
-      // data. Without recomputing from match scoresheets (we don't have all
-      // their scoresheets), this is a "career stats from APA's API" view.
-      for (const internalId of opponentMemberIds) {
-        const member = members.get(internalId);
-        if (!member) continue;
-        // Find their memberNumber from the roster entry
-        const rosterEntry = (oRosterShape.team?.roster ?? []).find(
-          (r) => r.member?.id === internalId,
-        );
-        const memberNumber = rosterEntry?.memberNumber;
-        if (!memberNumber) continue;
-        type AliasPlayer = {
-          team?: { id?: number; name?: string };
-          matchesPlayed?: number;
-          matchesWon?: number;
-          skillLevel?: number;
-          pa?: number;
-          ppm?: number;
-          rackless?: number;
-        };
-        type AliasData = {
-          alias?: { players?: AliasPlayer[]; firstName?: string; lastName?: string };
-        };
-        const aliasData = member.aliasSessionStats as AliasData;
-        const sessionRecords: Array<AnyRec> = [];
-        let careerMatches = 0;
-        let careerWins = 0;
-        for (const p of aliasData?.alias?.players ?? []) {
-          const tid = p.team?.id;
-          if (!tid) continue;
-          // Career totals always count, even if we lack session metadata.
-          const matchesPlayed = p.matchesPlayed ?? 0;
-          const wins = p.matchesWon ?? 0;
-          careerMatches += matchesPlayed;
-          careerWins += wins;
-          // Session info is best-effort: prefer cached team data, fall back
-          // to a synthetic record keyed by the team id (so the row still
-          // appears in the per-session table even if we haven't backfilled
-          // that team yet — APA_MAX_OPP_PAST_SESSIONS may have capped it).
-          const sessionInfo = teamIdToSessionInfo.get(tid);
-          sessionRecords.push({
-            sessionId: sessionInfo?.id ?? tid, // fall back to team id for sort stability
-            sessionName: sessionInfo?.name ?? "Past session",
-            teamId: tid,
-            teamName: p.team?.name ?? sessionInfo?.teamName ?? `Team #${tid}`,
-            skillLevel: p.skillLevel,
-            matchesPlayed,
-            wins,
-            winPct:
-              matchesPlayed > 0
-                ? Math.round((wins / matchesPlayed) * 1000) / 10
-                : undefined,
-            pa: p.pa !== undefined ? Math.round(p.pa * 1000) / 10 : undefined,
-            ppm: p.ppm !== undefined ? Math.round(p.ppm * 100) / 100 : undefined,
-            rackless: p.rackless,
-            levelUps: 0,
-          });
-        }
-        sessionRecords.sort(
-          (a, b) => Number(b.sessionId) - Number(a.sessionId),
-        );
-        const currentSessionRecord =
-          sessionRecords.find((r) => r.sessionId === currentSessionId) ?? null;
-        const fullName =
-          rosterEntry?.displayName ??
-          [aliasData?.alias?.firstName, aliasData?.alias?.lastName]
-            .filter(Boolean)
-            .join(" ") ??
-          memberNumber;
-        opponentPlayers[memberNumber] = {
-          id: memberNumber,
-          name: fullName,
-          firstName: aliasData?.alias?.firstName,
-          lastName: aliasData?.alias?.lastName,
-          internalId,
-          currentSkillLevel:
-            currentSessionRecord?.skillLevel ?? rosterEntry?.skillLevel ?? null,
-          format: detectFormat(rosterEntry?.__typename),
-          visible: true,
-          current: currentSessionRecord,
-          career: {
-            matchesPlayed: careerMatches,
-            wins: careerWins,
-            losses: Math.max(0, careerMatches - careerWins),
-            winPct:
-              careerMatches > 0
-                ? Math.round((careerWins / careerMatches) * 1000) / 10
-                : 0,
-            // Sweep/B&R/8oB stats require parsing every scoresheet they
-            // appeared in, which we don't have for non-vs-us matches.
-            points: 0,
-            sweeps: 0,
-            miniSweeps: 0,
-            breakAndRuns: 0,
-            eightOnBreaks: 0,
-            levelUps: 0,
-          },
-          sessions: sessionRecords,
-        };
-      }
     }
+    opponentTeams[String(teamId)] = {
+      id: teamId,
+      name: agg.name,
+      number: agg.number,
+      division: divisionName,
+      divisionRank: rank,
+      sessionId: agg.sessionId,
+      sessionName: agg.sessionName,
+      homeLocation: homeLocationName,
+      format: agg.format,
+      url: `https://league.poolplayers.com/${agg.leagueSlug ?? meta.leagueSlug}/team/${teamId}`,
+      record: {
+        wins,
+        losses,
+        points: pointsTotal,
+        rank,
+      },
+      roster: rosterPlayers,
+      schedule,
+      matchesVsUs: [...agg.matchesVsUs],
+      lastFetched: new Date().toISOString(),
+    };
+  }
+
+  // Materialize opp player profiles.
+  for (const [memberNumber, agg] of oppPlayers) {
+    const sessionRecords = [...agg.sessions.values()]
+      .map((s) => ({
+        sessionId: s.sessionId,
+        sessionName: s.sessionName,
+        teamId: s.teamId,
+        teamName: s.teamName,
+        skillLevel: s.skillLevel,
+        matchesPlayed: s.matchesPlayed,
+        wins: s.wins,
+        winPct:
+          s.matchesPlayed > 0
+            ? Math.round((s.wins / s.matchesPlayed) * 1000) / 10
+            : undefined,
+        pa: s.pa,
+        ppm: s.ppm,
+        levelUps: 0,
+      }))
+      .sort((a, b) => b.sessionId - a.sessionId);
+    const careerMatches = sessionRecords.reduce(
+      (s, r) => s + r.matchesPlayed,
+      0,
+    );
+    const careerWins = sessionRecords.reduce((s, r) => s + r.wins, 0);
+    const currentRecord = sessionRecords.find(
+      (r) => r.sessionId === currentSessionId,
+    );
+    opponentPlayers[memberNumber] = {
+      id: memberNumber,
+      name: agg.name,
+      internalId: agg.internalId,
+      currentSkillLevel: currentRecord?.skillLevel ?? null,
+      format: agg.format,
+      visible: true,
+      current: currentRecord ?? null,
+      career: {
+        matchesPlayed: careerMatches,
+        wins: careerWins,
+        losses: Math.max(0, careerMatches - careerWins),
+        winPct:
+          careerMatches > 0
+            ? Math.round((careerWins / careerMatches) * 1000) / 10
+            : 0,
+        points: 0,
+        sweeps: 0,
+        miniSweeps: 0,
+        breakAndRuns: 0,
+        eightOnBreaks: 0,
+        levelUps: 0,
+      },
+      sessions: sessionRecords,
+    };
   }
 
   const out_ = {
