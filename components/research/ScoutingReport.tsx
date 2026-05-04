@@ -404,60 +404,144 @@ function PredictedLineupCard({
         </span>{" "}
         team match points
       </p>
-      <ol className="mt-3 space-y-1.5">
+      <ol className="mt-3 space-y-2">
         {lineup.slots.map((s) => (
-          <li key={s.position} className="rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/30 px-3 py-2 text-xs">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <span className="flex items-baseline gap-2">
-                <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--color-brass-bright)]">
-                  M{s.position}
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
-                  {s.weThrowFirst ? "we put up" : "they put up"}
-                </span>
-              </span>
-              <span
-                className={cn(
-                  "font-semibold tabular-nums",
-                  s.winProb >= 60
-                    ? "text-[var(--color-felt-bright)]"
-                    : s.winProb >= 40
-                      ? "text-[var(--color-brass-bright)]"
-                      : "text-[var(--color-pop-bright)]",
-                )}
-              >
-                {s.winProb}%
-              </span>
-            </div>
-            <div className="mt-1 flex flex-wrap items-baseline justify-between gap-2 text-xs">
-              <span>
-                {s.ourPlayerId ? (
-                  <Link
-                    href={`/roster/${s.ourPlayerId}`}
-                    className="font-medium hover:text-[var(--color-brass)]"
-                  >
-                    {s.ourPlayerName}
-                  </Link>
-                ) : (
-                  <span className="font-medium">{s.ourPlayerName}</span>
-                )}
-                {s.ourSkillLevel != null && (
-                  <span className="ml-1 text-[10px] text-[var(--fg-dim)]">
-                    SL{s.ourSkillLevel}
-                  </span>
-                )}
-                <span className="mx-1.5 text-[var(--fg-dim)]">vs</span>
-                <span>{s.oppName ?? "TBD"}</span>
-                {s.oppSL != null && (
-                  <span className="ml-1 text-[10px] text-[var(--fg-dim)]">
-                    SL{s.oppSL}
-                  </span>
-                )}
-              </span>
-            </div>
-          </li>
+          <PredictedSlotRow key={s.position} slot={s} />
         ))}
       </ol>
     </div>
+  );
+}
+
+/**
+ * One slot in a predicted lineup. Shows the opp likelihood distribution
+ * (top 3-4 opp players with their probabilities), our recommended pick,
+ * and the expected vs top-likely win probabilities.
+ */
+function PredictedSlotRow({
+  slot,
+}: {
+  slot: PredictedLineup["slots"][number];
+}) {
+  const our = slot.ourPick;
+  const tone = our
+    ? our.expectedWinProb >= 60
+      ? "text-[var(--color-felt-bright)]"
+      : our.expectedWinProb >= 40
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]"
+    : "text-[var(--fg-dim)]";
+  return (
+    <li className="rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/30 p-3 text-xs">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <span className="flex items-baseline gap-2">
+          <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--color-brass-bright)]">
+            M{slot.position}
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            {slot.weThrowFirst ? "we put up" : "they put up"}
+          </span>
+        </span>
+        {our && (
+          <span className={cn("font-semibold tabular-nums", tone)}>
+            {our.expectedWinProb}%{" "}
+            <span className="text-[10px] font-normal text-[var(--fg-dim)]">
+              expected
+            </span>
+          </span>
+        )}
+      </div>
+
+      {/* Opponent likelihood distribution */}
+      {slot.opponentLikelihoods.length > 0 && (
+        <div className="mt-2">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            {slot.weThrowFirst
+              ? "Their likely counter (top 3)"
+              : "Their likely putup (top 3)"}
+          </div>
+          <ul className="mt-1 space-y-1">
+            {slot.opponentLikelihoods.slice(0, 3).map((l) => (
+              <li key={l.name} className="flex items-baseline gap-2">
+                <div className="h-1.5 w-12 overflow-hidden rounded-full bg-[var(--bg-soft)]">
+                  <div
+                    className="h-full bg-[var(--color-pop-bright)]"
+                    style={{ width: `${Math.round(l.probability * 100)}%` }}
+                  />
+                </div>
+                <span className="font-medium">{l.name}</span>
+                {l.sl != null && (
+                  <span className="text-[10px] text-[var(--fg-dim)]">
+                    SL{l.sl}
+                  </span>
+                )}
+                <span className="ml-auto text-[10px] tabular-nums text-[var(--fg-dim)]">
+                  {(l.probability * 100).toFixed(0)}%
+                  {l.totalAppearances > 0 && (
+                    <span className="ml-1 opacity-70">
+                      ({l.observedAtThisSlot}/{l.totalAppearances} at M
+                      {slot.position})
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Our recommended pick */}
+      <div className="mt-2 border-t border-[var(--border)] pt-2">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          {slot.weThrowFirst ? "Our opener" : "Our counter"}
+        </div>
+        {our ? (
+          <div className="mt-1">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <span>
+                <Link
+                  href={`/roster/${our.playerId}`}
+                  className="font-[family-name:var(--font-display)] text-base tracking-wide hover:text-[var(--color-brass)]"
+                >
+                  {our.playerName}
+                </Link>
+                {our.skillLevel != null && (
+                  <span className="ml-1.5 text-[10px] text-[var(--fg-dim)]">
+                    SL{our.skillLevel}
+                  </span>
+                )}
+              </span>
+              <span className="text-[10px] text-[var(--fg-dim)]">
+                vs top-likely:{" "}
+                <span className="font-semibold tabular-nums text-[var(--fg)]">
+                  {our.winProbVsTopLikely}%
+                </span>
+              </span>
+            </div>
+            <div className="mt-1 text-[10px] text-[var(--fg-dim)]">
+              {our.slBudgetUsed}/23 SL used after this slot
+            </div>
+            {our.reasoning.length > 0 && (
+              <ul className="mt-1 space-y-0.5">
+                {our.reasoning.map((r, i) => (
+                  <li key={i} className="flex gap-1.5 text-[10px] leading-snug">
+                    <span aria-hidden className="shrink-0 text-[var(--color-brass-bright)]">
+                      ▸
+                    </span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : (
+          <p className="mt-1 text-[10px] text-[var(--fg-dim)]">
+            {slot.blocked
+              ? "No feasible pick — 23-rule budget locked or roster exhausted."
+              : "—"}
+          </p>
+        )}
+      </div>
+    </li>
   );
 }
