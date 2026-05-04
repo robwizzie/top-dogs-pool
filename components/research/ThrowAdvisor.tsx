@@ -12,6 +12,7 @@ import {
   type ThrowMatchLog,
 } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
+import { winsRequired } from "@/lib/apa/race";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -109,6 +110,107 @@ export function ThrowAdvisor({
     weThrowFirst: true,
   });
   const [step, setStep] = useState<Step>("pick-ours");
+
+  // ---------------- Persist to localStorage --------------------------
+  // Resume mid-night refreshes. Stale state (>14h old, or roster mismatch)
+  // is auto-cleared so a stale session doesn't haunt next week.
+  const STORAGE_KEY = "topDogs.throwAdvisor.v2";
+  const STORAGE_TTL_MS = 14 * 60 * 60 * 1000;
+
+  // Load on mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as {
+        savedAt: number;
+        phase: Phase;
+        opponentTeam: string;
+        location: string;
+        availableIds: string[];
+        firstPutup: "us" | "them";
+        log: ThrowMatchLog[];
+        live: LiveMatchState;
+        step: Step;
+      };
+      if (Date.now() - parsed.savedAt > STORAGE_TTL_MS) {
+        window.localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      // Sanity-check the available IDs against current roster.
+      const validIds = parsed.availableIds.filter((id) =>
+        visibleRoster.some((p) => p.id === id),
+      );
+      if (validIds.length === 0) return;
+      setPhase(parsed.phase);
+      setOpponentTeam(parsed.opponentTeam);
+      setLocation(parsed.location);
+      setAvailable(new Set(validIds));
+      setFirstPutup(parsed.firstPutup);
+      setLog(parsed.log);
+      setLive(parsed.live);
+      setStep(parsed.step);
+    } catch {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
+    // Only run once on mount; we don't want to auto-overwrite the saved state
+    // before the user actually starts editing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save on every state change.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // Don't persist a fresh-out-of-the-box setup state with no log.
+    if (phase === "setup" && log.length === 0) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    try {
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          savedAt: Date.now(),
+          phase,
+          opponentTeam,
+          location,
+          availableIds: [...available],
+          firstPutup,
+          log,
+          live,
+          step,
+        }),
+      );
+    } catch {
+      // localStorage full or disabled — silently skip.
+    }
+  }, [phase, opponentTeam, location, available, firstPutup, log, live, step]);
+
+  // ---------------- Step-change side effects -------------------------
+  // Auto-scroll the new step card to the top of the viewport (smooth).
+  // Haptic feedback (where supported) on transitions.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (phase === "setup") return;
+    // Scroll to top of the throw advisor section (look for our section anchor).
+    const target = document.getElementById("throw");
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      const top = window.scrollY + rect.top - 16;
+      window.scrollTo({ top, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // Light tap-tap haptic if supported.
+    if ("vibrate" in window.navigator) {
+      try {
+        window.navigator.vibrate?.(8);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [phase, step, live.position]);
 
   function startNight() {
     setLog([]);
@@ -353,7 +455,7 @@ export function ThrowAdvisor({
             ourName={
               visibleRoster.find((p) => p.id === live.ourPlayerId)?.name ?? "?"
             }
-            onSubmit={(outcome) => {
+            onSubmit={(outcome, ourGames, theirGames) => {
               advance({
                 position: live.position,
                 ourPlayerId: live.ourPlayerId!,
@@ -361,6 +463,8 @@ export function ThrowAdvisor({
                 oppName: live.oppName!,
                 oppSkillLevel: live.oppSL!,
                 outcome,
+                ourGames,
+                theirGames,
               });
             }}
             onBack={() => {
@@ -561,6 +665,29 @@ function NightHeader({
   const usedSL = log.reduce((s, t) => s + (t.ourSkillLevel ?? 0), 0);
   const remainingSL = 23 - usedSL;
   const remainingSlots = 5 - log.length;
+  // First-to-3 individual matches clinches the night.
+  const usToClinch = Math.max(0, 3 - ourScore);
+  const themToClinch = Math.max(0, 3 - theirScore);
+  const ourGamesTotal = log.reduce((s, t) => s + (t.ourGames ?? 0), 0);
+  const theirGamesTotal = log.reduce((s, t) => s + (t.theirGames ?? 0), 0);
+  const haveGameScores = log.some((t) => typeof t.ourGames === "number");
+  // Status callout — what we need.
+  let statusText = "";
+  if (ourScore >= 3) statusText = "🐕 Clinched!";
+  else if (theirScore >= 3) statusText = "Match lost";
+  else if (usToClinch === 1 && themToClinch === 1)
+    statusText = "Win-or-go-home — both 1 win away";
+  else if (usToClinch <= themToClinch)
+    statusText = `${usToClinch} more to clinch`;
+  else statusText = `${themToClinch} away · we need ${usToClinch}`;
+  const statusTone =
+    ourScore >= 3
+      ? "text-[var(--color-felt-bright)]"
+      : theirScore >= 3
+        ? "text-[var(--color-pop-bright)]"
+        : usToClinch <= themToClinch
+          ? "text-[var(--color-felt-bright)]"
+          : "text-[var(--color-pop-bright)]";
 
   return (
     <div className="surface sticky top-2 z-20 -mx-1 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-[var(--bg-card)]/85 sm:mx-0">
@@ -586,9 +713,9 @@ function NightHeader({
       <div className="mt-3 flex items-center justify-between gap-3">
         <div className="flex flex-col">
           <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Score
+            Match score
           </span>
-          <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+          <span className="font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide">
             <span
               className={cn(
                 "tabular-nums",
@@ -601,6 +728,14 @@ function NightHeader({
             <span className="mx-1.5 text-[var(--fg-dim)]">–</span>
             <span className="tabular-nums">{theirScore}</span>
           </span>
+          <span className={cn("mt-0.5 text-[10px] font-semibold uppercase tracking-[0.24em]", statusTone)}>
+            {statusText}
+          </span>
+          {haveGameScores && (
+            <span className="text-[10px] text-[var(--fg-dim)] tabular-nums">
+              Games: {ourGamesTotal}–{theirGamesTotal}
+            </span>
+          )}
         </div>
         <div className="flex flex-col items-end">
           <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
@@ -625,6 +760,12 @@ function NightHeader({
         </div>
       </div>
 
+      {/* Clinch progress — race-to-3 visualization */}
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <ClinchPips count={ourScore} accent="felt" />
+        <ClinchPips count={theirScore} accent="pop" alignRight />
+      </div>
+
       {/* Match progress dots */}
       <div className="mt-3 flex justify-between gap-1">
         {[1, 2, 3, 4, 5].map((p) => {
@@ -633,7 +774,14 @@ function NightHeader({
           const lost = entry?.outcome === "L";
           const current = p === position && !entry;
           const upcoming = !entry && !current;
-          const dotLabel = `Match ${p}${entry ? ` (${entry.outcome === "W" ? "won" : "lost"})` : current ? " (current)" : ""}`;
+          const hasScore =
+            entry && typeof entry.ourGames === "number" && typeof entry.theirGames === "number";
+          const scoreText = hasScore ? `${entry!.ourGames}-${entry!.theirGames}` : null;
+          const isSweep =
+            entry && typeof entry.ourGames === "number" && typeof entry.theirGames === "number" &&
+            ((entry.outcome === "W" && entry.theirGames === 0) ||
+              (entry.outcome === "L" && entry.ourGames === 0));
+          const dotLabel = `Match ${p}${entry ? ` (${entry.outcome === "W" ? "won" : "lost"}${scoreText ? ` ${scoreText}` : ""})` : current ? " (current)" : ""}`;
           return (
             <button
               key={p}
@@ -643,14 +791,22 @@ function NightHeader({
               title={dotLabel}
               disabled={!entry}
               className={cn(
-                "flex flex-1 items-center justify-center min-h-[36px] rounded-md border-2 text-xs font-semibold transition-colors",
+                "flex flex-1 flex-col items-center justify-center gap-0.5 min-h-[42px] rounded-md border-2 text-xs font-semibold transition-colors px-1",
                 won && "border-[var(--color-felt-bright)] bg-[var(--color-felt)]/15 text-[var(--color-felt-bright)]",
                 lost && "border-[var(--color-pop-bright)] bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)]",
                 current && "border-[var(--color-brass)] bg-[var(--color-brass)]/10 text-[var(--color-brass-bright)]",
                 upcoming && "border-[var(--border)] text-[var(--fg-dim)]",
               )}
             >
-              {entry ? (entry.outcome === "W" ? "✓" : "✗") : current ? "●" : p}
+              <span className="leading-none">
+                {entry ? (entry.outcome === "W" ? "✓" : "✗") : current ? "●" : p}
+              </span>
+              {scoreText && (
+                <span className="text-[9px] tabular-nums leading-none opacity-90">
+                  {isSweep ? "🧹" : ""}
+                  {scoreText}
+                </span>
+              )}
             </button>
           );
         })}
@@ -882,13 +1038,17 @@ function PickCounterStep({
         subtitle="They put up — let's match the right player to them."
         result={result}
         onLockIn={onPick}
-        ctaLabel="Lock in this counter"
+        ctaLabel="Lock in"
+        opponentName={live.oppName}
+        opponentSL={live.oppSL}
       />
       <CandidateList
         heading="Or choose someone else"
         rows={result.candidates}
         topPickId={top?.playerId}
         onPick={onPick}
+        opponentName={live.oppName}
+        opponentSL={live.oppSL}
       />
       {top?.saveForLater && (
         <SaveForLaterCallout
@@ -917,52 +1077,210 @@ function ResultStep({
 }: {
   live: LiveMatchState;
   ourName: string;
-  onSubmit: (outcome: "W" | "L") => void;
+  onSubmit: (outcome: "W" | "L", ourGames: number, theirGames: number) => void;
   onBack: () => void;
 }) {
+  const ourSL = typeof live.ourSkillLevel === "number" ? live.ourSkillLevel : null;
+  const theirSL = typeof live.oppSL === "number" ? live.oppSL : null;
+  const ourTarget = ourSL != null && theirSL != null ? winsRequired(ourSL, theirSL) : 3;
+  const theirTarget = ourSL != null && theirSL != null ? winsRequired(theirSL, ourSL) : 3;
+  const ourHill = Math.max(0, ourTarget - 1);
+  const theirHill = Math.max(0, theirTarget - 1);
+
+  // Stage 1: outcome unset → pick W/L. Stage 2: outcome set → enter race score.
+  const [outcome, setOutcome] = useState<"W" | "L" | null>(null);
+  const [ourGames, setOurGames] = useState<number>(0);
+  const [theirGames, setTheirGames] = useState<number>(0);
+
+  function pickOutcome(o: "W" | "L") {
+    haptic(o === "W" ? [20, 30, 40] : 60);
+    setOutcome(o);
+    if (o === "W") {
+      setOurGames(ourTarget);
+      setTheirGames(0);
+    } else {
+      setTheirGames(theirTarget);
+      setOurGames(0);
+    }
+  }
+
+  function applyPreset(presetOurs: number, presetTheirs: number) {
+    haptic(10);
+    setOurGames(presetOurs);
+    setTheirGames(presetTheirs);
+  }
+
+  function confirm() {
+    if (outcome === null) return;
+    haptic(20);
+    onSubmit(outcome, ourGames, theirGames);
+  }
+
+  // Sweep / mini-sweep / hill-hill labels for the entered score.
+  let scoreLabel: string | null = null;
+  if (outcome === "W") {
+    if (theirGames === 0) scoreLabel = "🧹 Sweep!";
+    else if (theirGames < ourHill) scoreLabel = "✨ Mini-sweep";
+    else if (ourGames === ourTarget && theirGames === theirHill) scoreLabel = "Hill-hill win";
+    else scoreLabel = `Won ${ourGames}–${theirGames}`;
+  } else if (outcome === "L") {
+    if (ourGames === 0) scoreLabel = "🧹 Got swept";
+    else if (ourGames < theirHill) scoreLabel = "Mini-sweep against us";
+    else if (theirGames === theirTarget && ourGames === ourHill) scoreLabel = "Hill-hill loss";
+    else scoreLabel = `Lost ${ourGames}–${theirGames}`;
+  }
+
   return (
     <div className="space-y-4">
-      <PhaseLabel phase="step" text="Step 3 of 3 · Enter the result" />
-      <div className="surface p-5 text-center">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+      <PhaseLabel
+        phase="step"
+        text={outcome === null ? "Step 3 of 3 · Enter the result" : "Step 3 of 3 · Enter the race score"}
+      />
+      <div className="surface p-5">
+        <p className="text-center text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
           Match {live.position}
         </p>
-        <p className="mt-2 font-[family-name:var(--font-display)] text-2xl tracking-wide">
-          {ourName}
-          {live.ourSkillLevel != null && (
-            <span className="ml-2 text-base text-[var(--fg-dim)]">
-              SL{live.ourSkillLevel}
-            </span>
-          )}
-        </p>
-        <p className="text-[var(--fg-dim)]">vs</p>
-        <p className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
-          {live.oppName}
-          {live.oppSL != null && (
-            <span className="ml-2 text-base text-[var(--fg-dim)]">
-              SL{live.oppSL}
-            </span>
-          )}
-        </p>
-        <p className="mt-4 text-sm text-[var(--fg-dim)]">
-          Who won?
-        </p>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => onSubmit("W")}
-            className="min-h-[64px] rounded-2xl border-2 border-[var(--color-felt-bright)] bg-[var(--color-felt)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt)]/25"
-          >
-            ✓ We won
-          </button>
-          <button
-            type="button"
-            onClick={() => onSubmit("L")}
-            className="min-h-[64px] rounded-2xl border-2 border-[var(--color-pop-bright)] bg-[var(--color-pop)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-pop-bright)] hover:bg-[var(--color-pop)]/25"
-          >
-            ✗ We lost
-          </button>
+        {/* Matchup card */}
+        <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
+          <div>
+            <p className="font-[family-name:var(--font-display)] text-xl tracking-wide">
+              {ourName}
+            </p>
+            <p className="text-xs text-[var(--fg-dim)]">
+              {ourSL != null ? `SL${ourSL}` : ""} · race to{" "}
+              <span className="font-semibold text-[var(--color-felt-bright)]">{ourTarget}</span>
+            </p>
+          </div>
+          <span className="text-[var(--fg-dim)]">vs</span>
+          <div>
+            <p className="font-[family-name:var(--font-display)] text-xl tracking-wide">
+              {live.oppName}
+            </p>
+            <p className="text-xs text-[var(--fg-dim)]">
+              {theirSL != null ? `SL${theirSL}` : ""} · race to{" "}
+              <span className="font-semibold text-[var(--color-pop-bright)]">{theirTarget}</span>
+            </p>
+          </div>
         </div>
+
+        {outcome === null ? (
+          <>
+            <p className="mt-5 text-center text-sm text-[var(--fg-dim)]">
+              Who won?
+            </p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => pickOutcome("W")}
+                className="min-h-[64px] rounded-2xl border-2 border-[var(--color-felt-bright)] bg-[var(--color-felt)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-felt-bright)] active:scale-95 hover:bg-[var(--color-felt)]/25 transition-transform"
+              >
+                ✓ We won
+              </button>
+              <button
+                type="button"
+                onClick={() => pickOutcome("L")}
+                className="min-h-[64px] rounded-2xl border-2 border-[var(--color-pop-bright)] bg-[var(--color-pop)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-pop-bright)] active:scale-95 hover:bg-[var(--color-pop)]/25 transition-transform"
+              >
+                ✗ We lost
+              </button>
+            </div>
+            <p className="mt-3 text-center text-[10px] text-[var(--fg-dim)]">
+              You&apos;ll enter the race score (e.g. 3–1) after picking.
+            </p>
+          </>
+        ) : (
+          <>
+            {/* Live race score visualization */}
+            <div className="mt-5">
+              <RaceScoreBar
+                ourGames={ourGames}
+                ourTarget={ourTarget}
+                theirGames={theirGames}
+                theirTarget={theirTarget}
+                outcome={outcome}
+              />
+            </div>
+
+            {/* Steppers */}
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <GameCounter
+                label={ourName.split(" ")[0] + "'s games"}
+                value={ourGames}
+                onChange={setOurGames}
+                target={ourTarget}
+                accent="felt"
+              />
+              <GameCounter
+                label={live.oppName + "'s games"}
+                value={theirGames}
+                onChange={setTheirGames}
+                target={theirTarget}
+                accent="pop"
+              />
+            </div>
+
+            {/* Quick presets — race-aware */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {outcome === "W" && (
+                <>
+                  <PresetChip onClick={() => applyPreset(ourTarget, 0)} label={`Sweep ${ourTarget}–0`} />
+                  {ourHill >= 1 && (
+                    <PresetChip onClick={() => applyPreset(ourTarget, 1)} label={`${ourTarget}–1`} />
+                  )}
+                  {ourHill >= 2 && (
+                    <PresetChip onClick={() => applyPreset(ourTarget, ourHill - 1)} label={`Mini ${ourTarget}–${ourHill - 1}`} />
+                  )}
+                  {theirHill >= 1 && (
+                    <PresetChip onClick={() => applyPreset(ourTarget, theirHill)} label={`Hill–hill ${ourTarget}–${theirHill}`} />
+                  )}
+                </>
+              )}
+              {outcome === "L" && (
+                <>
+                  <PresetChip onClick={() => applyPreset(0, theirTarget)} label={`Got swept 0–${theirTarget}`} />
+                  {theirHill >= 1 && (
+                    <PresetChip onClick={() => applyPreset(1, theirTarget)} label={`1–${theirTarget}`} />
+                  )}
+                  {theirHill >= 2 && (
+                    <PresetChip onClick={() => applyPreset(theirHill - 1, theirTarget)} label={`Lost mini ${theirHill - 1}–${theirTarget}`} />
+                  )}
+                  {ourHill >= 1 && (
+                    <PresetChip onClick={() => applyPreset(ourHill, theirTarget)} label={`Hill–hill ${ourHill}–${theirTarget}`} />
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Score readout */}
+            {scoreLabel && (
+              <p className={cn(
+                "mt-3 text-center text-sm font-semibold",
+                outcome === "W"
+                  ? "text-[var(--color-felt-bright)]"
+                  : "text-[var(--color-pop-bright)]",
+              )}>
+                {scoreLabel}
+              </p>
+            )}
+
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setOutcome(null)}
+                className="min-h-[52px] flex-1 rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--fg-dim)] hover:text-[var(--fg)]"
+              >
+                ← Change outcome
+              </button>
+              <button
+                type="button"
+                onClick={confirm}
+                className="min-h-[52px] flex-[2] rounded-full bg-[var(--color-brass)] px-6 py-3 text-base font-semibold text-[var(--color-ink)] shadow-lg hover:bg-[var(--color-brass-bright)]"
+              >
+                Confirm {ourGames}–{theirGames} →
+              </button>
+            </div>
+          </>
+        )}
       </div>
       <button
         type="button"
@@ -975,6 +1293,156 @@ function ResultStep({
   );
 }
 
+/* ============================================================ Race score helpers */
+
+function GameCounter({
+  label,
+  value,
+  onChange,
+  target,
+  accent,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  target: number;
+  accent: "felt" | "pop";
+}) {
+  const accentCls =
+    accent === "felt"
+      ? "text-[var(--color-felt-bright)]"
+      : "text-[var(--color-pop-bright)]";
+  return (
+    <div>
+      <p className="truncate text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+        {label}
+      </p>
+      <div className="mt-1 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            haptic(8);
+            onChange(Math.max(0, value - 1));
+          }}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] text-xl font-semibold hover:border-[var(--color-brass)]"
+          aria-label="Decrease games"
+        >
+          −
+        </button>
+        <div className="flex flex-1 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-2">
+          <span
+            className={cn(
+              "font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums",
+              accentCls,
+            )}
+          >
+            {value}
+          </span>
+          <span className="ml-2 text-xs text-[var(--fg-dim)]">/ {target}</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            haptic(8);
+            onChange(Math.min(target, value + 1));
+          }}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] text-xl font-semibold hover:border-[var(--color-brass)]"
+          aria-label="Increase games"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PresetChip({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="min-h-[36px] rounded-full border border-[var(--border)] bg-[var(--bg-soft)] px-3.5 py-1.5 text-xs font-medium text-[var(--fg-dim)] hover:border-[var(--color-brass)] hover:text-[var(--fg)]"
+    >
+      {label}
+    </button>
+  );
+}
+
+/**
+ * Live race score visualization. Two opposing horizontal bars filling toward
+ * each side's race target, meeting in the middle. The "hill" (target − 1) is
+ * marked as a dashed line so you can see the sweep / mini-sweep / hill-hill
+ * thresholds at a glance.
+ */
+function RaceScoreBar({
+  ourGames,
+  ourTarget,
+  theirGames,
+  theirTarget,
+  outcome,
+}: {
+  ourGames: number;
+  ourTarget: number;
+  theirGames: number;
+  theirTarget: number;
+  outcome: "W" | "L";
+}) {
+  const ourPct = (ourGames / ourTarget) * 100;
+  const theirPct = (theirGames / theirTarget) * 100;
+  return (
+    <div>
+      {/* Our side */}
+      <div className="flex items-center gap-2">
+        <span className="w-7 text-right font-[family-name:var(--font-display)] text-xl tabular-nums text-[var(--color-felt-bright)]">
+          {ourGames}
+        </span>
+        <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-[var(--bg-soft)]">
+          <div
+            className={cn(
+              "h-full rounded-full transition-all duration-300",
+              outcome === "W" ? "bg-[var(--color-felt-bright)]" : "bg-[var(--color-felt)]/40",
+            )}
+            style={{ width: `${ourPct}%` }}
+          />
+          {/* Hill marker at (target-1)/target */}
+          {ourTarget >= 2 && (
+            <div
+              className="absolute top-0 h-full border-l border-dashed border-[var(--fg-dim)]/60"
+              style={{ left: `${((ourTarget - 1) / ourTarget) * 100}%` }}
+              aria-label="hill"
+            />
+          )}
+        </div>
+        <span className="w-7 text-xs text-[var(--fg-dim)] tabular-nums">/{ourTarget}</span>
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        <span className="w-7 text-right font-[family-name:var(--font-display)] text-xl tabular-nums text-[var(--color-pop-bright)]">
+          {theirGames}
+        </span>
+        <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-[var(--bg-soft)]">
+          <div
+            className={cn(
+              "h-full rounded-full transition-all duration-300",
+              outcome === "L" ? "bg-[var(--color-pop-bright)]" : "bg-[var(--color-pop)]/40",
+            )}
+            style={{ width: `${theirPct}%` }}
+          />
+          {theirTarget >= 2 && (
+            <div
+              className="absolute top-0 h-full border-l border-dashed border-[var(--fg-dim)]/60"
+              style={{ left: `${((theirTarget - 1) / theirTarget) * 100}%` }}
+            />
+          )}
+        </div>
+        <span className="w-7 text-xs text-[var(--fg-dim)] tabular-nums">/{theirTarget}</span>
+      </div>
+      <div className="mt-1 text-center text-[10px] text-[var(--fg-dim)]">
+        Dashed line = the hill
+      </div>
+    </div>
+  );
+}
+
 /* ============================================================ Recommendation card */
 
 function RecommendationCard({
@@ -983,12 +1451,17 @@ function RecommendationCard({
   result,
   onLockIn,
   ctaLabel,
+  opponentName,
+  opponentSL,
 }: {
   title: string;
   subtitle: string;
   result: ThrowAdvisorResult;
   onLockIn: (c: ThrowCandidate) => void;
   ctaLabel: string;
+  /** When known, lets us render H2H history + race-chart visual. */
+  opponentName?: string;
+  opponentSL?: number | null;
 }) {
   const top = result.topPick;
   if (!top) {
@@ -1011,14 +1484,15 @@ function RecommendationCard({
       </p>
       <p className="mt-1 text-xs text-[var(--fg-dim)]">{subtitle}</p>
 
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
+      {/* Top: name + win-prob gauge */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
             Recommendation
           </p>
           <Link
             href={`/roster/${top.playerId}`}
-            className="mt-1 block font-[family-name:var(--font-display)] text-3xl tracking-wide hover:text-[var(--color-brass)]"
+            className="mt-1 block font-[family-name:var(--font-display)] text-3xl leading-tight tracking-wide hover:text-[var(--color-brass)]"
           >
             {top.playerName}
             {top.skillLevel != null && (
@@ -1027,52 +1501,90 @@ function RecommendationCard({
               </span>
             )}
           </Link>
+          {opponentName && (
+            <p className="mt-1 text-sm text-[var(--fg-dim)]">
+              vs {opponentName}
+              {opponentSL != null && ` · SL${opponentSL}`}
+            </p>
+          )}
         </div>
-        <div className="flex flex-col items-end">
-          <span className="font-[family-name:var(--font-display)] text-4xl tracking-wide text-[var(--color-brass-bright)]">
-            {top.overall}
-          </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
-            Match score
-          </span>
-        </div>
+        <WinProbGauge pct={top.matchupScore} size={132} />
       </div>
 
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--fg-dim)]">
-        {result.context.narrative}
-      </p>
-
-      <ul className="mt-3 space-y-1 text-sm">
-        {top.reasoning.map((r, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
-            <span>{r}</span>
-          </li>
-        ))}
-      </ul>
-      {top.flags.length > 0 && (
-        <ul className="mt-3 space-y-1 text-xs text-[var(--fg-dim)]">
-          {top.flags.map((f, i) => (
-            <li key={i}>⚠ {f}</li>
-          ))}
-        </ul>
+      {/* Race-chart visual when SLs are known */}
+      {typeof top.skillLevel === "number" && typeof opponentSL === "number" && (
+        <div className="mt-4">
+          <RaceVisual ourSL={top.skillLevel} theirSL={opponentSL} />
+        </div>
       )}
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <ComponentBar label="H2H" c={top.components.h2h} />
-        <ComponentBar label="vs SL" c={top.components.vsSL} />
-        <ComponentBar label="Form" c={top.components.form} />
-        <ComponentBar label="vs Team" c={top.components.vsTeam} />
-        <ComponentBar label="Slot fit" c={top.components.position} />
-        <ComponentBar label="Venue" c={top.components.venue} />
+      {/* H2H history strip when applicable */}
+      {top.h2hHistory.length > 0 && opponentName && (
+        <div className="mt-4">
+          <H2HHistory history={top.h2hHistory} opponentName={opponentName} />
+        </div>
+      )}
+
+      {/* Radar + reasoning two-column on desktop, stacked on mobile */}
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+        <div className="flex flex-col items-center">
+          <MatchupRadar components={top.components} />
+          <p className="mt-1 text-[10px] uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+            Component profile
+          </p>
+        </div>
+        <div className="flex flex-col gap-3">
+          <p className="text-sm leading-relaxed text-[var(--fg-dim)]">
+            {result.context.narrative}
+          </p>
+          <ul className="space-y-1 text-sm">
+            {top.reasoning.map((r, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
+                <span>{r}</span>
+              </li>
+            ))}
+          </ul>
+          {top.flags.length > 0 && (
+            <ul className="space-y-1 text-xs text-[var(--fg-dim)]">
+              {top.flags.map((f, i) => (
+                <li key={i}>⚠ {f}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
+
+      <LookaheadStrip
+        teamValue={top.components.lookahead}
+        delta={top.components.lookaheadDelta}
+        race={top.components.raceEquity}
+      />
+
+      {/* Per-component breakdown — collapsed by default to keep card scannable */}
+      <details className="mt-3">
+        <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] hover:text-[var(--color-brass)]">
+          ↳ Per-component scores
+        </summary>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          <ComponentBar label="H2H" c={top.components.h2h} />
+          <ComponentBar label="vs SL" c={top.components.vsSL} />
+          <ComponentBar label="Form" c={top.components.form} />
+          <ComponentBar label="vs Team" c={top.components.vsTeam} />
+          <ComponentBar label="Slot fit" c={top.components.position} />
+          <VenueBar c={top.components.venue} />
+        </div>
+      </details>
 
       <button
         type="button"
-        onClick={() => onLockIn(top)}
+        onClick={() => {
+          haptic(15);
+          onLockIn(top);
+        }}
         className="sticky bottom-4 z-10 mt-5 flex w-full min-h-[52px] items-center justify-center gap-2 rounded-full bg-[var(--color-brass)] px-6 py-3 text-base font-semibold text-[var(--color-ink)] shadow-lg hover:bg-[var(--color-brass-bright)]"
       >
-        {ctaLabel} → {top.playerName.split(" ")[0]}
+        {ctaLabel} → {top.playerName.split(" ")[0]} ({Math.round(top.matchupScore)}%)
       </button>
     </div>
   );
@@ -1085,11 +1597,15 @@ function CandidateList({
   rows,
   topPickId,
   onPick,
+  opponentName,
+  opponentSL,
 }: {
   heading: string;
   rows: ThrowCandidate[];
   topPickId?: string;
   onPick: (c: ThrowCandidate) => void;
+  opponentName?: string;
+  opponentSL?: number | null;
 }) {
   return (
     <div>
@@ -1103,6 +1619,8 @@ function CandidateList({
             candidate={c}
             isTop={c.playerId === topPickId}
             onPick={() => onPick(c)}
+            opponentName={opponentName}
+            opponentSL={opponentSL}
           />
         ))}
       </ul>
@@ -1114,12 +1632,23 @@ function CandidateRow({
   candidate,
   isTop,
   onPick,
+  opponentName,
+  opponentSL,
 }: {
   candidate: ThrowCandidate;
   isTop: boolean;
   onPick: () => void;
+  opponentName?: string;
+  opponentSL?: number | null;
 }) {
   const [open, setOpen] = useState(false);
+  const pct = Math.round(candidate.matchupScore);
+  const winColor =
+    pct >= 60
+      ? "text-[var(--color-felt-bright)]"
+      : pct >= 45
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]";
   return (
     <li
       className={cn(
@@ -1131,64 +1660,124 @@ function CandidateRow({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full min-h-[56px] flex-wrap items-center justify-between gap-3 px-4 py-3 text-left hover:bg-[var(--bg-soft)]/40"
+        className="flex w-full min-h-[64px] items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-soft)]/40"
       >
-        <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-3">
-          <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide text-[var(--color-brass-bright)] tabular-nums">
-            {candidate.overall}
+        <div className="flex flex-col items-center justify-center w-14 shrink-0">
+          <span
+            className={cn(
+              "font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums",
+              winColor,
+            )}
+          >
+            {pct}%
           </span>
-          <span className="font-medium">{candidate.playerName}</span>
-          {candidate.skillLevel != null && (
-            <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
-          )}
-          <VerdictBadge verdict={candidate.verdict} />
+          <MiniProbBar pct={pct} />
         </div>
-        <span className="text-xs text-[var(--fg-dim)]">{open ? "▴" : "▾"}</span>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <div className="flex flex-wrap items-baseline gap-2">
+            <span className="font-medium">{candidate.playerName}</span>
+            {candidate.skillLevel != null && (
+              <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
+            )}
+            <VerdictBadge verdict={candidate.verdict} />
+          </div>
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            {!candidate.components.h2h.noData && (
+              <span>
+                H2H {candidate.components.h2h.wins}-{candidate.components.h2h.losses}
+              </span>
+            )}
+            {!candidate.components.form.noData && (
+              <>
+                {!candidate.components.h2h.noData && <span>·</span>}
+                <span>Form {candidate.components.form.rate}%</span>
+              </>
+            )}
+          </div>
+        </div>
+        <span className="text-xs text-[var(--fg-dim)] shrink-0">
+          {open ? "▴" : "▾"}
+        </span>
       </button>
       {open && (
         <div className="border-t border-[var(--border)] bg-[var(--bg-soft)]/30 px-4 py-3 text-sm">
-          {candidate.reasoning.length > 0 && (
-            <ul className="space-y-1">
-              {candidate.reasoning.map((r, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
+          {/* H2H + Race visuals if relevant */}
+          {candidate.h2hHistory.length > 0 && opponentName && (
+            <div className="mb-3">
+              <H2HHistory
+                history={candidate.h2hHistory}
+                opponentName={opponentName}
+              />
+            </div>
           )}
-          {candidate.flags.length > 0 && (
-            <ul className="mt-2 space-y-1 text-xs text-[var(--fg-dim)]">
-              {candidate.flags.map((f, i) => (
-                <li key={i}>⚠ {f}</li>
-              ))}
-            </ul>
-          )}
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            <ComponentBar label="H2H" c={candidate.components.h2h} />
-            <ComponentBar label="vs SL" c={candidate.components.vsSL} />
-            <ComponentBar label="Form" c={candidate.components.form} />
-            <ComponentBar label="vs Team" c={candidate.components.vsTeam} />
-            <ComponentBar label="Slot fit" c={candidate.components.position} />
-            <ComponentBar label="Venue" c={candidate.components.venue} />
+          {typeof candidate.skillLevel === "number" &&
+            typeof opponentSL === "number" && (
+              <div className="mb-3">
+                <RaceVisual
+                  ourSL={candidate.skillLevel}
+                  theirSL={opponentSL}
+                />
+              </div>
+            )}
+
+          <div className="grid gap-3 lg:grid-cols-[1fr_1.2fr]">
+            <div className="flex flex-col items-center">
+              <MatchupRadar components={candidate.components} size={170} />
+            </div>
+            <div className="flex flex-col gap-2">
+              {candidate.reasoning.length > 0 && (
+                <ul className="space-y-1">
+                  {candidate.reasoning.map((r, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {candidate.flags.length > 0 && (
+                <ul className="space-y-1 text-xs text-[var(--fg-dim)]">
+                  {candidate.flags.map((f, i) => (
+                    <li key={i}>⚠ {f}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-          <div className="mt-3 flex justify-between text-[11px] text-[var(--fg-dim)]">
-            <span>
-              Race-chart equity:{" "}
-              <span className="font-semibold text-[var(--fg)]">
-                {candidate.components.raceEquity}%
-              </span>
-            </span>
+
+          <LookaheadStrip
+            teamValue={candidate.components.lookahead}
+            delta={candidate.components.lookaheadDelta}
+            race={candidate.components.raceEquity}
+            compact
+          />
+
+          <details className="mt-2">
+            <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] hover:text-[var(--color-brass)]">
+              ↳ Per-component scores
+            </summary>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+              <ComponentBar label="H2H" c={candidate.components.h2h} />
+              <ComponentBar label="vs SL" c={candidate.components.vsSL} />
+              <ComponentBar label="Form" c={candidate.components.form} />
+              <ComponentBar label="vs Team" c={candidate.components.vsTeam} />
+              <ComponentBar label="Slot fit" c={candidate.components.position} />
+              <VenueBar c={candidate.components.venue} />
+            </div>
+          </details>
+
+          <div className="mt-3 flex justify-end text-[11px]">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
+                haptic(15);
                 onPick();
               }}
               disabled={!candidate.feasible}
               className="font-semibold text-[var(--color-brass)] hover:underline disabled:opacity-40"
             >
-              Pick {candidate.playerName.split(" ")[0]} →
+              Pick {candidate.playerName.split(" ")[0]} ({pct}%) →
             </button>
           </div>
         </div>
@@ -1215,6 +1804,73 @@ function DoneScreen({
   const ourScore = log.filter((t) => t.outcome === "W").length;
   const theirScore = log.filter((t) => t.outcome === "L").length;
   const won = ourScore > theirScore;
+  const [copied, setCopied] = useState(false);
+
+  // Confetti on a team win — fire once on mount.
+  useEffect(() => {
+    if (!won) return;
+    haptic([20, 40, 20, 40, 60]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const mod = await import("canvas-confetti");
+        if (cancelled) return;
+        const fire = mod.default;
+        fire({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.3 },
+          colors: ["#c9a24a", "#f0d27a", "#1f9d55", "#e64a4a"],
+        });
+        setTimeout(() => fire({ particleCount: 60, spread: 100, origin: { y: 0.5 } }), 350);
+      } catch {
+        /* canvas-confetti optional */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [won]);
+
+  function copySummary() {
+    const ourGamesTotal = log.reduce((s, t) => s + (t.ourGames ?? 0), 0);
+    const theirGamesTotal = log.reduce((s, t) => s + (t.theirGames ?? 0), 0);
+    const haveGameScores = log.some((t) => typeof t.ourGames === "number");
+    const lines: string[] = [
+      `🎱 Top Dogs ${ourScore}–${theirScore} ${opponentTeam}${won ? " ✅" : theirScore > ourScore ? " ❌" : ""}`,
+      ...(haveGameScores ? [`Games: ${ourGamesTotal}–${theirGamesTotal}`] : []),
+      "",
+      ...log.map((t) => {
+        const player = roster.find((p) => p.id === t.ourPlayerId);
+        const us = `${player?.name ?? t.ourPlayerId}${t.ourSkillLevel != null ? ` (SL${t.ourSkillLevel})` : ""}`;
+        const them = `${t.oppName}${t.oppSkillLevel != null ? ` (SL${t.oppSkillLevel})` : ""}`;
+        const outcome = t.outcome === "W" ? "W" : t.outcome === "L" ? "L" : "·";
+        const score =
+          typeof t.ourGames === "number" && typeof t.theirGames === "number"
+            ? ` ${t.ourGames}–${t.theirGames}`
+            : "";
+        // Sweep tag for the chat recap.
+        let tag = "";
+        if (typeof t.ourGames === "number" && typeof t.theirGames === "number") {
+          if (t.outcome === "W" && t.theirGames === 0) tag = " 🧹";
+          else if (t.outcome === "L" && t.ourGames === 0) tag = " 🧹❌";
+        }
+        return `M${t.position}: ${us} vs ${them} — ${outcome}${score}${tag}`;
+      }),
+    ];
+    const text = lines.join("\n");
+    navigator.clipboard?.writeText(text).then(
+      () => {
+        setCopied(true);
+        haptic(20);
+        setTimeout(() => setCopied(false), 2000);
+      },
+      () => {
+        /* ignore */
+      },
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="surface p-6 text-center">
@@ -1229,18 +1885,42 @@ function DoneScreen({
         >
           {ourScore}–{theirScore}
         </p>
+        <p className="mt-1 text-[11px] uppercase tracking-[0.32em] text-[var(--fg-dim)]">
+          Individual matches
+        </p>
+        {(() => {
+          const ogt = log.reduce((s, t) => s + (t.ourGames ?? 0), 0);
+          const tgt = log.reduce((s, t) => s + (t.theirGames ?? 0), 0);
+          const has = log.some((t) => typeof t.ourGames === "number");
+          if (!has) return null;
+          return (
+            <p className="mt-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums text-[var(--fg-dim)]">
+              {ogt}<span className="mx-1.5">–</span>{tgt}
+              <span className="ml-2 text-[11px] uppercase tracking-[0.32em]">total games</span>
+            </p>
+          );
+        })()}
         <p className="mt-2 text-sm text-[var(--fg-dim)]">
           {won ? "Top Dogs win 🐕" : theirScore > ourScore ? "We dropped this one." : "Drawn."}
         </p>
       </div>
       <ThrowsSoFar log={log} roster={roster} onRewind={onRewind} />
-      <button
-        type="button"
-        onClick={onReset}
-        className="w-full min-h-[52px] rounded-full border border-[var(--border)] px-6 py-3 text-base font-semibold text-[var(--fg-dim)] hover:text-[var(--fg)]"
-      >
-        Start a new night
-      </button>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={copySummary}
+          className="min-h-[52px] rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/10 px-6 py-3 text-base font-semibold text-[var(--color-brass-bright)] hover:bg-[var(--color-brass)]/20"
+        >
+          {copied ? "✓ Copied to clipboard" : "📋 Copy night summary"}
+        </button>
+        <button
+          type="button"
+          onClick={onReset}
+          className="min-h-[52px] rounded-full border border-[var(--border)] px-6 py-3 text-base font-semibold text-[var(--fg-dim)] hover:text-[var(--fg)]"
+        >
+          Start a new night
+        </button>
+      </div>
     </div>
   );
 }
@@ -1267,16 +1947,38 @@ function ThrowsSoFar({
       <ul className="divide-y divide-[var(--border)]">
         {log.map((t) => {
           const player = roster.find((p) => p.id === t.ourPlayerId);
+          const hasScore = typeof t.ourGames === "number" && typeof t.theirGames === "number";
+          const ourTarget =
+            t.ourSkillLevel != null && t.oppSkillLevel != null
+              ? winsRequired(t.ourSkillLevel, t.oppSkillLevel)
+              : null;
+          const theirTarget =
+            t.ourSkillLevel != null && t.oppSkillLevel != null
+              ? winsRequired(t.oppSkillLevel, t.ourSkillLevel)
+              : null;
+          // Determine sweep/mini-sweep label.
+          let scoreTag: { label: string; tone: "felt" | "pop" | "fg" } | null = null;
+          if (hasScore) {
+            if (t.outcome === "W") {
+              if (t.theirGames === 0) scoreTag = { label: "🧹 Sweep", tone: "felt" };
+              else if (theirTarget != null && t.theirGames! < theirTarget - 1)
+                scoreTag = { label: "Mini-sweep", tone: "felt" };
+            } else if (t.outcome === "L") {
+              if (t.ourGames === 0) scoreTag = { label: "🧹 Got swept", tone: "pop" };
+              else if (ourTarget != null && t.ourGames! < ourTarget - 1)
+                scoreTag = { label: "Lost mini", tone: "pop" };
+            }
+          }
           return (
             <li
               key={t.position}
               className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm"
             >
-              <div className="flex min-w-0 flex-wrap items-baseline gap-2">
+              <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
                 <span className="font-[family-name:var(--font-display)] text-lg tracking-wide text-[var(--color-brass-bright)]">
                   M{t.position}
                 </span>
-                <span className="truncate">
+                <span className="min-w-0 flex-1 truncate">
                   <strong>{player?.name ?? t.ourPlayerId}</strong>
                   {t.ourSkillLevel != null && (
                     <span className="ml-1 text-xs text-[var(--fg-dim)]">
@@ -1292,6 +1994,30 @@ function ThrowsSoFar({
                   )}
                 </span>
                 <OutcomePill outcome={t.outcome} />
+                {hasScore && (
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums tracking-[0.1em]",
+                      t.outcome === "W"
+                        ? "bg-[var(--color-felt)]/20 text-[var(--color-felt-bright)]"
+                        : "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]",
+                    )}
+                  >
+                    {t.ourGames}–{t.theirGames}
+                  </span>
+                )}
+                {scoreTag && (
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em]",
+                      scoreTag.tone === "felt"
+                        ? "bg-[var(--color-felt)]/15 text-[var(--color-felt-bright)]"
+                        : "bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)]",
+                    )}
+                  >
+                    {scoreTag.label}
+                  </span>
+                )}
               </div>
               {onRewind && (
                 <button
@@ -1333,6 +2059,358 @@ function SaveForLaterCallout({
       >
         Use them anyway →
       </button>
+    </div>
+  );
+}
+
+/* ============================================================ charts */
+
+/**
+ * Donut-style win probability gauge. The percentage shown is the candidate's
+ * matchupScore — a pure win likelihood, before lookahead penalties.
+ */
+function WinProbGauge({
+  pct,
+  size = 132,
+  label = "win likelihood",
+}: {
+  pct: number;
+  size?: number;
+  label?: string;
+}) {
+  const clamped = Math.max(0, Math.min(100, pct));
+  const r = size * 0.4;
+  const cx = size / 2;
+  const cy = size / 2;
+  const C = 2 * Math.PI * r;
+  const dash = (clamped / 100) * C;
+  const colorVar =
+    clamped >= 60
+      ? "var(--color-felt-bright)"
+      : clamped >= 45
+        ? "var(--color-brass-bright)"
+        : "var(--color-pop-bright)";
+  return (
+    <svg
+      viewBox={`0 0 ${size} ${size}`}
+      width={size}
+      height={size}
+      className="block"
+      role="img"
+      aria-label={`${Math.round(clamped)}% ${label}`}
+    >
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--border)" strokeWidth={size * 0.08} />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill="none"
+        stroke={colorVar}
+        strokeWidth={size * 0.08}
+        strokeDasharray={`${dash} ${C - dash}`}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${cx} ${cy})`}
+        style={{ transition: "stroke-dasharray 400ms ease-out" }}
+      />
+      <text
+        x={cx}
+        y={cy + size * 0.04}
+        textAnchor="middle"
+        className="fill-[var(--fg)] font-[family-name:var(--font-display)]"
+        style={{ fontSize: size * 0.32 }}
+      >
+        {Math.round(clamped)}%
+      </text>
+      <text
+        x={cx}
+        y={cy + size * 0.22}
+        textAnchor="middle"
+        className="fill-[var(--fg-dim)]"
+        style={{ fontSize: size * 0.075, letterSpacing: "0.18em", textTransform: "uppercase" }}
+      >
+        {label}
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * Six-axis radar chart over the candidate's component scores. Each axis is
+ * 0..100 (smoothed). The polygon visualizes strengths and weaknesses at a
+ * glance; combined with the win-prob gauge it replaces the prior 6 flat bars.
+ */
+function MatchupRadar({
+  components,
+  size = 200,
+}: {
+  components: ThrowCandidate["components"];
+  size?: number;
+}) {
+  const labels = ["H2H", "vs SL", "Form", "vs Team", "Slot", "Race"] as const;
+  const values = [
+    components.h2h.smoothed,
+    components.vsSL.smoothed,
+    components.form.smoothed,
+    components.vsTeam.smoothed,
+    components.position.smoothed,
+    components.raceEquity,
+  ];
+  const noData = [
+    components.h2h.noData,
+    components.vsSL.noData,
+    components.form.noData,
+    components.vsTeam.noData,
+    components.position.noData,
+    false, // raceEquity always present
+  ];
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = size * 0.36;
+  const angleAt = (i: number) => (Math.PI * 2 * i) / labels.length - Math.PI / 2;
+  const point = (i: number, v: number) => {
+    const rr = (Math.max(0, Math.min(100, v)) / 100) * r;
+    return [cx + Math.cos(angleAt(i)) * rr, cy + Math.sin(angleAt(i)) * rr];
+  };
+  const polygonPoints = values.map((v, i) => point(i, v).join(",")).join(" ");
+  const rings = [25, 50, 75, 100].map((pct) =>
+    labels.map((_, i) => point(i, pct).join(",")).join(" "),
+  );
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="block w-full">
+      {rings.map((pts, i) => (
+        <polygon
+          key={i}
+          points={pts}
+          fill="none"
+          stroke="var(--border)"
+          strokeWidth={i === rings.length - 1 ? 1 : 0.5}
+        />
+      ))}
+      {/* Axes */}
+      {labels.map((_, i) => {
+        const [x, y] = point(i, 100);
+        return (
+          <line
+            key={i}
+            x1={cx}
+            y1={cy}
+            x2={x}
+            y2={y}
+            stroke="var(--border)"
+            strokeWidth={0.5}
+          />
+        );
+      })}
+      <polygon
+        points={polygonPoints}
+        fill="var(--color-brass)"
+        fillOpacity={0.28}
+        stroke="var(--color-brass-bright)"
+        strokeWidth={1.5}
+        style={{ transition: "all 350ms ease-out" }}
+      />
+      {/* Vertex dots */}
+      {values.map((v, i) => {
+        const [x, y] = point(i, v);
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={2.5}
+            fill={noData[i] ? "var(--fg-dim)" : "var(--color-brass-bright)"}
+          />
+        );
+      })}
+      {/* Labels */}
+      {labels.map((lbl, i) => {
+        const [lx, ly] = point(i, 130);
+        return (
+          <text
+            key={lbl}
+            x={lx}
+            y={ly}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className={cn(
+              "fill-[var(--fg)] text-[10px] font-semibold uppercase",
+              noData[i] && "fill-[var(--fg-dim)]",
+            )}
+            style={{ letterSpacing: "0.16em" }}
+          >
+            {lbl}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
+/**
+ * Horizontal split bar showing the APA race chart distribution. The visual
+ * makes the SL asymmetry obvious at a glance — a low SL has a much shorter
+ * bar than a high SL across the divide.
+ */
+function RaceVisual({
+  ourSL,
+  theirSL,
+}: {
+  ourSL: number | null;
+  theirSL: number | null;
+}) {
+  if (ourSL == null || theirSL == null) return null;
+  const ourReq = winsRequired(ourSL, theirSL);
+  const theirReq = winsRequired(theirSL, ourSL);
+  const total = ourReq + theirReq;
+  if (!total) return null;
+  // We want the side with fewer required wins to occupy MORE space (the
+  // visual proxy for "we're closer to victory"). So ourPct = theirReq / total.
+  const ourPct = (theirReq / total) * 100;
+  return (
+    <div>
+      <div className="flex h-2.5 w-full overflow-hidden rounded-full">
+        <div
+          className="bg-[var(--color-felt-bright)] transition-all duration-300"
+          style={{ width: `${ourPct}%` }}
+        />
+        <div
+          className="bg-[var(--color-pop-bright)] transition-all duration-300"
+          style={{ width: `${100 - ourPct}%` }}
+        />
+      </div>
+      <div className="mt-1.5 flex items-center justify-between text-[11px] text-[var(--fg-dim)]">
+        <span>
+          <span className="font-semibold text-[var(--color-felt-bright)]">
+            SL{ourSL}
+          </span>
+          <span className="ml-1">→ {ourReq} games</span>
+        </span>
+        <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--color-brass)]">
+          Race
+        </span>
+        <span>
+          <span className="ml-1">{theirReq} games ←</span>
+          <span className="ml-1 font-semibold text-[var(--color-pop-bright)]">
+            SL{theirSL}
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * H2H history strip. Renders one square per recorded match, oldest on the
+ * left, newest on the right. Greens are wins, reds are losses. Useful for
+ * spotting "haven't lost to this person in 4 matches" / "0-3 lifetime".
+ */
+function H2HHistory({
+  history,
+  opponentName,
+}: {
+  history: ThrowCandidate["h2hHistory"];
+  opponentName: string;
+}) {
+  if (history.length === 0) return null;
+  // history is newest-first; reverse for chronological display
+  const chrono = [...history].reverse();
+  const wins = chrono.filter((h) => h.outcome === "W").length;
+  const losses = chrono.filter((h) => h.outcome === "L").length;
+  return (
+    <div>
+      <div className="flex items-baseline justify-between text-[11px]">
+        <span className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          H2H vs {opponentName}
+        </span>
+        <span className="tabular-nums">
+          <span className="font-semibold text-[var(--color-felt-bright)]">
+            {wins}W
+          </span>
+          <span className="mx-1 text-[var(--fg-dim)]">·</span>
+          <span className="font-semibold text-[var(--color-pop-bright)]">
+            {losses}L
+          </span>
+        </span>
+      </div>
+      <div className="mt-1.5 flex flex-wrap gap-1">
+        {chrono.map((h, i) => (
+          <span
+            key={`${h.matchId}-${i}`}
+            title={`${new Date(h.date).toLocaleDateString()} · ${h.outcome === "W" ? "Win" : "Loss"}`}
+            className={cn(
+              "inline-flex h-5 w-5 items-center justify-center rounded-sm text-[10px] font-bold",
+              h.outcome === "W"
+                ? "bg-[var(--color-felt)]/30 text-[var(--color-felt-bright)]"
+                : "bg-[var(--color-pop)]/30 text-[var(--color-pop-bright)]",
+            )}
+          >
+            {h.outcome}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Race-to-3 clinch pips. Three squares per side; filled ones = individual
+ * matches won. Visualizes "how close are we to clinching?" at a glance.
+ */
+function ClinchPips({
+  count,
+  accent,
+  alignRight = false,
+}: {
+  count: number;
+  accent: "felt" | "pop";
+  alignRight?: boolean;
+}) {
+  const filledCls =
+    accent === "felt"
+      ? "bg-[var(--color-felt-bright)] border-[var(--color-felt-bright)]"
+      : "bg-[var(--color-pop-bright)] border-[var(--color-pop-bright)]";
+  return (
+    <div className={cn("flex items-center gap-1", alignRight && "justify-end")}>
+      <span
+        className={cn(
+          "text-[9px] font-semibold uppercase tracking-[0.2em]",
+          accent === "felt" ? "text-[var(--color-felt-bright)]" : "text-[var(--color-pop-bright)]",
+        )}
+      >
+        {accent === "felt" ? "Us" : "Them"}
+      </span>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className={cn(
+            "h-2.5 w-5 rounded-sm border transition-colors",
+            i < count ? filledCls : "border-[var(--border)] bg-[var(--bg-soft)]",
+          )}
+        />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Mini horizontal probability bar — used in the candidate list rows for a
+ * quick visual scan without expanding.
+ */
+function MiniProbBar({ pct }: { pct: number }) {
+  const v = Math.max(0, Math.min(100, pct));
+  return (
+    <div className="h-1 w-16 rounded-full bg-[var(--bg-soft)]">
+      <div
+        className={cn(
+          "h-full rounded-full",
+          v >= 60
+            ? "bg-[var(--color-felt-bright)]"
+            : v >= 45
+              ? "bg-[var(--color-brass-bright)]"
+              : "bg-[var(--color-pop-bright)]",
+        )}
+        style={{ width: `${v}%`, transition: "width 300ms" }}
+      />
     </div>
   );
 }
@@ -1509,4 +2587,109 @@ function ComponentBar({ label, c }: { label: string; c: ThrowComponentScore }) {
       </div>
     </div>
   );
+}
+
+/** Same shape as ComponentBar but rendered in a muted "info only" treatment. */
+function VenueBar({ c }: { c: ThrowComponentScore }) {
+  const pct = c.noData ? 0 : Math.round(c.smoothed);
+  return (
+    <div className="rounded-md border border-dashed border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 opacity-80">
+      <div className="flex items-baseline justify-between text-[11px]">
+        <span className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Venue <span className="ml-1 normal-case tracking-normal opacity-60">(info)</span>
+        </span>
+        <span className="tabular-nums text-[var(--fg-dim)]">
+          {c.noData ? "—" : `${c.wins}-${c.losses}`}
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 rounded-full bg-[var(--bg-soft)]">
+        <div
+          className="h-full rounded-full bg-[var(--fg-dim)]/40"
+          style={{ width: `${c.noData ? 0 : pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Lookahead + race-chart strip — small horizontal info row that prints two
+ * lineup-wide signals next to each other:
+ *   - Team value (lookahead): how good is the rest of the night if we lock
+ *     this player here? Higher is better. Delta vs the team-optimal pick is
+ *     shown as a coloured ± nudge.
+ *   - Race-chart equity: APA's asymmetric race chart, > 50 = race favors us.
+ */
+function LookaheadStrip({
+  teamValue,
+  delta,
+  race,
+  compact = false,
+}: {
+  teamValue: number;
+  delta: number;
+  race: number;
+  compact?: boolean;
+}) {
+  const isOptimal = delta >= -0.5;
+  const deltaCls = isOptimal
+    ? "text-[var(--color-felt-bright)]"
+    : delta >= -5
+      ? "text-[var(--color-brass-bright)]"
+      : "text-[var(--color-pop-bright)]";
+  return (
+    <div
+      className={cn(
+        "mt-3 grid grid-cols-2 gap-2 rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/50 px-3 py-2 text-[11px]",
+        compact && "mt-2",
+      )}
+    >
+      <div>
+        <div className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Lineup look-ahead
+        </div>
+        <div className="mt-0.5 flex items-baseline gap-2">
+          <span className="font-semibold tabular-nums text-[var(--fg)]">
+            {teamValue}
+          </span>
+          <span className={cn("tabular-nums", deltaCls)}>
+            {isOptimal ? "team-optimal" : `${delta.toFixed(1)} vs best`}
+          </span>
+        </div>
+      </div>
+      <div>
+        <div className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Race equity
+        </div>
+        <div className="mt-0.5 flex items-baseline gap-2">
+          <span
+            className={cn(
+              "font-semibold tabular-nums",
+              race >= 55
+                ? "text-[var(--color-felt-bright)]"
+                : race <= 45
+                  ? "text-[var(--color-pop-bright)]"
+                  : "text-[var(--fg)]",
+            )}
+          >
+            {race}%
+          </span>
+          <span className="text-[var(--fg-dim)]">
+            {race >= 55 ? "favors us" : race <= 45 ? "favors them" : "even"}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Lightweight haptic helper — runs only when the browser supports it. */
+function haptic(pattern: number | number[]) {
+  if (typeof window === "undefined") return;
+  if (!("vibrate" in window.navigator)) return;
+  try {
+    window.navigator.vibrate?.(pattern);
+  } catch {
+    /* ignore */
+  }
 }
