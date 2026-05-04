@@ -65,7 +65,7 @@ export function CalibrationView({
         <Stat
           label="Coin-flip accuracy"
           value={`${overallAccuracy}%`}
-          sub="≥50% predictions that won, &lt;50% that lost"
+          sub="≥50% predictions that won, <50% that lost"
         />
         <Stat
           label="Mean absolute error"
@@ -75,15 +75,16 @@ export function CalibrationView({
       </div>
 
       <div className="surface p-4">
-        <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-          Reliability plot · {predictions.length} predictions
+        <h3 className="mb-1 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+          Reliability · {predictions.length} predictions
         </h3>
-        <ReliabilityChart bins={bins} />
-        <p className="mt-3 text-xs text-[var(--fg-dim)]">
-          Each bar shows the actual win rate for predictions in that bin. The
-          dashed diagonal is perfect calibration. Bars at or near the line =
-          honest predictions.
+        <p className="mb-4 text-xs text-[var(--fg-dim)]">
+          Each row is a prediction-confidence bin. The dotted center line is
+          perfect calibration — we want the &quot;actual&quot; bar to land on it.
+          Bars right of center = the model was right (predictions came true).
+          Bars left of center = over-confident (predictions missed).
         </p>
+        <ReliabilityRows bins={bins} />
       </div>
 
       <details className="surface">
@@ -203,158 +204,125 @@ function Stat({
       >
         {value}
       </p>
-      <p
-        className="text-[10px] text-[var(--fg-dim)]"
-        dangerouslySetInnerHTML={{ __html: sub }}
-      />
+      <p className="text-[10px] text-[var(--fg-dim)]">{sub}</p>
     </div>
   );
 }
 
 /**
- * Reliability plot — bar chart with one bar per prediction bin showing
- * actual-win-rate vs predicted-rate. A dashed diagonal shows perfect
- * calibration.
+ * Reliability rows — one row per non-empty prediction bin. Each row shows
+ * the bin range, sample count, predicted average vs actual win rate, and
+ * a single bar that visually compares the two as a percentage.
+ *
+ * Designed to read clearly on mobile (vertical rows) and desktop (wider
+ * bars). Replaces a tiny SVG that didn't scale well to either.
  */
-function ReliabilityChart({
+function ReliabilityRows({
   bins,
 }: {
   bins: CalibrationResult["bins"];
 }) {
-  const w = 100;
-  const h = 100;
-  const padX = 8;
-  const padY = 6;
-  const innerW = w - 2 * padX;
-  const innerH = h - 2 * padY;
-  // Bar layout
-  const barW = innerW / bins.length;
-  const maxN = Math.max(...bins.map((b) => b.n));
+  const populated = bins.filter((b) => b.n > 0);
+  if (populated.length === 0) {
+    return (
+      <p className="text-sm text-[var(--fg-dim)]">No bin data yet.</p>
+    );
+  }
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="block w-full">
-      {/* Diagonal reference (perfect calibration) */}
-      <line
-        x1={padX}
-        y1={padY + innerH}
-        x2={padX + innerW}
-        y2={padY}
-        stroke="var(--fg-dim)"
-        strokeDasharray="1.5 1.5"
-        strokeWidth={0.4}
-        opacity={0.6}
-      />
-      {/* Axes */}
-      <line
-        x1={padX}
-        y1={padY + innerH}
-        x2={padX + innerW}
-        y2={padY + innerH}
-        stroke="var(--border)"
-        strokeWidth={0.5}
-      />
-      <line
-        x1={padX}
-        y1={padY}
-        x2={padX}
-        y2={padY + innerH}
-        stroke="var(--border)"
-        strokeWidth={0.5}
-      />
-      {/* Bars */}
-      {bins.map((b, i) => {
-        if (b.n === 0) return null;
-        const cx = padX + i * barW + barW / 2;
-        const yPredicted = padY + innerH - b.predicted * innerH;
-        const yActual = padY + innerH - b.actual * innerH;
-        // Width scales with bin sample size (visual weight).
-        const tWidth = Math.max(
-          0.6,
-          Math.min(barW * 0.7, (b.n / maxN) * barW * 0.8),
-        );
-        const error = Math.abs(b.predicted - b.actual);
-        const color =
-          error <= 0.05
-            ? "var(--color-felt-bright)"
-            : error <= 0.12
-              ? "var(--color-brass-bright)"
-              : "var(--color-pop-bright)";
-        return (
-          <g key={i}>
-            {/* Bar from y=actual up to y=predicted (whichever is taller) */}
-            <line
-              x1={cx}
-              y1={Math.min(yPredicted, yActual)}
-              x2={cx}
-              y2={Math.max(yPredicted, yActual)}
-              stroke={color}
-              strokeWidth={tWidth * 0.4}
-              opacity={0.6}
-            />
-            {/* Actual win rate dot (the "truth") */}
-            <circle cx={cx} cy={yActual} r={1.4} fill={color} />
-            {/* Predicted center dot (smaller, neutral) */}
-            <circle
-              cx={cx}
-              cy={yPredicted}
-              r={0.8}
-              fill="var(--fg-dim)"
-              opacity={0.7}
-            />
-          </g>
-        );
-      })}
-      {/* Axis labels */}
-      <text
-        x={padX}
-        y={h - 0.5}
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: 3 }}
-      >
-        0%
-      </text>
-      <text
-        x={w - padX - 5}
-        y={h - 0.5}
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: 3 }}
-      >
-        100%
-      </text>
-      <text
-        x={padX - 7}
-        y={padY + 3}
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: 3 }}
-      >
-        100%
-      </text>
-      <text
-        x={padX - 5}
-        y={padY + innerH}
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: 3 }}
-      >
-        0%
-      </text>
-      <text
-        x={padX + innerW / 2}
-        y={h - 0.5}
-        textAnchor="middle"
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: 3, letterSpacing: "0.1em" }}
-      >
-        Predicted
-      </text>
-      <text
-        x={1}
-        y={padY + innerH / 2}
-        textAnchor="middle"
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: 3, letterSpacing: "0.1em" }}
-        transform={`rotate(-90 1 ${padY + innerH / 2})`}
-      >
-        Actual
-      </text>
-    </svg>
+    <ul className="space-y-2">
+      {populated.map((b, i) => (
+        <ReliabilityRow key={i} bin={b} />
+      ))}
+    </ul>
+  );
+}
+
+function ReliabilityRow({
+  bin,
+}: {
+  bin: CalibrationResult["bins"][number];
+}) {
+  const [lo, hi] = bin.range;
+  const predictedPct = bin.predicted * 100;
+  const actualPct = bin.actual * 100;
+  const error = Math.abs(bin.predicted - bin.actual);
+  const tone =
+    error <= 0.05
+      ? "var(--color-felt-bright)"
+      : error <= 0.12
+        ? "var(--color-brass-bright)"
+        : "var(--color-pop-bright)";
+  const errorLabel =
+    error <= 0.05
+      ? "well-calibrated"
+      : error <= 0.12
+        ? "slightly off"
+        : bin.predicted > bin.actual
+          ? "over-confident"
+          : "under-confident";
+  return (
+    <li className="rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/30 p-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs">
+        <div className="flex items-baseline gap-2">
+          <span className="font-semibold tabular-nums text-[var(--fg)]">
+            {Math.round(lo * 100)}–{Math.round(hi * 100)}%
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            predicted bin · {bin.n} match{bin.n === 1 ? "" : "es"}
+          </span>
+        </div>
+        <span
+          className="text-[10px] font-semibold uppercase tracking-[0.2em]"
+          style={{ color: tone }}
+        >
+          {errorLabel}
+        </span>
+      </div>
+      {/* Comparison bar — full width represents 0..100%; two markers show
+          the predicted average and the actual win rate side-by-side. */}
+      <div className="mt-2 relative h-7 w-full rounded-md bg-[var(--bg-soft)]/50 ring-1 ring-inset ring-[var(--border)]">
+        {/* Predicted marker (neutral, behind) */}
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-[var(--fg-dim)] opacity-70"
+          style={{ left: `${predictedPct}%` }}
+          title={`Predicted: ${predictedPct.toFixed(1)}%`}
+        />
+        {/* Actual marker (colored, in front) */}
+        <div
+          className="absolute top-0 bottom-0 w-1 rounded-sm"
+          style={{
+            left: `calc(${actualPct}% - 2px)`,
+            backgroundColor: tone,
+          }}
+          title={`Actual: ${actualPct.toFixed(1)}%`}
+        />
+        {/* Connecting span between predicted and actual */}
+        <div
+          className="absolute top-1/2 h-0.5 -translate-y-1/2 opacity-40"
+          style={{
+            left: `${Math.min(predictedPct, actualPct)}%`,
+            width: `${Math.abs(predictedPct - actualPct)}%`,
+            backgroundColor: tone,
+          }}
+        />
+      </div>
+      <div className="mt-2 flex flex-wrap items-baseline justify-between gap-2 text-[10px] tabular-nums text-[var(--fg-dim)]">
+        <span>
+          Predicted avg:{" "}
+          <span className="font-semibold text-[var(--fg)]">
+            {predictedPct.toFixed(1)}%
+          </span>
+        </span>
+        <span>
+          Actual:{" "}
+          <span className="font-semibold" style={{ color: tone }}>
+            {actualPct.toFixed(1)}%
+          </span>
+        </span>
+        <span>
+          Error: ±{(error * 100).toFixed(1)}%
+        </span>
+      </div>
+    </li>
   );
 }

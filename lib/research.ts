@@ -3050,11 +3050,22 @@ function hypotheticalWinProbability(
   candidate: ThrowCandidate,
   hypotheticalOppSL: number,
   isCurrentlyTight: boolean,
+  /**
+   * When true, layer the SL-mismatch tactical penalty on top of the raw
+   * win probability — used for opener RANKING (where opportunity cost
+   * matters). When false (default), return the pure win probability — used
+   * for DISPLAY (e.g. "what's the chance Aaron beats an SL5?"), since the
+   * mismatch penalty is a strategic concern, not a probability factor.
+   */
+  applyMismatchPenalty: boolean = false,
 ): number {
   const hypotheticalComponents = {
     ...candidate.components,
     h2h: emptyComponent(),
-    vsSL: emptyComponent(),
+    // Don't strip vsSL — the candidate's record vs *that specific SL* is
+    // the most calibrated signal we have for this hypothetical. (Previously
+    // we wiped it, falling back to raw race-equity which discarded huge
+    // amounts of signal for high-data players.)
     raceEquity: raceEquity(candidate.skillLevel, hypotheticalOppSL),
   };
   const { matchupScore } = computeWinProbability(
@@ -3062,7 +3073,9 @@ function hypotheticalWinProbability(
     isCurrentlyTight,
     candidate.currentStreak,
   );
-  // Apply SL-mismatch penalty in the hypothetical too.
+  if (!applyMismatchPenalty) {
+    return Math.max(5, Math.min(95, matchupScore));
+  }
   const slAdj = slMismatchAdjustment(candidate.skillLevel, hypotheticalOppSL);
   return Math.max(5, Math.min(95, matchupScore + slAdj.penalty));
 }
@@ -4398,12 +4411,24 @@ export function recommendOpener(
   );
 
   // ----- Adversarial opener model -----------------------------------
-  // When we throw blind, the opponent will counter-pick to MINIMIZE our
-  // win probability. For each candidate, find their worst-case counter
-  // among the opponent's pending roster, then use the resulting
-  // worst-case win probability as the candidate's matchup score.
-  // This is a minimax: pick the candidate whose worst-case counter
-  // gives us the best worst-case win prob. Classic APA opener strategy.
+  // When we throw blind, the opponent CAN counter-pick to minimize our
+  // win probability — but they don't always do so optimally. We compute
+  // two numbers per candidate:
+  //
+  //   matchupScore (DISPLAYED): the *expected* win probability across the
+  //     opp's remaining roster — pure probability, no tactical penalties.
+  //     This is what the captain sees: "Aaron's expected win probability
+  //     here is 72%". Reflects honest uncertainty, not a worst-case scare.
+  //
+  //   overall (RANKING): the worst-case win probability + SL-mismatch
+  //     opportunity-cost penalty. Drives the minimax pick — choose the
+  //     candidate whose worst-case is the highest *and* who isn't a poor
+  //     SL fit for this slot. Captures both the adversarial threat and
+  //     the strategic cost of burning a stud here.
+  //
+  // Splitting these fixes a long-standing pessimism bug: the worst-case
+  // was being shown as the win probability, making strong players look
+  // weak when they shouldn't.
   const usedOppNamesOpener = new Set(
     input.log.map((t) => (t.oppName ?? "").trim().toLowerCase()),
   );
@@ -4415,21 +4440,30 @@ export function recommendOpener(
   if (pendingOppOpener.length > 0) {
     for (const c of candidates) {
       if (typeof c.skillLevel !== "number") continue;
-      let worstProb = c.matchupScore;
+      let worstProbWithPenalty = c.matchupScore;
       let worstCounter: { name: string; sl: number } | null = null;
+      let expectedProb = 0;
+      let nProbs = 0;
       for (const op of pendingOppOpener) {
         const sl = op.latestSL!;
-        const wp = hypotheticalWinProbability(c, sl, isCurrentlyTight);
-        if (wp < worstProb) {
-          worstProb = wp;
+        // Pure probability for the expected-value display.
+        const purePb = hypotheticalWinProbability(c, sl, isCurrentlyTight, false);
+        expectedProb += purePb;
+        nProbs++;
+        // Worst-case + tactical penalty for the ranking score.
+        const wpRanking = hypotheticalWinProbability(c, sl, isCurrentlyTight, true);
+        if (wpRanking < worstProbWithPenalty) {
+          worstProbWithPenalty = wpRanking;
           worstCounter = { name: op.name, sl };
         }
       }
+      if (nProbs > 0) {
+        c.matchupScore = Math.round((expectedProb / nProbs) * 10) / 10;
+      }
+      c.overall = Math.round(worstProbWithPenalty * 10) / 10;
       if (worstCounter) {
-        c.matchupScore = Math.round(worstProb * 10) / 10;
-        c.overall = c.matchupScore;
         c.reasoning.unshift(
-          `Likely counter: SL${worstCounter.sl} (${worstCounter.name}) — they'll throw their toughest matchup vs SL${c.skillLevel}.`,
+          `Toughest counter on the bench: SL${worstCounter.sl} (${worstCounter.name}). Avg expected win prob: ${c.matchupScore}%.`,
         );
       }
     }
@@ -4514,16 +4548,30 @@ export function recommendOpener(
     return b.overall - a.overall;
   });
 
-  // Blind-throw save logic: we're eager to save aces when we don't know who
-  // they're putting up. Use lookahead delta as the primary signal.
+  // Blind-throw save logic: hold an ace for a later, known counter when
+  // burning them blind is clearly suboptimal. Tightened thresholds to stop
+  // benching hot-form players:
+  //   - lookaheadDelta must be steeply negative (≤ -8, was -4)
+  //   - the candidate's recent form must NOT be strong (rate < 70 OR <4 matches)
+  //     — if they're rolling we want them out there racking points, not benched
+  //   - matchupScore must already be modest (< 70%) — a blind 80%+ player
+  //     should play, not sit
+  //   - subs must be genuinely competitive (overall ≥ 55, was 50)
   const top = candidates.find((c) => c.feasible) ?? null;
   const acceptableSubs = candidates.filter(
-    (c) => c.feasible && c !== top && c.overall >= 50,
+    (c) => c.feasible && c !== top && c.overall >= 55,
   );
   const noPressure = urgency === "leverage" || urgency === "comfortable" || urgency === "even";
+  const topFormStrong =
+    !!top &&
+    !top.components.form.noData &&
+    top.components.form.matches >= 4 &&
+    top.components.form.rate >= 70;
   if (
     top &&
-    top.components.lookaheadDelta <= -4 &&
+    top.components.lookaheadDelta <= -8 &&
+    !topFormStrong &&
+    top.matchupScore < 70 &&
     acceptableSubs.length >= 1 &&
     input.currentPosition < 5 &&
     noPressure
