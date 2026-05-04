@@ -299,11 +299,18 @@ export function ThrowAdvisor({
         currentPosition: live.position,
         availablePlayerIds: available,
         log,
+        // Adversarial opener: when we throw first, the opponent counter-picks.
+        // Pass the opponent's roster so the engine can find each candidate's
+        // worst-case counter and rank by minimax.
+        opponentRoster: knownPutups.map((p) => ({
+          name: p.name,
+          latestSL: p.latestSL,
+        })),
       },
       matches,
       visibleRoster,
     );
-  }, [phase, step, opponentTeam, location, live.position, available, log, matches, visibleRoster]);
+  }, [phase, step, opponentTeam, location, live.position, available, log, matches, visibleRoster, knownPutups]);
 
   /** Counter (informed) recommendation — for when they put up first. */
   const counterResult = useMemo<ThrowAdvisorResult | null>(() => {
@@ -1715,12 +1722,12 @@ function CandidateRow({
               <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
             )}
             <VerdictBadge verdict={candidate.verdict} />
-            {candidate.specialShotsRate >= 0.25 && (
+            {candidate.specialShotsRate >= 0.20 && (
               <span
-                title={`${(candidate.specialShotsRate * 100).toFixed(0)}% sweep+B&R+8oB rate per match`}
+                title={`Averages ${candidate.specialShotsRate.toFixed(2)} bonus leaderboard points per match (sweeps + mini-sweeps + B&R + 8-on-break)`}
                 className="rounded-full bg-[var(--color-brass)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]"
               >
-                ✨ {(candidate.specialShotsRate * 100).toFixed(0)}%
+                🧹 +{candidate.specialShotsRate.toFixed(1)} pts
               </span>
             )}
             {candidate.lastPlayedDaysAgo !== null && candidate.lastPlayedDaysAgo > 42 && (

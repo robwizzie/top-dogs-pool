@@ -2946,6 +2946,34 @@ function teamScoreStatesBeforeMatch(
 }
 
 /**
+ * Recompute win probability for a candidate against a *hypothetical* opponent
+ * SL — used by the adversarial opener model to estimate "what if they
+ * counter-pick with their SL X". Reuses the candidate's existing form/slot/
+ * vs-team/clutch components but swaps in a fresh race-equity for the
+ * hypothetical opponent. H2H and vs-SL are deliberately treated as no-data
+ * because the hypothesised opponent is, well, hypothesized.
+ */
+function hypotheticalWinProbability(
+  candidate: ThrowCandidate,
+  hypotheticalOppSL: number,
+  isCurrentlyTight: boolean,
+): number {
+  const hypotheticalComponents = {
+    ...candidate.components,
+    h2h: emptyComponent(),
+    vsSL: emptyComponent(),
+    raceEquity: raceEquity(candidate.skillLevel, hypotheticalOppSL),
+  };
+  const { matchupScore } = computeWinProbability(
+    hypotheticalComponents,
+    isCurrentlyTight,
+  );
+  // Apply SL-mismatch penalty in the hypothetical too.
+  const slAdj = slMismatchAdjustment(candidate.skillLevel, hypotheticalOppSL);
+  return Math.max(5, Math.min(95, matchupScore + slAdj.penalty));
+}
+
+/**
  * "Tight" state: |ourScore - theirScore| ≤ 1 with neither side at 3 yet.
  * That's match 1 (0-0), or any non-decisive close score: 1-0, 0-1, 1-1, 2-1,
  * 1-2, 2-2. Captures "the pressure is on" individual matches.
@@ -3953,6 +3981,13 @@ export type OpenerAdvisorInput = {
   currentPosition: number;
   availablePlayerIds: Set<string>;
   log: ThrowMatchLog[];
+  /**
+   * Opponent team's known roster — used by the *adversarial* opener model.
+   * When we throw first, the opponent counter-picks to MINIMIZE our win
+   * probability. Knowing their pending players lets us predict the worst-
+   * case counter for each of our candidates and rank by minimax.
+   */
+  opponentRoster?: Array<{ name: string; latestSL: number | null }>;
 };
 
 function scoreOpenerCandidate(
@@ -4166,6 +4201,44 @@ export function recommendOpener(
     scoreOpenerCandidate(p, { matches, input, refDate, isCurrentlyTight }),
   );
 
+  // ----- Adversarial opener model -----------------------------------
+  // When we throw blind, the opponent will counter-pick to MINIMIZE our
+  // win probability. For each candidate, find their worst-case counter
+  // among the opponent's pending roster, then use the resulting
+  // worst-case win probability as the candidate's matchup score.
+  // This is a minimax: pick the candidate whose worst-case counter
+  // gives us the best worst-case win prob. Classic APA opener strategy.
+  const usedOppNamesOpener = new Set(
+    input.log.map((t) => (t.oppName ?? "").trim().toLowerCase()),
+  );
+  const pendingOppOpener = (input.opponentRoster ?? []).filter(
+    (p) =>
+      typeof p.latestSL === "number" &&
+      !usedOppNamesOpener.has(p.name.trim().toLowerCase()),
+  );
+  if (pendingOppOpener.length > 0) {
+    for (const c of candidates) {
+      if (typeof c.skillLevel !== "number") continue;
+      let worstProb = c.matchupScore;
+      let worstCounter: { name: string; sl: number } | null = null;
+      for (const op of pendingOppOpener) {
+        const sl = op.latestSL!;
+        const wp = hypotheticalWinProbability(c, sl, isCurrentlyTight);
+        if (wp < worstProb) {
+          worstProb = wp;
+          worstCounter = { name: op.name, sl };
+        }
+      }
+      if (worstCounter) {
+        c.matchupScore = Math.round(worstProb * 10) / 10;
+        c.overall = c.matchupScore;
+        c.reasoning.unshift(
+          `Likely counter: SL${worstCounter.sl} (${worstCounter.name}) — they'll throw their toughest matchup vs SL${c.skillLevel}.`,
+        );
+      }
+    }
+  }
+
   // 23-rule feasibility (same logic as recommendThrow).
   const otherSLs = candidates
     .map((c) => c.skillLevel)
@@ -4320,8 +4393,15 @@ export function recommendOpener(
     );
   }
 
-  // Opener: rough night-win-prob using the top pick at 50% race-equity
-  // (since opp SL is unknown) and future slots at their average estimate.
+  // Opener: night-win-prob estimation.
+  //   - CURRENT slot uses the top pick's matchupScore (already adversarial-
+  //     adjusted above when opponent roster is known).
+  //   - FUTURE slots use a *neutral* estimate per candidate — APA throw
+  //     order alternates, so future slots are a mix of "we throw first"
+  //     (adversarial-worst-case) and "we counter" (we pick our best vs
+  //     known opp SL). The neutral estimate is the candidate's matchup
+  //     score against the median pending opponent SL, which approximates
+  //     this on average.
   let openerNightProb = 0.5;
   let openerNightCI: [number, number] = [0, 100];
   const topForNight = candidates.find((c) => c.feasible && !c.saveForLater);
@@ -4329,11 +4409,22 @@ export function recommendOpener(
     const remainingForFuture = candidates.filter(
       (c) => c.feasible && c !== topForNight,
     );
-    // Future slots: assume neutral 50% race equity (we don't know their roster).
-    // Use form-only nudges if available.
+    // Median pending opp SL for "average" future opponent — falls back to 4
+    // (mid-range) if we have no roster.
+    const pendingSLsSorted = pendingOppOpener
+      .map((p) => p.latestSL!)
+      .sort((a, b) => a - b);
+    const medianPendingSL =
+      pendingSLsSorted.length > 0
+        ? pendingSLsSorted[Math.floor(pendingSLsSorted.length / 2)]
+        : 4;
     const futureProbs = remainingForFuture
       .slice(0, remainingPositionsAfter)
-      .map((c) => c.matchupScore / 100);
+      .map((c) =>
+        typeof c.skillLevel === "number"
+          ? hypotheticalWinProbability(c, medianPendingSL, isCurrentlyTight) / 100
+          : c.matchupScore / 100,
+      );
     const slotProbs = [topForNight.matchupScore / 100, ...futureProbs];
     openerNightProb = nightWinProbability(ourScore, theirScore, slotProbs);
     const loProbs = [topForNight.matchupScoreCI[0] / 100, ...futureProbs];
