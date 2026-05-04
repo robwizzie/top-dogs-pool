@@ -2575,8 +2575,20 @@ export type ThrowCandidate = {
   playerId: string;
   playerName: string;
   skillLevel: number | null;
-  /** Composite 0..100. */
+  /** Composite 0..100, used for ranking. Includes the lookahead penalty. */
   overall: number;
+  /**
+   * Win probability (0..100) for this individual matchup BEFORE the lineup-
+   * wide lookahead penalty. Reflects pure "what's the likelihood this player
+   * beats this opponent?" — what you'd quote to a teammate.
+   */
+  matchupScore: number;
+  /**
+   * Chronological per-match history for this candidate against the named
+   * opponent (counter-pick mode only). Empty when the opener (blind) function
+   * was used.
+   */
+  h2hHistory: Array<{ date: string; outcome: "W" | "L"; matchId: string }>;
   /** Tier label. */
   verdict: ThrowVerdict;
   components: {
@@ -2832,6 +2844,8 @@ function scoreCandidate(
   };
   // Form = chronological recent outcomes (recency-weighted).
   const formOutcomes: Array<{ date: string; outcome: "W" | "L" }> = [];
+  // Per-opponent history strip — chronological W/L for the radar/H2H chart.
+  const h2hHistory: Array<{ date: string; outcome: "W" | "L"; matchId: string }> = [];
 
   for (const m of matches) {
     if (m.status !== "completed") continue;
@@ -2854,6 +2868,7 @@ function scoreCandidate(
         acc.h2h.losses += isLoss * w;
         acc.h2h.rawWins += isWin;
         acc.h2h.rawLosses += isLoss;
+        h2hHistory.push({ date: m.date, outcome: r.outcome, matchId: m.id });
       }
       // vs this exact SL bracket
       if (
@@ -3025,11 +3040,17 @@ function scoreCandidate(
     flags.push("Thin data — ranking is mostly priors");
   }
 
+  // Sort H2H history newest-first and trim — the chart only needs ~12.
+  h2hHistory.sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  const trimmedHistory = h2hHistory.slice(0, 12);
+
   return {
     playerId: player.id,
     playerName: player.name,
     skillLevel: player.skillLevel,
     overall,
+    matchupScore: overall, // pre-lookahead snapshot; lookahead penalty applied later
+    h2hHistory: trimmedHistory,
     verdict: "viable", // placeholder — re-tagged after we know the field
     components,
     reasoning: reasons,
@@ -3457,6 +3478,8 @@ function scoreOpenerCandidate(
     playerName: player.name,
     skillLevel: player.skillLevel,
     overall,
+    matchupScore: overall, // pre-lookahead; opener has no H2H so this is a blind win-prob
+    h2hHistory: [], // blind/opener mode — no opponent named yet
     verdict: "viable",
     components,
     reasoning: reasons,

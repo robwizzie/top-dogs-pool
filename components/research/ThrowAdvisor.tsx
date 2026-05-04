@@ -12,6 +12,7 @@ import {
   type ThrowMatchLog,
 } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
+import { winsRequired } from "@/lib/apa/race";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -983,13 +984,17 @@ function PickCounterStep({
         subtitle="They put up — let's match the right player to them."
         result={result}
         onLockIn={onPick}
-        ctaLabel="Lock in this counter"
+        ctaLabel="Lock in"
+        opponentName={live.oppName}
+        opponentSL={live.oppSL}
       />
       <CandidateList
         heading="Or choose someone else"
         rows={result.candidates}
         topPickId={top?.playerId}
         onPick={onPick}
+        opponentName={live.oppName}
+        opponentSL={live.oppSL}
       />
       {top?.saveForLater && (
         <SaveForLaterCallout
@@ -1090,12 +1095,17 @@ function RecommendationCard({
   result,
   onLockIn,
   ctaLabel,
+  opponentName,
+  opponentSL,
 }: {
   title: string;
   subtitle: string;
   result: ThrowAdvisorResult;
   onLockIn: (c: ThrowCandidate) => void;
   ctaLabel: string;
+  /** When known, lets us render H2H history + race-chart visual. */
+  opponentName?: string;
+  opponentSL?: number | null;
 }) {
   const top = result.topPick;
   if (!top) {
@@ -1118,14 +1128,15 @@ function RecommendationCard({
       </p>
       <p className="mt-1 text-xs text-[var(--fg-dim)]">{subtitle}</p>
 
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
+      {/* Top: name + win-prob gauge */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
             Recommendation
           </p>
           <Link
             href={`/roster/${top.playerId}`}
-            className="mt-1 block font-[family-name:var(--font-display)] text-3xl tracking-wide hover:text-[var(--color-brass)]"
+            className="mt-1 block font-[family-name:var(--font-display)] text-3xl leading-tight tracking-wide hover:text-[var(--color-brass)]"
           >
             {top.playerName}
             {top.skillLevel != null && (
@@ -1134,44 +1145,58 @@ function RecommendationCard({
               </span>
             )}
           </Link>
+          {opponentName && (
+            <p className="mt-1 text-sm text-[var(--fg-dim)]">
+              vs {opponentName}
+              {opponentSL != null && ` · SL${opponentSL}`}
+            </p>
+          )}
         </div>
-        <div className="flex flex-col items-end">
-          <span className="font-[family-name:var(--font-display)] text-4xl tracking-wide text-[var(--color-brass-bright)]">
-            {top.overall}
-          </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
-            Match score
-          </span>
-        </div>
+        <WinProbGauge pct={top.matchupScore} size={132} />
       </div>
 
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--fg-dim)]">
-        {result.context.narrative}
-      </p>
-
-      <ul className="mt-3 space-y-1 text-sm">
-        {top.reasoning.map((r, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
-            <span>{r}</span>
-          </li>
-        ))}
-      </ul>
-      {top.flags.length > 0 && (
-        <ul className="mt-3 space-y-1 text-xs text-[var(--fg-dim)]">
-          {top.flags.map((f, i) => (
-            <li key={i}>⚠ {f}</li>
-          ))}
-        </ul>
+      {/* Race-chart visual when SLs are known */}
+      {typeof top.skillLevel === "number" && typeof opponentSL === "number" && (
+        <div className="mt-4">
+          <RaceVisual ourSL={top.skillLevel} theirSL={opponentSL} />
+        </div>
       )}
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <ComponentBar label="H2H" c={top.components.h2h} />
-        <ComponentBar label="vs SL" c={top.components.vsSL} />
-        <ComponentBar label="Form" c={top.components.form} />
-        <ComponentBar label="vs Team" c={top.components.vsTeam} />
-        <ComponentBar label="Slot fit" c={top.components.position} />
-        <VenueBar c={top.components.venue} />
+      {/* H2H history strip when applicable */}
+      {top.h2hHistory.length > 0 && opponentName && (
+        <div className="mt-4">
+          <H2HHistory history={top.h2hHistory} opponentName={opponentName} />
+        </div>
+      )}
+
+      {/* Radar + reasoning two-column on desktop, stacked on mobile */}
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+        <div className="flex flex-col items-center">
+          <MatchupRadar components={top.components} />
+          <p className="mt-1 text-[10px] uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+            Component profile
+          </p>
+        </div>
+        <div className="flex flex-col gap-3">
+          <p className="text-sm leading-relaxed text-[var(--fg-dim)]">
+            {result.context.narrative}
+          </p>
+          <ul className="space-y-1 text-sm">
+            {top.reasoning.map((r, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
+                <span>{r}</span>
+              </li>
+            ))}
+          </ul>
+          {top.flags.length > 0 && (
+            <ul className="space-y-1 text-xs text-[var(--fg-dim)]">
+              {top.flags.map((f, i) => (
+                <li key={i}>⚠ {f}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       <LookaheadStrip
@@ -1179,6 +1204,21 @@ function RecommendationCard({
         delta={top.components.lookaheadDelta}
         race={top.components.raceEquity}
       />
+
+      {/* Per-component breakdown — collapsed by default to keep card scannable */}
+      <details className="mt-3">
+        <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] hover:text-[var(--color-brass)]">
+          ↳ Per-component scores
+        </summary>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          <ComponentBar label="H2H" c={top.components.h2h} />
+          <ComponentBar label="vs SL" c={top.components.vsSL} />
+          <ComponentBar label="Form" c={top.components.form} />
+          <ComponentBar label="vs Team" c={top.components.vsTeam} />
+          <ComponentBar label="Slot fit" c={top.components.position} />
+          <VenueBar c={top.components.venue} />
+        </div>
+      </details>
 
       <button
         type="button"
@@ -1188,7 +1228,7 @@ function RecommendationCard({
         }}
         className="sticky bottom-4 z-10 mt-5 flex w-full min-h-[52px] items-center justify-center gap-2 rounded-full bg-[var(--color-brass)] px-6 py-3 text-base font-semibold text-[var(--color-ink)] shadow-lg hover:bg-[var(--color-brass-bright)]"
       >
-        {ctaLabel} → {top.playerName.split(" ")[0]}
+        {ctaLabel} → {top.playerName.split(" ")[0]} ({Math.round(top.matchupScore)}%)
       </button>
     </div>
   );
@@ -1201,11 +1241,15 @@ function CandidateList({
   rows,
   topPickId,
   onPick,
+  opponentName,
+  opponentSL,
 }: {
   heading: string;
   rows: ThrowCandidate[];
   topPickId?: string;
   onPick: (c: ThrowCandidate) => void;
+  opponentName?: string;
+  opponentSL?: number | null;
 }) {
   return (
     <div>
@@ -1219,6 +1263,8 @@ function CandidateList({
             candidate={c}
             isTop={c.playerId === topPickId}
             onPick={() => onPick(c)}
+            opponentName={opponentName}
+            opponentSL={opponentSL}
           />
         ))}
       </ul>
@@ -1230,12 +1276,23 @@ function CandidateRow({
   candidate,
   isTop,
   onPick,
+  opponentName,
+  opponentSL,
 }: {
   candidate: ThrowCandidate;
   isTop: boolean;
   onPick: () => void;
+  opponentName?: string;
+  opponentSL?: number | null;
 }) {
   const [open, setOpen] = useState(false);
+  const pct = Math.round(candidate.matchupScore);
+  const winColor =
+    pct >= 60
+      ? "text-[var(--color-felt-bright)]"
+      : pct >= 45
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]";
   return (
     <li
       className={cn(
@@ -1247,53 +1304,112 @@ function CandidateRow({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full min-h-[56px] flex-wrap items-center justify-between gap-3 px-4 py-3 text-left hover:bg-[var(--bg-soft)]/40"
+        className="flex w-full min-h-[64px] items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-soft)]/40"
       >
-        <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-3">
-          <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide text-[var(--color-brass-bright)] tabular-nums">
-            {candidate.overall}
+        <div className="flex flex-col items-center justify-center w-14 shrink-0">
+          <span
+            className={cn(
+              "font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums",
+              winColor,
+            )}
+          >
+            {pct}%
           </span>
-          <span className="font-medium">{candidate.playerName}</span>
-          {candidate.skillLevel != null && (
-            <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
-          )}
-          <VerdictBadge verdict={candidate.verdict} />
+          <MiniProbBar pct={pct} />
         </div>
-        <span className="text-xs text-[var(--fg-dim)]">{open ? "▴" : "▾"}</span>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <div className="flex flex-wrap items-baseline gap-2">
+            <span className="font-medium">{candidate.playerName}</span>
+            {candidate.skillLevel != null && (
+              <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
+            )}
+            <VerdictBadge verdict={candidate.verdict} />
+          </div>
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            {!candidate.components.h2h.noData && (
+              <span>
+                H2H {candidate.components.h2h.wins}-{candidate.components.h2h.losses}
+              </span>
+            )}
+            {!candidate.components.form.noData && (
+              <>
+                {!candidate.components.h2h.noData && <span>·</span>}
+                <span>Form {candidate.components.form.rate}%</span>
+              </>
+            )}
+          </div>
+        </div>
+        <span className="text-xs text-[var(--fg-dim)] shrink-0">
+          {open ? "▴" : "▾"}
+        </span>
       </button>
       {open && (
         <div className="border-t border-[var(--border)] bg-[var(--bg-soft)]/30 px-4 py-3 text-sm">
-          {candidate.reasoning.length > 0 && (
-            <ul className="space-y-1">
-              {candidate.reasoning.map((r, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
+          {/* H2H + Race visuals if relevant */}
+          {candidate.h2hHistory.length > 0 && opponentName && (
+            <div className="mb-3">
+              <H2HHistory
+                history={candidate.h2hHistory}
+                opponentName={opponentName}
+              />
+            </div>
           )}
-          {candidate.flags.length > 0 && (
-            <ul className="mt-2 space-y-1 text-xs text-[var(--fg-dim)]">
-              {candidate.flags.map((f, i) => (
-                <li key={i}>⚠ {f}</li>
-              ))}
-            </ul>
-          )}
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            <ComponentBar label="H2H" c={candidate.components.h2h} />
-            <ComponentBar label="vs SL" c={candidate.components.vsSL} />
-            <ComponentBar label="Form" c={candidate.components.form} />
-            <ComponentBar label="vs Team" c={candidate.components.vsTeam} />
-            <ComponentBar label="Slot fit" c={candidate.components.position} />
-            <VenueBar c={candidate.components.venue} />
+          {typeof candidate.skillLevel === "number" &&
+            typeof opponentSL === "number" && (
+              <div className="mb-3">
+                <RaceVisual
+                  ourSL={candidate.skillLevel}
+                  theirSL={opponentSL}
+                />
+              </div>
+            )}
+
+          <div className="grid gap-3 lg:grid-cols-[1fr_1.2fr]">
+            <div className="flex flex-col items-center">
+              <MatchupRadar components={candidate.components} size={170} />
+            </div>
+            <div className="flex flex-col gap-2">
+              {candidate.reasoning.length > 0 && (
+                <ul className="space-y-1">
+                  {candidate.reasoning.map((r, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {candidate.flags.length > 0 && (
+                <ul className="space-y-1 text-xs text-[var(--fg-dim)]">
+                  {candidate.flags.map((f, i) => (
+                    <li key={i}>⚠ {f}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
+
           <LookaheadStrip
             teamValue={candidate.components.lookahead}
             delta={candidate.components.lookaheadDelta}
             race={candidate.components.raceEquity}
             compact
           />
+
+          <details className="mt-2">
+            <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] hover:text-[var(--color-brass)]">
+              ↳ Per-component scores
+            </summary>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+              <ComponentBar label="H2H" c={candidate.components.h2h} />
+              <ComponentBar label="vs SL" c={candidate.components.vsSL} />
+              <ComponentBar label="Form" c={candidate.components.form} />
+              <ComponentBar label="vs Team" c={candidate.components.vsTeam} />
+              <ComponentBar label="Slot fit" c={candidate.components.position} />
+              <VenueBar c={candidate.components.venue} />
+            </div>
+          </details>
+
           <div className="mt-3 flex justify-end text-[11px]">
             <button
               type="button"
@@ -1305,7 +1421,7 @@ function CandidateRow({
               disabled={!candidate.feasible}
               className="font-semibold text-[var(--color-brass)] hover:underline disabled:opacity-40"
             >
-              Pick {candidate.playerName.split(" ")[0]} →
+              Pick {candidate.playerName.split(" ")[0]} ({pct}%) →
             </button>
           </div>
         </div>
@@ -1512,6 +1628,318 @@ function SaveForLaterCallout({
       >
         Use them anyway →
       </button>
+    </div>
+  );
+}
+
+/* ============================================================ charts */
+
+/**
+ * Donut-style win probability gauge. The percentage shown is the candidate's
+ * matchupScore — a pure win likelihood, before lookahead penalties.
+ */
+function WinProbGauge({
+  pct,
+  size = 132,
+  label = "win likelihood",
+}: {
+  pct: number;
+  size?: number;
+  label?: string;
+}) {
+  const clamped = Math.max(0, Math.min(100, pct));
+  const r = size * 0.4;
+  const cx = size / 2;
+  const cy = size / 2;
+  const C = 2 * Math.PI * r;
+  const dash = (clamped / 100) * C;
+  const colorVar =
+    clamped >= 60
+      ? "var(--color-felt-bright)"
+      : clamped >= 45
+        ? "var(--color-brass-bright)"
+        : "var(--color-pop-bright)";
+  return (
+    <svg
+      viewBox={`0 0 ${size} ${size}`}
+      width={size}
+      height={size}
+      className="block"
+      role="img"
+      aria-label={`${Math.round(clamped)}% ${label}`}
+    >
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--border)" strokeWidth={size * 0.08} />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill="none"
+        stroke={colorVar}
+        strokeWidth={size * 0.08}
+        strokeDasharray={`${dash} ${C - dash}`}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${cx} ${cy})`}
+        style={{ transition: "stroke-dasharray 400ms ease-out" }}
+      />
+      <text
+        x={cx}
+        y={cy + size * 0.04}
+        textAnchor="middle"
+        className="fill-[var(--fg)] font-[family-name:var(--font-display)]"
+        style={{ fontSize: size * 0.32 }}
+      >
+        {Math.round(clamped)}%
+      </text>
+      <text
+        x={cx}
+        y={cy + size * 0.22}
+        textAnchor="middle"
+        className="fill-[var(--fg-dim)]"
+        style={{ fontSize: size * 0.075, letterSpacing: "0.18em", textTransform: "uppercase" }}
+      >
+        {label}
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * Six-axis radar chart over the candidate's component scores. Each axis is
+ * 0..100 (smoothed). The polygon visualizes strengths and weaknesses at a
+ * glance; combined with the win-prob gauge it replaces the prior 6 flat bars.
+ */
+function MatchupRadar({
+  components,
+  size = 200,
+}: {
+  components: ThrowCandidate["components"];
+  size?: number;
+}) {
+  const labels = ["H2H", "vs SL", "Form", "vs Team", "Slot", "Race"] as const;
+  const values = [
+    components.h2h.smoothed,
+    components.vsSL.smoothed,
+    components.form.smoothed,
+    components.vsTeam.smoothed,
+    components.position.smoothed,
+    components.raceEquity,
+  ];
+  const noData = [
+    components.h2h.noData,
+    components.vsSL.noData,
+    components.form.noData,
+    components.vsTeam.noData,
+    components.position.noData,
+    false, // raceEquity always present
+  ];
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = size * 0.36;
+  const angleAt = (i: number) => (Math.PI * 2 * i) / labels.length - Math.PI / 2;
+  const point = (i: number, v: number) => {
+    const rr = (Math.max(0, Math.min(100, v)) / 100) * r;
+    return [cx + Math.cos(angleAt(i)) * rr, cy + Math.sin(angleAt(i)) * rr];
+  };
+  const polygonPoints = values.map((v, i) => point(i, v).join(",")).join(" ");
+  const rings = [25, 50, 75, 100].map((pct) =>
+    labels.map((_, i) => point(i, pct).join(",")).join(" "),
+  );
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="block w-full">
+      {rings.map((pts, i) => (
+        <polygon
+          key={i}
+          points={pts}
+          fill="none"
+          stroke="var(--border)"
+          strokeWidth={i === rings.length - 1 ? 1 : 0.5}
+        />
+      ))}
+      {/* Axes */}
+      {labels.map((_, i) => {
+        const [x, y] = point(i, 100);
+        return (
+          <line
+            key={i}
+            x1={cx}
+            y1={cy}
+            x2={x}
+            y2={y}
+            stroke="var(--border)"
+            strokeWidth={0.5}
+          />
+        );
+      })}
+      <polygon
+        points={polygonPoints}
+        fill="var(--color-brass)"
+        fillOpacity={0.28}
+        stroke="var(--color-brass-bright)"
+        strokeWidth={1.5}
+        style={{ transition: "all 350ms ease-out" }}
+      />
+      {/* Vertex dots */}
+      {values.map((v, i) => {
+        const [x, y] = point(i, v);
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={2.5}
+            fill={noData[i] ? "var(--fg-dim)" : "var(--color-brass-bright)"}
+          />
+        );
+      })}
+      {/* Labels */}
+      {labels.map((lbl, i) => {
+        const [lx, ly] = point(i, 130);
+        return (
+          <text
+            key={lbl}
+            x={lx}
+            y={ly}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className={cn(
+              "fill-[var(--fg)] text-[10px] font-semibold uppercase",
+              noData[i] && "fill-[var(--fg-dim)]",
+            )}
+            style={{ letterSpacing: "0.16em" }}
+          >
+            {lbl}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
+/**
+ * Horizontal split bar showing the APA race chart distribution. The visual
+ * makes the SL asymmetry obvious at a glance — a low SL has a much shorter
+ * bar than a high SL across the divide.
+ */
+function RaceVisual({
+  ourSL,
+  theirSL,
+}: {
+  ourSL: number | null;
+  theirSL: number | null;
+}) {
+  if (ourSL == null || theirSL == null) return null;
+  const ourReq = winsRequired(ourSL, theirSL);
+  const theirReq = winsRequired(theirSL, ourSL);
+  const total = ourReq + theirReq;
+  if (!total) return null;
+  // We want the side with fewer required wins to occupy MORE space (the
+  // visual proxy for "we're closer to victory"). So ourPct = theirReq / total.
+  const ourPct = (theirReq / total) * 100;
+  return (
+    <div>
+      <div className="flex h-2.5 w-full overflow-hidden rounded-full">
+        <div
+          className="bg-[var(--color-felt-bright)] transition-all duration-300"
+          style={{ width: `${ourPct}%` }}
+        />
+        <div
+          className="bg-[var(--color-pop-bright)] transition-all duration-300"
+          style={{ width: `${100 - ourPct}%` }}
+        />
+      </div>
+      <div className="mt-1.5 flex items-center justify-between text-[11px] text-[var(--fg-dim)]">
+        <span>
+          <span className="font-semibold text-[var(--color-felt-bright)]">
+            SL{ourSL}
+          </span>
+          <span className="ml-1">→ {ourReq} games</span>
+        </span>
+        <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--color-brass)]">
+          Race
+        </span>
+        <span>
+          <span className="ml-1">{theirReq} games ←</span>
+          <span className="ml-1 font-semibold text-[var(--color-pop-bright)]">
+            SL{theirSL}
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * H2H history strip. Renders one square per recorded match, oldest on the
+ * left, newest on the right. Greens are wins, reds are losses. Useful for
+ * spotting "haven't lost to this person in 4 matches" / "0-3 lifetime".
+ */
+function H2HHistory({
+  history,
+  opponentName,
+}: {
+  history: ThrowCandidate["h2hHistory"];
+  opponentName: string;
+}) {
+  if (history.length === 0) return null;
+  // history is newest-first; reverse for chronological display
+  const chrono = [...history].reverse();
+  const wins = chrono.filter((h) => h.outcome === "W").length;
+  const losses = chrono.filter((h) => h.outcome === "L").length;
+  return (
+    <div>
+      <div className="flex items-baseline justify-between text-[11px]">
+        <span className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          H2H vs {opponentName}
+        </span>
+        <span className="tabular-nums">
+          <span className="font-semibold text-[var(--color-felt-bright)]">
+            {wins}W
+          </span>
+          <span className="mx-1 text-[var(--fg-dim)]">·</span>
+          <span className="font-semibold text-[var(--color-pop-bright)]">
+            {losses}L
+          </span>
+        </span>
+      </div>
+      <div className="mt-1.5 flex flex-wrap gap-1">
+        {chrono.map((h, i) => (
+          <span
+            key={`${h.matchId}-${i}`}
+            title={`${new Date(h.date).toLocaleDateString()} · ${h.outcome === "W" ? "Win" : "Loss"}`}
+            className={cn(
+              "inline-flex h-5 w-5 items-center justify-center rounded-sm text-[10px] font-bold",
+              h.outcome === "W"
+                ? "bg-[var(--color-felt)]/30 text-[var(--color-felt-bright)]"
+                : "bg-[var(--color-pop)]/30 text-[var(--color-pop-bright)]",
+            )}
+          >
+            {h.outcome}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Mini horizontal probability bar — used in the candidate list rows for a
+ * quick visual scan without expanding.
+ */
+function MiniProbBar({ pct }: { pct: number }) {
+  const v = Math.max(0, Math.min(100, pct));
+  return (
+    <div className="h-1 w-16 rounded-full bg-[var(--bg-soft)]">
+      <div
+        className={cn(
+          "h-full rounded-full",
+          v >= 60
+            ? "bg-[var(--color-felt-bright)]"
+            : v >= 45
+              ? "bg-[var(--color-brass-bright)]"
+              : "bg-[var(--color-pop-bright)]",
+        )}
+        style={{ width: `${v}%`, transition: "width 300ms" }}
+      />
     </div>
   );
 }
