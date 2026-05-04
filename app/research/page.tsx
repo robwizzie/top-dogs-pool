@@ -32,6 +32,7 @@ import {
   reliabilityRanking,
   suggestedLineup,
   teamSummary,
+  throwAdvisorOpponents,
   venueRecords,
   vsOpponents,
   vsSkillLevelTable,
@@ -39,6 +40,7 @@ import {
 } from "@/lib/research";
 import { CounterPickWidget } from "@/components/research/CounterPickWidget";
 import { PlayerComparison } from "@/components/research/PlayerComparison";
+import { ThrowAdvisor } from "@/components/research/ThrowAdvisor";
 import type { CounterPickRow } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
@@ -58,6 +60,7 @@ export const metadata = {
 
 type TabKey =
   | "overview"
+  | "throw"
   | "briefing"
   | "lineups"
   | "players"
@@ -66,6 +69,7 @@ type TabKey =
 
 const TABS: Array<{ key: TabKey; label: string; emoji: string; blurb: string }> = [
   { key: "overview", label: "Overview", emoji: "📊", blurb: "Headline numbers, who's hot, badges, all-time records." },
+  { key: "throw", label: "Throw Advisor", emoji: "🎱", blurb: "Live: who to throw vs their putup, with full reasoning." },
   { key: "briefing", label: "Briefing", emoji: "🎯", blurb: "Next-match intel — counter-picks, impact, suggested 5." },
   { key: "lineups", label: "Lineups", emoji: "🤝", blurb: "Best 5-player combos, chemistry, position strategy." },
   { key: "players", label: "Players", emoji: "👤", blurb: "Per-player deep dives — radar, form, level-up, MVP race." },
@@ -213,6 +217,16 @@ export default async function ResearchPage({ searchParams }: Props) {
     )
     .slice(0, 3);
 
+  // Throw Advisor data — full match history (across selected scope) + opponent
+  // autocomplete + a list of distinct venues for the location field.
+  const throwOpponents = throwAdvisorOpponents(matches);
+  const throwLocations = [
+    ...new Set(matches.map((m) => m.location).filter((v): v is string => !!v)),
+  ].sort();
+  const nextScheduledMatch = snap.schedule
+    .filter((m) => m.status === "upcoming" && m.opponent !== "BYE")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date))[0];
+
   // Sort lineups various ways for "best/worst" sections.
   const lineupsByWins = [...lineups].sort((a, b) =>
     b.wins - a.wins || b.matchesPlayed - a.matchesPlayed,
@@ -243,6 +257,7 @@ export default async function ResearchPage({ searchParams }: Props) {
           session={session}
           counts={{
             overview: 4,
+            throw: 1,
             briefing: briefing ? 5 : 4,
             lineups: 3,
             players: 7,
@@ -250,6 +265,23 @@ export default async function ResearchPage({ searchParams }: Props) {
             venues: 5,
           }}
         />
+
+        <Section
+          title="Throw Advisor"
+          subtitle="Live during pool night: tell it who they put up, what slot it is, and which of our players are at the bar — get a ranked recommendation with full reasoning. Tracks the running score, the APA 23-rule SL budget, and warns when burning a stud here would force the rest of the night into trouble. Already-thrown players are removed automatically."
+          anchor="throw"
+          forTab="throw"
+          activeTab={tab}
+        >
+          <ThrowAdvisor
+            roster={roster}
+            matches={matches}
+            opponents={throwOpponents}
+            defaultOpponent={nextScheduledMatch?.opponent}
+            defaultLocation={nextScheduledMatch?.location}
+            knownLocations={throwLocations}
+          />
+        </Section>
 
         {briefing && (
           <Section
