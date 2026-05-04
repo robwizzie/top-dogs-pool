@@ -1,0 +1,133 @@
+{
+  "fetchedAt": "2026-05-04T21:58:04.863Z",
+  "data": {
+    "aliasSessionStats": {
+      "alias": {
+        "id": 3338316,
+        "league": {
+          "id": 890,
+          "currentSessionId": 138,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "players": [
+          {
+            "id": 91579868,
+            "team": {
+              "id": 12938517,
+              "name": "Poolin' and Boolin'",
+              "number": "06801",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.5777777777777778,
+            "ppm": 1.7333333333333334,
+            "eightBallMatchPointsEarned": 26,
+            "matchesWon": 9,
+            "matchesPlayed": 15,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "aliasSessionStatsDropdown": {
+      "alias": {
+        "id": 3338316,
+        "sessions": [
+          {
+            "id": 138,
+            "name": "Spring 2026",
+            "__typename": "Session"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getEightBallStats": {
+      "alias": {
+        "players": [
+          {
+            "id": 91609301,
+            "session": {
+              "id": 138,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 1,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 91579868,
+            "session": {
+              "id": 138,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "id": 3338316,
+        "displayName": "Frankie Bonner",
+        "EightBallStats": [
+          {
+            "id": 803338316,
+            "matchesWon": 9,
+            "matchesPlayed": 15,
+            "CLA": 0,
+            "defensiveShotAvg": 0.4,
+            "matchCountForLastTwoYrs": 15,
+            "lastPlayed": "2026-04-28T00:00:00Z",
+            "__typename": "EightBallLifetimeStatistics"
+          }
+        ],
+        "NineBallStats": [
+          {
+            "id": 903338316,
+            "matchesWon": 8,
+            "matchesPlayed": 17,
+            "CLA": 0,
+            "defensiveShotAvg": 1.82,
+            "matchCountForLastTwoYrs": 17,
+            "lastPlayed": "2026-04-27T00:00:00Z",
+            "__typename": "NineBallLifetimeStatistics"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getMembershipHistory": {
+      "alias": {
+        "id": 3338316,
+        "member": {
+          "id": 3447747,
+          "consecutiveYearsPlayed": 1,
+          "membershipHistory": [
+            {
+              "id": 7686620,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            }
+          ],
+          "__typename": "Member"
+        },
+        "__typename": "Alias"
+      }
+    }
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "fetchedAt": "2026-05-04T21:59:01.660Z",
+  "data": {
+    "aliasSessionStats": {
+      "alias": {
+        "id": 3215822,
+        "league": {
+          "id": 890,
+          "currentSessionId": 138,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "players": [
+          {
+            "id": 91261575,
+            "team": {
+              "id": 12894672,
+              "name": "Lights Out",
+              "number": "06805",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.5714285714285714,
+            "ppm": 1.7142857142857142,
+            "eightBallMatchPointsEarned": 12,
+            "matchesWon": 5,
+            "matchesPlayed": 7,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90962785,
+            "team": {
+              "id": 12858104,
+              "name": "Lights Out",
+              "number": "06805",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 2,
+            "matchesPlayed": 8,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90216985,
+            "team": {
+              "id": 12758142,
+              "name": "Lights Out",
+              "number": "06805",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.48484848484848486,
+            "ppm": 1.4545454545454546,
+            "eightBallMatchPointsEarned": 16,
+            "matchesWon": 7,
+            "matchesPlayed": 11,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 89750674,
+            "team": {
+              "id": 12623299,
+              "name": "Lights Out",
+              "number": "06805",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.5384615384615384,
+            "ppm": 1.6153846153846154,
+            "eightBallMatchPointsEarned": 21,
+            "matchesWon": 7,
+            "matchesPlayed": 13,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 2,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "aliasSessionStatsDropdown": {
+      "alias": {
+        "id": 3215822,
+        "sessions": [
+          {
+            "id": 138,
+            "name": "Spring 2026",
+            "__typename": "Session"
+          },
+          {
+            "id": 137,
+            "name": "Fall 2025",
+            "__typename": "Session"
+          },
+          {
+            "id": 136,
+            "name": "Summer 2025",
+            "__typename": "Session"
+          },
+          {
+            "id": 135,
+            "name": "Spring 2025",
+            "__typename": "Session"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getEightBallStats": {
+      "alias": {
+        "players": [
+          {
+            "id": 91263408,
+            "session": {
+              "id": 138,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 1,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 91261575,
+            "session": {
+              "id": 138,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90963143,
+            "session": {
+              "id": 137,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 1,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 90962785,
+            "session": {
+              "id": 137,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90218540,
+            "session": {
+              "id": 136,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 90216985,
+            "session": {
+              "id": 136,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 89750674,
+            "session": {
+              "id": 135,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 2,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 89287042,
+            "session": {
+              "id": 135,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 1,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 89165754,
+            "session": {
+              "id": 134,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          }
+        ],
+        "id": 3215822,
+        "displayName": "Jennifer Swanson",
+        "EightBallStats": [
+          {
+            "id": 803215822,
+            "matchesWon": 56,
+            "matchesPlayed": 114,
+            "CLA": 0,
+            "defensiveShotAvg": 2.31,
+            "matchCountForLastTwoYrs": 41,
+            "lastPlayed": "2026-04-21T00:00:00Z",
+            "__typename": "EightBallLifetimeStatistics"
+          }
+        ],
+        "NineBallStats": [
+          {
+            "id": 903215822,
+            "matchesWon": 81,
+            "matchesPlayed": 158,
+            "CLA": 0,
+            "defensiveShotAvg": 1.56,
+            "matchCountForLastTwoYrs": 52,
+            "lastPlayed": "2026-04-20T00:00:00Z",
+            "__typename": "NineBallLifetimeStatistics"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getMembershipHistory": {
+      "alias": {
+        "id": 3215822,
+        "member": {
+          "id": 2929341,
+          "consecutiveYearsPlayed": 6,
+          "membershipHistory": [
+            {
+              "id": 5289027,
+              "year": 2016,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 5334690,
+              "year": 2017,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 6466083,
+              "year": 2021,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 6620968,
+              "year": 2022,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 6804897,
+              "year": 2023,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7111384,
+              "year": 2024,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7367484,
+              "year": 2025,
+              "leaguePaidIn": {
+                "id": 541,
+                "name": "South Coast APA",
+                "salutation": "Phil & Taz Brooker",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7691855,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            }
+          ],
+          "__typename": "Member"
+        },
+        "__typename": "Alias"
+      }
+    }
+  }
+}
