@@ -1368,18 +1368,21 @@ async function main() {
         for (const p of aliasData?.alias?.players ?? []) {
           const tid = p.team?.id;
           if (!tid) continue;
-          // Find what session this team was in.
-          const sessionInfo = teamIdToSessionInfo.get(tid);
-          if (!sessionInfo) continue;
+          // Career totals always count, even if we lack session metadata.
           const matchesPlayed = p.matchesPlayed ?? 0;
           const wins = p.matchesWon ?? 0;
           careerMatches += matchesPlayed;
           careerWins += wins;
+          // Session info is best-effort: prefer cached team data, fall back
+          // to a synthetic record keyed by the team id (so the row still
+          // appears in the per-session table even if we haven't backfilled
+          // that team yet — APA_MAX_OPP_PAST_SESSIONS may have capped it).
+          const sessionInfo = teamIdToSessionInfo.get(tid);
           sessionRecords.push({
-            sessionId: sessionInfo.id,
-            sessionName: sessionInfo.name,
+            sessionId: sessionInfo?.id ?? tid, // fall back to team id for sort stability
+            sessionName: sessionInfo?.name ?? "Past session",
             teamId: tid,
-            teamName: p.team?.name ?? sessionInfo.teamName,
+            teamName: p.team?.name ?? sessionInfo?.teamName ?? `Team #${tid}`,
             skillLevel: p.skillLevel,
             matchesPlayed,
             wins,
