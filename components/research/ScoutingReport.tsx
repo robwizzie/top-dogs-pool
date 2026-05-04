@@ -572,10 +572,20 @@ function InteractivePredictedLineup({
   lineupInputs: LineupInputs | null;
 }) {
   // position → opp player name
-  const [overrides, setOverrides] = useState<Map<number, string>>(new Map());
+  const [oppOverrides, setOppOverrides] = useState<Map<number, string>>(
+    new Map(),
+  );
+  // position → our player id
+  const [ourOverrides, setOurOverrides] = useState<Map<number, string>>(
+    new Map(),
+  );
 
   const lineup = useMemo<PredictedLineup>(() => {
-    if (overrides.size === 0 || !lineupInputs) return initial;
+    if (
+      (oppOverrides.size === 0 && ourOverrides.size === 0) ||
+      !lineupInputs
+    )
+      return initial;
     return predictLineup(
       scenario,
       lineupInputs.matches,
@@ -584,38 +594,62 @@ function InteractivePredictedLineup({
       lineupInputs.opponentRoster,
       lineupInputs.location,
       new Date(),
-      overrides,
+      oppOverrides,
+      ourOverrides,
     );
-  }, [initial, scenario, overrides, lineupInputs]);
+  }, [initial, scenario, oppOverrides, ourOverrides, lineupInputs]);
 
-  function setOverride(position: number, oppName: string | null) {
-    setOverrides((prev) => {
+  function setOppOverride(position: number, name: string | null) {
+    setOppOverrides((prev) => {
       const next = new Map(prev);
-      if (oppName === null) next.delete(position);
-      else next.set(position, oppName);
+      if (name === null) next.delete(position);
+      else next.set(position, name);
+      return next;
+    });
+  }
+
+  function setOurOverride(position: number, playerId: string | null) {
+    setOurOverrides((prev) => {
+      const next = new Map(prev);
+      if (playerId === null) next.delete(position);
+      else next.set(position, playerId);
       return next;
     });
   }
 
   function clearAll() {
-    setOverrides(new Map());
+    setOppOverrides(new Map());
+    setOurOverrides(new Map());
   }
 
-  // Roster names available for override picker.
-  const rosterNames =
+  // Roster lists for override pickers.
+  const oppRosterNames =
     lineupInputs?.opponentRoster.map((p) => ({
       name: p.name,
       sl: p.latestSL,
     })) ?? [];
+  const ourRosterEntries =
+    lineupInputs?.roster
+      .filter((p) => p.visible !== false)
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        sl: p.skillLevel ?? null,
+      })) ?? [];
+
+  const totalOverrides = oppOverrides.size + ourOverrides.size;
 
   return (
     <PredictedLineupCard
       lineup={lineup}
       oppName={oppName}
-      rosterNames={rosterNames}
-      overrides={overrides}
-      onSetOverride={lineupInputs ? setOverride : null}
-      onClearAll={overrides.size > 0 ? clearAll : null}
+      oppRosterNames={oppRosterNames}
+      ourRosterEntries={ourRosterEntries}
+      oppOverrides={oppOverrides}
+      ourOverrides={ourOverrides}
+      onSetOppOverride={lineupInputs ? setOppOverride : null}
+      onSetOurOverride={lineupInputs ? setOurOverride : null}
+      onClearAll={totalOverrides > 0 ? clearAll : null}
     />
   );
 }
@@ -629,16 +663,26 @@ function InteractivePredictedLineup({
  */
 function PredictedLineupCard({
   lineup,
-  rosterNames,
-  overrides,
-  onSetOverride,
+  oppRosterNames,
+  ourRosterEntries,
+  oppOverrides,
+  ourOverrides,
+  onSetOppOverride,
+  onSetOurOverride,
   onClearAll,
 }: {
   lineup: PredictedLineup;
   oppName: string;
-  rosterNames: Array<{ name: string; sl: number | null }>;
-  overrides: Map<number, string>;
-  onSetOverride: ((position: number, name: string | null) => void) | null;
+  oppRosterNames: Array<{ name: string; sl: number | null }>;
+  ourRosterEntries: Array<{ id: string; name: string; sl: number | null }>;
+  oppOverrides: Map<number, string>;
+  ourOverrides: Map<number, string>;
+  onSetOppOverride:
+    | ((position: number, name: string | null) => void)
+    | null;
+  onSetOurOverride:
+    | ((position: number, playerId: string | null) => void)
+    | null;
   onClearAll: (() => void) | null;
 }) {
   const heading =
@@ -674,7 +718,8 @@ function PredictedLineupCard({
       {onClearAll && (
         <div className="mt-2 flex items-center justify-between gap-2 rounded-md border border-[var(--color-brass)]/30 bg-[var(--color-brass)]/10 px-2 py-1">
           <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-brass)]">
-            {overrides.size} slot{overrides.size === 1 ? "" : "s"} locked
+            {oppOverrides.size + ourOverrides.size} slot
+            {oppOverrides.size + ourOverrides.size === 1 ? "" : "s"} locked
           </span>
           <button
             type="button"
@@ -690,11 +735,18 @@ function PredictedLineupCard({
           <PredictedSlotRow
             key={s.position}
             slot={s}
-            rosterNames={rosterNames}
-            override={overrides.get(s.position) ?? null}
-            onSetOverride={
-              onSetOverride
-                ? (name) => onSetOverride(s.position, name)
+            oppRosterNames={oppRosterNames}
+            ourRosterEntries={ourRosterEntries}
+            oppOverride={oppOverrides.get(s.position) ?? null}
+            ourOverride={ourOverrides.get(s.position) ?? null}
+            onSetOppOverride={
+              onSetOppOverride
+                ? (name) => onSetOppOverride(s.position, name)
+                : null
+            }
+            onSetOurOverride={
+              onSetOurOverride
+                ? (id) => onSetOurOverride(s.position, id)
                 : null
             }
           />
@@ -713,14 +765,20 @@ function PredictedLineupCard({
  */
 function PredictedSlotRow({
   slot,
-  rosterNames,
-  override,
-  onSetOverride,
+  oppRosterNames,
+  ourRosterEntries,
+  oppOverride,
+  ourOverride,
+  onSetOppOverride,
+  onSetOurOverride,
 }: {
   slot: PredictedLineup["slots"][number];
-  rosterNames: Array<{ name: string; sl: number | null }>;
-  override: string | null;
-  onSetOverride: ((name: string | null) => void) | null;
+  oppRosterNames: Array<{ name: string; sl: number | null }>;
+  ourRosterEntries: Array<{ id: string; name: string; sl: number | null }>;
+  oppOverride: string | null;
+  ourOverride: string | null;
+  onSetOppOverride: ((name: string | null) => void) | null;
+  onSetOurOverride: ((playerId: string | null) => void) | null;
 }) {
   const our = slot.ourPick;
   const tone = our
@@ -730,13 +788,16 @@ function PredictedSlotRow({
         ? "text-[var(--color-brass-bright)]"
         : "text-[var(--color-pop-bright)]"
     : "text-[var(--fg-dim)]";
-  const interactive = !!onSetOverride;
-  const lockedHere = !!slot.oppLocked;
+  const oppInteractive = !!onSetOppOverride;
+  const ourInteractive = !!onSetOurOverride;
+  const oppLocked = !!slot.oppLocked;
+  const ourLockedHere = !!slot.ourLocked;
+  const anyLocked = oppLocked || ourLockedHere;
   return (
     <li
       className={cn(
         "rounded-md border p-3 text-xs",
-        lockedHere
+        anyLocked
           ? "border-[var(--color-brass)]/60 bg-[var(--color-brass)]/10"
           : "border-[var(--border)] bg-[var(--bg-soft)]/30",
       )}
@@ -749,9 +810,13 @@ function PredictedSlotRow({
           <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
             {slot.weThrowFirst ? "we put up" : "they put up"}
           </span>
-          {lockedHere && (
+          {anyLocked && (
             <span className="rounded-full bg-[var(--color-brass)]/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]">
-              locked
+              {oppLocked && ourLockedHere
+                ? "both locked"
+                : oppLocked
+                  ? "opp locked"
+                  : "ours locked"}
             </span>
           )}
         </span>
@@ -767,30 +832,30 @@ function PredictedSlotRow({
 
       {/* Opponent likelihood distribution. In interactive mode, each row is
           a button that locks that opp into this slot. */}
-      {(slot.opponentLikelihoods.length > 0 || (interactive && rosterNames.length > 0)) && (
+      {(slot.opponentLikelihoods.length > 0 || (oppInteractive && oppRosterNames.length > 0)) && (
         <div className="mt-2">
           <div className="flex items-baseline justify-between gap-2">
             <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
-              {lockedHere
+              {oppLocked
                 ? "Locked opp at this slot"
                 : slot.weThrowFirst
                   ? "Their likely counter (top 3)"
                   : "Their likely putup (top 3)"}
             </div>
-            {interactive && lockedHere && (
+            {oppInteractive && oppLocked && (
               <button
                 type="button"
-                onClick={() => onSetOverride!(null)}
+                onClick={() => onSetOppOverride!(null)}
                 className="text-[10px] font-semibold text-[var(--color-brass-bright)] hover:underline"
               >
-                ✕ unlock
+                ✕ unlock opp
               </button>
             )}
           </div>
           <ul className="mt-1 space-y-1">
             {slot.opponentLikelihoods.slice(0, 3).map((l) => {
-              const isLocked = override
-                ? l.name.toLowerCase() === override.toLowerCase()
+              const isLocked = oppOverride
+                ? l.name.toLowerCase() === oppOverride.toLowerCase()
                 : false;
               const Row = (
                 <>
@@ -817,11 +882,11 @@ function PredictedSlotRow({
                   </span>
                 </>
               );
-              return interactive ? (
+              return oppInteractive ? (
                 <li key={l.name}>
                   <button
                     type="button"
-                    onClick={() => onSetOverride!(isLocked ? null : l.name)}
+                    onClick={() => onSetOppOverride!(isLocked ? null : l.name)}
                     className={cn(
                       "flex w-full items-baseline gap-2 rounded px-1 py-0.5 text-left transition-colors",
                       isLocked
@@ -846,18 +911,18 @@ function PredictedSlotRow({
           </ul>
           {/* "Pick any opp" full-roster dropdown when interactive. Lets the
               captain lock players who aren't in the top-3 likelihood list. */}
-          {interactive && (
+          {oppInteractive && (
             <div className="mt-2">
               <select
-                value={override ?? ""}
+                value={oppOverride ?? ""}
                 onChange={(e) =>
-                  onSetOverride!(e.target.value === "" ? null : e.target.value)
+                  onSetOppOverride!(e.target.value === "" ? null : e.target.value)
                 }
                 className="w-full rounded border border-[var(--border)] bg-[var(--bg-card)] px-2 py-1 text-[11px]"
                 aria-label={`Override opp at M${slot.position}`}
               >
                 <option value="">— Pick any opp at M{slot.position} —</option>
-                {rosterNames.map((p) => (
+                {oppRosterNames.map((p) => (
                   <option key={p.name} value={p.name}>
                     {p.name}
                     {p.sl != null ? ` (SL${p.sl})` : ""}
@@ -869,10 +934,25 @@ function PredictedSlotRow({
         </div>
       )}
 
-      {/* Our recommended pick */}
+      {/* Our pick (recommended or locked override). */}
       <div className="mt-2 border-t border-[var(--border)] pt-2">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
-          {slot.weThrowFirst ? "Our opener" : "Our counter"}
+        <div className="flex items-baseline justify-between gap-2">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            {ourLockedHere
+              ? "Locked our pick"
+              : slot.weThrowFirst
+                ? "Our opener"
+                : "Our counter"}
+          </div>
+          {ourInteractive && ourLockedHere && (
+            <button
+              type="button"
+              onClick={() => onSetOurOverride!(null)}
+              className="text-[10px] font-semibold text-[var(--color-brass-bright)] hover:underline"
+            >
+              ✕ unlock ours
+            </button>
+          )}
         </div>
         {our ? (
           <div className="mt-1">
@@ -919,6 +999,29 @@ function PredictedSlotRow({
               ? "No feasible pick — 23-rule budget locked or roster exhausted."
               : "—"}
           </p>
+        )}
+        {/* "Pick our throw" full-roster dropdown when interactive. Lets the
+            captain force a player into the slot regardless of the engine's
+            recommendation. */}
+        {ourInteractive && ourRosterEntries.length > 0 && (
+          <div className="mt-2">
+            <select
+              value={ourOverride ?? ""}
+              onChange={(e) =>
+                onSetOurOverride!(e.target.value === "" ? null : e.target.value)
+              }
+              className="w-full rounded border border-[var(--border)] bg-[var(--bg-card)] px-2 py-1 text-[11px]"
+              aria-label={`Override our pick at M${slot.position}`}
+            >
+              <option value="">— Pick our throw at M{slot.position} —</option>
+              {ourRosterEntries.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                  {p.sl != null ? ` (SL${p.sl})` : ""}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
       </div>
     </li>
