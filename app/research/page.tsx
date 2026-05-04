@@ -33,6 +33,7 @@ import {
   suggestedLineup,
   teamSummary,
   calibrationBacktest,
+  opponentScoutingReport,
   throwAdvisorOpponents,
   venueRecords,
   vsOpponents,
@@ -43,6 +44,7 @@ import { CounterPickWidget } from "@/components/research/CounterPickWidget";
 import { PlayerComparison } from "@/components/research/PlayerComparison";
 import { ThrowAdvisor } from "@/components/research/ThrowAdvisor";
 import { CalibrationView } from "@/components/research/CalibrationView";
+import { ScoutingReport } from "@/components/research/ScoutingReport";
 import type { CounterPickRow } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
@@ -231,6 +233,15 @@ export default async function ResearchPage({ searchParams }: Props) {
   // Calibration backtest — replays the engine on every historical match
   // using only-prior-data, to measure how accurate our predictions are.
   const calibration = calibrationBacktest(matches, roster);
+  // Pre-match scouting report on the upcoming opponent.
+  const scoutingReport = nextScheduledMatch
+    ? opponentScoutingReport(
+        nextScheduledMatch.opponent,
+        matches,
+        roster,
+        currentSession?.id,
+      )
+    : null;
 
   // Sort lineups various ways for "best/worst" sections.
   const lineupsByWins = [...lineups].sort((a, b) =>
@@ -263,7 +274,7 @@ export default async function ResearchPage({ searchParams }: Props) {
           counts={{
             overview: 4,
             throw: 1,
-            briefing: briefing ? 5 : 4,
+            briefing: (briefing ? 5 : 4) + (scoutingReport ? 1 : 0),
             lineups: 3,
             players: 7,
             opponents: 3,
@@ -307,6 +318,18 @@ export default async function ResearchPage({ searchParams }: Props) {
             activeTab={tab}
           >
             <NextMatchBriefingView briefing={briefing} />
+          </Section>
+        )}
+
+        {scoutingReport && (
+          <Section
+            title="Scouting report"
+            subtitle={`In-depth read on ${scoutingReport.team} from every match they've played us — team record this session and lifetime, per-player form (hot/cold), preferred slots, suspected real skill levels for anyone playing above their stated SL, and our top counter from the roster.`}
+            anchor="scouting"
+            forTab="briefing"
+            activeTab={tab}
+          >
+            <ScoutingReport report={scoutingReport} />
           </Section>
         )}
 
