@@ -383,6 +383,17 @@ export default async function ResearchPage({ searchParams }: Props) {
               oppTeamProfile={scoutingOppTeam}
               predictedWeFirst={predictedWeFirst}
               predictedTheyFirst={predictedTheyFirst}
+              lineupInputs={
+                nextScheduledMatch && oppRosterForLineup.length >= 5
+                  ? {
+                      matches,
+                      roster,
+                      opponentTeam: nextScheduledMatch.opponent,
+                      opponentRoster: oppRosterForLineup,
+                      location: nextScheduledMatch.location,
+                    }
+                  : null
+              }
             />
           </Section>
         )}
