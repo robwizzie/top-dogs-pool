@@ -5189,6 +5189,8 @@ export type PredictedSlot = {
   } | null;
   /** True if no feasible pick (e.g., 23-budget exhausted). */
   blocked: boolean;
+  /** When set, the opp at this slot was locked in by the user (override). */
+  oppLocked: { name: string; sl: number | null } | null;
 };
 
 export type PredictedLineup = {
@@ -5317,6 +5319,14 @@ export function predictLineup(
   opponentRoster: Array<{ name: string; latestSL: number | null; preferredPosition?: number | null }>,
   location?: string,
   refDate: Date = new Date(),
+  /**
+   * Per-slot opponent override. position → opp player name. When set, the
+   * engine treats that player as the locked-in opp at the given slot
+   * (instead of using the most-likely or adversarial pick), recomputes our
+   * counter against them, and removes them from later slots' distributions.
+   * Lets the captain explore "what if they put up Stephen at M1?" scenarios.
+   */
+  oppOverrides: Map<number, string> = new Map(),
 ): PredictedLineup {
   const usedOurIds = new Set<string>();
   const usedOppNames = new Set<string>();
@@ -5371,12 +5381,22 @@ export function predictLineup(
           opponentLikelihoods: likelihoods,
           ourPick: null,
           blocked: true,
+          oppLocked: null,
         });
         expectedWinProbs.push(0.5);
         continue;
       }
-      // Their predicted counter (adversarial pick from remaining roster).
-      const adversarial = adversarialCounterFor(top, remainingOpp);
+      // Their counter — use the override if set + still available, else
+      // engine's adversarial pick from remaining roster.
+      const overrideName = oppOverrides.get(pos);
+      const overrideMatch = overrideName
+        ? remainingOpp.find(
+            (p) => p.name.trim().toLowerCase() === overrideName.trim().toLowerCase(),
+          )
+        : null;
+      const adversarial: { name: string; sl: number | null } | null = overrideMatch
+        ? { name: overrideMatch.name, sl: overrideMatch.latestSL }
+        : adversarialCounterFor(top, remainingOpp);
       const oppForLog = adversarial ?? {
         name: remainingOpp[0]?.name ?? "TBD",
         sl: remainingOpp[0]?.latestSL ?? null,
@@ -5385,22 +5405,27 @@ export function predictLineup(
       // first the opp picks adversarially though, so likelihoods aren't the
       // actual distribution — but they still inform "what if their captain
       // doesn't pick optimally". Average the two as a reasonable middle
-      // ground.)
+      // ground.) When overridden, we know the exact opp so use that win prob.
       const adversarialWP =
         adversarial && typeof adversarial.sl === "number"
           ? hypotheticalWinProbability(top, adversarial.sl, false)
           : top.matchupScore;
-      let expectedAcrossDist = 0;
-      let probSum = 0;
-      for (const l of likelihoods) {
-        if (typeof l.sl !== "number") continue;
-        const wp = hypotheticalWinProbability(top, l.sl, false);
-        expectedAcrossDist += l.probability * wp;
-        probSum += l.probability;
+      let expectedWP: number;
+      if (overrideMatch) {
+        expectedWP = Math.round(adversarialWP * 10) / 10;
+      } else {
+        let expectedAcrossDist = 0;
+        let probSum = 0;
+        for (const l of likelihoods) {
+          if (typeof l.sl !== "number") continue;
+          const wp = hypotheticalWinProbability(top, l.sl, false);
+          expectedAcrossDist += l.probability * wp;
+          probSum += l.probability;
+        }
+        if (probSum > 0) expectedAcrossDist /= probSum;
+        expectedWP =
+          Math.round(((adversarialWP + expectedAcrossDist) / 2) * 10) / 10;
       }
-      if (probSum > 0) expectedAcrossDist /= probSum;
-      const expectedWP =
-        Math.round(((adversarialWP + expectedAcrossDist) / 2) * 10) / 10;
       log.push({
         position: pos,
         ourPlayerId: top.playerId,
@@ -5425,13 +5450,31 @@ export function predictLineup(
           reasoning: top.reasoning.slice(0, 2),
         },
         blocked: false,
+        oppLocked: overrideMatch
+          ? { name: overrideMatch.name, sl: overrideMatch.latestSL }
+          : null,
       });
       expectedWinProbs.push(expectedWP / 100);
     } else {
-      // They throw first. Use the most-likely opp player as the named
-      // "current opponent" but pick OUR player to maximize EXPECTED win
-      // prob across the full distribution.
-      const top = likelihoods[0];
+      // They throw first. Use the override (if set) or the most-likely opp
+      // player as the named "current opponent". When overridden we know the
+      // exact opp so we maximize win prob vs them; otherwise we maximize
+      // EXPECTED win prob across the full distribution.
+      const overrideName = oppOverrides.get(pos);
+      const overrideMatch = overrideName
+        ? remainingOpp.find(
+            (p) => p.name.trim().toLowerCase() === overrideName.trim().toLowerCase(),
+          )
+        : null;
+      const top = overrideMatch
+        ? {
+            name: overrideMatch.name,
+            sl: overrideMatch.latestSL,
+            probability: 1,
+            observedAtThisSlot: 0,
+            totalAppearances: 0,
+          }
+        : likelihoods[0];
       if (!top || typeof top.sl !== "number") {
         slots.push({
           position: pos,
@@ -5439,6 +5482,7 @@ export function predictLineup(
           opponentLikelihoods: likelihoods,
           ourPick: null,
           blocked: true,
+          oppLocked: null,
         });
         expectedWinProbs.push(0.5);
         continue;
@@ -5463,21 +5507,26 @@ export function predictLineup(
         roster,
         refDate,
       );
-      // Maximize expected win prob across opp likelihoods, not just vs the
-      // top likely. Use hypotheticalWinProbability per (candidate, opp).
+      // Maximize expected win prob. When the opp is locked in via override,
+      // optimize directly vs them; otherwise weighted across likelihoods.
       let bestCandidate: ThrowCandidate | null = null;
       let bestExpected = -1;
       for (const c of result.candidates) {
         if (!c.feasible || c.saveForLater) continue;
-        let exp = 0;
-        let probSum = 0;
-        for (const l of likelihoods) {
-          if (typeof l.sl !== "number") continue;
-          const wp = hypotheticalWinProbability(c, l.sl, false);
-          exp += l.probability * wp;
-          probSum += l.probability;
+        let exp: number;
+        if (overrideMatch && typeof top.sl === "number") {
+          exp = hypotheticalWinProbability(c, top.sl, false);
+        } else {
+          let acc = 0;
+          let probSum = 0;
+          for (const l of likelihoods) {
+            if (typeof l.sl !== "number") continue;
+            const wp = hypotheticalWinProbability(c, l.sl, false);
+            acc += l.probability * wp;
+            probSum += l.probability;
+          }
+          exp = probSum > 0 ? acc / probSum : c.matchupScore;
         }
-        if (probSum > 0) exp /= probSum;
         if (exp > bestExpected) {
           bestExpected = exp;
           bestCandidate = c;
@@ -5495,6 +5544,9 @@ export function predictLineup(
           opponentLikelihoods: likelihoods,
           ourPick: null,
           blocked: true,
+          oppLocked: overrideMatch
+            ? { name: overrideMatch.name, sl: overrideMatch.latestSL }
+            : null,
         });
         expectedWinProbs.push(0.5);
         continue;
@@ -5526,6 +5578,9 @@ export function predictLineup(
           reasoning: bestCandidate.reasoning.slice(0, 2),
         },
         blocked: false,
+        oppLocked: overrideMatch
+          ? { name: overrideMatch.name, sl: overrideMatch.latestSL }
+          : null,
       });
       expectedWinProbs.push(expectedWP / 100);
     }
