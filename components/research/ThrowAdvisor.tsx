@@ -161,12 +161,27 @@ export function ThrowAdvisor({
     setPhase("matchup");
   }
 
+  /**
+   * Override who throws first for the current match. Used when APA's standard
+   * alternation is bent (substitutions, etc.). Resets any in-flight selections
+   * for the current slot.
+   */
+  function swapThrowOrderForCurrent() {
+    setLive({ position: live.position, weThrowFirst: !live.weThrowFirst });
+    setStep(!live.weThrowFirst ? "pick-ours" : "enter-theirs-first");
+  }
+
   // ---------------- Recommendations ----------------
   const opponentRecord = useMemo(
     () => opponents.find((o) => o.team === opponentTeam),
     [opponents, opponentTeam],
   );
   const knownPutups = opponentRecord?.knownPlayers ?? [];
+  /** Names of opponent players already used earlier this night. */
+  const oppAlreadyUsed = useMemo(
+    () => new Set(log.map((t) => t.oppName)),
+    [log],
+  );
 
   /** Opener (blind) recommendation — for when we throw first. */
   const openerResult = useMemo<ThrowAdvisorResult | null>(() => {
@@ -258,6 +273,7 @@ export function ThrowAdvisor({
         log={log}
         onBack={backToSetup}
         onRewind={rewindToMatch}
+        onSwapOrder={swapThrowOrderForCurrent}
         opponentTeam={opponentTeam}
       />
 
@@ -281,7 +297,9 @@ export function ThrowAdvisor({
           ourName={
             visibleRoster.find((p) => p.id === live.ourPlayerId)?.name ?? "?"
           }
+          opponentTeam={opponentTeam}
           knownPutups={knownPutups}
+          alreadyUsed={oppAlreadyUsed}
           onConfirm={(name, sl) => {
             setLive((s) => ({ ...s, oppName: name, oppSL: sl }));
             setStep("result");
@@ -296,7 +314,9 @@ export function ThrowAdvisor({
       {step === "enter-theirs-first" && (
         <EnterTheirsStep
           ourName={null}
+          opponentTeam={opponentTeam}
           knownPutups={knownPutups}
+          alreadyUsed={oppAlreadyUsed}
           onConfirm={(name, sl) => {
             setLive((s) => ({ ...s, oppName: name, oppSL: sl }));
             setStep("pick-counter");
@@ -525,6 +545,7 @@ function NightHeader({
   log,
   onBack,
   onRewind,
+  onSwapOrder,
   opponentTeam,
 }: {
   position: number;
@@ -532,6 +553,7 @@ function NightHeader({
   log: ThrowMatchLog[];
   onBack: () => void;
   onRewind: (position: number) => void;
+  onSwapOrder: () => void;
   opponentTeam: string;
 }) {
   const ourScore = log.filter((t) => t.outcome === "W").length;
@@ -584,8 +606,20 @@ function NightHeader({
           <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
             Match {position}/5
           </span>
-          <span className="text-xs text-[var(--fg-dim)]">
-            {weThrowFirst ? "We put up first" : "They put up first"} ·{" "}
+          <button
+            type="button"
+            onClick={onSwapOrder}
+            className="group flex items-center gap-1 text-xs text-[var(--fg-dim)] hover:text-[var(--fg)]"
+            title="Swap who puts up first this match"
+          >
+            <span>
+              {weThrowFirst ? "We put up first" : "They put up first"}
+            </span>
+            <span className="text-[10px] text-[var(--color-brass)] opacity-70 group-hover:opacity-100">
+              ⇄
+            </span>
+          </button>
+          <span className="text-[10px] text-[var(--fg-dim)]">
             {remainingSlots} slot{remainingSlots === 1 ? "" : "s"} left
           </span>
         </div>
@@ -673,25 +707,51 @@ function PickOursStep({
 function EnterTheirsStep({
   ourName,
   knownPutups,
+  alreadyUsed,
+  opponentTeam,
   onConfirm,
   onBack,
 }: {
   /** Set when we already locked our pick (we threw first). */
   ourName: string | null;
   knownPutups: ThrowAdvisorOpponentInfo["knownPlayers"];
+  /** Names of opponent players already thrown earlier this night. */
+  alreadyUsed: Set<string>;
+  opponentTeam: string;
   onConfirm: (name: string, sl: number) => void;
   onBack: (() => void) | null;
 }) {
-  const [name, setName] = useState("");
+  // Selection state — picking a roster card auto-fills SL.
+  const [selectedName, setSelectedName] = useState<string | null>(null);
   const [sl, setSL] = useState(4);
+  // Custom-entry escape hatch for an opponent we don't have history on.
+  const [customMode, setCustomMode] = useState(false);
+  const [customName, setCustomName] = useState("");
 
-  function pickKnown(value: string) {
-    setName(value);
-    const known = knownPutups.find((p) => p.name === value);
-    if (known?.latestSL) setSL(known.latestSL);
+  function pickKnown(name: string, latestSL: number | null) {
+    setSelectedName(name);
+    setCustomMode(false);
+    setCustomName("");
+    if (latestSL) setSL(latestSL);
   }
 
-  const valid = name.trim().length > 0;
+  function startCustom() {
+    setCustomMode(true);
+    setSelectedName(null);
+  }
+
+  const submittedName = customMode ? customName.trim() : selectedName ?? "";
+  const valid = submittedName.length > 0;
+
+  // Sort: not-yet-used first, alphabetical inside each group.
+  const sorted = useMemo(() => {
+    return [...knownPutups].sort((a, b) => {
+      const aUsed = alreadyUsed.has(a.name) ? 1 : 0;
+      const bUsed = alreadyUsed.has(b.name) ? 1 : 0;
+      if (aUsed !== bUsed) return aUsed - bUsed;
+      return a.name.localeCompare(b.name);
+    });
+  }, [knownPutups, alreadyUsed]);
 
   return (
     <div className="space-y-4">
@@ -707,30 +767,67 @@ function EnterTheirsStep({
             they counter with?
           </p>
         )}
+
         <div>
-          <label className={labelClass}>Their player</label>
-          <input
-            list="throw-advisor-known-putups"
-            value={name}
-            onChange={(e) => pickKnown(e.target.value)}
-            placeholder={
-              knownPutups.length > 0
-                ? "Type or pick a known name…"
-                : "Type their name…"
-            }
-            className={cn(inputClass, "min-h-[48px] text-base")}
-            autoFocus
-          />
-          {knownPutups.length > 0 && (
-            <datalist id="throw-advisor-known-putups">
-              {knownPutups.map((p) => (
-                <option
-                  key={p.name}
-                  value={p.name}
-                  label={p.latestSL ? `SL${p.latestSL}` : ""}
-                />
-              ))}
-            </datalist>
+          <label className={labelClass}>
+            {opponentTeam}&apos;s players
+          </label>
+          {sorted.length === 0 ? (
+            <p className="mt-2 text-sm text-[var(--fg-dim)]">
+              No prior history against {opponentTeam}. Use the custom entry
+              below.
+            </p>
+          ) : (
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {sorted.map((p) => {
+                const used = alreadyUsed.has(p.name);
+                const active = !customMode && selectedName === p.name;
+                return (
+                  <button
+                    key={p.name}
+                    type="button"
+                    onClick={() => pickKnown(p.name, p.latestSL)}
+                    disabled={used}
+                    className={cn(
+                      "min-h-[64px] rounded-2xl border-2 px-3 py-2 text-left transition-colors",
+                      active
+                        ? "border-[var(--color-brass)] bg-[var(--color-brass)]/15"
+                        : used
+                          ? "border-[var(--border)] bg-[var(--bg-soft)]/40 text-[var(--fg-dim)] line-through"
+                          : "border-[var(--border)] hover:border-[var(--color-brass)]/50",
+                    )}
+                  >
+                    <div className="truncate font-semibold">{p.name}</div>
+                    <div className="text-xs text-[var(--fg-dim)]">
+                      {p.latestSL ? `SL${p.latestSL}` : "SL unknown"}
+                      {used && " · already thrown"}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={startCustom}
+            className={cn(
+              "mt-2 text-xs font-semibold",
+              customMode
+                ? "text-[var(--color-brass-bright)]"
+                : "text-[var(--color-brass)] hover:underline",
+            )}
+          >
+            {customMode ? "✓ Adding new player" : "+ Other player (not on this list)"}
+          </button>
+          {customMode && (
+            <input
+              type="text"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder="Type their name…"
+              className={cn(inputClass, "min-h-[48px] text-base")}
+              autoFocus
+            />
           )}
         </div>
 
@@ -753,7 +850,7 @@ function EnterTheirsStep({
         <button
           type="button"
           disabled={!valid}
-          onClick={() => onConfirm(name.trim(), sl)}
+          onClick={() => onConfirm(submittedName, sl)}
           className="min-h-[52px] flex-[2] rounded-full bg-[var(--color-brass)] px-6 py-3 text-base font-semibold text-[var(--color-ink)] shadow-lg hover:bg-[var(--color-brass-bright)] disabled:opacity-40"
         >
           {ourName ? "Continue →" : "Find our counter →"}
