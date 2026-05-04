@@ -2554,6 +2554,13 @@ export type ThrowAdvisorInput = {
   availablePlayerIds: Set<string>;
   /** Throws already locked in earlier tonight. */
   log: ThrowMatchLog[];
+  /**
+   * Opponent team's known roster — used by the save-for-later engine to spot
+   * whether a tougher matchup is still on their bench. Each entry is one of
+   * their players we have history on; `latestSL` is the most-recent SL we've
+   * recorded for them.
+   */
+  opponentRoster?: Array<{ name: string; latestSL: number | null }>;
 };
 
 export type ThrowComponentScore = {
@@ -2634,6 +2641,17 @@ export type ThrowCandidate = {
   feasibilityNote?: string;
   /** True if this player should be kept dry for a later slot. */
   saveForLater: boolean;
+  /**
+   * If a tougher / fairer matchup is still on the opponent's bench, this
+   * describes it: who they are, their SL, and the race-equity comparison.
+   * Drives the "save your SL7 for their SL7" save-for-later trigger.
+   */
+  idealUpcomingMatchup?: {
+    opponentName: string;
+    opponentSL: number;
+    raceEquityHere: number; // 0..100 race equity vs the current putup
+    raceEquityThere: number; // 0..100 race equity vs the better future opponent
+  } | null;
 };
 
 export type MatchUrgency = "must-win" | "leverage" | "comfortable" | "even";
@@ -2657,6 +2675,14 @@ export type ThrowAdvisorResult = {
     urgency: MatchUrgency;
     /** Heuristic narrative the UI prints up top. */
     narrative: string;
+    /**
+     * Highest SL still on the opponent team's bench (not yet thrown tonight),
+     * derived from their known roster. Null when we have no roster data.
+     * Drives strategic decisions like "save the SL7 for their SL7".
+     */
+    opponentHighestPendingSL: number | null;
+    /** The pending opponent player's name, for display. */
+    opponentHighestPendingName: string | null;
   };
 };
 
@@ -2749,64 +2775,80 @@ function sigmoid(x: number): number {
  * Win probability from the candidate's component scores via Bayesian
  * log-odds blending.
  *
- * Why log-odds and not a linear weighted average?
- *   - Probabilities don't combine linearly. Two pieces of evidence that each
- *     individually suggest 70% should jointly suggest more than 70% (if
- *     independent), not exactly 70%.
- *   - Linear averaging was over-shrinking strong signals toward 50%, so a
- *     5-0 H2H against this opponent only nudged the score a few points up.
- *   - Log-odds blending naturally respects the probability scale: a 22%
- *     race-equity prior (SL7 vs SL2) becomes a -1.25 logit baseline that
- *     dominates the prediction, exactly as the race chart should.
+ * Key insight: the **vs-SL component already incorporates the race-chart
+ * handicap**. When Aaron is 8-2 against SL2s, those matches were already
+ * races where the SL2 only needed 2 wins and Aaron needed 7. Aaron's 71%
+ * win rate IS his calibrated win probability against SL2s. We must NOT
+ * additionally apply race-equity as a prior on top of this — that's
+ * double-counting the handicap and was what was driving SL7 win-prob
+ * artificially low for strong players.
  *
  * The flow:
- *   1. Anchor on the race-equity prior in log-odds space.
- *   2. Each component (h2h, vsSL, form, slot, vsTeam) contributes a
- *      log-odds nudge proportional to its weight × confidence (sample size).
- *      Nudges are zero-centered: a 50% rate nudges 0, 70% nudges up, 30%
- *      nudges down.
- *   3. Convert back to probability and clamp to [5, 95]. No matchup is a
- *      certainty either way.
+ *   1. Pick the **base prediction**:
+ *      - If vs-SL has high/medium confidence (≥ 4 matches), it IS the base.
+ *      - If vs-SL has low confidence (1-3 matches), blend with race-equity.
+ *      - If no vs-SL data, race-equity is the structural fallback.
+ *   2. Each remaining component (h2h, form, slot, vs-team) contributes a
+ *      log-odds nudge above/below the base. Form gets a heavier weight
+ *      when vs-SL is missing (it has to do more work to estimate skill);
+ *      a lighter weight when vs-SL is the base (it's a recency adjustment).
+ *   3. Clamp to [5, 95]. No certainties.
  *
- * Confidence comes from `ThrowComponentScore.confidence` (high / medium /
- * low / none) which is set by sample size — small samples nudge less so a
- * 1-0 H2H doesn't drown out a well-attested vs-SL record.
+ * Why log-odds and not a linear weighted average?
+ *   - Probabilities combine multiplicatively, not linearly.
+ *   - Log-odds nudges are zero-centered: a 50% component contributes 0,
+ *     a 70% one contributes +0.847, a 30% one −0.847.
  */
 function computeWinProbability(
   components: ThrowCandidate["components"],
 ): number {
-  // Race-equity prior — the only structurally certain signal.
-  const priorP = Math.max(0.05, Math.min(0.95, components.raceEquity / 100));
-  let logOdds = logit(priorP);
+  const vsSLConf = confidenceWeight(components.vsSL.confidence);
 
-  // Evidence weights, dialled down deliberately. The components share
-  // underlying matches (a recent H2H win lives in h2h *and* form *and*
-  // vsSL — same sample, three channels). Higher weights would let a single
-  // strong recent run dominate the prediction. With these calibrated
-  // weights, a 5-0 H2H plus solid form lands you in the 80s, not 95+.
-  const evidence: Array<{
+  // Base prediction in log-odds space.
+  let logOdds: number;
+  if (vsSLConf >= 0.50) {
+    // Direct evidence at this race-chart handicap. Use it as-is.
+    logOdds = logit(components.vsSL.smoothed / 100);
+  } else if (vsSLConf > 0) {
+    // Some vs-SL data but small sample. Blend with race equity, weighted
+    // by how much we trust the small sample.
+    const blended =
+      vsSLConf * (components.vsSL.smoothed / 100) +
+      (1 - vsSLConf) * (components.raceEquity / 100);
+    logOdds = logit(blended);
+  } else {
+    // No direct evidence. Race equity is the structural prior.
+    logOdds = logit(components.raceEquity / 100);
+  }
+
+  // Form does more work when we lack vs-SL data — it has to estimate the
+  // player's skill above/below average, which then translates to expected
+  // performance against this handicap. When vs-SL is the base, form is
+  // just a recency nudge.
+  const formWeight = vsSLConf >= 0.50 ? 0.40 : 0.85;
+
+  const nudges: Array<{
     rate: number;
     weight: number;
     conf: ThrowComponentScore["confidence"];
   }> = [
-    { rate: components.h2h.smoothed, weight: 1.0, conf: components.h2h.confidence },
-    { rate: components.vsSL.smoothed, weight: 0.7, conf: components.vsSL.confidence },
-    { rate: components.form.smoothed, weight: 0.6, conf: components.form.confidence },
-    { rate: components.position.smoothed, weight: 0.35, conf: components.position.confidence },
-    { rate: components.vsTeam.smoothed, weight: 0.35, conf: components.vsTeam.confidence },
+    // H2H: direct evidence about THIS opponent. Strongest single nudge.
+    { rate: components.h2h.smoothed, weight: 0.6, conf: components.h2h.confidence },
+    // Form: skill / recency adjustment.
+    { rate: components.form.smoothed, weight: formWeight, conf: components.form.confidence },
+    // Position fit: slot-specific tendency.
+    { rate: components.position.smoothed, weight: 0.25, conf: components.position.confidence },
+    // vs-team: team-level historical context.
+    { rate: components.vsTeam.smoothed, weight: 0.25, conf: components.vsTeam.confidence },
   ];
 
-  for (const e of evidence) {
+  for (const e of nudges) {
     const cw = confidenceWeight(e.conf);
     if (cw === 0) continue;
-    // Zero-centered logit nudge: 50% rate contributes 0; 70% contributes
-    // logit(0.7) - logit(0.5) = +0.847; 30% contributes -0.847.
-    const nudge = e.weight * cw * (logit(e.rate / 100) - logit(0.5));
-    logOdds += nudge;
+    logOdds += e.weight * cw * (logit(e.rate / 100) - logit(0.5));
   }
 
   const p = sigmoid(logOdds);
-  // [5%, 95%] hard clamp — nothing in pool is a sure thing.
   const clamped = Math.max(0.05, Math.min(0.95, p));
   return Math.round(clamped * 1000) / 10;
 }
@@ -3345,32 +3387,109 @@ export function recommendThrow(
     return b.overall - a.overall;
   });
 
-  // ----- Save-for-later (informed by lookahead) ---------------------
-  // A candidate gets the save-for-later flag when:
-  //   - They top the per-slot composite (overall) BUT
-  //   - Picking them costs ≥ 6 pts of team-wide value (lookaheadDelta ≤ -6),
-  //     meaning a substitute can fill this slot decently while preserving
-  //     them for a future slot where they're more uniquely good
-  //   - There's an acceptable sub for this slot (overall >= 55)
-  //   - We're not under must-win pressure
-  //   - And it's not the anchor slot (M5)
+  // ----- Save-for-later: opponent-roster awareness ------------------
+  // For each candidate, find their "ideal upcoming matchup" by checking
+  // which of the opponent's known players (a) haven't been thrown yet and
+  // (b) would race against the candidate at higher race-equity than this
+  // current putup. Higher race-equity for our player = closer race or
+  // bigger handicap edge — strategically a better spot to use them.
+  //
+  // This is the right signal for "when to play your SL7": the ideal spot
+  // is when their highest-SL player is up. If we know they have an SL7 on
+  // the bench, hold ours.
+  const usedOppNames = new Set(
+    input.log.map((t) => (t.oppName ?? "").trim().toLowerCase()),
+  );
+  // The current putup is also "used" for the purpose of looking at what
+  // remains AFTER this slot.
+  usedOppNames.add(input.opponentName.trim().toLowerCase());
+  const pendingOpponents = (input.opponentRoster ?? []).filter(
+    (p) =>
+      typeof p.latestSL === "number" &&
+      !usedOppNames.has(p.name.trim().toLowerCase()),
+  );
+  const pendingHighestSL = pendingOpponents.length
+    ? Math.max(...pendingOpponents.map((p) => p.latestSL!))
+    : null;
+
+  // For each candidate find their ideal pending opponent — the one with the
+  // **closest SL**. APA strategy says match SLs as closely as possible:
+  //   - Same-SL pairings are fair fights (50% race equity)
+  //   - Sending a high-SL stud at a low-SL opponent wastes them (handicap
+  //     hurts us AND skill edge isn't enough to break the chart)
+  //   - Sending a low-SL underdog at a high-SL opponent gets the handicap
+  //     edge but the skill gap means it's still a long shot in practice
+  // So "ideal" = closest SL, not "best race equity". Race equity is what
+  // gets DISPLAYED to explain the upgrade, but the trigger is SL distance.
+  for (const c of candidates) {
+    if (!c.feasible || typeof c.skillLevel !== "number") continue;
+    const ourSL = c.skillLevel;
+    const currentDiff = Math.abs(ourSL - input.opponentSkillLevel);
+    let bestDiff = currentDiff;
+    let bestOpp: { name: string; sl: number } | null = null;
+    for (const op of pendingOpponents) {
+      const diff = Math.abs(ourSL - op.latestSL!);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestOpp = { name: op.name, sl: op.latestSL! };
+      }
+    }
+    c.idealUpcomingMatchup = bestOpp
+      ? {
+          opponentName: bestOpp.name,
+          opponentSL: bestOpp.sl,
+          raceEquityHere: raceEquity(ourSL, input.opponentSkillLevel),
+          raceEquityThere: raceEquity(ourSL, bestOpp.sl),
+        }
+      : null;
+  }
+
+  // ----- Save-for-later (informed by lookahead + opponent roster) ----
+  // A candidate gets the save-for-later flag when one of these holds:
+  //   - lookaheadDelta ≤ -6: picking them costs ≥6 pts of team-wide value
+  //   - idealUpcomingMatchup gives ≥15pp better race equity than current
+  //     (e.g., our SL7 vs their SL2 = 22% equity, but their SL7 is still
+  //     unthrown → using our SL7 now gives up a 28pp upgrade)
+  // Combined with: there's an acceptable sub here, no must-win pressure,
+  // not the anchor slot.
   const top = candidates.find((c) => c.feasible) ?? null;
   const acceptableSubs = candidates.filter(
     (c) => c.feasible && c !== top && c.overall >= 55,
   );
   const noPressure = urgency === "leverage" || urgency === "comfortable" || urgency === "even";
-  if (
-    top &&
-    top.components.lookaheadDelta <= -6 &&
-    acceptableSubs.length >= 1 &&
-    input.currentPosition < 5 &&
-    noPressure
-  ) {
-    top.saveForLater = true;
-    const sub = acceptableSubs[0];
-    top.reasoning.unshift(
-      `Save for later — costs ~${Math.abs(top.components.lookaheadDelta).toFixed(1)} pts of lineup value to use here. ${sub.playerName} (${sub.overall}) is a viable sub.`,
-    );
+
+  if (top && acceptableSubs.length >= 1 && input.currentPosition < 5 && noPressure) {
+    // Helper: does this candidate have a much closer-SL opponent pending?
+    const slDiffUpgrade = (c: ThrowCandidate): number => {
+      if (typeof c.skillLevel !== "number" || !c.idealUpcomingMatchup) return 0;
+      const currentDiff = Math.abs(c.skillLevel - input.opponentSkillLevel);
+      const idealDiff = Math.abs(c.skillLevel - c.idealUpcomingMatchup.opponentSL);
+      return currentDiff - idealDiff;
+    };
+    // Flag any candidate whose ideal pending opponent is meaningfully closer
+    // in SL than the current one. The trigger threshold is "≥ 3 SL closer" —
+    // big enough that the upgrade matters strategically, not just slightly.
+    // This is exactly the SL7-vs-SL2-when-their-SL7-is-pending case.
+    for (const c of candidates) {
+      if (!c.feasible || c.saveForLater) continue;
+      const upgrade = slDiffUpgrade(c);
+      const lookaheadCost = c === top && c.components.lookaheadDelta <= -6;
+      const significantSLUpgrade = upgrade >= 3;
+      if (significantSLUpgrade) {
+        c.saveForLater = true;
+        const ci = c.idealUpcomingMatchup!;
+        c.reasoning.unshift(
+          `Save for later — their SL${ci.opponentSL} (${ci.opponentName}) is still on the bench. SL${c.skillLevel} vs SL${ci.opponentSL} is a much closer race (${Math.round(ci.raceEquityThere)}%) than vs SL${input.opponentSkillLevel} here (${Math.round(ci.raceEquityHere)}%).`,
+        );
+      } else if (c === top && lookaheadCost) {
+        // Fall back to lookahead-driven save when SL-upgrade isn't strong.
+        c.saveForLater = true;
+        const sub = acceptableSubs[0];
+        c.reasoning.unshift(
+          `Save for later — costs ~${Math.abs(c.components.lookaheadDelta).toFixed(1)} pts of lineup value to use here. ${sub.playerName} (${sub.overall}) is a viable sub.`,
+        );
+      }
+    }
   }
 
   // Re-tag verdicts.
@@ -3432,6 +3551,19 @@ export function recommendThrow(
       `${topPick.playerName} is the highest-rated pick but probably better held for a tougher slot.`,
     );
   }
+  // Surface their highest pending SL when notable.
+  const opponentHighestPendingName = pendingOpponents.find(
+    (p) => p.latestSL === pendingHighestSL,
+  )?.name ?? null;
+  if (
+    pendingHighestSL !== null &&
+    pendingHighestSL >= 6 &&
+    pendingHighestSL > input.opponentSkillLevel
+  ) {
+    narrativeBits.push(
+      `Their SL${pendingHighestSL}${opponentHighestPendingName ? ` (${opponentHighestPendingName})` : ""} is still on the bench — likely coming.`,
+    );
+  }
   const narrative = narrativeBits.join(" ");
 
   return {
@@ -3446,6 +3578,8 @@ export function recommendThrow(
       theirScore,
       urgency,
       narrative,
+      opponentHighestPendingSL: pendingHighestSL,
+      opponentHighestPendingName,
     },
   };
 }
@@ -3805,6 +3939,10 @@ export function recommendOpener(
       theirScore,
       urgency,
       narrative: narrativeBits.join(" "),
+      // Opener doesn't peek at the opponent roster (we don't know who's
+      // coming up since they'll be reacting to our pick).
+      opponentHighestPendingSL: null,
+      opponentHighestPendingName: null,
     },
   };
 }

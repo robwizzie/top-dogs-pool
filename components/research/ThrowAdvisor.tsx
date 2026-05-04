@@ -278,7 +278,10 @@ export function ThrowAdvisor({
     () => opponents.find((o) => o.team === opponentTeam),
     [opponents, opponentTeam],
   );
-  const knownPutups = opponentRecord?.knownPlayers ?? [];
+  const knownPutups = useMemo(
+    () => opponentRecord?.knownPlayers ?? [],
+    [opponentRecord],
+  );
   /** Names of opponent players already used earlier this night. */
   const oppAlreadyUsed = useMemo(
     () => new Set(log.map((t) => t.oppName)),
@@ -316,6 +319,13 @@ export function ThrowAdvisor({
         opponentSkillLevel: live.oppSL,
         availablePlayerIds: available,
         log,
+        // Pass the opponent's known roster so the engine can see what
+        // tougher matchups are still on their bench (drives "save your SL7
+        // for their SL7" save-for-later logic).
+        opponentRoster: knownPutups.map((p) => ({
+          name: p.name,
+          latestSL: p.latestSL,
+        })),
       },
       matches,
       visibleRoster,
@@ -332,6 +342,7 @@ export function ThrowAdvisor({
     log,
     matches,
     visibleRoster,
+    knownPutups,
   ]);
 
   // ---------------- Render ----------------
@@ -851,6 +862,7 @@ function PickOursStep({
       {top?.saveForLater && (
         <SaveForLaterCallout
           name={top.playerName}
+          ideal={top.idealUpcomingMatchup}
           onUseAnyway={() => onPick(top)}
         />
       )}
@@ -1053,6 +1065,7 @@ function PickCounterStep({
       {top?.saveForLater && (
         <SaveForLaterCallout
           name={top.playerName}
+          ideal={top.idealUpcomingMatchup}
           onUseAnyway={() => onPick(top)}
         />
       )}
@@ -2040,25 +2053,52 @@ function ThrowsSoFar({
 
 function SaveForLaterCallout({
   name,
+  ideal,
   onUseAnyway,
 }: {
   name: string;
+  /** Better matchup still on the bench, if any. */
+  ideal?: {
+    opponentName: string;
+    opponentSL: number;
+    raceEquityHere: number;
+    raceEquityThere: number;
+  } | null;
   onUseAnyway: () => void;
 }) {
   return (
-    <div className="surface flex flex-wrap items-center justify-between gap-3 border-[var(--color-brass)]/40 p-4">
-      <p className="text-sm text-[var(--fg-dim)]">
-        💡 The system flagged{" "}
-        <strong className="text-[var(--color-brass-bright)]">{name}</strong> as
-        a &ldquo;save-for-later&rdquo; pick.
-      </p>
-      <button
-        type="button"
-        onClick={onUseAnyway}
-        className="text-xs font-semibold text-[var(--color-brass)] hover:underline"
-      >
-        Use them anyway →
-      </button>
+    <div className="surface space-y-2 border-[var(--color-brass)]/40 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-[var(--fg-dim)]">
+          💡 Hold{" "}
+          <strong className="text-[var(--color-brass-bright)]">{name}</strong>{" "}
+          for a tougher matchup.
+        </p>
+        <button
+          type="button"
+          onClick={onUseAnyway}
+          className="text-xs font-semibold text-[var(--color-brass)] hover:underline"
+        >
+          Use them anyway →
+        </button>
+      </div>
+      {ideal && (
+        <p className="text-xs text-[var(--fg-dim)]">
+          Their{" "}
+          <strong className="text-[var(--fg)]">
+            SL{ideal.opponentSL} ({ideal.opponentName})
+          </strong>{" "}
+          is still on the bench. Race equity{" "}
+          <span className="font-semibold text-[var(--color-pop-bright)]">
+            {Math.round(ideal.raceEquityHere)}%
+          </span>{" "}
+          here →{" "}
+          <span className="font-semibold text-[var(--color-felt-bright)]">
+            {Math.round(ideal.raceEquityThere)}%
+          </span>{" "}
+          there.
+        </p>
+      )}
     </div>
   );
 }
