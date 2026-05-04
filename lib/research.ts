@@ -2718,14 +2718,97 @@ function buildComponent(
 function confidenceWeight(c: ThrowComponentScore["confidence"]): number {
   switch (c) {
     case "high":
-      return 1.0;
+      return 0.85;
     case "medium":
-      return 0.65;
+      return 0.50;
     case "low":
-      return 0.35;
+      return 0.18;
     case "none":
       return 0;
   }
+}
+
+/* ---------------------------------------- Bayesian win-probability helpers */
+
+/**
+ * Logit (log-odds) of a probability. Clamped to avoid Infinity at 0 / 1.
+ */
+function logit(p: number): number {
+  const c = Math.max(0.005, Math.min(0.995, p));
+  return Math.log(c / (1 - c));
+}
+
+/**
+ * Inverse of logit. Maps any real number to (0, 1).
+ */
+function sigmoid(x: number): number {
+  return 1 / (1 + Math.exp(-x));
+}
+
+/**
+ * Win probability from the candidate's component scores via Bayesian
+ * log-odds blending.
+ *
+ * Why log-odds and not a linear weighted average?
+ *   - Probabilities don't combine linearly. Two pieces of evidence that each
+ *     individually suggest 70% should jointly suggest more than 70% (if
+ *     independent), not exactly 70%.
+ *   - Linear averaging was over-shrinking strong signals toward 50%, so a
+ *     5-0 H2H against this opponent only nudged the score a few points up.
+ *   - Log-odds blending naturally respects the probability scale: a 22%
+ *     race-equity prior (SL7 vs SL2) becomes a -1.25 logit baseline that
+ *     dominates the prediction, exactly as the race chart should.
+ *
+ * The flow:
+ *   1. Anchor on the race-equity prior in log-odds space.
+ *   2. Each component (h2h, vsSL, form, slot, vsTeam) contributes a
+ *      log-odds nudge proportional to its weight × confidence (sample size).
+ *      Nudges are zero-centered: a 50% rate nudges 0, 70% nudges up, 30%
+ *      nudges down.
+ *   3. Convert back to probability and clamp to [5, 95]. No matchup is a
+ *      certainty either way.
+ *
+ * Confidence comes from `ThrowComponentScore.confidence` (high / medium /
+ * low / none) which is set by sample size — small samples nudge less so a
+ * 1-0 H2H doesn't drown out a well-attested vs-SL record.
+ */
+function computeWinProbability(
+  components: ThrowCandidate["components"],
+): number {
+  // Race-equity prior — the only structurally certain signal.
+  const priorP = Math.max(0.05, Math.min(0.95, components.raceEquity / 100));
+  let logOdds = logit(priorP);
+
+  // Evidence weights, dialled down deliberately. The components share
+  // underlying matches (a recent H2H win lives in h2h *and* form *and*
+  // vsSL — same sample, three channels). Higher weights would let a single
+  // strong recent run dominate the prediction. With these calibrated
+  // weights, a 5-0 H2H plus solid form lands you in the 80s, not 95+.
+  const evidence: Array<{
+    rate: number;
+    weight: number;
+    conf: ThrowComponentScore["confidence"];
+  }> = [
+    { rate: components.h2h.smoothed, weight: 1.0, conf: components.h2h.confidence },
+    { rate: components.vsSL.smoothed, weight: 0.7, conf: components.vsSL.confidence },
+    { rate: components.form.smoothed, weight: 0.6, conf: components.form.confidence },
+    { rate: components.position.smoothed, weight: 0.35, conf: components.position.confidence },
+    { rate: components.vsTeam.smoothed, weight: 0.35, conf: components.vsTeam.confidence },
+  ];
+
+  for (const e of evidence) {
+    const cw = confidenceWeight(e.conf);
+    if (cw === 0) continue;
+    // Zero-centered logit nudge: 50% rate contributes 0; 70% contributes
+    // logit(0.7) - logit(0.5) = +0.847; 30% contributes -0.847.
+    const nudge = e.weight * cw * (logit(e.rate / 100) - logit(0.5));
+    logOdds += nudge;
+  }
+
+  const p = sigmoid(logOdds);
+  // [5%, 95%] hard clamp — nothing in pool is a sure thing.
+  const clamped = Math.max(0.05, Math.min(0.95, p));
+  return Math.round(clamped * 1000) / 10;
 }
 
 /**
@@ -3010,49 +3093,15 @@ function scoreCandidate(
     lookaheadDelta: 0,
   };
 
-  // Composite weighting. Components without data drop out — the remaining
-  // weights are renormalized so the score stays in 0..100.
-  // Venue is intentionally weighted 0 — the data is shown for context but
-  // doesn't move the score (bar venues with weird tables, the bar itself
-  // doesn't really shift outcomes).
-  // Race-chart equity is weighted heavily because the APA 8-ball race chart
-  // structurally tilts win probability — a SL7 vs SL2 has to win 4 games while
-  // the SL2 only needs 2. That's a real handicap that shows up game-by-game.
-  const baseWeights = {
-    h2h: 0.28,
-    vsSL: 0.18,
-    vsTeam: 0.10,
-    venue: 0.0,
-    form: 0.18,
-    position: 0.10,
-    raceEquity: 0.16,
-  } as const;
-  const weights: Record<keyof typeof baseWeights, number> = {
-    h2h: baseWeights.h2h * confidenceWeight(components.h2h.confidence),
-    vsSL: baseWeights.vsSL * confidenceWeight(components.vsSL.confidence),
-    vsTeam: baseWeights.vsTeam * confidenceWeight(components.vsTeam.confidence),
-    venue: baseWeights.venue * confidenceWeight(components.venue.confidence),
-    form: baseWeights.form * confidenceWeight(components.form.confidence),
-    position: baseWeights.position * confidenceWeight(components.position.confidence),
-    raceEquity: baseWeights.raceEquity, // always available
-  };
-  const totalWeight = Object.values(weights).reduce((s, v) => s + v, 0);
-  // If literally nothing has data, fall back to race-equity only.
-  const effectiveWeights = totalWeight === 0
-    ? { h2h: 0, vsSL: 0, vsTeam: 0, venue: 0, form: 0, position: 0, raceEquity: 1 }
-    : Object.fromEntries(
-        Object.entries(weights).map(([k, v]) => [k, v / totalWeight]),
-      ) as Record<keyof typeof baseWeights, number>;
-
-  const overall = Math.round(
-    (effectiveWeights.h2h * components.h2h.smoothed +
-      effectiveWeights.vsSL * components.vsSL.smoothed +
-      effectiveWeights.vsTeam * components.vsTeam.smoothed +
-      effectiveWeights.venue * components.venue.smoothed +
-      effectiveWeights.form * components.form.smoothed +
-      effectiveWeights.position * components.position.smoothed +
-      effectiveWeights.raceEquity * components.raceEquity) * 10,
-  ) / 10;
+  // Win probability via Bayesian log-odds blending — race equity is the
+  // structural prior, observed components are evidence. See
+  // computeWinProbability() for the math. This is the actual probability
+  // estimate we expose as "matchupScore" in the UI.
+  const matchupScore = computeWinProbability(components);
+  // The "overall" ranking score starts at the win probability and gets
+  // strategic adjustments (SL mismatch, lookahead) layered on later in
+  // recommendThrow. Ranking and probability are intentionally separated.
+  const overall = matchupScore;
 
   // Reasoning. Ordered: strongest evidence first.
   const reasons: string[] = [];
@@ -3125,15 +3174,14 @@ function scoreCandidate(
     flags.push("Thin data — ranking is mostly priors");
   }
 
-  // SL mismatch tactical adjustment — explicit penalty/bonus on top of the
-  // race-equity component, with reasoning text that quotes the race numbers.
+  // SL mismatch is a strategic ranking adjustment (opportunity cost of
+  // burning a stud here) — it does NOT change the pure win probability.
+  // The race-chart handicap is already captured in matchupScore via the
+  // race-equity prior. This penalty layers strategy on top for ranking only.
   const slAdj = slMismatchAdjustment(player.skillLevel, input.opponentSkillLevel);
-  let adjustedOverall = overall + slAdj.penalty;
-  // Clamp matchup score to [0, 100] — the penalty can otherwise drag it
-  // below zero in extreme small-sample cases.
-  adjustedOverall = Math.max(0, Math.min(100, adjustedOverall));
-  // Round to one decimal.
-  adjustedOverall = Math.round(adjustedOverall * 10) / 10;
+  const adjustedOverall = Math.round(
+    Math.max(0, Math.min(100, overall + slAdj.penalty)) * 10,
+  ) / 10;
   if (slAdj.flag) flags.unshift(slAdj.flag);
   if (slAdj.reason) reasons.unshift(slAdj.reason);
 
@@ -3145,8 +3193,8 @@ function scoreCandidate(
     playerId: player.id,
     playerName: player.name,
     skillLevel: player.skillLevel,
-    overall: adjustedOverall,
-    matchupScore: adjustedOverall, // pre-lookahead snapshot; lookahead penalty applied later
+    overall: adjustedOverall, // ranking — includes SL-mismatch strategic penalty
+    matchupScore, // pure win probability — race equity + observed evidence
     h2hHistory: trimmedHistory,
     verdict: "viable", // placeholder — re-tagged after we know the field
     components,
@@ -3496,38 +3544,12 @@ function scoreOpenerCandidate(
     lookaheadDelta: 0,
   };
 
-  // Blind weights — vs-Team and form do most of the work, slot fit matters.
-  // Venue is shown but not weighted (the bar itself doesn't shift outcomes).
-  const baseWeights = {
-    vsTeam: 0.30,
-    form: 0.34,
-    position: 0.26,
-    venue: 0.0,
-    raceEquity: 0.10,
-  } as const;
-  const weights = {
-    vsTeam: baseWeights.vsTeam * confidenceWeight(components.vsTeam.confidence),
-    form: baseWeights.form * confidenceWeight(components.form.confidence),
-    position: baseWeights.position * confidenceWeight(components.position.confidence),
-    venue: baseWeights.venue * confidenceWeight(components.venue.confidence),
-    raceEquity: baseWeights.raceEquity, // always available (neutral 50)
-  };
-  const totalWeight = Object.values(weights).reduce((s, v) => s + v, 0) || 1;
-  const eff = {
-    vsTeam: weights.vsTeam / totalWeight,
-    form: weights.form / totalWeight,
-    position: weights.position / totalWeight,
-    venue: weights.venue / totalWeight,
-    raceEquity: weights.raceEquity / totalWeight,
-  };
-
-  const overall = Math.round(
-    (eff.vsTeam * components.vsTeam.smoothed +
-      eff.form * components.form.smoothed +
-      eff.position * components.position.smoothed +
-      eff.venue * components.venue.smoothed +
-      eff.raceEquity * components.raceEquity) * 10,
-  ) / 10;
+  // Blind opener: same Bayesian log-odds blending, but the prior is a true
+  // 50% (opponent SL unknown, no race-chart anchor) and H2H/vs-SL drop out.
+  // Form, vs-team, slot are the only evidence. Use computeWinProbability
+  // directly — it gracefully ignores no-data components.
+  const matchupScore = computeWinProbability(components);
+  const overall = matchupScore;
 
   const reasons: string[] = [];
   const flags: string[] = [];
@@ -3575,7 +3597,7 @@ function scoreOpenerCandidate(
     playerName: player.name,
     skillLevel: player.skillLevel,
     overall,
-    matchupScore: overall, // pre-lookahead; opener has no H2H so this is a blind win-prob
+    matchupScore, // blind win-prob (no H2H/vsSL evidence; race equity is neutral 50)
     h2hHistory: [], // blind/opener mode — no opponent named yet
     verdict: "viable",
     components,
