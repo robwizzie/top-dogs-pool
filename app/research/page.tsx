@@ -233,14 +233,23 @@ export default async function ResearchPage({ searchParams }: Props) {
   // Calibration backtest — replays the engine on every historical match
   // using only-prior-data, to measure how accurate our predictions are.
   const calibration = calibrationBacktest(matches, roster);
-  // Pre-match scouting report on the upcoming opponent.
+  // Pre-match scouting report on the upcoming opponent — enriched with
+  // opp-player profiles when we've scraped them.
   const scoutingReport = nextScheduledMatch
     ? opponentScoutingReport(
         nextScheduledMatch.opponent,
         matches,
         roster,
         currentSession?.id,
+        snap.opponentPlayers,
       )
+    : null;
+  // Identify the opp team id (if any) so the scouting report can deep-link
+  // to the team page.
+  const scoutingTeamId = scoutingReport
+    ? Object.values(snap.opponentTeams).find(
+        (t) => t.name.trim().toLowerCase() === scoutingReport.team.trim().toLowerCase(),
+      )?.id ?? null
     : null;
 
   // Sort lineups various ways for "best/worst" sections.
@@ -329,7 +338,7 @@ export default async function ResearchPage({ searchParams }: Props) {
             forTab="briefing"
             activeTab={tab}
           >
-            <ScoutingReport report={scoutingReport} />
+            <ScoutingReport report={scoutingReport} teamId={scoutingTeamId} />
           </Section>
         )}
 

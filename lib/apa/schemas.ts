@@ -222,6 +222,42 @@ export const LeaderboardRow = z.object({
 });
 export type LeaderboardRow = z.infer<typeof LeaderboardRow>;
 
+/**
+ * An opposing team we've scraped data for. Mirrors TeamSummary in shape but
+ * scoped to a specific session (since opp teams change roster session-to-
+ * session). The roster + schedule + record are everything we know from
+ * crawling their team page.
+ */
+export const OpponentTeamProfile = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  number: z.string().optional(),
+  division: z.string().optional(),
+  divisionRank: z.number().int().optional(),
+  /** Session this snapshot is for. */
+  sessionId: z.number().int().optional(),
+  sessionName: z.string().optional(),
+  homeLocation: z.string().optional(),
+  format: Format.default("8-ball"),
+  url: z.string().url().optional(),
+  /** Their team-level record this session. */
+  record: z.object({
+    wins: z.number().int().min(0),
+    losses: z.number().int().min(0),
+    points: z.number().min(0).optional(),
+    rank: z.number().int().optional(),
+  }),
+  /** Their full roster this session. */
+  roster: z.array(Player).default([]),
+  /** Their full schedule this session (includes matches not against us). */
+  schedule: z.array(Match).default([]),
+  /** Our team's match-id list against this opp (for cross-linking). */
+  matchesVsUs: z.array(z.string()).default([]),
+  /** When this team's data was last cached (for freshness display). */
+  lastFetched: z.string(),
+});
+export type OpponentTeamProfile = z.infer<typeof OpponentTeamProfile>;
+
 export const ApaSnapshot = z.object({
   lastUpdated: z.string(),
   teamId: z.number().int(),
@@ -250,5 +286,19 @@ export const ApaSnapshot = z.object({
   sessionRosters: z.record(z.string(), z.array(Player)).default({}),
   /** Full division standings per session (sessionId → all teams in division). */
   sessionStandings: z.record(z.string(), z.array(Standing)).default({}),
+  /**
+   * Opponent teams we've scraped data for (keyed by team id as a string).
+   * Built incrementally — each week we fetch the upcoming opponent's full
+   * team profile (roster + their schedule + record). Empty until the first
+   * opponent scrape lands.
+   */
+  opponentTeams: z.record(z.string(), OpponentTeamProfile).default({}),
+  /**
+   * Opponent player profiles (keyed by player id as a string). Same shape
+   * as `players` but flagged via `isOpponent: true`. Populated when we
+   * scrape an opponent team — each of their roster members gets pulled in
+   * with their full career stats.
+   */
+  opponentPlayers: z.record(z.string(), PlayerProfile).default({}),
 });
 export type ApaSnapshot = z.infer<typeof ApaSnapshot>;

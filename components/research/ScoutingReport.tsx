@@ -12,8 +12,11 @@ import { cn } from "@/lib/utils";
  */
 export function ScoutingReport({
   report,
+  teamId,
 }: {
   report: OpponentScoutingReport;
+  /** When provided, the team header links to /opponents/[teamId]. */
+  teamId?: number | null;
 }) {
   if (report.players.length === 0 && report.vsUs.wins + report.vsUs.losses === 0) {
     return (
@@ -69,10 +72,26 @@ export function ScoutingReport({
         </div>
       )}
 
+      {teamId && (
+        <p className="text-xs">
+          <Link
+            href={`/opponents/${teamId}`}
+            className="font-semibold text-[var(--color-brass)] hover:underline"
+          >
+            View {report.team}&apos;s full team page →
+          </Link>
+        </p>
+      )}
+
       <p className="text-xs text-[var(--fg-dim)]">
-        Note: this is only what we&apos;ve seen across our own matches vs them.
-        We don&apos;t have their results against other teams — full scouting
-        would require league-wide data.
+        Per-player career stats (when shown) come from the league API and
+        cover their full record across all teams. Per-match details (sweeps,
+        B&amp;Rs) require parsing every scoresheet — currently only available
+        for matches against us. Run{" "}
+        <code className="rounded bg-[var(--bg-soft)] px-1 py-0.5 text-[var(--fg)]">
+          npm run sync
+        </code>{" "}
+        to refresh opponent data.
       </p>
     </div>
   );
@@ -97,9 +116,18 @@ function PlayerScoutingCard({
     <li className="surface p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="font-[family-name:var(--font-display)] text-lg tracking-wide">
-            {p.name}
-          </span>
+          {p.playerId ? (
+            <Link
+              href={`/players/${p.playerId}`}
+              className="font-[family-name:var(--font-display)] text-lg tracking-wide hover:text-[var(--color-brass)]"
+            >
+              {p.name}
+            </Link>
+          ) : (
+            <span className="font-[family-name:var(--font-display)] text-lg tracking-wide">
+              {p.name}
+            </span>
+          )}
           {p.latestSL != null && (
             <span className="text-xs text-[var(--fg-dim)]">SL{p.latestSL}</span>
           )}
@@ -124,6 +152,37 @@ function PlayerScoutingCard({
           <span className="ml-1">({p.vsUs.winPct}% vs us)</span>
         </div>
       </div>
+
+      {/* Career stats — only present when we've scraped opp player profile */}
+      {p.career && (
+        <p className="mt-2 text-xs text-[var(--fg-dim)]">
+          League career:{" "}
+          <span className="font-semibold text-[var(--fg)]">
+            {p.career.wins}–{p.career.losses} ({p.career.winPct}%)
+          </span>{" "}
+          across {p.career.matchesPlayed} matches
+        </p>
+      )}
+
+      {/* SL trajectory across recent sessions — only when scraped */}
+      {p.slTrajectory.length > 0 && (
+        <div className="mt-2 flex flex-wrap items-baseline gap-2 text-[10px]">
+          <span className="uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+            SL trajectory
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {[...p.slTrajectory].reverse().map((s, i) => (
+              <span
+                key={i}
+                className="rounded border border-[var(--border)] px-1.5 py-0.5 text-[var(--fg-dim)]"
+                title={`${s.sessionName}: ${s.matchesPlayed} matches${s.winPct != null ? ` · ${s.winPct}% win rate` : ""}`}
+              >
+                {s.skillLevel ?? "?"}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Recent form strip */}
       {p.recent.length > 0 && (

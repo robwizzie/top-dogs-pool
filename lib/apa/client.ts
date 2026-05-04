@@ -31,6 +31,8 @@ const EMPTY_SNAPSHOT: ApaSnapshot = {
   leaderboards: {},
   sessionRosters: {},
   sessionStandings: {},
+  opponentTeams: {},
+  opponentPlayers: {},
 };
 
 let cached: { mtime: number; data: ApaSnapshot } | null = null;

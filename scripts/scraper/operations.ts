@@ -292,5 +292,26 @@ export function isMatchFinalized(entry: MatchCacheEntry): boolean {
   return m.isFinalized === true || m.isBye === true;
 }
 
+/**
+ * Pull opponent team ids from a cached match. APA stores both teams in
+ * `match.matchTeams[].team.id`; we filter out our own team.
+ */
+export function opponentTeamIdsFromMatch(
+  entry: MatchCacheEntry,
+  ourTeamId: number,
+): number[] {
+  type Team = { id?: number };
+  type MatchTeam = { team?: Team };
+  type M = { matchTeams?: MatchTeam[] };
+  const m = entry.match as M;
+  const out: number[] = [];
+  for (const mt of m.matchTeams ?? []) {
+    if (typeof mt.team?.id === "number" && mt.team.id !== ourTeamId) {
+      out.push(mt.team.id);
+    }
+  }
+  return out;
+}
+
 /** league slug helper exported so the orchestrator can derive it once. */
 export { leagueSlug };

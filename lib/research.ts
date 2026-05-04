@@ -4758,10 +4758,16 @@ export function throwAdvisorOpponents(
 
 export type OpponentScoutingPlayer = {
   name: string;
+  /** Player id when we have a scraped profile — links to /players/[id]. */
+  playerId: string | null;
   /** Latest SL we've seen them at. */
   latestSL: number | null;
   /** Career record against us. */
   vsUs: { wins: number; losses: number; winPct: number };
+  /** Career record across the league (only when scraped via opp scraper). */
+  career: { wins: number; losses: number; matchesPlayed: number; winPct: number } | null;
+  /** Per-session SL trajectory (only when scraped). Latest first. */
+  slTrajectory: Array<{ sessionName: string; skillLevel: number | null; matchesPlayed: number; winPct?: number }>;
   /** Most-recent N matches vs us (oldest → newest), bounded to 6. */
   recent: Array<"W" | "L">;
   /** Form trend: hot/cold/steady based on recent vs lifetime. */
@@ -4798,6 +4804,12 @@ export function opponentScoutingReport(
   matches: Match[],
   roster: Player[],
   currentSessionId?: number,
+  /**
+   * Map of opponent player profiles (from snapshot.opponentPlayers).
+   * Optional — when present, enriches the per-player section with full
+   * career stats and per-session SL trajectory pulled from the league API.
+   */
+  opponentPlayers?: Record<string, import("@/lib/apa/schemas").PlayerProfile>,
 ): OpponentScoutingReport {
   const teamKey = opponentTeam.trim().toLowerCase();
   const matchesVsThem = matches.filter(
@@ -4966,10 +4978,43 @@ export function opponentScoutingReport(
             losses: ourCounters[0].ourLosses,
           }
         : null;
+    // Enrich with scraped opp player profile when available — gives us their
+    // FULL career stats (across the whole league, not just vs us) plus SL
+    // trajectory across sessions.
+    let playerId: string | null = null;
+    let careerEnrichment: OpponentScoutingPlayer["career"] = null;
+    let slTrajectory: OpponentScoutingPlayer["slTrajectory"] = [];
+    if (opponentPlayers) {
+      // Find by name match (we don't have a stable id from scoresheets — APA
+      // scoresheets give the opponent display name only).
+      const match = Object.values(opponentPlayers).find(
+        (op) => op.name.trim().toLowerCase() === b.name.trim().toLowerCase(),
+      );
+      if (match) {
+        playerId = match.id;
+        careerEnrichment = {
+          wins: match.career.wins,
+          losses: match.career.losses,
+          matchesPlayed: match.career.matchesPlayed,
+          winPct: match.career.winPct,
+        };
+        slTrajectory = match.sessions
+          .slice(0, 6)
+          .map((s) => ({
+            sessionName: s.sessionName,
+            skillLevel: s.skillLevel ?? null,
+            matchesPlayed: s.matchesPlayed ?? 0,
+            winPct: s.winPct,
+          }));
+      }
+    }
     players.push({
       name: b.name,
+      playerId,
       latestSL,
       vsUs: { wins, losses, winPct },
+      career: careerEnrichment,
+      slTrajectory,
       recent,
       trend,
       preferredPosition,
