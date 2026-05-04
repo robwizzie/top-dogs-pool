@@ -1,0 +1,2488 @@
+/**
+ * Team research / analytics.
+ *
+ * Pure functions over the snapshot's matches map. Each helper takes the set
+ * of in-scope matches (already filtered by session) plus the active roster,
+ * and returns a structured insight ready for the Research page.
+ *
+ * "Lineup" = the unordered set of 5 player ids that played a given match.
+ * "Order" = the per-position assignment (matchPosition 1..5).
+ */
+import type { Match, MatchResult, Player } from "@/lib/apa/schemas";
+
+/* ---------------------------------------------------------------- helpers */
+
+function pointsForResult(r: MatchResult): number {
+  let p = 0;
+  if (r.sweep) p += 1;
+  else if (r.miniSweep) p += 0.5;
+  if (r.breakAndRun) p += 1;
+  if (r.eightOnBreak) p += 1;
+  return p;
+}
+
+function lineupKey(results: MatchResult[]): string {
+  return results
+    .map((r) => r.playerId)
+    .filter((id) => !id.startsWith("ebp:"))
+    .sort()
+    .join("+");
+}
+
+function safeRate(num: number, denom: number): number {
+  if (!denom) return 0;
+  return Math.round((num / denom) * 1000) / 10;
+}
+
+/**
+ * Exponential-decay recency weight. Match played `date` is weighted relative
+ * to `refDate`, with the given half-life: a match exactly half-life-old gets
+ * weight 0.5, twice half-life gets 0.25, etc. Newer than refDate → 1.
+ */
+export function recencyWeight(
+  date: string,
+  refDate: Date = new Date(),
+  halfLifeDays = 90,
+): number {
+  const ageMs = refDate.getTime() - new Date(date).getTime();
+  if (ageMs <= 0) return 1;
+  const ageDays = ageMs / 86_400_000;
+  return Math.pow(0.5, ageDays / halfLifeDays);
+}
+
+/* ---------------------------------------------------------------- summary */
+
+export type TeamSummaryInsight = {
+  matchesPlayed: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  winPct: number;
+  totalPlayerMatches: number;
+  totalPlayerWins: number;
+  playerWinPct: number;
+  totalSweeps: number;
+  totalMiniSweeps: number;
+  totalBreakAndRuns: number;
+  totalEightOnBreaks: number;
+  averagePointsScored: number;
+  averagePointsConceded: number;
+};
+
+export function teamSummary(matches: Match[]): TeamSummaryInsight {
+  const completed = matches.filter((m) => m.status === "completed");
+  let wins = 0,
+    losses = 0,
+    ties = 0,
+    pts = 0,
+    oppPts = 0;
+  for (const m of completed) {
+    if (m.teamScore === undefined || m.opponentScore === undefined) continue;
+    pts += m.teamScore;
+    oppPts += m.opponentScore;
+    if (m.teamScore > m.opponentScore) wins++;
+    else if (m.teamScore < m.opponentScore) losses++;
+    else ties++;
+  }
+  let totalPlayerMatches = 0,
+    totalPlayerWins = 0,
+    sweeps = 0,
+    mini = 0,
+    br = 0,
+    eob = 0;
+  for (const m of completed) {
+    for (const r of m.results) {
+      totalPlayerMatches++;
+      if (r.outcome === "W") totalPlayerWins++;
+      if (r.sweep) sweeps++;
+      if (r.miniSweep) mini++;
+      if (r.breakAndRun) br++;
+      if (r.eightOnBreak) eob++;
+    }
+  }
+  return {
+    matchesPlayed: completed.length,
+    wins,
+    losses,
+    ties,
+    winPct: safeRate(wins, wins + losses),
+    totalPlayerMatches,
+    totalPlayerWins,
+    playerWinPct: safeRate(totalPlayerWins, totalPlayerMatches),
+    totalSweeps: sweeps,
+    totalMiniSweeps: mini,
+    totalBreakAndRuns: br,
+    totalEightOnBreaks: eob,
+    averagePointsScored: completed.length
+      ? Math.round((pts / completed.length) * 10) / 10
+      : 0,
+    averagePointsConceded: completed.length
+      ? Math.round((oppPts / completed.length) * 10) / 10
+      : 0,
+  };
+}
+
+/* ---------------------------------------------------------------- lineups */
+
+export type LineupRow = {
+  playerIds: string[];
+  playerNames: string[];
+  matchesPlayed: number;
+  wins: number;
+  losses: number;
+  winPct: number;
+  pointsScored: number;
+  pointsConceded: number;
+  pointDiff: number;
+  individualPoints: number; // sum of leaderboard points earned by the lineup
+};
+
+export function lineupBreakdown(
+  matches: Match[],
+  nameLookup: Map<string, string>,
+): LineupRow[] {
+  const buckets = new Map<string, LineupRow>();
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if (m.results.length !== 5) continue;
+    const key = lineupKey(m.results);
+    if (!key) continue;
+    const ids = key.split("+");
+    if (ids.length !== 5) continue;
+
+    let row = buckets.get(key);
+    if (!row) {
+      row = {
+        playerIds: ids,
+        playerNames: ids.map((id) => nameLookup.get(id) ?? id),
+        matchesPlayed: 0,
+        wins: 0,
+        losses: 0,
+        winPct: 0,
+        pointsScored: 0,
+        pointsConceded: 0,
+        pointDiff: 0,
+        individualPoints: 0,
+      };
+      buckets.set(key, row);
+    }
+    row.matchesPlayed++;
+    if (
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number"
+    ) {
+      if (m.teamScore > m.opponentScore) row.wins++;
+      else if (m.teamScore < m.opponentScore) row.losses++;
+      row.pointsScored += m.teamScore;
+      row.pointsConceded += m.opponentScore;
+    }
+    for (const r of m.results) row.individualPoints += pointsForResult(r);
+  }
+  for (const row of buckets.values()) {
+    row.winPct = safeRate(row.wins, row.wins + row.losses);
+    row.pointDiff = row.pointsScored - row.pointsConceded;
+  }
+  return [...buckets.values()].sort(
+    (a, b) =>
+      b.wins - a.wins ||
+      b.pointsScored - a.pointsScored ||
+      b.matchesPlayed - a.matchesPlayed,
+  );
+}
+
+/* ----------------------------------------------------- per-position table */
+
+export type PositionRow = {
+  playerId: string;
+  playerName: string;
+  // index 0 unused; positions[1..5] = { matches, wins }
+  positions: Array<{ matches: number; wins: number; winPct: number } | null>;
+  totalMatches: number;
+  totalWins: number;
+  bestPosition: number | null;
+  bestPositionWinPct: number;
+};
+
+export function positionPerformance(
+  matches: Match[],
+  roster: Player[],
+): PositionRow[] {
+  const acc = new Map<string, PositionRow>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, {
+      playerId: p.id,
+      playerName: p.name,
+      positions: [
+        null,
+        { matches: 0, wins: 0, winPct: 0 },
+        { matches: 0, wins: 0, winPct: 0 },
+        { matches: 0, wins: 0, winPct: 0 },
+        { matches: 0, wins: 0, winPct: 0 },
+        { matches: 0, wins: 0, winPct: 0 },
+      ],
+      totalMatches: 0,
+      totalWins: 0,
+      bestPosition: null,
+      bestPositionWinPct: 0,
+    });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    for (const r of m.results) {
+      if (!r.matchPosition || r.matchPosition < 1 || r.matchPosition > 5)
+        continue;
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      const slot = row.positions[r.matchPosition]!;
+      slot.matches += 1;
+      row.totalMatches += 1;
+      if (r.outcome === "W") {
+        slot.wins += 1;
+        row.totalWins += 1;
+      }
+    }
+  }
+  for (const row of acc.values()) {
+    let bestPos: number | null = null;
+    let bestRate = -1;
+    for (let i = 1; i <= 5; i++) {
+      const slot = row.positions[i];
+      if (!slot) continue;
+      slot.winPct = safeRate(slot.wins, slot.matches);
+      if (slot.matches >= 2 && slot.winPct > bestRate) {
+        bestRate = slot.winPct;
+        bestPos = i;
+      }
+    }
+    row.bestPosition = bestPos;
+    row.bestPositionWinPct = bestPos ? bestRate : 0;
+  }
+  return [...acc.values()].sort((a, b) => b.totalWins - a.totalWins);
+}
+
+/* ------------------------------------------------------- vs opponent team */
+
+export type OpponentRow = {
+  opponent: string;
+  matchesPlayed: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  winPct: number;
+  pointsScored: number;
+  pointsConceded: number;
+};
+
+export function vsOpponents(matches: Match[]): OpponentRow[] {
+  const buckets = new Map<string, OpponentRow>();
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if (m.opponent === "BYE") continue;
+    let row = buckets.get(m.opponent);
+    if (!row) {
+      row = {
+        opponent: m.opponent,
+        matchesPlayed: 0,
+        wins: 0,
+        losses: 0,
+        ties: 0,
+        winPct: 0,
+        pointsScored: 0,
+        pointsConceded: 0,
+      };
+      buckets.set(m.opponent, row);
+    }
+    row.matchesPlayed++;
+    if (
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number"
+    ) {
+      row.pointsScored += m.teamScore;
+      row.pointsConceded += m.opponentScore;
+      if (m.teamScore > m.opponentScore) row.wins++;
+      else if (m.teamScore < m.opponentScore) row.losses++;
+      else row.ties++;
+    }
+  }
+  for (const row of buckets.values())
+    row.winPct = safeRate(row.wins, row.wins + row.losses);
+  return [...buckets.values()].sort(
+    (a, b) =>
+      b.matchesPlayed - a.matchesPlayed || b.winPct - a.winPct,
+  );
+}
+
+/* -------------------------------------------------------- home vs away */
+
+export type SplitRow = {
+  homeMatches: number;
+  homeWins: number;
+  homeLosses: number;
+  homeWinPct: number;
+  homePointsAvg: number;
+  awayMatches: number;
+  awayWins: number;
+  awayLosses: number;
+  awayWinPct: number;
+  awayPointsAvg: number;
+};
+
+export function homeAwaySplit(matches: Match[]): SplitRow {
+  let hM = 0,
+    hW = 0,
+    hL = 0,
+    hP = 0;
+  let aM = 0,
+    aW = 0,
+    aL = 0,
+    aP = 0;
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number")
+      continue;
+    if (m.isHome === true) {
+      hM++;
+      hP += m.teamScore;
+      if (m.teamScore > m.opponentScore) hW++;
+      else if (m.teamScore < m.opponentScore) hL++;
+    } else if (m.isHome === false) {
+      aM++;
+      aP += m.teamScore;
+      if (m.teamScore > m.opponentScore) aW++;
+      else if (m.teamScore < m.opponentScore) aL++;
+    }
+  }
+  return {
+    homeMatches: hM,
+    homeWins: hW,
+    homeLosses: hL,
+    homeWinPct: safeRate(hW, hW + hL),
+    homePointsAvg: hM ? Math.round((hP / hM) * 10) / 10 : 0,
+    awayMatches: aM,
+    awayWins: aW,
+    awayLosses: aL,
+    awayWinPct: safeRate(aW, aW + aL),
+    awayPointsAvg: aM ? Math.round((aP / aM) * 10) / 10 : 0,
+  };
+}
+
+/* ----------------------------------------------------- vs skill-level grid */
+
+export type SkillRow = {
+  playerId: string;
+  playerName: string;
+  // bySL[2..7] = { matches, wins, winPct }
+  bySL: Record<number, { matches: number; wins: number; winPct: number }>;
+};
+
+export function vsSkillLevelTable(
+  matches: Match[],
+  roster: Player[],
+): SkillRow[] {
+  const acc = new Map<string, SkillRow>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, {
+      playerId: p.id,
+      playerName: p.name,
+      bySL: Object.fromEntries(
+        [2, 3, 4, 5, 6, 7].map((sl) => [sl, { matches: 0, wins: 0, winPct: 0 }]),
+      ),
+    });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    for (const r of m.results) {
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      const oppSL = r.opponentSkillLevel;
+      if (typeof oppSL !== "number" || oppSL < 2 || oppSL > 7) continue;
+      const cell = row.bySL[oppSL];
+      cell.matches++;
+      if (r.outcome === "W") cell.wins++;
+    }
+  }
+  for (const row of acc.values()) {
+    for (const sl of [2, 3, 4, 5, 6, 7]) {
+      const cell = row.bySL[sl];
+      cell.winPct = safeRate(cell.wins, cell.matches);
+    }
+  }
+  return [...acc.values()];
+}
+
+/* --------------------------------------------------- form / current streak */
+
+export type FormRow = {
+  playerId: string;
+  playerName: string;
+  recent: ("W" | "L")[]; // newest-first, up to 10
+  currentStreak: { type: "W" | "L"; length: number } | null;
+  longestWinStreak: number;
+  longestLossStreak: number;
+  last10WinPct: number;
+};
+
+export function playerForm(
+  matches: Match[],
+  roster: Player[],
+): FormRow[] {
+  // Sort matches oldest → newest so streaks build correctly.
+  const sorted = [...matches]
+    .filter((m) => m.status === "completed")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  const result: FormRow[] = [];
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    const outcomes: ("W" | "L")[] = [];
+    for (const m of sorted) {
+      for (const r of m.results) {
+        if (r.playerId !== p.id) continue;
+        outcomes.push(r.outcome);
+      }
+    }
+    if (outcomes.length === 0) {
+      result.push({
+        playerId: p.id,
+        playerName: p.name,
+        recent: [],
+        currentStreak: null,
+        longestWinStreak: 0,
+        longestLossStreak: 0,
+        last10WinPct: 0,
+      });
+      continue;
+    }
+    let lWS = 0,
+      lLS = 0,
+      curW = 0,
+      curL = 0;
+    for (const o of outcomes) {
+      if (o === "W") {
+        curW++;
+        curL = 0;
+        if (curW > lWS) lWS = curW;
+      } else {
+        curL++;
+        curW = 0;
+        if (curL > lLS) lLS = curL;
+      }
+    }
+    const last = outcomes[outcomes.length - 1];
+    let streakLen = 0;
+    for (let i = outcomes.length - 1; i >= 0; i--) {
+      if (outcomes[i] !== last) break;
+      streakLen++;
+    }
+    const recent = outcomes.slice(-10).reverse();
+    const last10 = outcomes.slice(-10);
+    const last10W = last10.filter((o) => o === "W").length;
+    result.push({
+      playerId: p.id,
+      playerName: p.name,
+      recent,
+      currentStreak: { type: last, length: streakLen },
+      longestWinStreak: lWS,
+      longestLossStreak: lLS,
+      last10WinPct: safeRate(last10W, last10.length),
+    });
+  }
+  return result;
+}
+
+/* --------------------------------------------- recommended starting five */
+
+export type Recommendation = {
+  /** Ordered list of recommendations: best player at position 1..5. */
+  byPosition: Array<{
+    position: number;
+    playerId: string;
+    playerName: string;
+    winPct: number;
+    matches: number;
+  } | null>;
+  /** Best 5 unique players, ordered by their ideal position. */
+  pickedFive: Array<{ position: number; playerId: string; playerName: string; winPct: number }>;
+};
+
+/**
+ * Cheap heuristic — for each position, pick the available roster member with
+ * the highest win rate at that position (min 2 matches). Greedy: each player
+ * can fill at most one position; ties broken by total matches and overall winPct.
+ */
+export function suggestedLineup(
+  positions: PositionRow[],
+): Recommendation {
+  const used = new Set<string>();
+  const byPosition: Recommendation["byPosition"] = [null, null, null, null, null, null];
+  // Process positions in order of how strong the best candidate is.
+  type Candidate = {
+    position: number;
+    playerId: string;
+    playerName: string;
+    winPct: number;
+    matches: number;
+  };
+  const positionCandidates: Array<Candidate[]> = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ];
+  for (const row of positions) {
+    for (let pos = 1; pos <= 5; pos++) {
+      const slot = row.positions[pos];
+      if (!slot || slot.matches < 2) continue;
+      positionCandidates[pos].push({
+        position: pos,
+        playerId: row.playerId,
+        playerName: row.playerName,
+        winPct: slot.winPct,
+        matches: slot.matches,
+      });
+    }
+  }
+  for (const list of positionCandidates) {
+    list.sort((a, b) => b.winPct - a.winPct || b.matches - a.matches);
+  }
+  // Greedy by best position-by-position rate.
+  const order = [1, 2, 3, 4, 5].sort((a, b) => {
+    const ta = positionCandidates[a][0]?.winPct ?? -1;
+    const tb = positionCandidates[b][0]?.winPct ?? -1;
+    return tb - ta;
+  });
+  for (const pos of order) {
+    const cand = positionCandidates[pos].find((c) => !used.has(c.playerId));
+    if (cand) {
+      used.add(cand.playerId);
+      byPosition[pos] = cand;
+    }
+  }
+  const pickedFive = byPosition
+    .filter((c): c is Candidate => !!c)
+    .sort((a, b) => a.position - b.position);
+  return { byPosition, pickedFive };
+}
+
+/* ---------------------------------------------- player reliability ranking */
+
+export type ReliabilityRow = {
+  playerId: string;
+  playerName: string;
+  matches: number;
+  wins: number;
+  winPct: number;
+  /** Score = winPct (0-100) × log(1+matches) — favors both high win rate and volume. */
+  score: number;
+};
+
+export function reliabilityRanking(
+  matches: Match[],
+  roster: Player[],
+): ReliabilityRow[] {
+  const acc = new Map<string, ReliabilityRow>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, {
+      playerId: p.id,
+      playerName: p.name,
+      matches: 0,
+      wins: 0,
+      winPct: 0,
+      score: 0,
+    });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    for (const r of m.results) {
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      row.matches++;
+      if (r.outcome === "W") row.wins++;
+    }
+  }
+  for (const row of acc.values()) {
+    row.winPct = safeRate(row.wins, row.matches);
+    row.score = Math.round(row.winPct * Math.log(1 + row.matches) * 10) / 10;
+  }
+  return [...acc.values()].sort((a, b) => b.score - a.score);
+}
+
+/* ============================================================ NEW ============== */
+
+/* ----------------------------------------------------------- hot / cold */
+
+export type HotColdRow = {
+  playerId: string;
+  playerName: string;
+  recentMatches: number;
+  recentWinPct: number;
+  baselineMatches: number;
+  baselineWinPct: number;
+  delta: number; // recent - baseline
+  status: "hot" | "cold" | "steady";
+};
+
+/**
+ * Compare last-N match win % vs the rest of their record. Players with at
+ * least `minRecent` recent matches and a noticeable delta show up as hot
+ * (above baseline) or cold (below). Defaults: window=10, threshold=±15.
+ */
+export function hotColdPlayers(
+  matches: Match[],
+  roster: Player[],
+  opts: { window?: number; threshold?: number; minRecent?: number } = {},
+): HotColdRow[] {
+  const window = opts.window ?? 10;
+  const threshold = opts.threshold ?? 15;
+  const minRecent = opts.minRecent ?? 5;
+  const sorted = [...matches]
+    .filter((m) => m.status === "completed")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+
+  const result: HotColdRow[] = [];
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    const outcomes: ("W" | "L")[] = [];
+    for (const m of sorted) {
+      for (const r of m.results) {
+        if (r.playerId !== p.id) continue;
+        outcomes.push(r.outcome);
+      }
+    }
+    const recent = outcomes.slice(-window);
+    const baseline = outcomes.slice(0, -window);
+    if (recent.length < minRecent) {
+      result.push({
+        playerId: p.id,
+        playerName: p.name,
+        recentMatches: recent.length,
+        recentWinPct: safeRate(
+          recent.filter((o) => o === "W").length,
+          recent.length,
+        ),
+        baselineMatches: baseline.length,
+        baselineWinPct: safeRate(
+          baseline.filter((o) => o === "W").length,
+          baseline.length,
+        ),
+        delta: 0,
+        status: "steady",
+      });
+      continue;
+    }
+    const recentWinPct = safeRate(
+      recent.filter((o) => o === "W").length,
+      recent.length,
+    );
+    // Baseline = career outside the recency window. If they've played few
+    // earlier matches, fall back to the entire body of work.
+    const baselineSource = baseline.length >= 5 ? baseline : outcomes;
+    const baselineWinPct = safeRate(
+      baselineSource.filter((o) => o === "W").length,
+      baselineSource.length,
+    );
+    const delta = Math.round((recentWinPct - baselineWinPct) * 10) / 10;
+    const status: HotColdRow["status"] =
+      delta >= threshold ? "hot" : delta <= -threshold ? "cold" : "steady";
+    result.push({
+      playerId: p.id,
+      playerName: p.name,
+      recentMatches: recent.length,
+      recentWinPct,
+      baselineMatches: baselineSource === outcomes ? outcomes.length : baseline.length,
+      baselineWinPct,
+      delta,
+      status,
+    });
+  }
+  return result.sort((a, b) => b.delta - a.delta);
+}
+
+/* -------------------------------------------------------- player chemistry */
+
+export type ChemistryRow = {
+  pair: [string, string]; // playerIds
+  pairNames: [string, string];
+  togetherMatches: number;
+  togetherTeamWins: number;
+  togetherTeamLosses: number;
+  togetherWinPct: number;
+  /**
+   * Lift = together win % minus the average of each player's solo team-win %
+   * (matches that included one but not the other). Positive means the duo
+   * outperforms either alone.
+   */
+  lift: number;
+};
+
+/**
+ * Each pair of current Top Dogs members → team match record when both played
+ * together. Lift compares vs the average of their solo (only-one-of-them)
+ * records.
+ */
+export function playerChemistry(
+  matches: Match[],
+  roster: Player[],
+): ChemistryRow[] {
+  const visible = roster.filter((p) => p.visible !== false);
+  const completed = matches.filter(
+    (m) =>
+      m.status === "completed" &&
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number",
+  );
+
+  const out: ChemistryRow[] = [];
+  for (let i = 0; i < visible.length; i++) {
+    for (let j = i + 1; j < visible.length; j++) {
+      const a = visible[i];
+      const b = visible[j];
+      let tog = 0,
+        togW = 0,
+        togL = 0;
+      let aOnly = 0,
+        aOnlyW = 0;
+      let bOnly = 0,
+        bOnlyW = 0;
+      for (const m of completed) {
+        const aIn = m.results.some((r) => r.playerId === a.id);
+        const bIn = m.results.some((r) => r.playerId === b.id);
+        const teamWon = (m.teamScore ?? 0) > (m.opponentScore ?? 0);
+        const teamLost = (m.teamScore ?? 0) < (m.opponentScore ?? 0);
+        if (aIn && bIn) {
+          tog++;
+          if (teamWon) togW++;
+          if (teamLost) togL++;
+        } else if (aIn && !bIn) {
+          aOnly++;
+          if (teamWon) aOnlyW++;
+        } else if (!aIn && bIn) {
+          bOnly++;
+          if (teamWon) bOnlyW++;
+        }
+      }
+      if (tog === 0) continue;
+      const togPct = safeRate(togW, togW + togL);
+      const aSoloPct = aOnly ? safeRate(aOnlyW, aOnly) : 0;
+      const bSoloPct = bOnly ? safeRate(bOnlyW, bOnly) : 0;
+      const avgSolo =
+        aOnly && bOnly
+          ? (aSoloPct + bSoloPct) / 2
+          : aOnly
+            ? aSoloPct
+            : bOnly
+              ? bSoloPct
+              : togPct; // no comparison data → lift 0
+      out.push({
+        pair: [a.id, b.id],
+        pairNames: [a.name, b.name],
+        togetherMatches: tog,
+        togetherTeamWins: togW,
+        togetherTeamLosses: togL,
+        togetherWinPct: togPct,
+        lift: Math.round((togPct - avgSolo) * 10) / 10,
+      });
+    }
+  }
+  return out.sort((a, b) => b.lift - a.lift || b.togetherWinPct - a.togetherWinPct);
+}
+
+/* --------------------------------------------------- skill-level history */
+
+export type SLHistoryRow = {
+  playerId: string;
+  playerName: string;
+  bySL: Record<
+    number,
+    { matches: number; wins: number; losses: number; winPct: number }
+  >;
+  totalMatches: number;
+  bestSL: { sl: number; winPct: number; matches: number } | null;
+};
+
+/**
+ * For each player, group their match results by their SL *at the time*. Shows
+ * how level changes affected (or didn't affect) their record.
+ */
+export function recordsBySkillLevel(
+  matches: Match[],
+  roster: Player[],
+): SLHistoryRow[] {
+  const acc = new Map<string, SLHistoryRow>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, {
+      playerId: p.id,
+      playerName: p.name,
+      bySL: {},
+      totalMatches: 0,
+      bestSL: null,
+    });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    for (const r of m.results) {
+      if (typeof r.skillLevel !== "number") continue;
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      const sl = r.skillLevel;
+      if (!row.bySL[sl]) row.bySL[sl] = { matches: 0, wins: 0, losses: 0, winPct: 0 };
+      const cell = row.bySL[sl];
+      cell.matches++;
+      row.totalMatches++;
+      if (r.outcome === "W") cell.wins++;
+      else cell.losses++;
+    }
+  }
+  for (const row of acc.values()) {
+    let best: SLHistoryRow["bestSL"] = null;
+    for (const slStr of Object.keys(row.bySL)) {
+      const sl = parseInt(slStr, 10);
+      const cell = row.bySL[sl];
+      cell.winPct = safeRate(cell.wins, cell.matches);
+      if (cell.matches >= 3 && (best === null || cell.winPct > best.winPct)) {
+        best = { sl, winPct: cell.winPct, matches: cell.matches };
+      }
+    }
+    row.bestSL = best;
+  }
+  return [...acc.values()]
+    .filter((r) => r.totalMatches > 0)
+    .sort((a, b) => b.totalMatches - a.totalMatches);
+}
+
+/* -------------------------------------------------- home/away × SL bracket */
+
+export type HomeAwayBySL = {
+  playerId: string;
+  playerName: string;
+  homeMatches: number;
+  homeWins: number;
+  homeWinPct: number;
+  awayMatches: number;
+  awayWins: number;
+  awayWinPct: number;
+  homeAwaySwing: number; // homeWinPct - awayWinPct
+};
+
+/** Per-player home vs away splits using each match's `isHome` flag. */
+export function homeAwayPerPlayer(
+  matches: Match[],
+  roster: Player[],
+): HomeAwayBySL[] {
+  const acc = new Map<string, HomeAwayBySL>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, {
+      playerId: p.id,
+      playerName: p.name,
+      homeMatches: 0,
+      homeWins: 0,
+      homeWinPct: 0,
+      awayMatches: 0,
+      awayWins: 0,
+      awayWinPct: 0,
+      homeAwaySwing: 0,
+    });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if (m.isHome === undefined) continue;
+    for (const r of m.results) {
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      if (m.isHome) {
+        row.homeMatches++;
+        if (r.outcome === "W") row.homeWins++;
+      } else {
+        row.awayMatches++;
+        if (r.outcome === "W") row.awayWins++;
+      }
+    }
+  }
+  for (const row of acc.values()) {
+    row.homeWinPct = safeRate(row.homeWins, row.homeMatches);
+    row.awayWinPct = safeRate(row.awayWins, row.awayMatches);
+    row.homeAwaySwing = Math.round((row.homeWinPct - row.awayWinPct) * 10) / 10;
+  }
+  return [...acc.values()].filter(
+    (r) => r.homeMatches > 0 || r.awayMatches > 0,
+  );
+}
+
+/* ------------------------------------------------------ weekly trend */
+
+export type WeeklyPoint = {
+  week: number;
+  date: string;
+  opponent: string;
+  matchId: string;
+  teamScore?: number;
+  opponentScore?: number;
+  cumulativeWins: number;
+  cumulativeLosses: number;
+  outcome: "W" | "L" | "T" | "BYE";
+};
+
+export function weeklyTrend(matches: Match[]): WeeklyPoint[] {
+  const sorted = [...matches]
+    .filter((m) => m.status === "completed" || m.status === "bye")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  const out: WeeklyPoint[] = [];
+  let w = 0,
+    l = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    const m = sorted[i];
+    let outcome: WeeklyPoint["outcome"] = "T";
+    if (m.status === "bye") {
+      outcome = "BYE";
+    } else if (
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number"
+    ) {
+      if (m.teamScore > m.opponentScore) {
+        w++;
+        outcome = "W";
+      } else if (m.teamScore < m.opponentScore) {
+        l++;
+        outcome = "L";
+      }
+    }
+    out.push({
+      week: m.week ?? i + 1,
+      date: m.date,
+      opponent: m.opponent,
+      matchId: m.id,
+      teamScore: m.teamScore,
+      opponentScore: m.opponentScore,
+      cumulativeWins: w,
+      cumulativeLosses: l,
+      outcome,
+    });
+  }
+  return out;
+}
+
+/* ----------------------------------------- player × individual opponent */
+
+export type OpponentMatchup = {
+  opponentName: string;
+  matches: number;
+  wins: number;
+  losses: number;
+  winPct: number;
+  /** Their most-recent skill level we've seen across our matches against them. */
+  latestSkillLevel?: number;
+};
+
+export type PlayerOpponentRow = {
+  playerId: string;
+  playerName: string;
+  totalOpponents: number;
+  totalMatches: number;
+  best: OpponentMatchup[]; // strongest matchups, min 2 games
+  worst: OpponentMatchup[]; // weakest matchups, min 2 games
+  all: OpponentMatchup[];
+};
+
+/**
+ * For each Top Dogs player, group their results by individual opponent name.
+ * Surface their strongest and weakest head-to-head records — strategic value
+ * for "who to throw" in a given matchup.
+ *
+ * Note: APA opponent names are matched as strings (not member ids) so a name
+ * collision across teams could merge two different opponents. In practice
+ * that's rare in a single division.
+ */
+export function playerOpponentMatchups(
+  matches: Match[],
+  roster: Player[],
+): PlayerOpponentRow[] {
+  const playerMap = new Map<
+    string,
+    Map<
+      string,
+      {
+        wins: number;
+        losses: number;
+        latestSL?: number;
+        latestSLDate?: number;
+      }
+    >
+  >();
+  const nameOf = new Map<string, string>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    playerMap.set(p.id, new Map());
+    nameOf.set(p.id, p.name);
+  }
+
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    const matchTs = +new Date(m.date);
+    for (const r of m.results) {
+      const oppMap = playerMap.get(r.playerId);
+      if (!oppMap) continue;
+      const opp = (r.opponentName ?? "").trim();
+      if (!opp || opp === "Opponent") continue;
+      const e = oppMap.get(opp) ?? { wins: 0, losses: 0 };
+      if (r.outcome === "W") e.wins++;
+      else e.losses++;
+      // Track the most-recent SL we've recorded for this opponent.
+      if (
+        typeof r.opponentSkillLevel === "number" &&
+        r.opponentSkillLevel > 0 &&
+        (e.latestSLDate === undefined || matchTs >= e.latestSLDate)
+      ) {
+        e.latestSL = r.opponentSkillLevel;
+        e.latestSLDate = matchTs;
+      }
+      oppMap.set(opp, e);
+    }
+  }
+
+  const out: PlayerOpponentRow[] = [];
+  for (const [pid, oppMap] of playerMap) {
+    const all = [...oppMap.entries()]
+      .map(([name, rec]) => ({
+        opponentName: name,
+        matches: rec.wins + rec.losses,
+        wins: rec.wins,
+        losses: rec.losses,
+        winPct: safeRate(rec.wins, rec.wins + rec.losses),
+        latestSkillLevel: rec.latestSL,
+      }))
+      .sort((a, b) => b.matches - a.matches);
+    if (all.length === 0) continue;
+
+    // Strongest = most wins, then highest win %, then most matches
+    const strong = all.filter((a) => a.matches >= 2 && a.wins > 0);
+    const best = [...strong]
+      .sort(
+        (a, b) =>
+          b.wins - a.wins || b.winPct - a.winPct || b.matches - a.matches,
+      )
+      .slice(0, 5);
+    // Weakest = lowest win %, with at least 2 matches; tiebreak by losses, then matches
+    const weak = all.filter((a) => a.matches >= 2);
+    const worst = [...weak]
+      .sort(
+        (a, b) =>
+          a.winPct - b.winPct || b.losses - a.losses || b.matches - a.matches,
+      )
+      .slice(0, 5);
+
+    out.push({
+      playerId: pid,
+      playerName: nameOf.get(pid) ?? pid,
+      totalOpponents: all.length,
+      totalMatches: all.reduce((s, r) => s + r.matches, 0),
+      best,
+      worst,
+      all,
+    });
+  }
+  return out.sort((a, b) => b.totalMatches - a.totalMatches);
+}
+
+/* ------------------------------------------------------------ venues */
+
+export type VenueRecord = {
+  location: string;
+  teamMatches: number;
+  teamWins: number;
+  teamLosses: number;
+  teamWinPct: number;
+  individualMatches: number;
+  individualWins: number;
+  individualWinPct: number;
+  averageMargin: number; // ours minus opponents per team match
+  isHomeVenue: boolean;
+};
+
+export function venueRecords(
+  matches: Match[],
+  homeVenueName?: string,
+): VenueRecord[] {
+  const map = new Map<string, VenueRecord>();
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if (!m.location) continue;
+    let row = map.get(m.location);
+    if (!row) {
+      row = {
+        location: m.location,
+        teamMatches: 0,
+        teamWins: 0,
+        teamLosses: 0,
+        teamWinPct: 0,
+        individualMatches: 0,
+        individualWins: 0,
+        individualWinPct: 0,
+        averageMargin: 0,
+        isHomeVenue: !!homeVenueName && m.location === homeVenueName,
+      };
+      map.set(m.location, row);
+    }
+    row.teamMatches++;
+    if (
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number"
+    ) {
+      if (m.teamScore > m.opponentScore) row.teamWins++;
+      else if (m.teamScore < m.opponentScore) row.teamLosses++;
+      row.averageMargin += m.teamScore - m.opponentScore;
+    }
+    for (const r of m.results) {
+      row.individualMatches++;
+      if (r.outcome === "W") row.individualWins++;
+    }
+  }
+  for (const row of map.values()) {
+    row.teamWinPct = safeRate(row.teamWins, row.teamWins + row.teamLosses);
+    row.individualWinPct = safeRate(row.individualWins, row.individualMatches);
+    row.averageMargin = row.teamMatches
+      ? Math.round((row.averageMargin / row.teamMatches) * 10) / 10
+      : 0;
+  }
+  return [...map.values()].sort((a, b) => b.teamMatches - a.teamMatches);
+}
+
+export type PlayerVenueRow = {
+  playerId: string;
+  playerName: string;
+  byVenue: Array<{
+    location: string;
+    matches: number;
+    wins: number;
+    winPct: number;
+    isHomeVenue: boolean;
+  }>;
+  bestVenue: { location: string; winPct: number; matches: number } | null;
+};
+
+export function playerVenueRecords(
+  matches: Match[],
+  roster: Player[],
+  homeVenueName?: string,
+): PlayerVenueRow[] {
+  const acc = new Map<
+    string,
+    { name: string; venues: Map<string, { matches: number; wins: number }> }
+  >();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, { name: p.name, venues: new Map() });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed" || !m.location) continue;
+    for (const r of m.results) {
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      const v = row.venues.get(m.location) ?? { matches: 0, wins: 0 };
+      v.matches++;
+      if (r.outcome === "W") v.wins++;
+      row.venues.set(m.location, v);
+    }
+  }
+  const out: PlayerVenueRow[] = [];
+  for (const [pid, { name, venues }] of acc) {
+    const byVenue = [...venues.entries()].map(([loc, v]) => ({
+      location: loc,
+      matches: v.matches,
+      wins: v.wins,
+      winPct: safeRate(v.wins, v.matches),
+      isHomeVenue: !!homeVenueName && loc === homeVenueName,
+    }));
+    if (byVenue.length === 0) continue;
+    const eligible = byVenue.filter((v) => v.matches >= 3);
+    const best = eligible.sort(
+      (a, b) => b.winPct - a.winPct || b.matches - a.matches,
+    )[0];
+    out.push({
+      playerId: pid,
+      playerName: name,
+      byVenue: byVenue.sort((a, b) => b.matches - a.matches),
+      bestVenue: best
+        ? { location: best.location, winPct: best.winPct, matches: best.matches }
+        : null,
+    });
+  }
+  return out.sort(
+    (a, b) =>
+      b.byVenue.reduce((s, v) => s + v.matches, 0) -
+      a.byVenue.reduce((s, v) => s + v.matches, 0),
+  );
+}
+
+/* ------------------------------------------------------- game insights */
+
+export type GameInsights = {
+  totalIndividualMatches: number;
+  averageGamesPerMatch: number; // (ours + opp) average per individual match
+  forfeitMatches: number;
+  forfeitPct: number;
+  incompleteMatches: number;
+  decisiveTeamWins: { matchId: string; opponent: string; date: string; teamScore: number; opponentScore: number; margin: number } | null;
+  closestTeamWin: { matchId: string; opponent: string; date: string; teamScore: number; opponentScore: number; margin: number } | null;
+  largestTeamLoss: { matchId: string; opponent: string; date: string; teamScore: number; opponentScore: number; margin: number } | null;
+  comebackWins: number; // approximated below
+};
+
+export function gameInsights(matches: Match[]): GameInsights {
+  const completed = matches.filter((m) => m.status === "completed");
+
+  let total = 0;
+  let games = 0;
+  let forfeit = 0;
+  const incomplete = 0;
+  let comebacks = 0;
+  for (const m of completed) {
+    for (const r of m.results) {
+      total++;
+      if (r.score) {
+        const [a, b] = r.score.split("-").map((s) => parseInt(s, 10));
+        if (Number.isFinite(a) && Number.isFinite(b)) games += a + b;
+      }
+      if (r.forfeited) forfeit++;
+    }
+    // "Comeback wins" — won a tight match (margin ≤ 2) that had a forfeit
+    // against us in the lineup. Without per-individual-match timestamps we
+    // can't do "trailed at half then won", so this is the best proxy: a
+    // narrow win that wasn't a sweep.
+    if (
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number" &&
+      m.teamScore > m.opponentScore &&
+      m.teamScore - m.opponentScore <= 3 &&
+      m.results.some((r) => r.outcome === "L")
+    ) {
+      comebacks++;
+    }
+  }
+
+  let decisive: GameInsights["decisiveTeamWins"] = null;
+  let closest: GameInsights["closestTeamWin"] = null;
+  let worstLoss: GameInsights["largestTeamLoss"] = null;
+  for (const m of completed) {
+    if (
+      typeof m.teamScore !== "number" ||
+      typeof m.opponentScore !== "number"
+    )
+      continue;
+    const mg = m.teamScore - m.opponentScore;
+    const obj = {
+      matchId: m.id,
+      opponent: m.opponent,
+      date: m.date,
+      teamScore: m.teamScore,
+      opponentScore: m.opponentScore,
+      margin: mg,
+    };
+    if (mg > 0) {
+      if (!decisive || mg > decisive.margin) decisive = obj;
+      if (!closest || mg < closest.margin) closest = obj;
+    }
+    if (mg < 0) {
+      if (!worstLoss || mg < worstLoss.margin) worstLoss = obj;
+    }
+  }
+
+  return {
+    totalIndividualMatches: total,
+    averageGamesPerMatch: total ? Math.round((games / total) * 10) / 10 : 0,
+    forfeitMatches: forfeit,
+    forfeitPct: safeRate(forfeit, total),
+    incompleteMatches: incomplete,
+    decisiveTeamWins: decisive,
+    closestTeamWin: closest,
+    largestTeamLoss: worstLoss,
+    comebackWins: comebacks,
+  };
+}
+
+/* ============================================================ NEXT-MATCH BRIEFING */
+
+export type OpponentPlayerProfile = {
+  name: string;
+  appearances: number; // matches we've played them
+  preferredPosition: number; // most common slot they put up at
+  positionsByCount: Map<number, number>;
+  averageSL: number;
+  topSL: number;
+  ourRecordVsThem: { wins: number; losses: number };
+  bestCounter: { playerId: string; playerName: string; wins: number; losses: number; winPct: number } | null;
+};
+
+export type NextMatchBriefing = {
+  match: Match;
+  opponentName: string;
+  opponentProfile: OpponentPlayerProfile[];
+  suggestedCounters: Array<{
+    position: number;
+    opponentName: string | null;
+    opponentSL: number | null;
+    counterPlayerId: string;
+    counterPlayerName: string;
+    rationale: string;
+  }>;
+};
+
+/**
+ * Find the next upcoming match against a non-bye opponent and synthesize a
+ * pre-match briefing from our cached scoresheets. Opponent rosters are
+ * inferred from prior matches we've played them.
+ */
+export function nextMatchBriefing(
+  schedule: Match[],
+  allMatches: Match[],
+  roster: Player[],
+): NextMatchBriefing | null {
+  const upcoming = schedule
+    .filter((m) => m.status === "upcoming" && m.opponent !== "BYE")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date))[0];
+  if (!upcoming) return null;
+
+  const oppName = upcoming.opponent;
+
+  // Prior matches we've played against this opponent.
+  const priors = allMatches.filter(
+    (m) =>
+      m.status === "completed" &&
+      m.opponent === oppName &&
+      m.results.length > 0,
+  );
+
+  // Build opponent player profile from their appearances.
+  const opponentByName = new Map<
+    string,
+    {
+      appearances: number;
+      positions: Map<number, number>;
+      sls: number[];
+      ourWins: number;
+      ourLosses: number;
+      counters: Map<string, { wins: number; losses: number; name: string }>;
+    }
+  >();
+  for (const m of priors) {
+    for (const r of m.results) {
+      const op = r.opponentName?.trim();
+      if (!op || op === "Opponent") continue;
+      let entry = opponentByName.get(op);
+      if (!entry) {
+        entry = {
+          appearances: 0,
+          positions: new Map(),
+          sls: [],
+          ourWins: 0,
+          ourLosses: 0,
+          counters: new Map(),
+        };
+        opponentByName.set(op, entry);
+      }
+      entry.appearances++;
+      if (typeof r.matchPosition === "number") {
+        entry.positions.set(
+          r.matchPosition,
+          (entry.positions.get(r.matchPosition) ?? 0) + 1,
+        );
+      }
+      if (typeof r.opponentSkillLevel === "number")
+        entry.sls.push(r.opponentSkillLevel);
+      if (r.outcome === "W") entry.ourWins++;
+      else entry.ourLosses++;
+      const c = entry.counters.get(r.playerId) ?? {
+        wins: 0,
+        losses: 0,
+        name: r.playerName,
+      };
+      if (r.outcome === "W") c.wins++;
+      else c.losses++;
+      entry.counters.set(r.playerId, c);
+    }
+  }
+
+  const opponentProfile: OpponentPlayerProfile[] = [...opponentByName.entries()]
+    .map(([name, e]) => {
+      const positionsSorted = [...e.positions.entries()].sort(
+        (a, b) => b[1] - a[1],
+      );
+      const preferredPosition = positionsSorted[0]?.[0] ?? 0;
+      const avgSL = e.sls.length
+        ? e.sls.reduce((s, n) => s + n, 0) / e.sls.length
+        : 0;
+      const topSL = e.sls.length ? Math.max(...e.sls) : 0;
+      const counters = [...e.counters.entries()]
+        .map(([pid, c]) => ({
+          playerId: pid,
+          playerName: c.name,
+          wins: c.wins,
+          losses: c.losses,
+          winPct: safeRate(c.wins, c.wins + c.losses),
+        }))
+        .filter((c) =>
+          roster.some((p) => p.id === c.playerId && p.visible !== false),
+        )
+        .sort(
+          (a, b) =>
+            b.winPct - a.winPct ||
+            b.wins - a.wins ||
+            (b.wins + b.losses) - (a.wins + a.losses),
+        );
+      return {
+        name,
+        appearances: e.appearances,
+        preferredPosition,
+        positionsByCount: e.positions,
+        averageSL: Math.round(avgSL * 10) / 10,
+        topSL,
+        ourRecordVsThem: { wins: e.ourWins, losses: e.ourLosses },
+        bestCounter: counters[0] ?? null,
+      };
+    })
+    .sort((a, b) => b.appearances - a.appearances);
+
+  // Suggested counters per position based on opponent's likely starters.
+  const probableStarters: Array<OpponentPlayerProfile | null> = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ];
+  // Greedy: take top opponents by appearance, place each at their preferred
+  // position; if taken, fall back to next-most-common position.
+  const usedSlots = new Set<number>();
+  for (const opp of opponentProfile) {
+    for (const [pos] of [...opp.positionsByCount.entries()].sort(
+      (a, b) => b[1] - a[1],
+    )) {
+      if (usedSlots.has(pos)) continue;
+      probableStarters[pos] = opp;
+      usedSlots.add(pos);
+      break;
+    }
+    if (usedSlots.size === 5) break;
+  }
+
+  const usedCounters = new Set<string>();
+  const suggestedCounters: NextMatchBriefing["suggestedCounters"] = [];
+  for (let pos = 1; pos <= 5; pos++) {
+    const starter = probableStarters[pos];
+    if (!starter) {
+      // Fall back: pick our highest-win-rate roster member at this position
+      // who hasn't been used yet. (Skip — leaves a gap; UI handles it.)
+      continue;
+    }
+    const candidates = (opponentByName.get(starter.name)?.counters
+      ? [...opponentByName.get(starter.name)!.counters.entries()].map(
+          ([pid, c]) => ({
+            playerId: pid,
+            playerName: c.name,
+            wins: c.wins,
+            losses: c.losses,
+            winPct: safeRate(c.wins, c.wins + c.losses),
+          }),
+        )
+      : [])
+      .filter(
+        (c) =>
+          !usedCounters.has(c.playerId) &&
+          roster.some((p) => p.id === c.playerId && p.visible !== false),
+      )
+      .sort(
+        (a, b) => b.winPct - a.winPct || b.wins - a.wins,
+      );
+    const pick = candidates[0];
+    if (pick) {
+      usedCounters.add(pick.playerId);
+      suggestedCounters.push({
+        position: pos,
+        opponentName: starter.name,
+        opponentSL: starter.topSL || null,
+        counterPlayerId: pick.playerId,
+        counterPlayerName: pick.playerName,
+        rationale: `${pick.wins}-${pick.losses} all-time (${pick.winPct}% vs ${starter.name})`,
+      });
+    } else {
+      // No H2H data — skip. UI will show "—".
+    }
+  }
+
+  return {
+    match: upcoming,
+    opponentName: oppName,
+    opponentProfile,
+    suggestedCounters,
+  };
+}
+
+/* ============================================================ COUNTER-PICK */
+
+export type CounterPickRow = {
+  playerId: string;
+  playerName: string;
+  matches: number;
+  wins: number;
+  losses: number;
+  winPct: number;
+  /** Score = winPct (with prior — Beta(2,2) smoothing) for sample size sanity. */
+  score: number;
+};
+
+/**
+ * Given an opponent's name (and optional SL bucket), rank our roster by their
+ * head-to-head record, with Beta-smoothing so 1-0 doesn't outrank 8-2.
+ */
+export function counterPickFor(
+  opponentName: string,
+  matches: Match[],
+  roster: Player[],
+): CounterPickRow[] {
+  const target = opponentName.trim().toLowerCase();
+  if (!target) return [];
+  const acc = new Map<string, { name: string; wins: number; losses: number }>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, { name: p.name, wins: 0, losses: 0 });
+  }
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    for (const r of m.results) {
+      if ((r.opponentName ?? "").trim().toLowerCase() !== target) continue;
+      const row = acc.get(r.playerId);
+      if (!row) continue;
+      if (r.outcome === "W") row.wins++;
+      else row.losses++;
+    }
+  }
+  const out: CounterPickRow[] = [];
+  for (const [pid, e] of acc) {
+    const matches_ = e.wins + e.losses;
+    if (matches_ === 0) continue;
+    const winPct = safeRate(e.wins, matches_);
+    // Beta(2,2) smoothing: pretends every player has 2 prior wins and 2 priors losses.
+    const score =
+      Math.round(((e.wins + 2) / (matches_ + 4)) * 1000) / 10;
+    out.push({
+      playerId: pid,
+      playerName: e.name,
+      matches: matches_,
+      wins: e.wins,
+      losses: e.losses,
+      winPct,
+      score,
+    });
+  }
+  return out.sort(
+    (a, b) => b.score - a.score || b.wins - a.wins || b.matches - a.matches,
+  );
+}
+
+/* ============================================================ PLAYER IMPACT */
+
+export type ImpactRow = {
+  playerId: string;
+  playerName: string;
+  withMatches: number;
+  withWins: number;
+  withWinPct: number;
+  withoutMatches: number;
+  withoutWins: number;
+  withoutWinPct: number;
+  swing: number; // with - without
+};
+
+/**
+ * Team record when this player IS in the lineup, vs when they aren't. Swing
+ * quantifies how much their presence shifts our team win rate.
+ */
+export function playerImpact(matches: Match[], roster: Player[]): ImpactRow[] {
+  const completed = matches.filter(
+    (m) =>
+      m.status === "completed" &&
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number",
+  );
+  const out: ImpactRow[] = [];
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    let withM = 0,
+      withW = 0,
+      woM = 0,
+      woW = 0;
+    for (const m of completed) {
+      const teamWon = (m.teamScore ?? 0) > (m.opponentScore ?? 0);
+      const teamLost = (m.teamScore ?? 0) < (m.opponentScore ?? 0);
+      const inLineup = m.results.some((r) => r.playerId === p.id);
+      if (inLineup) {
+        withM++;
+        if (teamWon) withW++;
+        else if (teamLost) {
+          /* loss */
+        }
+      } else {
+        woM++;
+        if (teamWon) woW++;
+      }
+    }
+    if (withM === 0 && woM === 0) continue;
+    const withWinPct = safeRate(withW, withM);
+    const woWinPct = safeRate(woW, woM);
+    out.push({
+      playerId: p.id,
+      playerName: p.name,
+      withMatches: withM,
+      withWins: withW,
+      withWinPct,
+      withoutMatches: woM,
+      withoutWins: woW,
+      withoutWinPct: woWinPct,
+      swing: Math.round((withWinPct - woWinPct) * 10) / 10,
+    });
+  }
+  return out.sort((a, b) => b.swing - a.swing);
+}
+
+/* ============================================================ ACHIEVEMENTS */
+
+export type Badge = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+  playerId: string;
+  playerName: string;
+  value: string;
+};
+
+/** Auto-derive ~10 badges from current scope's data + assigns to players. */
+export function achievements(
+  matches: Match[],
+  roster: Player[],
+): { byPlayer: Map<string, Badge[]>; flat: Badge[] } {
+  const completed = matches.filter((m) => m.status === "completed");
+  type Stat = {
+    name: string;
+    sweeps: number;
+    miniSweeps: number;
+    breakAndRuns: number;
+    eightOnBreaks: number;
+    matches: number;
+    wins: number;
+    points: number;
+    longestWinStreak: number;
+    currentStreak: number;
+    venuesPlayed: Set<string>;
+  };
+  const acc = new Map<string, Stat>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    acc.set(p.id, {
+      name: p.name,
+      sweeps: 0,
+      miniSweeps: 0,
+      breakAndRuns: 0,
+      eightOnBreaks: 0,
+      matches: 0,
+      wins: 0,
+      points: 0,
+      longestWinStreak: 0,
+      currentStreak: 0,
+      venuesPlayed: new Set(),
+    });
+  }
+
+  // Build chronological outcome list per player to compute streaks.
+  const sorted = [...completed].sort(
+    (a, b) => +new Date(a.date) - +new Date(b.date),
+  );
+  const playerStreak = new Map<string, { cur: number; longest: number }>();
+  for (const m of sorted) {
+    for (const r of m.results) {
+      const stat = acc.get(r.playerId);
+      if (!stat) continue;
+      stat.matches++;
+      if (r.outcome === "W") stat.wins++;
+      if (r.sweep) stat.sweeps++;
+      if (r.miniSweep) stat.miniSweeps++;
+      if (r.breakAndRun) stat.breakAndRuns++;
+      if (r.eightOnBreak) stat.eightOnBreaks++;
+      if (r.sweep) stat.points += 1;
+      else if (r.miniSweep) stat.points += 0.5;
+      if (r.breakAndRun) stat.points += 1;
+      if (r.eightOnBreak) stat.points += 1;
+      if (m.location) stat.venuesPlayed.add(m.location);
+      const ps = playerStreak.get(r.playerId) ?? { cur: 0, longest: 0 };
+      if (r.outcome === "W") ps.cur++;
+      else ps.cur = 0;
+      if (ps.cur > ps.longest) ps.longest = ps.cur;
+      playerStreak.set(r.playerId, ps);
+    }
+  }
+  for (const [pid, ps] of playerStreak) {
+    const s = acc.get(pid);
+    if (!s) continue;
+    s.longestWinStreak = ps.longest;
+    s.currentStreak = ps.cur;
+  }
+
+  const flat: Badge[] = [];
+  function award(
+    id: string,
+    label: string,
+    emoji: string,
+    description: string,
+    pick: (entries: [string, Stat][]) => [string, Stat] | undefined,
+    valueOf: (s: Stat) => string | null,
+  ) {
+    const entries = [...acc.entries()];
+    const winner = pick(entries);
+    if (!winner) return;
+    const [pid, s] = winner;
+    const v = valueOf(s);
+    if (!v) return;
+    flat.push({
+      id,
+      label,
+      emoji,
+      description,
+      playerId: pid,
+      playerName: s.name,
+      value: v,
+    });
+  }
+
+  award(
+    "sweep-king",
+    "Sweep King",
+    "👑",
+    "Most full-shutout wins in scope.",
+    (es) =>
+      es
+        .filter(([, s]) => s.sweeps > 0)
+        .sort((a, b) => b[1].sweeps - a[1].sweeps)[0],
+    (s) => `${s.sweeps} sweeps`,
+  );
+  award(
+    "mini-master",
+    "Mini Master",
+    "🥷",
+    "Most mini-sweeps in scope.",
+    (es) =>
+      es
+        .filter(([, s]) => s.miniSweeps > 0)
+        .sort((a, b) => b[1].miniSweeps - a[1].miniSweeps)[0],
+    (s) => `${s.miniSweeps} mini-sweeps`,
+  );
+  award(
+    "iron-player",
+    "Iron Player",
+    "🏋️",
+    "Most individual matches played in scope.",
+    (es) => es.sort((a, b) => b[1].matches - a[1].matches)[0],
+    (s) => (s.matches > 0 ? `${s.matches} matches` : null),
+  );
+  award(
+    "highlight-reel",
+    "Highlight Reel",
+    "🎬",
+    "Most break-and-runs + 8-on-breaks combined.",
+    (es) =>
+      es
+        .filter(([, s]) => s.breakAndRuns + s.eightOnBreaks > 0)
+        .sort(
+          (a, b) =>
+            b[1].breakAndRuns +
+            b[1].eightOnBreaks -
+            (a[1].breakAndRuns + a[1].eightOnBreaks),
+        )[0],
+    (s) =>
+      `${s.breakAndRuns + s.eightOnBreaks} (${s.breakAndRuns} B&R · ${s.eightOnBreaks} 8oB)`,
+  );
+  award(
+    "win-king",
+    "Crusher",
+    "⚔️",
+    "Most individual wins.",
+    (es) => es.sort((a, b) => b[1].wins - a[1].wins)[0],
+    (s) => (s.wins > 0 ? `${s.wins} wins` : null),
+  );
+  award(
+    "win-pct-king",
+    "Mr. Reliable",
+    "🎯",
+    "Highest win % (min 5 matches).",
+    (es) =>
+      es
+        .filter(([, s]) => s.matches >= 5)
+        .sort(
+          (a, b) =>
+            b[1].wins / b[1].matches - a[1].wins / a[1].matches,
+        )[0],
+    (s) =>
+      s.matches >= 5 ? `${Math.round((s.wins / s.matches) * 1000) / 10}%` : null,
+  );
+  award(
+    "long-streak",
+    "Streaker",
+    "🔥",
+    "Longest single win streak in scope.",
+    (es) => es.sort((a, b) => b[1].longestWinStreak - a[1].longestWinStreak)[0],
+    (s) =>
+      s.longestWinStreak >= 3 ? `${s.longestWinStreak} in a row` : null,
+  );
+  award(
+    "hot-hand",
+    "Hot Hand",
+    "♨️",
+    "Currently riding the longest active win streak.",
+    (es) =>
+      es.filter(([, s]) => s.currentStreak >= 2).sort(
+        (a, b) => b[1].currentStreak - a[1].currentStreak,
+      )[0],
+    (s) => (s.currentStreak >= 2 ? `${s.currentStreak} active` : null),
+  );
+  award(
+    "bar-hopper",
+    "Bar Hopper",
+    "🍻",
+    "Played at the most different venues.",
+    (es) => es.sort((a, b) => b[1].venuesPlayed.size - a[1].venuesPlayed.size)[0],
+    (s) => (s.venuesPlayed.size >= 2 ? `${s.venuesPlayed.size} venues` : null),
+  );
+  award(
+    "point-leader",
+    "Top Scorer",
+    "🏆",
+    "Most leaderboard points earned.",
+    (es) => es.sort((a, b) => b[1].points - a[1].points)[0],
+    (s) =>
+      s.points > 0 ? `${Math.round(s.points * 10) / 10} pts` : null,
+  );
+
+  const byPlayer = new Map<string, Badge[]>();
+  for (const b of flat) {
+    const list = byPlayer.get(b.playerId) ?? [];
+    list.push(b);
+    byPlayer.set(b.playerId, list);
+  }
+  return { byPlayer, flat };
+}
+
+/* ============================================================ RECORDS BOOK */
+
+export type RecordEntry = {
+  label: string;
+  value: string;
+  detail?: string;
+  matchId?: string;
+  playerId?: string;
+  playerName?: string;
+};
+
+export function recordsBook(matches: Match[], roster: Player[]): RecordEntry[] {
+  const completed = matches.filter((m) => m.status === "completed");
+  const out: RecordEntry[] = [];
+
+  // Highest team point total / lowest
+  let highest: Match | null = null;
+  let lowest: Match | null = null;
+  let widestWin: Match | null = null;
+  let worstLoss: Match | null = null;
+  for (const m of completed) {
+    if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number")
+      continue;
+    if (!highest || m.teamScore > highest.teamScore!) highest = m;
+    if (!lowest || m.teamScore < lowest.teamScore!) lowest = m;
+    const margin = m.teamScore - m.opponentScore;
+    if (margin > 0 && (!widestWin || margin > widestWin.teamScore! - widestWin.opponentScore!)) {
+      widestWin = m;
+    }
+    if (margin < 0 && (!worstLoss || margin < worstLoss.teamScore! - worstLoss.opponentScore!)) {
+      worstLoss = m;
+    }
+  }
+
+  if (highest)
+    out.push({
+      label: "Highest team score",
+      value: String(highest.teamScore),
+      detail: `vs ${highest.opponent} · ${formatRecordDate(highest.date)}`,
+      matchId: highest.id,
+    });
+  if (lowest)
+    out.push({
+      label: "Lowest team score",
+      value: String(lowest.teamScore),
+      detail: `vs ${lowest.opponent} · ${formatRecordDate(lowest.date)}`,
+      matchId: lowest.id,
+    });
+  if (widestWin)
+    out.push({
+      label: "Widest win",
+      value: `${widestWin.teamScore}–${widestWin.opponentScore}`,
+      detail: `vs ${widestWin.opponent} · ${formatRecordDate(widestWin.date)}`,
+      matchId: widestWin.id,
+    });
+  if (worstLoss)
+    out.push({
+      label: "Worst loss",
+      value: `${worstLoss.teamScore}–${worstLoss.opponentScore}`,
+      detail: `vs ${worstLoss.opponent} · ${formatRecordDate(worstLoss.date)}`,
+      matchId: worstLoss.id,
+    });
+
+  // Longest team win streak
+  const sortedMatches = [...completed].sort(
+    (a, b) => +new Date(a.date) - +new Date(b.date),
+  );
+  let curWin = 0,
+    longestWin = 0;
+  let curLoss = 0,
+    longestLoss = 0;
+  for (const m of sortedMatches) {
+    if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number")
+      continue;
+    if (m.teamScore > m.opponentScore) {
+      curWin++;
+      curLoss = 0;
+      if (curWin > longestWin) longestWin = curWin;
+    } else if (m.teamScore < m.opponentScore) {
+      curLoss++;
+      curWin = 0;
+      if (curLoss > longestLoss) longestLoss = curLoss;
+    } else {
+      curWin = 0;
+      curLoss = 0;
+    }
+  }
+  if (longestWin > 0)
+    out.push({ label: "Longest team win streak", value: `${longestWin} matches` });
+  if (longestLoss > 0)
+    out.push({ label: "Longest team losing streak", value: `${longestLoss} matches` });
+
+  // Per-player records
+  type Career = { name: string; sweeps: number; mini: number; br: number; eob: number; wins: number; matches: number; longestStreak: number };
+  const careers = new Map<string, Career>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    careers.set(p.id, { name: p.name, sweeps: 0, mini: 0, br: 0, eob: 0, wins: 0, matches: 0, longestStreak: 0 });
+  }
+  const streak = new Map<string, { cur: number; longest: number }>();
+  let mostBRsInMatch: { count: number; name: string; matchId: string; opponent: string } | null = null;
+
+  for (const m of sortedMatches) {
+    const playerBRThisMatch = new Map<string, number>();
+    for (const r of m.results) {
+      const c = careers.get(r.playerId);
+      if (!c) continue;
+      c.matches++;
+      if (r.outcome === "W") c.wins++;
+      if (r.sweep) c.sweeps++;
+      if (r.miniSweep) c.mini++;
+      if (r.breakAndRun) c.br++;
+      if (r.eightOnBreak) c.eob++;
+      const ps = streak.get(r.playerId) ?? { cur: 0, longest: 0 };
+      if (r.outcome === "W") ps.cur++;
+      else ps.cur = 0;
+      if (ps.cur > ps.longest) ps.longest = ps.cur;
+      streak.set(r.playerId, ps);
+
+      if (r.breakAndRun) {
+        playerBRThisMatch.set(
+          r.playerId,
+          (playerBRThisMatch.get(r.playerId) ?? 0) + 1,
+        );
+      }
+    }
+    for (const [pid, count] of playerBRThisMatch) {
+      if (count >= (mostBRsInMatch?.count ?? 0)) {
+        mostBRsInMatch = {
+          count,
+          name: careers.get(pid)?.name ?? pid,
+          matchId: m.id,
+          opponent: m.opponent,
+        };
+      }
+    }
+  }
+  for (const [pid, ps] of streak) {
+    const c = careers.get(pid);
+    if (c) c.longestStreak = ps.longest;
+  }
+
+  // Top recordholders (single records — pick best across all players)
+  const careerArr = [...careers.entries()];
+  function topPerCategory(
+    label: string,
+    selector: (c: Career) => number,
+    valueFmt: (n: number) => string,
+    minThreshold = 1,
+  ) {
+    const top = careerArr
+      .filter(([, c]) => selector(c) >= minThreshold)
+      .sort((a, b) => selector(b[1]) - selector(a[1]))[0];
+    if (!top) return;
+    out.push({
+      label,
+      value: valueFmt(selector(top[1])),
+      detail: top[1].name,
+      playerId: top[0],
+      playerName: top[1].name,
+    });
+  }
+  topPerCategory("Most career sweeps", (c) => c.sweeps, (n) => `${n}`, 1);
+  topPerCategory("Most career mini-sweeps", (c) => c.mini, (n) => `${n}`, 1);
+  topPerCategory("Most career break-and-runs", (c) => c.br, (n) => `${n}`, 1);
+  topPerCategory("Most career 8-on-the-breaks", (c) => c.eob, (n) => `${n}`, 1);
+  topPerCategory("Most career wins", (c) => c.wins, (n) => `${n}`, 1);
+  topPerCategory(
+    "Longest individual win streak",
+    (c) => c.longestStreak,
+    (n) => `${n} in a row`,
+    3,
+  );
+
+  if (mostBRsInMatch && mostBRsInMatch.count >= 1) {
+    out.push({
+      label: "Most B&Rs in one match",
+      value: `${mostBRsInMatch.count}`,
+      detail: `${mostBRsInMatch.name} vs ${mostBRsInMatch.opponent}`,
+      matchId: mostBRsInMatch.matchId,
+    });
+  }
+
+  return out;
+}
+
+function formatRecordDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+/* ============================================================ MVP RACE */
+
+export type MVPRacePoint = {
+  playerId: string;
+  playerName: string;
+  series: Array<{ date: string; matchId: string; cumulativePoints: number }>;
+};
+
+export function mvpRaceData(
+  matches: Match[],
+  roster: Player[],
+): MVPRacePoint[] {
+  const sorted = [...matches]
+    .filter((m) => m.status === "completed")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  const series = new Map<string, MVPRacePoint["series"]>();
+  for (const p of roster) {
+    if (p.visible === false) continue;
+    series.set(p.id, []);
+  }
+  const totals = new Map<string, number>();
+  for (const m of sorted) {
+    const earnedThisMatch = new Map<string, number>();
+    for (const r of m.results) {
+      let pts = 0;
+      if (r.sweep) pts += 1;
+      else if (r.miniSweep) pts += 0.5;
+      if (r.breakAndRun) pts += 1;
+      if (r.eightOnBreak) pts += 1;
+      earnedThisMatch.set(
+        r.playerId,
+        (earnedThisMatch.get(r.playerId) ?? 0) + pts,
+      );
+    }
+    for (const [pid, s] of series) {
+      const inThisMatch = earnedThisMatch.has(pid);
+      if (!inThisMatch) continue;
+      const total = (totals.get(pid) ?? 0) + (earnedThisMatch.get(pid) ?? 0);
+      totals.set(pid, total);
+      s.push({
+        date: m.date,
+        matchId: m.id,
+        cumulativePoints: Math.round(total * 10) / 10,
+      });
+    }
+  }
+  const out: MVPRacePoint[] = [];
+  for (const [pid, s] of series) {
+    if (s.length === 0) continue;
+    out.push({
+      playerId: pid,
+      playerName: roster.find((p) => p.id === pid)?.name ?? pid,
+      series: s,
+    });
+  }
+  return out.sort((a, b) => {
+    const al = a.series[a.series.length - 1]?.cumulativePoints ?? 0;
+    const bl = b.series[b.series.length - 1]?.cumulativePoints ?? 0;
+    return bl - al;
+  });
+}
+
+/* ============================================================ RADAR STATS */
+
+export type RadarRow = {
+  playerId: string;
+  playerName: string;
+  /** All five values normalized to 0..100 across the team (max=100). */
+  axes: { winPct: number; sweepRate: number; miniRate: number; brRate: number; eobRate: number };
+  /** Raw rates for tooltips. */
+  raw: { winPct: number; sweepRate: number; miniRate: number; brRate: number; eobRate: number };
+  matches: number;
+};
+
+export function radarStats(
+  matches: Match[],
+  roster: Player[],
+): RadarRow[] {
+  const rows: Array<RadarRow & { _matches: number }> = [];
+  const visible = roster.filter((p) => p.visible !== false);
+  for (const p of visible) {
+    let mp = 0,
+      w = 0,
+      sw = 0,
+      mini = 0,
+      br = 0,
+      eob = 0;
+    for (const m of matches) {
+      if (m.status !== "completed") continue;
+      for (const r of m.results) {
+        if (r.playerId !== p.id) continue;
+        mp++;
+        if (r.outcome === "W") w++;
+        if (r.sweep) sw++;
+        if (r.miniSweep) mini++;
+        if (r.breakAndRun) br++;
+        if (r.eightOnBreak) eob++;
+      }
+    }
+    if (mp === 0) continue;
+    const raw = {
+      winPct: safeRate(w, mp),
+      sweepRate: safeRate(sw, mp),
+      miniRate: safeRate(mini, mp),
+      brRate: safeRate(br, mp),
+      eobRate: safeRate(eob, mp),
+    };
+    rows.push({
+      playerId: p.id,
+      playerName: p.name,
+      axes: { ...raw },
+      raw,
+      matches: mp,
+      _matches: mp,
+    });
+  }
+  // Normalize each axis so the team's max = 100 (visual scaling).
+  const axes = ["winPct", "sweepRate", "miniRate", "brRate", "eobRate"] as const;
+  for (const ax of axes) {
+    const max = Math.max(...rows.map((r) => r.raw[ax]), 0.01);
+    for (const r of rows) {
+      r.axes[ax] = Math.round((r.raw[ax] / max) * 100 * 10) / 10;
+    }
+  }
+  return rows
+    .sort((a, b) => b._matches - a._matches)
+    .map(({ _matches, ...rest }) => {
+      void _matches;
+      return rest;
+    });
+}
+
+/* ============================================================ CALENDAR HEATMAP */
+
+export type CalendarCell = {
+  matchId: string;
+  date: string;
+  week?: number;
+  outcome: "W" | "L" | "T" | "BYE" | "UPCOMING";
+  margin: number; // teamScore - oppScore (0 for bye/upcoming)
+  teamScore?: number;
+  opponentScore?: number;
+  opponent: string;
+};
+
+export function calendarHeatmap(matches: Match[]): CalendarCell[] {
+  return [...matches]
+    .filter((m) => m.status !== "forfeit")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date))
+    .map((m): CalendarCell => {
+      let outcome: CalendarCell["outcome"] = "T";
+      if (m.status === "bye") outcome = "BYE";
+      else if (m.status === "upcoming") outcome = "UPCOMING";
+      else if (
+        typeof m.teamScore === "number" &&
+        typeof m.opponentScore === "number"
+      ) {
+        if (m.teamScore > m.opponentScore) outcome = "W";
+        else if (m.teamScore < m.opponentScore) outcome = "L";
+      }
+      const margin =
+        typeof m.teamScore === "number" && typeof m.opponentScore === "number"
+          ? m.teamScore - m.opponentScore
+          : 0;
+      return {
+        matchId: m.id,
+        date: m.date,
+        week: m.week,
+        outcome,
+        margin,
+        teamScore: m.teamScore,
+        opponentScore: m.opponentScore,
+        opponent: m.opponent,
+      };
+    });
+}
+
+/* ============================================================ LEVEL-UP WATCH */
+
+export type LevelUpRow = {
+  playerId: string;
+  playerName: string;
+  currentSL: number | null;
+  currentPA: number | null;
+  paTrend: number[]; // last few sessions PA, oldest→newest
+  trend: "up" | "down" | "flat";
+  /** PA delta vs previous session. */
+  delta: number;
+};
+
+type LevelUpInput = {
+  id: string;
+  name: string;
+  skillLevel: number | null;
+  visible?: boolean;
+  sessions?: Array<{ pa?: number; sessionId: number; skillLevel?: number }>;
+};
+
+/**
+ * Players whose recent PA trajectory suggests a level change is coming.
+ * (APA's exact thresholds aren't published per-SL, so this is a directional
+ * read — show the delta and let the team interpret.)
+ */
+export function levelUpWatch(players: LevelUpInput[]): LevelUpRow[] {
+  const out: LevelUpRow[] = [];
+  for (const p of players) {
+    if (p.visible === false) continue;
+    const sessions = (p.sessions ?? [])
+      .filter((s) => typeof s.pa === "number")
+      .slice()
+      .sort((a, b) => a.sessionId - b.sessionId); // oldest → newest
+    if (sessions.length < 2) {
+      out.push({
+        playerId: p.id,
+        playerName: p.name,
+        currentSL: p.skillLevel,
+        currentPA: sessions[sessions.length - 1]?.pa ?? null,
+        paTrend: sessions.map((s) => s.pa!),
+        trend: "flat",
+        delta: 0,
+      });
+      continue;
+    }
+    const last3 = sessions.slice(-3);
+    const cur = last3[last3.length - 1].pa!;
+    const prev = last3[last3.length - 2].pa!;
+    const delta = Math.round((cur - prev) * 10) / 10;
+    const trend: LevelUpRow["trend"] =
+      delta > 1.5 ? "up" : delta < -1.5 ? "down" : "flat";
+    out.push({
+      playerId: p.id,
+      playerName: p.name,
+      currentSL: p.skillLevel,
+      currentPA: cur,
+      paTrend: sessions.map((s) => s.pa!).slice(-5),
+      trend,
+      delta,
+    });
+  }
+  return out.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+}
+
+/* ============================================================ EXPECTED vs ACTUAL */
+
+export type ExpectedActual = {
+  matches: number;
+  actualWins: number;
+  expectedWins: number;
+  delta: number; // actual - expected
+  perMatch: Array<{
+    matchId: string;
+    date: string;
+    opponent: string;
+    expected: number; // 0..1 win probability we assigned
+    actual: 0 | 1 | 0.5;
+  }>;
+};
+
+/**
+ * Compute expected wins from each opponent's overall win rate in the data
+ * we have. If their full-division win rate is X, our expected probability of
+ * beating them is roughly (1 - X) — clamped to [0.2, 0.8] to avoid extreme
+ * predictions on small samples. Sum across matches.
+ */
+export function expectedVsActual(matches: Match[]): ExpectedActual {
+  const completed = matches.filter(
+    (m) =>
+      m.status === "completed" &&
+      typeof m.teamScore === "number" &&
+      typeof m.opponentScore === "number",
+  );
+
+  // Each opponent's win rate against US (proxy for their strength relative
+  // to us). Higher → tougher opponent → lower expected prob for us.
+  const oppRecord = new Map<string, { wins: number; losses: number }>();
+  for (const m of completed) {
+    const e = oppRecord.get(m.opponent) ?? { wins: 0, losses: 0 };
+    if ((m.teamScore ?? 0) > (m.opponentScore ?? 0)) e.losses++; // they lost
+    else if ((m.teamScore ?? 0) < (m.opponentScore ?? 0)) e.wins++; // they won
+    oppRecord.set(m.opponent, e);
+  }
+
+  let actualWins = 0;
+  let expectedWins = 0;
+  const perMatch: ExpectedActual["perMatch"] = [];
+  for (const m of completed) {
+    const e = oppRecord.get(m.opponent);
+    const total = (e?.wins ?? 0) + (e?.losses ?? 0);
+    // Default 0.5 if no prior data; otherwise (their losses / total) — i.e. their
+    // historical record vs us, used as our prior probability of winning.
+    let pWin = 0.5;
+    if (total >= 1) {
+      pWin = (e!.losses + 1) / (total + 2); // smoothed
+    }
+    pWin = Math.max(0.2, Math.min(0.8, pWin));
+    expectedWins += pWin;
+    const won = (m.teamScore ?? 0) > (m.opponentScore ?? 0) ? 1 : 0;
+    if (won) actualWins++;
+    perMatch.push({
+      matchId: m.id,
+      date: m.date,
+      opponent: m.opponent,
+      expected: Math.round(pWin * 1000) / 1000,
+      actual: won as 0 | 1,
+    });
+  }
+  return {
+    matches: completed.length,
+    actualWins,
+    expectedWins: Math.round(expectedWins * 10) / 10,
+    delta: Math.round((actualWins - expectedWins) * 10) / 10,
+    perMatch,
+  };
+}
+
+/* ============================================================ HOMEPAGE MOMENTUM */
+
+export type MomentumChip = {
+  matchId: string;
+  outcome: "W" | "L" | "T";
+  teamScore?: number;
+  opponentScore?: number;
+  opponent: string;
+  date: string;
+};
+
+/**
+ * Compact list of the team's last N completed-match outcomes (oldest → newest),
+ * for the homepage "momentum strip" pill row.
+ */
+export function teamMomentum(matches: Match[], n = 10): MomentumChip[] {
+  return matches
+    .filter(
+      (m) =>
+        m.status === "completed" &&
+        typeof m.teamScore === "number" &&
+        typeof m.opponentScore === "number",
+    )
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date))
+    .slice(-n)
+    .map((m) => ({
+      matchId: m.id,
+      outcome:
+        m.teamScore! > m.opponentScore!
+          ? ("W" as const)
+          : m.teamScore! < m.opponentScore!
+            ? ("L" as const)
+            : ("T" as const),
+      teamScore: m.teamScore,
+      opponentScore: m.opponentScore,
+      opponent: m.opponent,
+      date: m.date,
+    }));
+}
+
+/** Current run from the most recent backwards (e.g. W-W-W → 3-win streak). */
+export function currentTeamStreak(matches: Match[]): {
+  outcome: "W" | "L" | "T" | null;
+  count: number;
+} {
+  const m = teamMomentum(matches, 50);
+  if (m.length === 0) return { outcome: null, count: 0 };
+  const head = m[m.length - 1].outcome;
+  let count = 0;
+  for (let i = m.length - 1; i >= 0; i--) {
+    if (m[i].outcome === head) count += 1;
+    else break;
+  }
+  return { outcome: head, count };
+}
+
+/* ============================================================ POINT TRAJECTORIES (sparkline data) */
+
+/**
+ * For each requested playerId, return their cumulative leaderboard-points
+ * series over their last `window` individual matches (oldest → newest), in
+ * chronological order. Drives the leaderboard sparklines on the homepage.
+ *
+ * Each match contributes: 1 if win else 0, plus sweep/mini/B&R/8oB bonuses
+ * (matches the same scoring used to rank players). The returned list always
+ * starts at 0 so a flat string of zeros still draws a recognizable line.
+ */
+export function playerPointsTrajectories(
+  matches: Match[],
+  playerIds: string[],
+  window = 10,
+): Map<string, number[]> {
+  const ids = new Set(playerIds);
+  // Per-player chronological list of [date, contribution]
+  const perPlayer = new Map<string, Array<{ date: string; pts: number }>>();
+  for (const id of ids) perPlayer.set(id, []);
+
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    for (const r of m.results) {
+      if (!ids.has(r.playerId)) continue;
+      let pts = pointsForResult(r);
+      if (r.outcome === "W") pts += 1;
+      perPlayer.get(r.playerId)!.push({ date: m.date, pts });
+    }
+  }
+
+  const out = new Map<string, number[]>();
+  for (const [id, rows] of perPlayer) {
+    rows.sort((a, b) => +new Date(a.date) - +new Date(b.date));
+    const tail = rows.slice(-window);
+    const series: number[] = [0];
+    let cum = 0;
+    for (const r of tail) {
+      cum += r.pts;
+      series.push(Math.round(cum * 10) / 10);
+    }
+    out.set(id, series);
+  }
+  return out;
+}

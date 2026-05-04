@@ -1,0 +1,674 @@
+{
+  "fetchedAt": "2026-05-02T20:49:50.321Z",
+  "data": {
+    "match": {
+      "id": 32829038,
+      "isFinalized": true,
+      "isTournament": false,
+      "tableNumber": null,
+      "division": {
+        "id": 328275,
+        "electronicScoringEnabled": true,
+        "__typename": "Division",
+        "scheduleInEdit": false,
+        "type": "EIGHT"
+      },
+      "league": {
+        "id": 890,
+        "esEnabled": true,
+        "__typename": "League",
+        "name": "APA of South Jersey",
+        "currentSessionId": 138,
+        "isElectronicPaymentsEnabled": false,
+        "country": {
+          "id": 1,
+          "__typename": "Country"
+        }
+      },
+      "__typename": "Match",
+      "type": "EIGHT",
+      "startTime": "2021-10-26T19:30:00-04:00",
+      "week": 8,
+      "isBye": false,
+      "isMine": false,
+      "isScored": true,
+      "scoresheet": null,
+      "isPaid": null,
+      "timeZone": {
+        "id": "169",
+        "name": "America/New_York",
+        "__typename": "TimeZone"
+      },
+      "location": {
+        "id": 93091,
+        "phone": "+16098713231",
+        "name": "Edgewater Park Elks 2550",
+        "address": {
+          "id": 28377,
+          "name": "Edgewater Park Elks 2550",
+          "address1": "315 Green St.",
+          "address2": "",
+          "city": "Beverly",
+          "zip": "08010",
+          "latitude": 40.0516111,
+          "longitude": -74.9169864,
+          "__typename": "Address"
+        },
+        "__typename": "HostLocation"
+      },
+      "home": {
+        "id": 11875458,
+        "name": "Hob Nobbers",
+        "number": "07906",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 328275,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 83859143,
+            "memberNumber": "08204069",
+            "displayName": "Timothy Geesaman",
+            "matchesWon": 9,
+            "matchesPlayed": 11,
+            "pa": 0.6969696969696969,
+            "ppm": 2.090909090909091,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2753287,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859142,
+            "memberNumber": "08203400",
+            "displayName": "Donald Heal  Jr",
+            "matchesWon": 5,
+            "matchesPlayed": 12,
+            "pa": 0.3888888888888889,
+            "ppm": 1.1666666666666667,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2738025,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859144,
+            "memberNumber": "08206718",
+            "displayName": "Steven Fink",
+            "matchesWon": 5,
+            "matchesPlayed": 12,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2866186,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859141,
+            "memberNumber": "08201784",
+            "displayName": "Rob Sanchez",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2666151,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859145,
+            "memberNumber": "08212769",
+            "displayName": "John Herman",
+            "matchesWon": 8,
+            "matchesPlayed": 14,
+            "pa": 0.4761904761904762,
+            "ppm": 1.4285714285714286,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3169797,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 84179335,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 9,
+            "matchesPlayed": 10,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 84213048,
+            "memberNumber": "08208137",
+            "displayName": "Michael Burtt",
+            "matchesWon": 2,
+            "matchesPlayed": 6,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2910522,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 84272576,
+            "memberNumber": "08208853",
+            "displayName": "Krystion Geesaman",
+            "matchesWon": 4,
+            "matchesPlayed": 8,
+            "pa": 0.5416666666666666,
+            "ppm": 1.625,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2942824,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 11875455,
+        "name": "All About the Change",
+        "number": "07902",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 328275,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 83859115,
+            "memberNumber": "08222574",
+            "displayName": "Neal Buckousis Jr",
+            "matchesWon": 5,
+            "matchesPlayed": 9,
+            "pa": 0.5925925925925926,
+            "ppm": 1.7777777777777777,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1017842,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859120,
+            "memberNumber": "08203525",
+            "displayName": "Colleen Richardson",
+            "matchesWon": 4,
+            "matchesPlayed": 10,
+            "pa": 0.3666666666666667,
+            "ppm": 1.1,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2815954,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859118,
+            "memberNumber": "08217003",
+            "displayName": "Joe Whitehouse",
+            "matchesWon": 4,
+            "matchesPlayed": 7,
+            "pa": 0.4761904761904762,
+            "ppm": 1.4285714285714286,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 812551,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859121,
+            "memberNumber": "08212107",
+            "displayName": "Rob Fiscor",
+            "matchesWon": 2,
+            "matchesPlayed": 8,
+            "pa": 0.25,
+            "ppm": 0.75,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3074299,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859117,
+            "memberNumber": "08204345",
+            "displayName": "Dan Murray",
+            "matchesWon": 8,
+            "matchesPlayed": 14,
+            "pa": 0.4523809523809524,
+            "ppm": 1.3571428571428572,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2067265,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859116,
+            "memberNumber": "08239150",
+            "displayName": "Ish Adames",
+            "matchesWon": 4,
+            "matchesPlayed": 8,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1339998,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859122,
+            "memberNumber": "08212666",
+            "displayName": "George Dunca",
+            "matchesWon": 2,
+            "matchesPlayed": 7,
+            "pa": 0.2380952380952381,
+            "ppm": 0.7142857142857143,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3151569,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 83859119,
+            "memberNumber": "08211992",
+            "displayName": "Toni Slater",
+            "matchesWon": 3,
+            "matchesPlayed": 10,
+            "pa": 0.3,
+            "ppm": 0.9,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737114,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "session": {
+        "id": 118,
+        "name": "Fall 2021",
+        "year": 2021,
+        "__typename": "Session"
+      },
+      "fees": {
+        "amount": 40,
+        "tax": 0,
+        "total": 40,
+        "__typename": "Fees"
+      },
+      "orderItems": null,
+      "results": [
+        {
+          "homeAway": "HOME",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 2,
+          "matchesPlayed": 5,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 7,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 11,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [
+            {
+              "id": 79511855,
+              "player": {
+                "id": 83859145,
+                "displayName": "John Herman",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 1,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 0,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511857,
+              "player": {
+                "id": 84213048,
+                "displayName": "Michael Burtt",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 2,
+              "playerPosition": 2,
+              "skillLevel": 3,
+              "eightBallWins": 1,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 1,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511859,
+              "player": {
+                "id": 83859143,
+                "displayName": "Timothy Geesaman",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 3,
+              "playerPosition": 2,
+              "skillLevel": 3,
+              "eightBallWins": 2,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 3,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511860,
+              "player": {
+                "id": 84179335,
+                "displayName": "Patrick Daley",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 4,
+              "playerPosition": 1,
+              "skillLevel": 7,
+              "eightBallWins": 5,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 3,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511862,
+              "player": {
+                "id": 84272576,
+                "displayName": "Krystion Geesaman",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 5,
+              "playerPosition": 1,
+              "skillLevel": 3,
+              "eightBallWins": 0,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            }
+          ],
+          "__typename": "MatchResult"
+        },
+        {
+          "homeAway": "AWAY",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 3,
+          "matchesPlayed": 5,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 8,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 12,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [
+            {
+              "id": 79511863,
+              "player": {
+                "id": 83859115,
+                "displayName": "Neal Buckousis Jr",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 5,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 3,
+              "eightOnBreak": 1,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 3,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511861,
+              "player": {
+                "id": 83859117,
+                "displayName": "Dan Murray",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 4,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 0,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511858,
+              "player": {
+                "id": 83859119,
+                "displayName": "Toni Slater",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 3,
+              "playerPosition": 1,
+              "skillLevel": 3,
+              "eightBallWins": 0,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511856,
+              "player": {
+                "id": 83859121,
+                "displayName": "Rob Fiscor",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 2,
+              "playerPosition": 1,
+              "skillLevel": 3,
+              "eightBallWins": 2,
+              "eightOnBreak": 1,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 79511854,
+              "player": {
+                "id": 83859120,
+                "displayName": "Colleen Richardson",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 1,
+              "playerPosition": 1,
+              "skillLevel": 5,
+              "eightBallWins": 4,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2021-10-28T17:52:43+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 3,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            }
+          ],
+          "__typename": "MatchResult"
+        }
+      ]
+    }
+  }
+}

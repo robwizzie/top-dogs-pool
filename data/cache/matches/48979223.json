@@ -1,0 +1,261 @@
+{
+  "fetchedAt": "2026-05-02T20:04:02.434Z",
+  "data": {
+    "match": {
+      "id": 48979223,
+      "isFinalized": true,
+      "isTournament": false,
+      "tableNumber": null,
+      "division": {
+        "id": 420239,
+        "electronicScoringEnabled": true,
+        "__typename": "Division",
+        "scheduleInEdit": false,
+        "type": "EIGHT"
+      },
+      "league": {
+        "id": 890,
+        "esEnabled": true,
+        "__typename": "League",
+        "name": "APA of South Jersey",
+        "currentSessionId": 138,
+        "isElectronicPaymentsEnabled": false,
+        "country": {
+          "id": 1,
+          "__typename": "Country"
+        }
+      },
+      "__typename": "Match",
+      "type": "EIGHT",
+      "startTime": "2026-04-07T19:30:00-04:00",
+      "week": 15,
+      "isBye": true,
+      "isMine": false,
+      "isScored": true,
+      "scoresheet": null,
+      "isPaid": null,
+      "timeZone": {
+        "id": "169",
+        "name": "America/New_York",
+        "__typename": "TimeZone"
+      },
+      "location": {
+        "id": 87357,
+        "phone": "",
+        "name": "No Match This Week",
+        "address": null,
+        "__typename": "HostLocation"
+      },
+      "home": {
+        "id": 12894920,
+        "name": "Bye",
+        "number": "07908",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420239,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 12894919,
+        "name": "Franks N Beans",
+        "number": "07907",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420239,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91263316,
+            "memberNumber": "08204069",
+            "displayName": "Timothy Geesaman",
+            "matchesWon": 4,
+            "matchesPlayed": 7,
+            "pa": 0.5238095238095238,
+            "ppm": 1.5714285714285714,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2753287,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91263318,
+            "memberNumber": "08212769",
+            "displayName": "John Herman",
+            "matchesWon": 6,
+            "matchesPlayed": 14,
+            "pa": 0.4285714285714286,
+            "ppm": 1.2857142857142858,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3169797,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91263317,
+            "memberNumber": "08208853",
+            "displayName": "Krystion Geesaman",
+            "matchesWon": 6,
+            "matchesPlayed": 7,
+            "pa": 0.5714285714285714,
+            "ppm": 1.7142857142857142,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2942824,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91263320,
+            "memberNumber": "08213258",
+            "displayName": "Rafael Aponte Jr",
+            "matchesWon": 6,
+            "matchesPlayed": 12,
+            "pa": 0.47222222222222227,
+            "ppm": 1.4166666666666667,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2907361,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91263319,
+            "memberNumber": "08207118",
+            "displayName": "Larry Bythrow",
+            "matchesWon": 4,
+            "matchesPlayed": 5,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3220246,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91263321,
+            "memberNumber": "08213433",
+            "displayName": "Joseph Pursel",
+            "matchesWon": 8,
+            "matchesPlayed": 15,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3290367,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91675509,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91715446,
+            "memberNumber": "08214231",
+            "displayName": "Robert Stein",
+            "matchesWon": 7,
+            "matchesPlayed": 12,
+            "pa": 0.47222222222222227,
+            "ppm": 1.4166666666666667,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3419327,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "session": {
+        "id": 138,
+        "name": "Spring 2026",
+        "year": 2026,
+        "__typename": "Session"
+      },
+      "fees": {
+        "amount": 45,
+        "tax": 0,
+        "total": 45,
+        "__typename": "Fees"
+      },
+      "orderItems": null,
+      "results": [
+        {
+          "homeAway": "HOME",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 0,
+          "matchesPlayed": 0,
+          "points": {
+            "bonus": 0,
+            "penalty": 0,
+            "won": 0,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 0,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [],
+          "__typename": "MatchResult"
+        },
+        {
+          "homeAway": "AWAY",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 0,
+          "matchesPlayed": 0,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 8,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 12,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [],
+          "__typename": "MatchResult"
+        }
+      ]
+    }
+  }
+}

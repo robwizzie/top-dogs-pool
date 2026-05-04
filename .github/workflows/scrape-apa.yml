@@ -1,0 +1,56 @@
+name: Scrape APA
+
+on:
+  # Friday 8am Eastern (13:00 UTC standard / 12:00 UTC daylight — picking 13:00
+  # so we run at 8am EST or 9am EDT; either is fine, just after pool-night
+  # scores are in).
+  schedule:
+    - cron: "0 13 * * 5"
+  # Manual trigger from the Actions tab.
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need full history so the auto-commit can push without "shallow update not allowed".
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run sync (scrape + project)
+        env:
+          APA_USERNAME: ${{ secrets.APA_USERNAME }}
+          APA_PASSWORD: ${{ secrets.APA_PASSWORD }}
+          APA_TEAM_URL: ${{ vars.APA_TEAM_URL || 'https://league.poolplayers.com/southjersey/team/12894673' }}
+        run: npm run sync
+
+      - name: Commit & push if data changed
+        run: |
+          if [[ -z "$(git status --porcelain data/cache data/apa.json)" ]]; then
+            echo "No data changes — skipping commit."
+            exit 0
+          fi
+          git config user.name "apa-scraper-bot"
+          git config user.email "apa-scraper-bot@users.noreply.github.com"
+          git add data/cache data/apa.json
+          git commit -m "chore: weekly APA sync ($(date -u +%Y-%m-%d))"
+          git push

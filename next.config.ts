@@ -9,7 +9,11 @@ const config: NextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion"],
+    optimizePackageImports: ["lucide-react"],
+  },
+  compiler: {
+    // Strip console.* in production builds; warnings/errors still flow through.
+    removeConsole: { exclude: ["error", "warn"] },
   },
 };
 

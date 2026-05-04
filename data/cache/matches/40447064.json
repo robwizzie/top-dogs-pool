@@ -1,0 +1,674 @@
+{
+  "fetchedAt": "2026-05-02T20:43:40.211Z",
+  "data": {
+    "match": {
+      "id": 40447064,
+      "isFinalized": true,
+      "isTournament": false,
+      "tableNumber": null,
+      "division": {
+        "id": 368536,
+        "electronicScoringEnabled": true,
+        "__typename": "Division",
+        "scheduleInEdit": false,
+        "type": "EIGHT"
+      },
+      "league": {
+        "id": 890,
+        "esEnabled": true,
+        "__typename": "League",
+        "name": "APA of South Jersey",
+        "currentSessionId": 138,
+        "isElectronicPaymentsEnabled": false,
+        "country": {
+          "id": 1,
+          "__typename": "Country"
+        }
+      },
+      "__typename": "Match",
+      "type": "EIGHT",
+      "startTime": "2023-11-15T19:30:00-05:00",
+      "week": 11,
+      "isBye": false,
+      "isMine": false,
+      "isScored": true,
+      "scoresheet": null,
+      "isPaid": null,
+      "timeZone": {
+        "id": "169",
+        "name": "America/New_York",
+        "__typename": "TimeZone"
+      },
+      "location": {
+        "id": 39527,
+        "phone": "+16097334537",
+        "name": "Burlington Private Billiards Club",
+        "address": {
+          "id": 71093,
+          "name": "Burlington Private Billiards Club",
+          "address1": "38 W. Broad St.",
+          "address2": "",
+          "city": "Burlington",
+          "zip": "08016",
+          "latitude": 40.0768391,
+          "longitude": -74.8601274,
+          "__typename": "Address"
+        },
+        "__typename": "HostLocation"
+      },
+      "home": {
+        "id": 12311088,
+        "name": "Section 8",
+        "number": "07805",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 368536,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 87018006,
+            "memberNumber": "08240100",
+            "displayName": "Ken Birmingham",
+            "matchesWon": 6,
+            "matchesPlayed": 10,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1423084,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018004,
+            "memberNumber": "08228054",
+            "displayName": "Jeff Weiler",
+            "matchesWon": 1,
+            "matchesPlayed": 6,
+            "pa": 0.2777777777777778,
+            "ppm": 0.8333333333333334,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1123492,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018002,
+            "memberNumber": "08205414",
+            "displayName": "Nick Mainello",
+            "matchesWon": 8,
+            "matchesPlayed": 14,
+            "pa": 0.5952380952380952,
+            "ppm": 1.7857142857142858,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2118240,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018003,
+            "memberNumber": "08228260",
+            "displayName": "Mike Swanson",
+            "matchesWon": 3,
+            "matchesPlayed": 7,
+            "pa": 0.38095238095238093,
+            "ppm": 1.1428571428571428,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1123488,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018005,
+            "memberNumber": "08230269",
+            "displayName": "Chuck Habeck",
+            "matchesWon": 4,
+            "matchesPlayed": 8,
+            "pa": 0.4583333333333333,
+            "ppm": 1.375,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1268620,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018009,
+            "memberNumber": "08203969",
+            "displayName": "Sherri Howlett",
+            "matchesWon": 3,
+            "matchesPlayed": 9,
+            "pa": 0.40740740740740744,
+            "ppm": 1.2222222222222223,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3211831,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018008,
+            "memberNumber": "08203758",
+            "displayName": "Jess Nelson",
+            "matchesWon": 3,
+            "matchesPlayed": 8,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3106838,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87385769,
+            "memberNumber": "08200798",
+            "displayName": "Erin Wirzburger",
+            "matchesWon": 1,
+            "matchesPlayed": 8,
+            "pa": 0.16666666666666666,
+            "ppm": 0.5,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1954310,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 12311093,
+        "name": "Coming in Hot",
+        "number": "07802",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 368536,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 87018041,
+            "memberNumber": "08203240",
+            "displayName": "Pedro Almeida",
+            "matchesWon": 5,
+            "matchesPlayed": 10,
+            "pa": 0.43333333333333335,
+            "ppm": 1.3,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2719968,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018042,
+            "memberNumber": "08207221",
+            "displayName": "Vander Jesus",
+            "matchesWon": 4,
+            "matchesPlayed": 6,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2877191,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018040,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 4,
+            "matchesPlayed": 6,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018043,
+            "memberNumber": "08210364",
+            "displayName": "Reinaldo Silva",
+            "matchesWon": 5,
+            "matchesPlayed": 11,
+            "pa": 0.3636363636363636,
+            "ppm": 1.0909090909090908,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2992999,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018044,
+            "memberNumber": "08207383",
+            "displayName": "Jaime Casimiro",
+            "matchesWon": 9,
+            "matchesPlayed": 11,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3240533,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018045,
+            "memberNumber": "08211170",
+            "displayName": "Paper Silva",
+            "matchesWon": 4,
+            "matchesPlayed": 10,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3250188,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87018046,
+            "memberNumber": "08212947",
+            "displayName": "Felipe Trinca",
+            "matchesWon": 4,
+            "matchesPlayed": 11,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3279101,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87417283,
+            "memberNumber": "08242763",
+            "displayName": "Ernie Bozzi",
+            "matchesWon": 5,
+            "matchesPlayed": 5,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1669739,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "session": {
+        "id": 130,
+        "name": "Fall 2023",
+        "year": 2023,
+        "__typename": "Session"
+      },
+      "fees": {
+        "amount": 45,
+        "tax": 0,
+        "total": 45,
+        "__typename": "Fees"
+      },
+      "orderItems": null,
+      "results": [
+        {
+          "homeAway": "HOME",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 3,
+          "matchesPlayed": 5,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 8,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 12,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [
+            {
+              "id": 98529368,
+              "player": {
+                "id": 87018008,
+                "displayName": "Jess Nelson",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 1,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529370,
+              "player": {
+                "id": 87018005,
+                "displayName": "Chuck Habeck",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 2,
+              "playerPosition": 2,
+              "skillLevel": 5,
+              "eightBallWins": 4,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529372,
+              "player": {
+                "id": 87385769,
+                "displayName": "Erin Wirzburger",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 3,
+              "playerPosition": 2,
+              "skillLevel": 2,
+              "eightBallWins": 0,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529373,
+              "player": {
+                "id": 87018002,
+                "displayName": "Nick Mainello",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 4,
+              "playerPosition": 1,
+              "skillLevel": 3,
+              "eightBallWins": 2,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 3,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529376,
+              "player": {
+                "id": 87018004,
+                "displayName": "Jeff Weiler",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 5,
+              "playerPosition": 2,
+              "skillLevel": 5,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 1,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            }
+          ],
+          "__typename": "MatchResult"
+        },
+        {
+          "homeAway": "AWAY",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 2,
+          "matchesPlayed": 5,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 5,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 9,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [
+            {
+              "id": 98529367,
+              "player": {
+                "id": 87018043,
+                "displayName": "Reinaldo Silva",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 1,
+              "playerPosition": 1,
+              "skillLevel": 4,
+              "eightBallWins": 1,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529374,
+              "player": {
+                "id": 87018045,
+                "displayName": "Paper Silva",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 4,
+              "playerPosition": 2,
+              "skillLevel": 3,
+              "eightBallWins": 0,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529375,
+              "player": {
+                "id": 87018043,
+                "displayName": "Reinaldo Silva",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 5,
+              "playerPosition": 1,
+              "skillLevel": 4,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529371,
+              "player": {
+                "id": 87018046,
+                "displayName": "Felipe Trinca",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 3,
+              "playerPosition": 1,
+              "skillLevel": 3,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 3,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 98529369,
+              "player": {
+                "id": 87018041,
+                "displayName": "Pedro Almeida",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 2,
+              "playerPosition": 1,
+              "skillLevel": 5,
+              "eightBallWins": 1,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2023-11-16T14:17:23+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            }
+          ],
+          "__typename": "MatchResult"
+        }
+      ]
+    }
+  }
+}

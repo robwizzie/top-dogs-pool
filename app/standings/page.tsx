@@ -1,16 +1,46 @@
 import { PageHeader } from "@/components/ui/Section";
-import { getStandings } from "@/lib/apa";
-import { cn, pct } from "@/lib/utils";
+import { SessionPicker } from "@/components/leaderboard/SessionPicker";
+import {
+  getCurrentSession,
+  getSessions,
+  getStandings,
+} from "@/lib/apa";
+import { cn } from "@/lib/utils";
+import {
+  parseSessionScope,
+  resolveScope,
+  scopeLabel,
+} from "@/lib/session-scope";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Standings",
-  description: "Current division standings, synced from APA.",
+  description: "Full division standings — current session and past sessions.",
 };
 
-export default async function StandingsPage() {
-  const standings = await getStandings();
+type Props = {
+  searchParams: Promise<{ session?: string }>;
+};
+
+export default async function StandingsPage({ searchParams }: Props) {
+  const { session } = await searchParams;
+  const [sessions, currentSession] = await Promise.all([
+    getSessions(),
+    getCurrentSession(),
+  ]);
+  const allIds = sessions.map((s) => s.id);
+  const scope = parseSessionScope(session, allIds);
+  const selectedIds = resolveScope(scope, allIds, currentSession?.id);
+  // Standings are point-in-time — pick the most-recent selected session.
+  const primaryId = Math.max(...selectedIds);
+
+  const standings = await getStandings(primaryId);
+  const primaryName = sessions.find((s) => s.id === primaryId)?.name;
+  const sessionLabel =
+    selectedIds.size > 1
+      ? `${scopeLabel(selectedIds, sessions)} · showing ${primaryName ?? primaryId}`
+      : primaryName ?? scopeLabel(selectedIds, sessions);
   const ours = standings.find((s) => s.isOurs);
 
   return (
@@ -20,15 +50,29 @@ export default async function StandingsPage() {
         title="Standings"
         subtitle={
           ours
-            ? `Top Dogs sit at #${ours.rank} with ${ours.points} pts.`
-            : "Live division standings."
+            ? `${sessionLabel} · Top Dogs at #${ours.rank}${ours.isTied ? " (T)" : ""} with ${ours.points} pts`
+            : `${sessionLabel} · ${standings.length} team${standings.length === 1 ? "" : "s"}`
         }
       />
 
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-5">
+          <SessionPicker
+            basePath="/standings"
+            sessions={sessions}
+            selectedIds={selectedIds}
+            showAllTime={false}
+            singleSelect
+          />
+        </div>
+
         {standings.length === 0 ? (
           <p className="surface p-6 text-sm text-[var(--fg-dim)]">
-            Standings syncing from APA — refresh in a minute.
+            No standings cached for this session yet — run{" "}
+            <code className="rounded bg-black/30 px-1.5 py-0.5 text-xs">
+              npm run sync
+            </code>
+            .
           </p>
         ) : (
           <div className="surface overflow-hidden">
@@ -37,8 +81,10 @@ export default async function StandingsPage() {
                 <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
                   <th className="px-4 py-3">#</th>
                   <th className="px-4 py-3">Team</th>
-                  <th className="px-4 py-3 text-right">W–L</th>
-                  <th className="hidden px-4 py-3 text-right sm:table-cell">Win %</th>
+                  <th className="hidden px-4 py-3 text-right sm:table-cell">
+                    Last
+                  </th>
+                  <th className="px-4 py-3 text-right">Played</th>
                   <th className="px-4 py-3 text-right">Pts</th>
                 </tr>
               </thead>
@@ -51,8 +97,13 @@ export default async function StandingsPage() {
                       s.isOurs && "bg-[var(--color-felt-deep)]/40",
                     )}
                   >
-                    <td className="px-4 py-3 font-[family-name:var(--font-display)] text-lg">
+                    <td className="px-4 py-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums">
                       {s.rank}
+                      {s.isTied && (
+                        <span className="ml-0.5 text-xs text-[var(--fg-dim)]">
+                          T
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 font-medium">
                       <span
@@ -64,14 +115,19 @@ export default async function StandingsPage() {
                       >
                         {s.team}
                       </span>
+                      {s.teamNumber && (
+                        <span className="ml-1.5 text-xs text-[var(--fg-dim)]">
+                          ({s.teamNumber})
+                        </span>
+                      )}
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums">
-                      {s.wins}–{s.losses}
+                    <td className="hidden px-4 py-3 text-right tabular-nums text-[var(--fg-dim)] sm:table-cell">
+                      {s.pointsLastWeek ?? "—"}
                     </td>
-                    <td className="hidden px-4 py-3 text-right tabular-nums sm:table-cell">
-                      {s.matchesPlayed ? `${pct(s.wins, s.matchesPlayed)}%` : "—"}
+                    <td className="px-4 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                      {s.matchesPlayed}
                     </td>
-                    <td className="px-4 py-3 text-right font-semibold text-[var(--color-brass-bright)] tabular-nums">
+                    <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-xl tracking-wide tabular-nums text-[var(--color-brass-bright)]">
                       {s.points}
                     </td>
                   </tr>
@@ -80,6 +136,18 @@ export default async function StandingsPage() {
             </table>
           </div>
         )}
+
+        <div className="surface mt-6 p-5 text-sm text-[var(--fg-dim)]">
+          <h3 className="mb-2 font-semibold text-[var(--fg)]">
+            How standings work
+          </h3>
+          <p className="text-xs">
+            APA awards each team up to 25 points per match week. Ties in rank
+            are flagged with a small <strong>T</strong>. The{" "}
+            <span className="text-[var(--color-brass-bright)]">Top Dogs</span>{" "}
+            row is highlighted.
+          </p>
+        </div>
       </div>
     </>
   );

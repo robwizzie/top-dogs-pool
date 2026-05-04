@@ -1,0 +1,1607 @@
+{
+  "fetchedAt": "2026-05-02T20:21:28.568Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 12417220,
+        "name": "Franks N Beans",
+        "number": "07902",
+        "isTied": false,
+        "standing": 2,
+        "division": {
+          "id": 377861,
+          "name": "BU-79",
+          "number": "079",
+          "timeOfPlay": "1900-01-01T19:30:00Z",
+          "nightOfPlay": "Tuesday",
+          "format": "8-Ball Open",
+          "state": "PAST",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 93091,
+          "name": "Edgewater Park Elks 2550",
+          "address": {
+            "id": 28377,
+            "name": "Edgewater Park Elks 2550",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 132,
+          "name": "Spring 2024",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 12417220,
+        "name": "Franks N Beans",
+        "number": "07902",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 377861,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 87789688,
+            "memberNumber": "08204069",
+            "displayName": "Timothy Geesaman",
+            "matchesWon": 3,
+            "matchesPlayed": 10,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2753287,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789687,
+            "memberNumber": "08203400",
+            "displayName": "Donald Heal  Jr",
+            "matchesWon": 8,
+            "matchesPlayed": 15,
+            "pa": 0.4666666666666666,
+            "ppm": 1.4,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2738025,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789690,
+            "memberNumber": "08212769",
+            "displayName": "John Herman",
+            "matchesWon": 10,
+            "matchesPlayed": 16,
+            "pa": 0.4583333333333333,
+            "ppm": 1.375,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3169797,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789685,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 6,
+            "matchesPlayed": 7,
+            "pa": 0.7619047619047619,
+            "ppm": 2.2857142857142856,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789689,
+            "memberNumber": "08208853",
+            "displayName": "Krystion Geesaman",
+            "matchesWon": 2,
+            "matchesPlayed": 7,
+            "pa": 0.2380952380952381,
+            "ppm": 0.7142857142857143,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2942824,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789692,
+            "memberNumber": "08213258",
+            "displayName": "Rafael Aponte Jr",
+            "matchesWon": 8,
+            "matchesPlayed": 13,
+            "pa": 0.48717948717948717,
+            "ppm": 1.4615384615384615,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2907361,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789686,
+            "memberNumber": "08211124",
+            "displayName": "Mike Nolan",
+            "matchesWon": 5,
+            "matchesPlayed": 11,
+            "pa": 0.42424242424242425,
+            "ppm": 1.2727272727272727,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2530267,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 87789691,
+            "memberNumber": "08207118",
+            "displayName": "Larry Bythrow",
+            "matchesWon": 3,
+            "matchesPlayed": 6,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3220246,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 12417220,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 184,
+        "sessionTotalPoints": 184,
+        "division": {
+          "id": 377861,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 41559353,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-01-02T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39527,
+              "name": "Burlington Private Billiards Club",
+              "address": {
+                "id": 71093,
+                "name": "Burlington Private Billiards Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417124,
+              "name": "We Love Joey",
+              "number": "07903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 41559356,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-01-09T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 15,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417231,
+              "name": "Apocalypse",
+              "number": "07905",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 41559358,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-01-16T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417291,
+              "name": "Let's Go Brandon",
+              "number": "07906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 41559362,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-01-23T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39530,
+              "name": "Doc's",
+              "address": {
+                "id": 41501,
+                "name": "Doc's",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12416915,
+              "name": "Rubber Duckys",
+              "number": "07901",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 41559364,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-01-30T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 6,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417109,
+              "name": "Broad St Bullies",
+              "number": "07904",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 41559368,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-02-06T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417124,
+              "name": "We Love Joey",
+              "number": "07903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 41559371,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-02-13T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39511,
+              "name": "A. C. Club Of Beverly",
+              "address": {
+                "id": 62767,
+                "name": "A. C. Club Of Beverly",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417231,
+              "name": "Apocalypse",
+              "number": "07905",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 41559373,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-02-20T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39527,
+              "name": "Burlington Private Billiards Club",
+              "address": {
+                "id": 71093,
+                "name": "Burlington Private Billiards Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417291,
+              "name": "Let's Go Brandon",
+              "number": "07906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 41559377,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-02-27T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39530,
+              "name": "Doc's",
+              "address": {
+                "id": 41501,
+                "name": "Doc's",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12416915,
+              "name": "Rubber Duckys",
+              "number": "07901",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 41559379,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-03-05T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 15,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39527,
+              "name": "Burlington Private Billiards Club",
+              "address": {
+                "id": 71093,
+                "name": "Burlington Private Billiards Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417109,
+              "name": "Broad St Bullies",
+              "number": "07904",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 41559383,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-03-12T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39527,
+              "name": "Burlington Private Billiards Club",
+              "address": {
+                "id": 71093,
+                "name": "Burlington Private Billiards Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417124,
+              "name": "We Love Joey",
+              "number": "07903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 41559386,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-03-19T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417231,
+              "name": "Apocalypse",
+              "number": "07905",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 13,
+            "type": "EIGHT",
+            "id": 41559388,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-03-26T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417291,
+              "name": "Let's Go Brandon",
+              "number": "07906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 14,
+            "type": "EIGHT",
+            "id": 41559392,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-04-02T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39530,
+              "name": "Doc's",
+              "address": {
+                "id": 41501,
+                "name": "Doc's",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12416915,
+              "name": "Rubber Duckys",
+              "number": "07901",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 15,
+            "type": "EIGHT",
+            "id": 41559394,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-04-09T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 15,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 6,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417109,
+              "name": "Broad St Bullies",
+              "number": "07904",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 16,
+            "type": "EIGHT",
+            "id": 41559398,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-04-16T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417124,
+              "name": "We Love Joey",
+              "number": "07903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 17,
+            "type": "EIGHT",
+            "id": 42536062,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-04-23T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39530,
+              "name": "Doc's",
+              "address": {
+                "id": 41501,
+                "name": "Doc's",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12416915,
+              "name": "Rubber Duckys",
+              "number": "07901",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 18,
+            "type": "EIGHT",
+            "id": 42711251,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2024-04-30T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": true,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93091,
+              "name": "Edgewater Park Elks 2550",
+              "address": {
+                "id": 28377,
+                "name": "Edgewater Park Elks 2550",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12417220,
+              "name": "Franks N Beans",
+              "number": "07902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12417124,
+              "name": "We Love Joey",
+              "number": "07903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 377861,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}

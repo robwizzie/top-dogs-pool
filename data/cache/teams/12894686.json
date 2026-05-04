@@ -1,0 +1,1575 @@
+{
+  "fetchedAt": "2026-05-02T20:02:28.005Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 12894686,
+        "name": "RICO Suave",
+        "number": "06906",
+        "isTied": false,
+        "standing": 4,
+        "division": {
+          "id": 420217,
+          "name": "CA-69",
+          "number": "069",
+          "timeOfPlay": "1900-01-01T19:30:00Z",
+          "nightOfPlay": "Thursday",
+          "format": "8-Ball Open",
+          "state": "CURRENT",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 93107,
+          "name": "25 Club",
+          "address": {
+            "id": 28715,
+            "name": "25 Club",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 138,
+          "name": "Spring 2026",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 12894686,
+        "name": "RICO Suave",
+        "number": "06906",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420217,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91261679,
+            "memberNumber": "08204998",
+            "displayName": "Mike Curran",
+            "matchesWon": 9,
+            "matchesPlayed": 16,
+            "pa": 0.4375,
+            "ppm": 1.3125,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2805804,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261674,
+            "memberNumber": "08206283",
+            "displayName": "Jason Klawitter",
+            "matchesWon": 4,
+            "matchesPlayed": 11,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2130232,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261676,
+            "memberNumber": "08220209",
+            "displayName": "Ricardo Pearce",
+            "matchesWon": 6,
+            "matchesPlayed": 8,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 881362,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261673,
+            "memberNumber": "08221183",
+            "displayName": "Matthew Cafone",
+            "matchesWon": 6,
+            "matchesPlayed": 11,
+            "pa": 0.48484848484848486,
+            "ppm": 1.4545454545454546,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 949057,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261678,
+            "memberNumber": "08220919",
+            "displayName": "Matthew Criger",
+            "matchesWon": 6,
+            "matchesPlayed": 12,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 881971,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261677,
+            "memberNumber": "08220567",
+            "displayName": "Carlo Leto",
+            "matchesWon": 4,
+            "matchesPlayed": 8,
+            "pa": 0.4583333333333333,
+            "ppm": 1.375,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 881674,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91766360,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 9,
+            "matchesPlayed": 11,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 12894686,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 189,
+        "sessionTotalPoints": 189,
+        "division": {
+          "id": 420217,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 49025845,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-08T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894685,
+              "name": "Intimidators",
+              "number": "06905",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 49025850,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-15T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894683,
+              "name": "A Tribe Called Cue",
+              "number": "06903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 49025853,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-22T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894681,
+              "name": "Master 8ers",
+              "number": "06901",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 49025858,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-29T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894690,
+              "name": "Aces & Eights",
+              "number": "06910",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 49025863,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-05T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39636,
+              "name": "Alden Cafe",
+              "address": {
+                "id": 41398,
+                "name": "Alden Cafe",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894687,
+              "name": "Don't Tell Us What 2 Do",
+              "number": "06907",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 49025868,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-12T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39406,
+              "name": "Bryson's Pub",
+              "address": {
+                "id": 41641,
+                "name": "Bryson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894689,
+              "name": "Chalk Norris",
+              "number": "06909",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 49025876,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-19T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894682,
+              "name": "Let's Go!!!",
+              "number": "06902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 49025882,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-26T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894684,
+              "name": "Chalk Up",
+              "number": "06904",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 49025884,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-05T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39636,
+              "name": "Alden Cafe",
+              "address": {
+                "id": 41398,
+                "name": "Alden Cafe",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894688,
+              "name": "This Team Is Suspended",
+              "number": "06908",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 49025890,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-12T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 15,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894685,
+              "name": "Intimidators",
+              "number": "06905",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 49025895,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-19T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39408,
+              "name": "American Legion Post 372",
+              "address": {
+                "id": 73717,
+                "name": "American Legion Post 372",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894683,
+              "name": "A Tribe Called Cue",
+              "number": "06903",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 49025898,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-26T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894681,
+              "name": "Master 8ers",
+              "number": "06901",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 13,
+            "type": "EIGHT",
+            "id": 49025903,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-02T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 106709,
+              "name": "The Corner Pocket of Delran",
+              "address": {
+                "id": 72511,
+                "name": "The Corner Pocket of Delran",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894690,
+              "name": "Aces & Eights",
+              "number": "06910",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 14,
+            "type": "EIGHT",
+            "id": 49025908,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-09T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894687,
+              "name": "Don't Tell Us What 2 Do",
+              "number": "06907",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 15,
+            "type": "EIGHT",
+            "id": 49025913,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-16T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894689,
+              "name": "Chalk Norris",
+              "number": "06909",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 16,
+            "type": "EIGHT",
+            "id": 49025921,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-23T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894682,
+              "name": "Let's Go!!!",
+              "number": "06902",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 17,
+            "type": "EIGHT",
+            "id": 50403747,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-30T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894684,
+              "name": "Chalk Up",
+              "number": "06904",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 18,
+            "type": "EIGHT",
+            "id": 50516124,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-05-07T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894686,
+              "name": "RICO Suave",
+              "number": "06906",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894690,
+              "name": "Aces & Eights",
+              "number": "06910",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420217,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}

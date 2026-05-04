@@ -27,15 +27,8 @@ export default async function ClipsPage() {
         {clips.length === 0 ? (
           <div className="surface flex items-center gap-3 p-6 text-sm text-[var(--fg-dim)]">
             <Video size={18} />
-            Clips will appear here once the YouTube playlist is connected. Set{" "}
-            <code className="rounded bg-[var(--bg-soft)] px-1.5 py-0.5 text-xs">
-              YOUTUBE_API_KEY
-            </code>{" "}
-            and{" "}
-            <code className="rounded bg-[var(--bg-soft)] px-1.5 py-0.5 text-xs">
-              YOUTUBE_PLAYLIST_ID
-            </code>{" "}
-            to go live.
+            Highlights coming soon — match clips will land here as we tag the
+            YouTube playlist.
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

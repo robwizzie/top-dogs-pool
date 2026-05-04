@@ -4,6 +4,7 @@ out
 .env
 .env.local
 .env*.local
+.env.example
 .DS_Store
 *.log
 .vercel
@@ -11,3 +12,10 @@ next-env.d.ts
 .idea
 .vscode
 tsconfig.tsbuildinfo
+
+# Scraper debug artifacts (may contain credentials).
+data/gql-captures.json
+data/apa-raw-cache.json
+data/login-failure.png
+data/login-*.png
+.claude/

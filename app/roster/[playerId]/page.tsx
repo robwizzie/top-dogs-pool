@@ -1,53 +1,168 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
 import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { PoolBall } from "@/components/brand/PoolBall";
-import { getLeaderboard, getPlayer, getSchedule } from "@/lib/apa";
+import { SessionPicker } from "@/components/leaderboard/SessionPicker";
+import { parseSessionScope, resolveScope } from "@/lib/session-scope";
+import {
+  getCurrentSession,
+  getMatch,
+  getPlayer,
+  getSessions,
+} from "@/lib/apa";
 import { getClipsForPlayer } from "@/lib/youtube/client";
-import { formatDate, pct } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ playerId: string }> };
+type Props = {
+  params: Promise<{ playerId: string }>;
+  searchParams: Promise<{ session?: string }>;
+};
 
 export async function generateMetadata({ params }: Props) {
   const { playerId } = await params;
-  const { player } = await getPlayer(playerId);
+  const { player, profile } = await getPlayer(playerId);
+  if (player?.visible === false || profile?.visible === false) {
+    return { title: "Player" };
+  }
   return { title: player?.name ?? "Player" };
 }
 
-export default async function PlayerPage({ params }: Props) {
-  const { playerId } = await params;
-  const [{ player, stats }, leaderboard, schedule, clips] = await Promise.all([
-    getPlayer(playerId),
-    getLeaderboard(),
-    getSchedule(),
-    getClipsForPlayer(playerId),
-  ]);
-
+export default async function PlayerPage({ params, searchParams }: Props) {
+  const [{ playerId }, sp] = await Promise.all([params, searchParams]);
+  const [{ player, profile }, sessions, currentSession, clips] =
+    await Promise.all([
+      getPlayer(playerId),
+      getSessions(),
+      getCurrentSession(),
+      getClipsForPlayer(playerId),
+    ]);
   if (!player) notFound();
+  // Hidden players (visible:false) shouldn't have a public profile page.
+  if (player.visible === false) notFound();
+  if (profile?.visible === false) notFound();
 
-  const sweepRow = leaderboard.find((r) => r.playerId === playerId);
-  const matchHistory = schedule
-    .filter((m) => m.status === "completed")
-    .sort((a, b) => +new Date(b.date) - +new Date(a.date))
-    .slice(0, 8);
+  // Resolve scope using shared helpers (multi-select aware).
+  const allIds = sessions.map((s) => s.id);
+  const scopeKind = parseSessionScope(sp.session, allIds);
+  const selectedIds = resolveScope(scopeKind, allIds, currentSession?.id);
+  const isAllSessions = selectedIds.size === allIds.length;
+  const isSingle = selectedIds.size === 1;
 
-  const wins = stats?.wins ?? sweepRow?.wins ?? 0;
-  const losses = stats?.losses ?? Math.max((sweepRow?.matchesPlayed ?? 0) - (sweepRow?.wins ?? 0), 0);
-  const matchesPlayed = stats?.matchesPlayed ?? sweepRow?.matchesPlayed ?? 0;
+  // Pick the stat block to display. Career when "all", single-session record
+  // when 1 selected, summed across selection when multiple.
+  const inScope = (profile?.sessions ?? []).filter((s) =>
+    selectedIds.has(s.sessionId),
+  );
+  const display = (() => {
+    if (isAllSessions) {
+      return {
+        label: "Career",
+        matchesPlayed: profile?.career.matchesPlayed ?? 0,
+        wins: profile?.career.wins ?? 0,
+        losses: profile?.career.losses ?? 0,
+        winPct: profile?.career.winPct ?? 0,
+        points: profile?.career.points ?? 0,
+        sweeps: profile?.career.sweeps ?? 0,
+        miniSweeps: profile?.career.miniSweeps ?? 0,
+        breakAndRuns: profile?.career.breakAndRuns ?? 0,
+        eightOnBreaks: profile?.career.eightOnBreaks ?? 0,
+        skillLevel: profile?.currentSkillLevel ?? null,
+        pa: undefined as number | undefined,
+        ppm: undefined as number | undefined,
+        teamLabel: undefined as string | undefined,
+      };
+    }
+    if (isSingle) {
+      const s = inScope[0];
+      return {
+        label: s?.sessionName ?? "Session",
+        matchesPlayed: s?.matchesPlayed ?? 0,
+        wins: s?.wins ?? 0,
+        losses: (s?.matchesPlayed ?? 0) - (s?.wins ?? 0),
+        winPct: s?.winPct ?? 0,
+        points: s?.points ?? 0,
+        sweeps: s?.sweeps ?? 0,
+        miniSweeps: s?.miniSweeps ?? 0,
+        breakAndRuns: s?.breakAndRuns ?? 0,
+        eightOnBreaks: s?.eightOnBreaks ?? 0,
+        skillLevel: s?.skillLevel ?? null,
+        pa: s?.pa,
+        ppm: s?.ppm,
+        teamLabel: s?.teamName,
+      };
+    }
+    // Multi-session subset: sum across them.
+    let mp = 0,
+      w = 0,
+      pts = 0,
+      sw = 0,
+      ms = 0,
+      br = 0,
+      eob = 0;
+    for (const s of inScope) {
+      mp += s.matchesPlayed ?? 0;
+      w += s.wins ?? 0;
+      pts += s.points ?? 0;
+      sw += s.sweeps ?? 0;
+      ms += s.miniSweeps ?? 0;
+      br += s.breakAndRuns ?? 0;
+      eob += s.eightOnBreaks ?? 0;
+    }
+    return {
+      label: `${selectedIds.size} sessions combined`,
+      matchesPlayed: mp,
+      wins: w,
+      losses: mp - w,
+      winPct: mp ? Math.round((w / mp) * 1000) / 10 : 0,
+      points: Math.round(pts * 10) / 10,
+      sweeps: sw,
+      miniSweeps: ms,
+      breakAndRuns: br,
+      eightOnBreaks: eob,
+      skillLevel: inScope[inScope.length - 1]?.skillLevel ?? null,
+      pa: undefined as number | undefined,
+      ppm: undefined as number | undefined,
+      teamLabel: undefined as string | undefined,
+    };
+  })();
+
+  const matchHistoryRaw = await getPlayerMatchHistory(playerId, selectedIds);
+  const matchHistory = matchHistoryRaw.slice(0, 12);
+
+  const actionImage = profile?.actionImage ?? player.actionImage;
+  const profileImage = profile?.profileImage ?? player.profileImage;
 
   return (
     <>
-      <PageHeader
-        eyebrow={player.format !== "unknown" ? player.format : "Player"}
-        title={player.name}
-        subtitle={
-          player.skillLevel ? `Skill Level ${player.skillLevel}` : undefined
-        }
-      />
+      {actionImage ? (
+        <PlayerHero
+          name={player.name}
+          format={player.format}
+          skillLevel={display.skillLevel ?? null}
+          teamLabel={display.teamLabel}
+          actionImage={actionImage}
+          profileImage={profileImage}
+        />
+      ) : (
+        <PageHeader
+          eyebrow={
+            player.format !== "unknown" ? player.format.toUpperCase() : "Player"
+          }
+          title={player.name}
+          subtitle={
+            display.skillLevel
+              ? `Skill Level ${display.skillLevel}${
+                  display.teamLabel ? ` · ${display.teamLabel}` : ""
+                }`
+              : display.teamLabel
+          }
+        />
+      )}
 
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
@@ -57,77 +172,144 @@ export default async function PlayerPage({ params }: Props) {
           <ArrowLeft size={14} /> Back to roster
         </Link>
 
+        <div className="mb-6">
+          <SessionPicker
+            basePath={`/roster/${playerId}`}
+            sessions={sessions.filter((s) =>
+              profile?.sessions.some((ps) => ps.sessionId === s.id),
+            )}
+            selectedIds={selectedIds}
+          />
+        </div>
+
+        <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+          {display.label}
+        </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatTile label="Points" accent>
+            {display.points}
+          </StatTile>
           <StatTile label="Record">
-            {wins}<span className="text-[var(--fg-dim)]">–</span>{losses}
+            {display.wins}
+            <span className="text-[var(--fg-dim)]">–</span>
+            {display.losses}
           </StatTile>
           <StatTile label="Win %">
-            {matchesPlayed ? `${pct(wins, matchesPlayed)}%` : "—"}
+            {display.matchesPlayed ? `${display.winPct}%` : "—"}
           </StatTile>
           <StatTile label="Sweeps" accent>
-            {sweepRow?.sweeps ?? 0}
+            {display.sweeps}
           </StatTile>
-          <StatTile label="Mini-Sweeps" accent>
-            {sweepRow?.miniSweeps ?? 0}
-          </StatTile>
-          {stats?.innings !== undefined && (
-            <StatTile label="Innings">{stats.innings}</StatTile>
-          )}
-          {stats?.defensiveShots !== undefined && (
-            <StatTile label="Def. Shots">{stats.defensiveShots}</StatTile>
-          )}
-          {stats?.pa !== undefined && (
-            <StatTile label="PA">{stats.pa.toFixed(2)}</StatTile>
-          )}
-          {stats?.mpr !== undefined && (
-            <StatTile label="MPR">{stats.mpr.toFixed(2)}</StatTile>
+          <StatTile label="Mini-Sweeps">{display.miniSweeps}</StatTile>
+          <StatTile label="Break & Runs">{display.breakAndRuns}</StatTile>
+          <StatTile label="8 on Break">{display.eightOnBreaks}</StatTile>
+          {display.pa !== undefined ? (
+            <StatTile label="PA">{display.pa}%</StatTile>
+          ) : (
+            <StatTile label="Matches">{display.matchesPlayed}</StatTile>
           )}
         </div>
 
+        {profile && profile.sessions.length > 1 && (
+          <section className="mt-12">
+            <h2 className="mb-4 font-[family-name:var(--font-display)] text-2xl tracking-wide">
+              Session History
+            </h2>
+            <ul className="surface divide-y divide-[var(--border)]">
+              {profile.sessions.map((s) => (
+                <li
+                  key={`${s.sessionId}-${s.teamId}`}
+                  className={
+                    selectedIds.has(s.sessionId)
+                      ? "flex items-center gap-4 bg-[var(--color-felt-deep)]/40 p-4"
+                      : "flex items-center gap-4 p-4"
+                  }
+                >
+                  <Link
+                    href={`/roster/${playerId}?session=${s.sessionId}`}
+                    className="min-w-0 flex-1 hover:text-[var(--color-brass)]"
+                  >
+                    <p className="truncate text-sm font-medium">
+                      {s.sessionName}
+                      <span className="text-[var(--fg-dim)]"> · </span>
+                      <span className="text-[var(--fg-dim)]">
+                        {s.teamName}
+                      </span>
+                    </p>
+                    <p className="text-xs text-[var(--fg-dim)]">
+                      {s.skillLevel ? `SL${s.skillLevel} · ` : ""}
+                      {s.matchesPlayed ?? 0} matches
+                      {s.winPct !== undefined ? ` · ${s.winPct}% win` : ""}
+                      {s.points !== undefined && s.points > 0
+                        ? ` · ${s.points} pts`
+                        : ""}
+                    </p>
+                  </Link>
+                  {s.wins !== undefined && s.matchesPlayed !== undefined && (
+                    <span className="text-sm font-medium tabular-nums">
+                      {s.wins}
+                      <span className="text-[var(--fg-dim)]">/</span>
+                      {s.matchesPlayed}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="mt-12">
           <h2 className="mb-4 font-[family-name:var(--font-display)] text-2xl tracking-wide">
-            Recent Matches
+            {isAllSessions ? "Recent Matches (career)" : "Matches"}
           </h2>
           {matchHistory.length === 0 ? (
             <p className="surface p-6 text-sm text-[var(--fg-dim)]">
-              No completed matches yet.
+              No matches with scoresheet results for this scope.
             </p>
           ) : (
             <ul className="surface divide-y divide-[var(--border)]">
-              {matchHistory.map((m) => {
-                const mine = m.results.find((r) => r.playerId === playerId);
-                return (
-                  <li key={m.id}>
-                    <Link
-                      href={`/matches/${m.id}`}
-                      className="flex items-center gap-4 p-4 hover:bg-[var(--bg-soft)]"
+              {matchHistory.map(({ match, mine }) => (
+                <li key={match.id}>
+                  <Link
+                    href={`/matches/${match.id}`}
+                    className="flex items-center gap-4 p-4 hover:bg-[var(--bg-soft)]"
+                  >
+                    <PoolBall
+                      number={mine.outcome === "W" ? 6 : 8}
+                      size={28}
+                    />
+                    <div className="flex-1 truncate">
+                      <p className="text-sm font-medium">
+                        vs {match.opponent}
+                        {match.sessionName && (
+                          <span className="ml-2 text-xs text-[var(--fg-dim)]">
+                            {match.sessionName}
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-xs text-[var(--fg-dim)]">
+                        {formatDate(match.date)}
+                        {mine.score && ` · ${mine.score}`}
+                        {mine.skillLevel && ` · SL${mine.skillLevel}`}
+                        {mine.opponentSkillLevel && ` vs SL${mine.opponentSkillLevel}`}
+                        {mine.sweep && " · SWEEP"}
+                        {!mine.sweep && mine.miniSweep && " · MINI"}
+                        {mine.breakAndRun && " · B&R"}
+                        {mine.eightOnBreak && " · 8 ON BREAK"}
+                      </p>
+                    </div>
+                    <span
+                      className={
+                        mine.outcome === "W"
+                          ? "text-sm font-bold text-[var(--color-felt-bright)]"
+                          : "text-sm font-bold text-[var(--color-pop-bright)]"
+                      }
                     >
-                      <PoolBall
-                        number={mine?.outcome === "W" ? 6 : 8}
-                        size={28}
-                      />
-                      <div className="flex-1 truncate">
-                        <p className="text-sm font-medium">vs {m.opponent}</p>
-                        <p className="text-xs text-[var(--fg-dim)]">
-                          {formatDate(m.date)}
-                          {mine?.score && ` · ${mine.score}`}
-                        </p>
-                      </div>
-                      <span
-                        className={
-                          mine?.outcome === "W"
-                            ? "text-sm font-bold text-[var(--color-felt-bright)]"
-                            : mine?.outcome === "L"
-                              ? "text-sm font-bold text-[var(--color-pop-bright)]"
-                              : "text-sm text-[var(--fg-dim)]"
-                        }
-                      >
-                        {mine?.outcome ?? "—"}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
+                      {mine.outcome}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           )}
         </section>
@@ -146,6 +328,96 @@ export default async function PlayerPage({ params }: Props) {
         )}
       </div>
     </>
+  );
+}
+
+/**
+ * Walk the snapshot's matches map for matches in scope where this player
+ * has a result row. Newest first.
+ */
+async function getPlayerMatchHistory(
+  playerId: string,
+  selectedIds: Set<number>,
+): Promise<
+  Array<{
+    match: NonNullable<Awaited<ReturnType<typeof getMatch>>>;
+    mine: NonNullable<
+      NonNullable<Awaited<ReturnType<typeof getMatch>>>["results"][number]
+    >;
+  }>
+> {
+  const { loadSnapshot } = await import("@/lib/apa/client");
+  const snap = await loadSnapshot();
+  const out: Array<{
+    match: (typeof snap.schedule)[number];
+    mine: (typeof snap.schedule)[number]["results"][number];
+  }> = [];
+  for (const m of Object.values(snap.matches)) {
+    if (m.sessionId === undefined || !selectedIds.has(m.sessionId)) continue;
+    if (m.status !== "completed") continue;
+    const mine = m.results.find((r) => r.playerId === playerId);
+    if (!mine) continue;
+    out.push({ match: m, mine });
+  }
+  out.sort((a, b) => +new Date(b.match.date) - +new Date(a.match.date));
+  return out;
+}
+
+function PlayerHero({
+  name,
+  format,
+  skillLevel,
+  teamLabel,
+  actionImage,
+  profileImage,
+}: {
+  name: string;
+  format: string;
+  skillLevel: number | null;
+  teamLabel?: string;
+  actionImage: string;
+  profileImage?: string;
+}) {
+  return (
+    <section className="relative isolate overflow-hidden border-b border-[var(--border)]">
+      <Image
+        src={actionImage}
+        alt={`${name} action shot`}
+        fill
+        priority
+        sizes="100vw"
+        className="-z-10 object-cover"
+      />
+      <div
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/70 to-transparent"
+        aria-hidden
+      />
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-12 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:px-8 lg:pb-20 lg:pt-48">
+        <div className="flex items-end gap-5">
+          {profileImage && (
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-[var(--color-brass)]/70 bg-[var(--color-felt-deep)] shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:h-24 sm:w-24">
+              <Image
+                src={profileImage}
+                alt={name}
+                fill
+                sizes="96px"
+                className="object-cover"
+              />
+            </div>
+          )}
+          <div>
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+              {format !== "unknown" ? format.toUpperCase() : "Player"}
+              {skillLevel ? ` · SL${skillLevel}` : ""}
+              {teamLabel ? ` · ${teamLabel}` : ""}
+            </p>
+            <h1 className="font-[family-name:var(--font-display)] text-5xl leading-none tracking-wide drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:text-6xl lg:text-7xl">
+              {name}
+            </h1>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

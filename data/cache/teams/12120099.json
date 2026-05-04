@@ -1,0 +1,1407 @@
+{
+  "fetchedAt": "2026-05-02T20:23:41.343Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 12120099,
+        "name": "Eight Men Out",
+        "number": "06807",
+        "isTied": false,
+        "standing": 12,
+        "division": {
+          "id": 351390,
+          "name": "Gl-68",
+          "number": "068",
+          "timeOfPlay": "1900-01-01T19:30:00Z",
+          "nightOfPlay": "Tuesday",
+          "format": "8-Ball Open",
+          "state": "PAST",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 90042,
+          "name": "Wilson's Pub",
+          "address": {
+            "id": 40206,
+            "name": "Wilson's Pub",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 124,
+          "name": "Fall 2022",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 12120099,
+        "name": "Eight Men Out",
+        "number": "06807",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 351390,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 85634360,
+            "memberNumber": "08203833",
+            "displayName": "Peter Johnson V",
+            "matchesWon": 4,
+            "matchesPlayed": 10,
+            "pa": 0.39999999999999997,
+            "ppm": 1.2,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3168689,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85634359,
+            "memberNumber": "08212765",
+            "displayName": "Pete Johnson IV",
+            "matchesWon": 6,
+            "matchesPlayed": 11,
+            "pa": 0.48484848484848486,
+            "ppm": 1.4545454545454546,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 747020,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85634361,
+            "memberNumber": "08203835",
+            "displayName": "Meghan Johnson",
+            "matchesWon": 3,
+            "matchesPlayed": 7,
+            "pa": 0.38095238095238093,
+            "ppm": 1.1428571428571428,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3168757,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85634358,
+            "memberNumber": "08212737",
+            "displayName": "Steven Johnson",
+            "matchesWon": 2,
+            "matchesPlayed": 10,
+            "pa": 0.16666666666666666,
+            "ppm": 0.5,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 818783,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85634365,
+            "memberNumber": "08203907",
+            "displayName": "Robert Wiscount",
+            "matchesWon": 6,
+            "matchesPlayed": 11,
+            "pa": 0.48484848484848486,
+            "ppm": 1.4545454545454546,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3175746,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85634364,
+            "memberNumber": "08203852",
+            "displayName": "Anand Patel",
+            "matchesWon": 1,
+            "matchesPlayed": 6,
+            "pa": 0.2777777777777778,
+            "ppm": 0.8333333333333334,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3175408,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85689699,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 2,
+            "matchesPlayed": 8,
+            "pa": 0.25,
+            "ppm": 0.75,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 85762978,
+            "memberNumber": "08211481",
+            "displayName": "Aaron Bickford",
+            "matchesWon": 0,
+            "matchesPlayed": 6,
+            "pa": 0.05555555555555555,
+            "ppm": 0.16666666666666666,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3253364,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 12120099,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 139,
+        "sessionTotalPoints": 139,
+        "division": {
+          "id": 351390,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 36298876,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-09-06T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120100,
+              "name": "Lights Out",
+              "number": "06808",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 36298883,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-09-13T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 114604,
+              "name": "Nero's Pub",
+              "address": {
+                "id": 77124,
+                "name": "Nero's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12119694,
+              "name": "Nero's Pocket Punishers",
+              "number": "06810",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 36298890,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-09-20T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 5,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 17,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120102,
+              "name": "F.O.C.U.S.",
+              "number": "06812",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 36298897,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-09-27T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12119701,
+              "name": "Poke & Choke",
+              "number": "06806",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 36298904,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-10-04T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12119697,
+              "name": "Demo-Lition",
+              "number": "06804",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 36298911,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-10-11T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12119698,
+              "name": "8 Balls for Sale",
+              "number": "06802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 36298921,
+            "isBye": true,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-10-18T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12119702,
+              "name": "Bye",
+              "number": "06814",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 36298926,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-10-25T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12119700,
+              "name": "OH WELL",
+              "number": "06805",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 36298931,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-11-01T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12119695,
+              "name": "Better Safe Than Sorry",
+              "number": "06803",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 36298936,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-11-08T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12119699,
+              "name": "Rack Pack",
+              "number": "06801",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 36298946,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-11-15T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120098,
+              "name": "The Office",
+              "number": "06813",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 36298954,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-11-22T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 15,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 88174,
+              "name": "National Park Pub & Grill",
+              "address": {
+                "id": 72204,
+                "name": "National Park Pub & Grill",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120101,
+              "name": "Boys From The Basement",
+              "number": "06811",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 13,
+            "type": "EIGHT",
+            "id": 36298959,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-11-29T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 5,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 17,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120097,
+              "name": "Everybody Loves Raymond",
+              "number": "06809",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 14,
+            "type": "EIGHT",
+            "id": 36298967,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-12-06T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120100,
+              "name": "Lights Out",
+              "number": "06808",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 15,
+            "type": "EIGHT",
+            "id": 36978847,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2022-12-13T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 88174,
+              "name": "National Park Pub & Grill",
+              "address": {
+                "id": 72204,
+                "name": "National Park Pub & Grill",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12120101,
+              "name": "Boys From The Basement",
+              "number": "06811",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12120099,
+              "name": "Eight Men Out",
+              "number": "06807",
+              "isMine": true,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": [],
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2022-12-20T00:00:00Z",
+            "isMine": true,
+            "isPaid": null,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": null,
+            "orderItems": null,
+            "division": {
+              "id": 351390,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}

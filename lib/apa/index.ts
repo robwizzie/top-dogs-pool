@@ -1,126 +1,272 @@
-import { unstable_cache } from "next/cache";
-import { APA_REVALIDATE_SECONDS, APA_TEAM_URL, TEAM_NAME } from "@/lib/config";
-import { fetchApaHtml, ApaFetchError } from "./client";
-import {
-  parseMatchDetail,
-  parsePlayerStats,
-  parseRoster,
-  parseSchedule,
-  parseStandings,
-  parseTeamPage,
-} from "./scraper";
-import { buildLeaderboard } from "./sweeps";
+import { ApaFetchError, loadSnapshot } from "./client";
 import type {
   LeaderboardRow,
   Match,
   Player,
+  PlayerProfile,
   PlayerStats,
+  SessionRecord,
   Standing,
   TeamSummary,
 } from "./schemas";
 
-const cacheOpts = {
-  revalidate: APA_REVALIDATE_SECONDS,
-  tags: ["apa"],
-};
-
-/** Wraps a data accessor so a scrape error returns null instead of crashing the page. */
-async function safe<T>(fn: () => Promise<T>): Promise<T | null> {
-  try {
-    return await fn();
-  } catch (err) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("[apa] scrape failed:", (err as Error).message);
-    }
-    return null;
-  }
+/** Top-level current-session team summary. Null if no snapshot yet. */
+export async function getTeam(): Promise<TeamSummary | null> {
+  const snap = await loadSnapshot();
+  if (!snap.team.name || snap.teamId === 0) return null;
+  return snap.team;
 }
 
-export const getTeam = unstable_cache(
-  async (): Promise<TeamSummary | null> =>
-    safe(async () => {
-      const html = await fetchApaHtml(APA_TEAM_URL);
-      return parseTeamPage(html, APA_TEAM_URL);
-    }),
-  ["apa-team"],
-  cacheOpts,
-);
+/** Current-session roster. Pass `sessionId` for a historical session's roster.
+ *  When given a Set, returns the latest selected session's roster. */
+export async function getRoster(
+  sessionScope?: number | Set<number>,
+): Promise<Player[]> {
+  const snap = await loadSnapshot();
+  if (sessionScope === undefined) return snap.roster;
+  const id =
+    typeof sessionScope === "number"
+      ? sessionScope
+      : Math.max(...sessionScope);
+  return snap.sessionRosters[String(id)] ?? [];
+}
 
-export const getRoster = unstable_cache(
-  async (): Promise<Player[]> =>
-    (await safe(async () => {
-      const html = await fetchApaHtml(APA_TEAM_URL);
-      return parseRoster(html, APA_TEAM_URL);
-    })) ?? [],
-  ["apa-roster"],
-  cacheOpts,
-);
+/**
+ * Schedule for the current session by default. Pass a sessionId or set of
+ * sessionIds to fetch that combined schedule.
+ */
+export async function getSchedule(
+  sessionScope?: number | Set<number>,
+): Promise<Match[]> {
+  const snap = await loadSnapshot();
+  if (sessionScope === undefined) return snap.schedule;
+  const ids =
+    typeof sessionScope === "number" ? new Set([sessionScope]) : sessionScope;
+  const teamIds = new Set(
+    snap.sessions.filter((s) => ids.has(s.id)).map((s) => s.teamId),
+  );
+  return Object.values(snap.matches)
+    .filter((m) =>
+      m.teamId !== undefined ? teamIds.has(m.teamId) : false,
+    )
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+}
 
-export const getSchedule = unstable_cache(
-  async (): Promise<Match[]> =>
-    (await safe(async () => {
-      const html = await fetchApaHtml(APA_TEAM_URL);
-      return parseSchedule(html, APA_TEAM_URL);
-    })) ?? [],
-  ["apa-schedule"],
-  cacheOpts,
-);
+/**
+ * Full division standings — current session by default, or for a given session
+ * id. With a Set, returns the most-recent selected session's standings (since
+ * standings are point-in-time per division and don't combine meaningfully).
+ */
+export async function getStandings(
+  sessionScope?: number | Set<number>,
+): Promise<Standing[]> {
+  const snap = await loadSnapshot();
+  if (sessionScope !== undefined) {
+    const id =
+      typeof sessionScope === "number"
+        ? sessionScope
+        : Math.max(...sessionScope);
+    return snap.sessionStandings[String(id)] ?? [];
+  }
+  if (snap.currentSession) {
+    return (
+      snap.sessionStandings[String(snap.currentSession.id)] ?? snap.standings
+    );
+  }
+  return snap.standings;
+}
 
-/** Fetches a player profile page if available; falls back to roster info. */
+export async function getSessions(): Promise<SessionRecord[]> {
+  return (await loadSnapshot()).sessions;
+}
+
+export async function getCurrentSession(): Promise<{
+  id: number;
+  name: string;
+  teamId: number;
+} | null> {
+  return (await loadSnapshot()).currentSession ?? null;
+}
+
+/**
+ * Look up any match by id — current session or historical, whichever is
+ * present in the matches map.
+ */
+export async function getMatch(id: string): Promise<Match | null> {
+  const snap = await loadSnapshot();
+  return snap.matches[id] ?? snap.schedule.find((m) => m.id === id) ?? null;
+}
+
+/** Full career-spanning player profile. */
+export async function getPlayerProfile(
+  id: string,
+): Promise<PlayerProfile | null> {
+  const snap = await loadSnapshot();
+  return snap.players[id] ?? null;
+}
+
+/**
+ * Backwards-compatible getter used by the existing player detail page.
+ * Combines current-session roster info with career stats from the player
+ * profile (when available).
+ */
 export async function getPlayer(id: string): Promise<{
   player: Player | null;
   stats: PlayerStats | null;
+  profile: PlayerProfile | null;
 }> {
-  const roster = await getRoster();
-  const player = roster.find((p) => p.id === id) ?? null;
+  const snap = await loadSnapshot();
+  const player = snap.roster.find((p) => p.id === id) ?? null;
+  const profile = snap.players[id] ?? null;
+  if (!player && !profile) return { player: null, stats: null, profile: null };
 
-  let stats: PlayerStats | null = null;
-  if (player?.url) {
-    stats = await safe(async () => {
-      const html = await fetchApaHtml(player.url!);
-      return parsePlayerStats(html, id);
-    });
+  const career = profile?.career;
+  const stats: PlayerStats = {
+    id: profile?.id ?? player!.id,
+    name: profile?.name ?? player!.name,
+    skillLevel: profile?.currentSkillLevel ?? player?.skillLevel ?? null,
+    format: profile?.format ?? player?.format ?? "unknown",
+    matchesPlayed:
+      career?.matchesPlayed ??
+      player?.stats?.matchesPlayed ??
+      0,
+    wins: career?.wins ?? player?.stats?.wins ?? 0,
+    losses:
+      career?.losses ??
+      Math.max(
+        (player?.stats?.matchesPlayed ?? 0) - (player?.stats?.wins ?? 0),
+        0,
+      ),
+    pa: profile?.current?.pa ?? player?.stats?.pa,
+    ppm: profile?.current?.ppm ?? player?.stats?.ppm,
+    winPct:
+      career?.winPct ??
+      player?.stats?.winPct ??
+      undefined,
+    points: career?.points,
+    sweeps: career?.sweeps,
+    miniSweeps: career?.miniSweeps,
+    breakAndRuns: career?.breakAndRuns,
+    eightOnBreaks: career?.eightOnBreaks,
+  };
+  return { player: player ?? toRosterPlayer(profile!), stats, profile };
+}
+
+function toRosterPlayer(profile: PlayerProfile): Player {
+  return {
+    id: profile.id,
+    name: profile.name,
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    skillLevel: profile.currentSkillLevel,
+    format: profile.format,
+    nickname: profile.nickname,
+    profileImage: profile.profileImage,
+    actionImage: profile.actionImage,
+    visible: profile.visible !== false,
+    stats: {
+      wins: profile.career.wins,
+      matchesPlayed: profile.career.matchesPlayed,
+      winPct: profile.career.winPct,
+      points: profile.career.points,
+      sweeps: profile.career.sweeps,
+      miniSweeps: profile.career.miniSweeps,
+      breakAndRuns: profile.career.breakAndRuns,
+      eightOnBreaks: profile.career.eightOnBreaks,
+    },
+  };
+}
+
+/**
+ * Leaderboard for the requested scope.
+ *   undefined            → current session
+ *   "all"                → career totals across every cached session
+ *   number               → just that session's leaderboard
+ *   Set<number>          → combined across the given sessions (sums points,
+ *                          sweeps, mini-sweeps, B&R, 8oB, etc.)
+ */
+export async function getLeaderboard(
+  sessionScope?: number | "all" | Set<number>,
+): Promise<LeaderboardRow[]> {
+  const snap = await loadSnapshot();
+
+  // Single key → use pre-computed.
+  if (sessionScope === undefined) {
+    const key = snap.currentSession ? String(snap.currentSession.id) : "all";
+    return snap.leaderboards[key] ?? [];
   }
-  return { player, stats };
+  if (sessionScope === "all") return snap.leaderboards["all"] ?? [];
+  if (typeof sessionScope === "number")
+    return snap.leaderboards[String(sessionScope)] ?? [];
+
+  // Set: combine.
+  const ids = sessionScope;
+  if (ids.size === 0) return [];
+  if (ids.size === 1) {
+    const only = [...ids][0];
+    return snap.leaderboards[String(only)] ?? [];
+  }
+  // If they happen to have selected every session, use the pre-computed "all".
+  if (ids.size === snap.sessions.length) return snap.leaderboards["all"] ?? [];
+
+  // Otherwise sum across the selected sessions.
+  type Acc = LeaderboardRow & { _seen: boolean };
+  const acc = new Map<string, Acc>();
+  for (const id of ids) {
+    const rows = snap.leaderboards[String(id)] ?? [];
+    for (const r of rows) {
+      let cur = acc.get(r.playerId);
+      if (!cur) {
+        cur = {
+          ...r,
+          // Re-init aggregate counters; we'll re-sum below.
+          points: 0,
+          sweeps: 0,
+          miniSweeps: 0,
+          breakAndRuns: 0,
+          eightOnBreaks: 0,
+          levelUps: 0,
+          matchesPlayed: 0,
+          wins: 0,
+          _seen: true,
+        };
+        acc.set(r.playerId, cur);
+      }
+      cur.points += r.points;
+      cur.sweeps += r.sweeps;
+      cur.miniSweeps += r.miniSweeps;
+      cur.breakAndRuns += r.breakAndRuns;
+      cur.eightOnBreaks += r.eightOnBreaks;
+      cur.levelUps += r.levelUps;
+      cur.matchesPlayed += r.matchesPlayed;
+      cur.wins += r.wins;
+      // Latest SL we've seen wins.
+      if (typeof r.skillLevel === "number") cur.skillLevel = r.skillLevel;
+    }
+  }
+  return [...acc.values()]
+    .map(({ _seen, ...row }) => {
+      void _seen;
+      return {
+        ...row,
+        points: Math.round(row.points * 10) / 10,
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.points - a.points ||
+        b.sweeps - a.sweeps ||
+        b.miniSweeps - a.miniSweeps ||
+        b.wins - a.wins ||
+        a.playerName.localeCompare(b.playerName),
+    );
 }
 
-/** Match detail — fetches scoresheet if a URL is available. */
-export async function getMatch(id: string): Promise<Match | null> {
-  const schedule = await getSchedule();
-  const base = schedule.find((m) => m.id === id);
-  if (!base) return null;
-  if (!base.url) return base;
-
-  const enriched = await safe(async () => {
-    const html = await fetchApaHtml(base.url!);
-    return parseMatchDetail(html, base, TEAM_NAME);
-  });
-  return enriched ?? base;
-}
-
-/** Standings — APA exposes a /division/<id>/standings page; we discover it from the team page. */
-export const getStandings = unstable_cache(
-  async (): Promise<Standing[]> =>
-    (await safe(async () => {
-      const teamHtml = await fetchApaHtml(APA_TEAM_URL);
-      const m = teamHtml.match(/href="([^"]*\/division\/\d+[^"]*)"/i);
-      if (!m) return [] as Standing[];
-      const standingsUrl = new URL(m[1], APA_TEAM_URL).toString();
-      const html = await fetchApaHtml(standingsUrl);
-      return parseStandings(html, TEAM_NAME);
-    })) ?? [],
-  ["apa-standings"],
-  cacheOpts,
-);
-
-/** Leaderboard derived from completed matches, no manual entry. */
-export async function getLeaderboard(): Promise<LeaderboardRow[]> {
-  const [roster, schedule] = await Promise.all([getRoster(), getSchedule()]);
-  // Enrich completed matches with scoresheets so per-player results are populated.
-  const completed = schedule.filter((m) => m.status === "completed");
-  const enriched = await Promise.all(completed.map((m) => getMatch(m.id)));
-  const matches = enriched.filter((m): m is Match => m !== null);
-  return buildLeaderboard(roster, matches);
+export async function getLastUpdated(): Promise<Date | null> {
+  const snap = await loadSnapshot();
+  if (snap.lastUpdated.startsWith("1970-")) return null;
+  const d = new Date(snap.lastUpdated);
+  return isNaN(d.getTime()) ? null : d;
 }
 
 export { ApaFetchError };

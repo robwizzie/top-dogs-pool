@@ -1,0 +1,353 @@
+{
+  "fetchedAt": "2026-05-02T22:11:56.757Z",
+  "data": {
+    "match": {
+      "id": 50486583,
+      "isFinalized": false,
+      "isTournament": false,
+      "tableNumber": null,
+      "division": {
+        "id": 420208,
+        "electronicScoringEnabled": true,
+        "__typename": "Division",
+        "scheduleInEdit": false,
+        "type": "EIGHT"
+      },
+      "league": {
+        "id": 890,
+        "esEnabled": true,
+        "__typename": "League",
+        "name": "APA of South Jersey",
+        "currentSessionId": 138,
+        "isElectronicPaymentsEnabled": false,
+        "country": {
+          "id": 1,
+          "__typename": "Country"
+        }
+      },
+      "__typename": "Match",
+      "type": "EIGHT",
+      "startTime": "2026-05-05T19:30:00-04:00",
+      "week": 19,
+      "isBye": false,
+      "isMine": false,
+      "isScored": false,
+      "scoresheet": null,
+      "isPaid": null,
+      "timeZone": {
+        "id": "169",
+        "name": "America/New_York",
+        "__typename": "TimeZone"
+      },
+      "location": {
+        "id": 93107,
+        "phone": "+18566679875",
+        "name": "25 Club",
+        "address": {
+          "id": 28715,
+          "name": "25 Club",
+          "address1": "60 Rudderow St.",
+          "address2": "",
+          "city": "Maple Shade",
+          "zip": "08052",
+          "latitude": 39.94445959999999,
+          "longitude": -74.9908657,
+          "__typename": "Address"
+        },
+        "__typename": "HostLocation"
+      },
+      "home": {
+        "id": 12894585,
+        "name": "The Smith's & Company",
+        "number": "05802",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420208,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91260935,
+            "memberNumber": "08239181",
+            "displayName": "George Smith IV",
+            "matchesWon": 6,
+            "matchesPlayed": 9,
+            "pa": 0.5185185185185185,
+            "ppm": 1.5555555555555556,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1493328,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260934,
+            "memberNumber": "08239182",
+            "displayName": "Francisco Castillo",
+            "matchesWon": 9,
+            "matchesPlayed": 11,
+            "pa": 0.6363636363636364,
+            "ppm": 1.9090909090909092,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1338667,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260937,
+            "memberNumber": "08212030",
+            "displayName": "Jay Grauber",
+            "matchesWon": 5,
+            "matchesPlayed": 10,
+            "pa": 0.39999999999999997,
+            "ppm": 1.2,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737117,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260938,
+            "memberNumber": "08223087",
+            "displayName": "Andy Smith",
+            "matchesWon": 10,
+            "matchesPlayed": 15,
+            "pa": 0.6,
+            "ppm": 1.8,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1848992,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260939,
+            "memberNumber": "08211046",
+            "displayName": "Evette Cruz",
+            "matchesWon": 6,
+            "matchesPlayed": 10,
+            "pa": 0.6,
+            "ppm": 1.8,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2518004,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260941,
+            "memberNumber": "08211880",
+            "displayName": "Steve Muller",
+            "matchesWon": 6,
+            "matchesPlayed": 10,
+            "pa": 0.4666666666666666,
+            "ppm": 1.4,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3059377,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260940,
+            "memberNumber": "08209039",
+            "displayName": "Dee Muller",
+            "matchesWon": 7,
+            "matchesPlayed": 15,
+            "pa": 0.4222222222222222,
+            "ppm": 1.2666666666666666,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2948008,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260936,
+            "memberNumber": "08241468",
+            "displayName": "Patrick Smith",
+            "matchesWon": 3,
+            "matchesPlayed": 10,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1552476,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 12894589,
+        "name": "Bobby D’s Cue Crew",
+        "number": "05801",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420208,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91260967,
+            "memberNumber": "08221801",
+            "displayName": "Steven Quintus",
+            "matchesWon": 4,
+            "matchesPlayed": 11,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 949555,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260971,
+            "memberNumber": "08219241",
+            "displayName": "Patrick Lotierzo",
+            "matchesWon": 5,
+            "matchesPlayed": 11,
+            "pa": 0.42424242424242425,
+            "ppm": 1.2727272727272727,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 813013,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260968,
+            "memberNumber": "08242587",
+            "displayName": "Steve Thompson",
+            "matchesWon": 6,
+            "matchesPlayed": 12,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1644870,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260972,
+            "memberNumber": "08219242",
+            "displayName": "Jay McGuigan",
+            "matchesWon": 3,
+            "matchesPlayed": 10,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 813014,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260970,
+            "memberNumber": "08217890",
+            "displayName": "Bob Dilmore",
+            "matchesWon": 6,
+            "matchesPlayed": 12,
+            "pa": 0.3888888888888889,
+            "ppm": 1.1666666666666667,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 812653,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260966,
+            "memberNumber": "08221860",
+            "displayName": "Bob Goodwin Jr",
+            "matchesWon": 7,
+            "matchesPlayed": 12,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 949606,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91260973,
+            "memberNumber": "08214326",
+            "displayName": "Amanda Battaglia",
+            "matchesWon": 5,
+            "matchesPlayed": 9,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3439587,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91611165,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 8,
+            "matchesPlayed": 12,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "session": {
+        "id": 138,
+        "name": "Spring 2026",
+        "year": 2026,
+        "__typename": "Session"
+      },
+      "fees": {
+        "amount": 45,
+        "tax": 0,
+        "total": 45,
+        "__typename": "Fees"
+      },
+      "orderItems": null,
+      "results": []
+    }
+  }
+}

@@ -1,7 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
+import Image from "next/image";
 import type { Player } from "@/lib/apa/schemas";
 import { CueBall, PoolBall } from "@/components/brand/PoolBall";
 import { cn } from "@/lib/utils";
@@ -17,12 +15,7 @@ export function PlayerCard({ player, index = 0 }: { player: Player; index?: numb
     .toUpperCase();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.4, delay: index * 0.04 }}
-    >
+    <div className="fade-in-up" style={{ animationDelay: `${index * 40}ms` }}>
       <Link
         href={`/roster/${player.id}`}
         className="group surface surface-hover relative block overflow-hidden p-5 transition-all"
@@ -34,10 +27,20 @@ export function PlayerCard({ player, index = 0 }: { player: Player; index?: numb
         <div className="relative flex items-center gap-4">
           <div
             className={cn(
-              "flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-felt-deep)] text-lg font-semibold tracking-wider text-[var(--color-cream)]",
+              "relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-felt-deep)] text-lg font-semibold tracking-wider text-[var(--color-cream)]",
             )}
           >
-            {initials || "?"}
+            {player.profileImage ? (
+              <Image
+                src={player.profileImage}
+                alt={player.name}
+                fill
+                sizes="56px"
+                className="object-cover"
+              />
+            ) : (
+              initials || "?"
+            )}
           </div>
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-brass)]">
@@ -49,8 +52,26 @@ export function PlayerCard({ player, index = 0 }: { player: Player; index?: numb
           </div>
         </div>
 
-        <div className="relative mt-5 flex items-end justify-between">
-          <span className="text-xs text-[var(--fg-dim)]">View profile →</span>
+        <div className="relative mt-5 flex items-end justify-between gap-3">
+          {player.stats?.winPct !== undefined &&
+          player.stats?.matchesPlayed ? (
+            <div className="text-xs text-[var(--fg-dim)]">
+              <span className="font-semibold text-[var(--color-cream)]">
+                {player.stats.wins ?? 0}
+                <span className="text-[var(--fg-dim)]">/</span>
+                {player.stats.matchesPlayed}
+              </span>{" "}
+              · {player.stats.winPct}%
+              {player.stats.points !== undefined && player.stats.points > 0 && (
+                <>
+                  {" "}
+                  · {player.stats.points}pt
+                </>
+              )}
+            </div>
+          ) : (
+            <span className="text-xs text-[var(--fg-dim)]">View profile →</span>
+          )}
           {skill !== null && (
             <span className="rounded-full border border-[var(--border)] bg-[var(--bg-soft)] px-2.5 py-1 text-[11px] font-semibold tracking-wider text-[var(--color-brass-bright)]">
               SL {skill}
@@ -58,6 +79,6 @@ export function PlayerCard({ player, index = 0 }: { player: Player; index?: numb
           )}
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

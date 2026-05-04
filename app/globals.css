@@ -17,6 +17,8 @@
   --color-six-ball: #1f6e3d;
   --color-pop: #c8362f;
   --color-pop-bright: #e85248;
+  --color-tie: #e0a82e;
+  --color-tie-bright: #f4c453;
 
   /* Typography */
   --font-display: "Bebas Neue", "Oswald", system-ui, sans-serif;
@@ -28,7 +30,7 @@
   --shadow-felt: 0 30px 80px -30px rgba(20, 61, 44, 0.7);
 }
 
-/* Light theme overrides via [data-theme="light"] on <html> (managed by next-themes) */
+/* Single dark theme — light mode intentionally removed. */
 :root {
   color-scheme: dark;
   --bg: var(--color-ink);
@@ -38,17 +40,6 @@
   --fg-dim: var(--color-cream-dim);
   --border: rgba(201, 162, 74, 0.18);
   --border-strong: rgba(201, 162, 74, 0.45);
-}
-
-[data-theme="light"] {
-  color-scheme: light;
-  --bg: #f8f3e3;
-  --bg-soft: #efe7cf;
-  --bg-card: #ffffff;
-  --fg: #0a2a20;
-  --fg-dim: #4a5a4f;
-  --border: rgba(20, 61, 44, 0.18);
-  --border-strong: rgba(20, 61, 44, 0.4);
 }
 
 html,
@@ -66,12 +57,6 @@ body {
     radial-gradient(800px 500px at -10% 90%, rgba(201, 162, 74, 0.1), transparent 60%);
   background-attachment: fixed;
   min-height: 100dvh;
-}
-
-[data-theme="light"] body {
-  background-image:
-    radial-gradient(1200px 600px at 80% -10%, rgba(46, 139, 87, 0.25), transparent 60%),
-    radial-gradient(800px 500px at -10% 90%, rgba(201, 162, 74, 0.18), transparent 60%);
 }
 
 ::selection {
@@ -141,6 +126,62 @@ body {
 }
 .animate-spin-slow {
   animation: spin-slow 2.4s linear infinite;
+}
+
+/* CSS-only entry animations (replaces framer-motion's whileInView staggering
+ * for cards / hero so we can render them as server components and skip the
+ * client-side animation library). Drive stagger with inline `animation-delay`. */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes hero-zoom {
+  from { opacity: 0; transform: scale(0.92) rotate(-3deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+.fade-in-up {
+  opacity: 0;
+  animation: fade-in-up 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+.fade-in {
+  opacity: 0;
+  animation: fade-in 0.6s ease-out forwards;
+}
+.hero-zoom {
+  opacity: 0;
+  animation: hero-zoom 0.85s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+@keyframes float-y {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(0, -10px, 0) rotate(6deg); }
+}
+@keyframes float-y-reverse {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(0, 14px, 0) rotate(-8deg); }
+}
+.float-y       { animation: float-y       6s ease-in-out infinite; }
+.float-y-rev   { animation: float-y-reverse 7.5s ease-in-out infinite; }
+
+/* Signature interaction: a gentle 8-ball roll on hover. Used by the home
+ * Hero logo and the SiteHeader logo mark — wherever the brand mark sits. */
+@keyframes brand-roll {
+  0%   { transform: rotate(0deg); }
+  35%  { transform: rotate(-22deg); }
+  65%  { transform: rotate(22deg); }
+  100% { transform: rotate(0deg); }
+}
+.hover-roll {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+.hover-roll:hover,
+a:hover .hover-roll,
+button:hover .hover-roll {
+  animation: brand-roll 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Pulsing live dot */

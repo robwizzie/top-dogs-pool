@@ -1,8 +1,6 @@
-import { unstable_cache } from "next/cache";
-import { APA_REVALIDATE_SECONDS } from "@/lib/config";
-
-const UA =
-  "Mozilla/5.0 (compatible; TopDogsPool/1.0; +https://github.com/robwizzie/top-dogs-pool)";
+import { readFile, stat } from "node:fs/promises";
+import { resolve } from "node:path";
+import { ApaSnapshot } from "./schemas";
 
 export class ApaFetchError extends Error {
   constructor(message: string, public status?: number) {
@@ -11,34 +9,49 @@ export class ApaFetchError extends Error {
   }
 }
 
-async function rawFetch(url: string, attempt = 0): Promise<string> {
+const SNAPSHOT_PATH = resolve(process.cwd(), "data/apa.json");
+
+const EMPTY_SNAPSHOT: ApaSnapshot = {
+  lastUpdated: "1970-01-01T00:00:00.000Z",
+  teamId: 0,
+  currentSession: null,
+  sessions: [],
+  team: {
+    name: "Top Dogs",
+    format: "8-ball",
+    record: { wins: 0, losses: 0 },
+    upcomingMatch: null,
+    recentMatches: [],
+  },
+  roster: [],
+  schedule: [],
+  standings: [],
+  matches: {},
+  players: {},
+  leaderboards: {},
+  sessionRosters: {},
+  sessionStandings: {},
+};
+
+let cached: { mtime: number; data: ApaSnapshot } | null = null;
+
+/**
+ * Load data/apa.json. Cached in-process by mtime — Next.js may call this
+ * many times per render and the file rarely changes.
+ */
+export async function loadSnapshot(): Promise<ApaSnapshot> {
   try {
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent": UA,
-        Accept: "text/html,application/xhtml+xml",
-        "Accept-Language": "en-US,en;q=0.9",
-      },
-      next: { revalidate: APA_REVALIDATE_SECONDS, tags: ["apa"] },
-    });
-    if (!res.ok) {
-      throw new ApaFetchError(`APA ${url} → ${res.status}`, res.status);
-    }
-    return await res.text();
+    const s = await stat(SNAPSHOT_PATH);
+    if (cached && cached.mtime === s.mtimeMs) return cached.data;
+    const raw = await readFile(SNAPSHOT_PATH, "utf8");
+    const parsed = ApaSnapshot.parse(JSON.parse(raw));
+    cached = { mtime: s.mtimeMs, data: parsed };
+    return parsed;
   } catch (err) {
-    if (attempt < 2) {
-      await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
-      return rawFetch(url, attempt + 1);
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return EMPTY_SNAPSHOT;
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[apa] failed to load snapshot:", (err as Error).message);
     }
-    throw err instanceof ApaFetchError
-      ? err
-      : new ApaFetchError(`Network error fetching ${url}: ${(err as Error).message}`);
+    return EMPTY_SNAPSHOT;
   }
 }
-
-/** Cached HTML fetcher. Pages depending on this will revalidate hourly. */
-export const fetchApaHtml = unstable_cache(
-  async (url: string) => rawFetch(url),
-  ["apa-html-v1"],
-  { revalidate: APA_REVALIDATE_SECONDS, tags: ["apa"] },
-);

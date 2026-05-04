@@ -1,0 +1,338 @@
+{
+  "fetchedAt": "2026-05-02T22:12:01.932Z",
+  "data": {
+    "match": {
+      "id": 50516124,
+      "isFinalized": false,
+      "isTournament": false,
+      "tableNumber": null,
+      "division": {
+        "id": 420217,
+        "electronicScoringEnabled": true,
+        "__typename": "Division",
+        "scheduleInEdit": false,
+        "type": "EIGHT"
+      },
+      "league": {
+        "id": 890,
+        "esEnabled": true,
+        "__typename": "League",
+        "name": "APA of South Jersey",
+        "currentSessionId": 138,
+        "isElectronicPaymentsEnabled": false,
+        "country": {
+          "id": 1,
+          "__typename": "Country"
+        }
+      },
+      "__typename": "Match",
+      "type": "EIGHT",
+      "startTime": "2026-05-07T19:30:00-04:00",
+      "week": 18,
+      "isBye": false,
+      "isMine": false,
+      "isScored": false,
+      "scoresheet": null,
+      "isPaid": null,
+      "timeZone": {
+        "id": "169",
+        "name": "America/New_York",
+        "__typename": "TimeZone"
+      },
+      "location": {
+        "id": 93107,
+        "phone": "+18566679875",
+        "name": "25 Club",
+        "address": {
+          "id": 28715,
+          "name": "25 Club",
+          "address1": "60 Rudderow St.",
+          "address2": "",
+          "city": "Maple Shade",
+          "zip": "08052",
+          "latitude": 39.94445959999999,
+          "longitude": -74.9908657,
+          "__typename": "Address"
+        },
+        "__typename": "HostLocation"
+      },
+      "home": {
+        "id": 12894686,
+        "name": "RICO Suave",
+        "number": "06906",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420217,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91261679,
+            "memberNumber": "08204998",
+            "displayName": "Mike Curran",
+            "matchesWon": 9,
+            "matchesPlayed": 16,
+            "pa": 0.4375,
+            "ppm": 1.3125,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2805804,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261674,
+            "memberNumber": "08206283",
+            "displayName": "Jason Klawitter",
+            "matchesWon": 4,
+            "matchesPlayed": 11,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2130232,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261676,
+            "memberNumber": "08220209",
+            "displayName": "Ricardo Pearce",
+            "matchesWon": 6,
+            "matchesPlayed": 8,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 881362,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261673,
+            "memberNumber": "08221183",
+            "displayName": "Matthew Cafone",
+            "matchesWon": 6,
+            "matchesPlayed": 11,
+            "pa": 0.48484848484848486,
+            "ppm": 1.4545454545454546,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 949057,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261678,
+            "memberNumber": "08220919",
+            "displayName": "Matthew Criger",
+            "matchesWon": 6,
+            "matchesPlayed": 12,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 881971,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261677,
+            "memberNumber": "08220567",
+            "displayName": "Carlo Leto",
+            "matchesWon": 4,
+            "matchesPlayed": 8,
+            "pa": 0.4583333333333333,
+            "ppm": 1.375,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 881674,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91766360,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "matchesWon": 9,
+            "matchesPlayed": 11,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 12894690,
+        "name": "Aces & Eights",
+        "number": "06910",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420217,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91261708,
+            "memberNumber": "08241471",
+            "displayName": "Ben Wilson Jr",
+            "matchesWon": 5,
+            "matchesPlayed": 7,
+            "pa": 0.5238095238095238,
+            "ppm": 1.5714285714285714,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1552478,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261705,
+            "memberNumber": "08229673",
+            "displayName": "Tracee Davis",
+            "matchesWon": 3,
+            "matchesPlayed": 8,
+            "pa": 0.375,
+            "ppm": 1.125,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1221238,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261707,
+            "memberNumber": "08241838",
+            "displayName": "Idris Douglas",
+            "matchesWon": 3,
+            "matchesPlayed": 9,
+            "pa": 0.3703703703703704,
+            "ppm": 1.1111111111111112,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1579520,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261712,
+            "memberNumber": "08213106",
+            "displayName": "Myran Jones Sr",
+            "matchesWon": 6,
+            "matchesPlayed": 13,
+            "pa": 0.3846153846153846,
+            "ppm": 1.1538461538461537,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3286070,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261711,
+            "memberNumber": "08208958",
+            "displayName": "Adeyemi Oseni",
+            "matchesWon": 7,
+            "matchesPlayed": 14,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3250736,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261710,
+            "memberNumber": "08211709",
+            "displayName": "Marques Washington Sr",
+            "matchesWon": 8,
+            "matchesPlayed": 13,
+            "pa": 0.5128205128205129,
+            "ppm": 1.5384615384615385,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3038274,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261709,
+            "memberNumber": "08228807",
+            "displayName": "Deonne Turner",
+            "matchesWon": 3,
+            "matchesPlayed": 7,
+            "pa": 0.38095238095238093,
+            "ppm": 1.1428571428571428,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1150665,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261706,
+            "memberNumber": "08242590",
+            "displayName": "Kenny Benson",
+            "matchesWon": 7,
+            "matchesPlayed": 13,
+            "pa": 0.4615384615384615,
+            "ppm": 1.3846153846153846,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1644873,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "session": {
+        "id": 138,
+        "name": "Spring 2026",
+        "year": 2026,
+        "__typename": "Session"
+      },
+      "fees": {
+        "amount": 45,
+        "tax": 0,
+        "total": 45,
+        "__typename": "Fees"
+      },
+      "orderItems": null,
+      "results": []
+    }
+  }
+}
