@@ -32,6 +32,8 @@ import {
   reliabilityRanking,
   suggestedLineup,
   teamSummary,
+  calibrationBacktest,
+  opponentScoutingReport,
   throwAdvisorOpponents,
   venueRecords,
   vsOpponents,
@@ -41,6 +43,8 @@ import {
 import { CounterPickWidget } from "@/components/research/CounterPickWidget";
 import { PlayerComparison } from "@/components/research/PlayerComparison";
 import { ThrowAdvisor } from "@/components/research/ThrowAdvisor";
+import { CalibrationView } from "@/components/research/CalibrationView";
+import { ScoutingReport } from "@/components/research/ScoutingReport";
 import type { CounterPickRow } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
@@ -226,6 +230,27 @@ export default async function ResearchPage({ searchParams }: Props) {
   const nextScheduledMatch = snap.schedule
     .filter((m) => m.status === "upcoming" && m.opponent !== "BYE")
     .sort((a, b) => +new Date(a.date) - +new Date(b.date))[0];
+  // Calibration backtest — replays the engine on every historical match
+  // using only-prior-data, to measure how accurate our predictions are.
+  const calibration = calibrationBacktest(matches, roster);
+  // Pre-match scouting report on the upcoming opponent — enriched with
+  // opp-player profiles when we've scraped them.
+  const scoutingReport = nextScheduledMatch
+    ? opponentScoutingReport(
+        nextScheduledMatch.opponent,
+        matches,
+        roster,
+        currentSession?.id,
+        snap.opponentPlayers,
+      )
+    : null;
+  // Identify the opp team id (if any) so the scouting report can deep-link
+  // to the team page.
+  const scoutingTeamId = scoutingReport
+    ? Object.values(snap.opponentTeams).find(
+        (t) => t.name.trim().toLowerCase() === scoutingReport.team.trim().toLowerCase(),
+      )?.id ?? null
+    : null;
 
   // Sort lineups various ways for "best/worst" sections.
   const lineupsByWins = [...lineups].sort((a, b) =>
@@ -258,7 +283,7 @@ export default async function ResearchPage({ searchParams }: Props) {
           counts={{
             overview: 4,
             throw: 1,
-            briefing: briefing ? 5 : 4,
+            briefing: (briefing ? 5 : 4) + (scoutingReport ? 1 : 0),
             lineups: 3,
             players: 7,
             opponents: 3,
@@ -283,6 +308,16 @@ export default async function ResearchPage({ searchParams }: Props) {
           />
         </Section>
 
+        <Section
+          title="Calibration check"
+          subtitle="Replays the recommendation engine over every past individual match using only-prior-data. Measures how accurate the win-probability predictions actually are: Brier score (lower = better), reliability bins (do 70%-predictions actually win 70% of the time?), and a confusion-style breakdown. This is a trust-meter — verifies the numbers you see during the night are honest."
+          anchor="calibration"
+          forTab="throw"
+          activeTab={tab}
+        >
+          <CalibrationView calibration={calibration} />
+        </Section>
+
         {briefing && (
           <Section
             title="Next-Match Briefing"
@@ -292,6 +327,18 @@ export default async function ResearchPage({ searchParams }: Props) {
             activeTab={tab}
           >
             <NextMatchBriefingView briefing={briefing} />
+          </Section>
+        )}
+
+        {scoutingReport && (
+          <Section
+            title="Scouting report"
+            subtitle={`In-depth read on ${scoutingReport.team} from every match they've played us — team record this session and lifetime, per-player form (hot/cold), preferred slots, suspected real skill levels for anyone playing above their stated SL, and our top counter from the roster.`}
+            anchor="scouting"
+            forTab="briefing"
+            activeTab={tab}
+          >
+            <ScoutingReport report={scoutingReport} teamId={scoutingTeamId} />
           </Section>
         )}
 

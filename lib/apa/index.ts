@@ -106,6 +106,34 @@ export async function getPlayerProfile(
 }
 
 /**
+ * Player profile for ANY player — ours or an opponent we've scraped data
+ * for. Falls through opp profiles if not in our roster. Used by the
+ * `/players/[id]` route and click-throughs from the scouting report.
+ */
+export async function getAnyPlayerProfile(
+  id: string,
+): Promise<{ profile: PlayerProfile | null; isOpponent: boolean }> {
+  const snap = await loadSnapshot();
+  const ours = snap.players[id];
+  if (ours) return { profile: ours, isOpponent: false };
+  const opp = snap.opponentPlayers[id];
+  if (opp) return { profile: opp, isOpponent: true };
+  return { profile: null, isOpponent: false };
+}
+
+/** Opponent team profile — scraped data for a specific opp team. */
+export async function getOpponentTeam(id: string | number) {
+  const snap = await loadSnapshot();
+  return snap.opponentTeams[String(id)] ?? null;
+}
+
+/** All opponent teams we have scraped data for. */
+export async function getOpponentTeams() {
+  const snap = await loadSnapshot();
+  return Object.values(snap.opponentTeams);
+}
+
+/**
  * Backwards-compatible getter used by the existing player detail page.
  * Combines current-session roster info with career stats from the player
  * profile (when available).

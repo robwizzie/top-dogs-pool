@@ -15,6 +15,51 @@ import type { Match, Player } from "@/lib/apa/schemas";
 import { winsRequired } from "@/lib/apa/race";
 import { cn } from "@/lib/utils";
 
+/**
+ * APA team-match points for a single completed individual match.
+ *   - Sweep (loser scored 0):                       3-0
+ *   - Mini-sweep (loser ≥1 but didn't reach hill):  2-0
+ *   - Hill-hill (loser at hill):                    2-1
+ * Symmetric for losses. Falls back to 2-0/0-2 if game scores aren't recorded.
+ */
+function teamMatchPointsUI(t: ThrowMatchLog): { ourPts: number; theirPts: number } {
+  if (t.outcome === "pending") return { ourPts: 0, theirPts: 0 };
+  if (
+    typeof t.ourGames !== "number" ||
+    typeof t.theirGames !== "number" ||
+    t.ourSkillLevel == null ||
+    t.oppSkillLevel == null
+  ) {
+    return t.outcome === "W"
+      ? { ourPts: 2, theirPts: 0 }
+      : { ourPts: 0, theirPts: 2 };
+  }
+  const ourRace = winsRequired(t.ourSkillLevel, t.oppSkillLevel);
+  const theirRace = winsRequired(t.oppSkillLevel, t.ourSkillLevel);
+  const ourHill = ourRace - 1;
+  const theirHill = theirRace - 1;
+  if (t.outcome === "W") {
+    if (t.theirGames === 0) return { ourPts: 3, theirPts: 0 };
+    if (t.theirGames >= theirHill) return { ourPts: 2, theirPts: 1 };
+    return { ourPts: 2, theirPts: 0 };
+  }
+  if (t.ourGames === 0) return { ourPts: 0, theirPts: 3 };
+  if (t.ourGames >= ourHill) return { ourPts: 1, theirPts: 2 };
+  return { ourPts: 0, theirPts: 2 };
+}
+
+/** Sum team-match points across the throw log. */
+function tallyTeamScoreUI(log: ThrowMatchLog[]): { our: number; their: number } {
+  let our = 0;
+  let their = 0;
+  for (const t of log) {
+    const p = teamMatchPointsUI(t);
+    our += p.ourPts;
+    their += p.theirPts;
+  }
+  return { our, their };
+}
+
 type Props = {
   /** Active roster (visible only). */
   roster: Player[];
@@ -299,11 +344,18 @@ export function ThrowAdvisor({
         currentPosition: live.position,
         availablePlayerIds: available,
         log,
+        // Adversarial opener: when we throw first, the opponent counter-picks.
+        // Pass the opponent's roster so the engine can find each candidate's
+        // worst-case counter and rank by minimax.
+        opponentRoster: knownPutups.map((p) => ({
+          name: p.name,
+          latestSL: p.latestSL,
+        })),
       },
       matches,
       visibleRoster,
     );
-  }, [phase, step, opponentTeam, location, live.position, available, log, matches, visibleRoster]);
+  }, [phase, step, opponentTeam, location, live.position, available, log, matches, visibleRoster, knownPutups]);
 
   /** Counter (informed) recommendation — for when they put up first. */
   const counterResult = useMemo<ThrowAdvisorResult | null>(() => {
@@ -390,6 +442,8 @@ export function ThrowAdvisor({
         opponentTeam={opponentTeam}
         activeResult={counterResult ?? openerResult ?? null}
       />
+
+      <Legend />
 
       {step === "pick-ours" && openerResult && (
         <PickOursStep
@@ -675,32 +729,54 @@ function NightHeader({
   /** Latest recommendation result, when one is computed. Drives night win prob + bench display. */
   activeResult: ThrowAdvisorResult | null;
 }) {
-  const ourScore = log.filter((t) => t.outcome === "W").length;
-  const theirScore = log.filter((t) => t.outcome === "L").length;
+  // Team-match points (per APA 8-ball: sweep=3, mini=2, hill-hill=2-1).
+  const teamScore = tallyTeamScoreUI(log);
+  const ourScore = teamScore.our;
+  const theirScore = teamScore.their;
   const usedSL = log.reduce((s, t) => s + (t.ourSkillLevel ?? 0), 0);
   const remainingSL = 23 - usedSL;
   const remainingSlots = 5 - log.length;
-  // First-to-3 individual matches clinches the night.
-  const usToClinch = Math.max(0, 3 - ourScore);
-  const themToClinch = Math.max(0, 3 - theirScore);
+  // Each remaining slot can award up to 3 points to either side.
+  const maxRemainingForSide = remainingSlots * 3;
+  // Already clinched if our lead exceeds opp's max possible remaining points.
+  const clinched = ourScore - theirScore > maxRemainingForSide;
+  const lost = theirScore - ourScore > maxRemainingForSide;
+  // Points we still need to be guaranteed to clinch (ourScore > theirScore + maxRemaining).
+  // i.e. need ourFinal > theirFinalIfTheyWinAllOut. But since both sides accumulate,
+  // simpler: we need to finish with more total points than them. The "must-pick-up" amount
+  // we still need to mathematically guarantee a win = (theirScore + 3*remainingSlots + 1) − ourScore.
+  const pointsToClinch = Math.max(
+    0,
+    theirScore + maxRemainingForSide + 1 - ourScore,
+  );
+  const pointsForOppToClinch = Math.max(
+    0,
+    ourScore + maxRemainingForSide + 1 - theirScore,
+  );
   const ourGamesTotal = log.reduce((s, t) => s + (t.ourGames ?? 0), 0);
   const theirGamesTotal = log.reduce((s, t) => s + (t.theirGames ?? 0), 0);
   const haveGameScores = log.some((t) => typeof t.ourGames === "number");
-  // Status callout — what we need.
   let statusText = "";
-  if (ourScore >= 3) statusText = "🐕 Clinched!";
-  else if (theirScore >= 3) statusText = "Match lost";
-  else if (usToClinch === 1 && themToClinch === 1)
-    statusText = "Win-or-go-home — both 1 win away";
-  else if (usToClinch <= themToClinch)
-    statusText = `${usToClinch} more to clinch`;
-  else statusText = `${themToClinch} away · we need ${usToClinch}`;
+  if (clinched) statusText = "🐕 Clinched!";
+  else if (lost) statusText = "Match lost";
+  else if (remainingSlots === 0) {
+    statusText =
+      ourScore > theirScore
+        ? "Match won 🐕"
+        : ourScore < theirScore
+          ? "Match lost"
+          : "Tied";
+  } else if (pointsToClinch <= 3) {
+    statusText = `${pointsToClinch} pt${pointsToClinch === 1 ? "" : "s"} to clinch`;
+  } else {
+    statusText = `Need ${pointsToClinch} pts (they need ${pointsForOppToClinch})`;
+  }
   const statusTone =
-    ourScore >= 3
+    clinched
       ? "text-[var(--color-felt-bright)]"
-      : theirScore >= 3
+      : lost
         ? "text-[var(--color-pop-bright)]"
-        : usToClinch <= themToClinch
+        : ourScore >= theirScore
           ? "text-[var(--color-felt-bright)]"
           : "text-[var(--color-pop-bright)]";
 
@@ -775,10 +851,13 @@ function NightHeader({
         </div>
       </div>
 
-      {/* Clinch progress — race-to-3 visualization */}
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <ClinchPips count={ourScore} accent="felt" />
-        <ClinchPips count={theirScore} accent="pop" alignRight />
+      {/* Team match points bar — out of 15 max (5 slots × 3 max) */}
+      <div className="mt-3">
+        <PointsProgressBar
+          our={ourScore}
+          their={theirScore}
+          slotsRemaining={remainingSlots}
+        />
       </div>
 
       {/* Night win probability + opponent's bench */}
@@ -870,6 +949,7 @@ function PickOursStep({
           rows={result.candidates}
           topPickId={top?.playerId}
           onPick={onPick}
+          recommendedNightProb={result.context.nightWinProbability}
         />
       )}
       {top?.saveForLater && (
@@ -981,6 +1061,11 @@ function EnterTheirsStep({
                     <div className="truncate font-semibold">{p.name}</div>
                     <div className="text-xs text-[var(--fg-dim)]">
                       {p.latestSL ? `SL${p.latestSL}` : "SL unknown"}
+                      {p.preferredPosition && (
+                        <span className="ml-1.5 opacity-80">
+                          · usually M{p.preferredPosition}
+                        </span>
+                      )}
                       {used && " · already thrown"}
                     </div>
                   </button>
@@ -1074,6 +1159,7 @@ function PickCounterStep({
         onPick={onPick}
         opponentName={live.oppName}
         opponentSL={live.oppSL}
+        recommendedNightProb={result.context.nightWinProbability}
       />
       {top?.saveForLater && (
         <SaveForLaterCallout
@@ -1573,8 +1659,8 @@ function RecommendationCard({
           </p>
           <ul className="space-y-1 text-sm">
             {top.reasoning.map((r, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
+              <li key={i} className="flex gap-2 leading-relaxed">
+                <span aria-hidden className="shrink-0 select-none text-[var(--color-brass-bright)]">▸</span>
                 <span>{r}</span>
               </li>
             ))}
@@ -1634,6 +1720,7 @@ function CandidateList({
   onPick,
   opponentName,
   opponentSL,
+  recommendedNightProb,
 }: {
   heading: string;
   rows: ThrowCandidate[];
@@ -1641,6 +1728,8 @@ function CandidateList({
   onPick: (c: ThrowCandidate) => void;
   opponentName?: string;
   opponentSL?: number | null;
+  /** Recommended pick's night-win-prob — passed to rows for what-if delta. */
+  recommendedNightProb?: number;
 }) {
   return (
     <div>
@@ -1656,9 +1745,51 @@ function CandidateList({
             onPick={() => onPick(c)}
             opponentName={opponentName}
             opponentSL={opponentSL}
+            recommendedNightProb={recommendedNightProb}
           />
         ))}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * What-if delta strip — shown in expanded non-top candidate rows.
+ * Displays "If you throw X here: night prob 70% (−4 vs the recommended pick)".
+ * Helps the captain make an informed override decision.
+ */
+function WhatIfStrip({
+  ifPicked,
+  recommended,
+  candidateName,
+}: {
+  ifPicked: number;
+  recommended: number;
+  candidateName: string;
+}) {
+  const delta = Math.round((ifPicked - recommended) * 10) / 10;
+  const tone =
+    delta >= -1
+      ? "text-[var(--color-felt-bright)]"
+      : delta >= -5
+        ? "text-[var(--color-brass-bright)]"
+        : "text-[var(--color-pop-bright)]";
+  const sign = delta > 0 ? "+" : "";
+  return (
+    <div className="mt-3 rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/40 px-3 py-2">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+        What if you throw {candidateName.split(" ")[0]}?
+      </div>
+      <div className="mt-1 flex items-baseline gap-2 text-sm">
+        <span className="font-[family-name:var(--font-display)] text-2xl tabular-nums">
+          {ifPicked.toFixed(1)}%
+        </span>
+        <span className={cn("text-xs font-semibold tabular-nums", tone)}>
+          {sign}
+          {delta.toFixed(1)} vs rec
+        </span>
+        <span className="text-[10px] text-[var(--fg-dim)]">night prob</span>
+      </div>
     </div>
   );
 }
@@ -1669,12 +1800,15 @@ function CandidateRow({
   onPick,
   opponentName,
   opponentSL,
+  recommendedNightProb,
 }: {
   candidate: ThrowCandidate;
   isTop: boolean;
   onPick: () => void;
   opponentName?: string;
   opponentSL?: number | null;
+  /** Recommended pick's night-win-prob, for the "what-if" delta. */
+  recommendedNightProb?: number;
 }) {
   const [open, setOpen] = useState(false);
   const pct = Math.round(candidate.matchupScore);
@@ -1715,12 +1849,12 @@ function CandidateRow({
               <span className="text-xs text-[var(--fg-dim)]">SL{candidate.skillLevel}</span>
             )}
             <VerdictBadge verdict={candidate.verdict} />
-            {candidate.specialShotsRate >= 0.25 && (
+            {candidate.specialShotsRate >= 0.20 && (
               <span
-                title={`${(candidate.specialShotsRate * 100).toFixed(0)}% sweep+B&R+8oB rate per match`}
+                title={`Averages ${candidate.specialShotsRate.toFixed(2)} bonus leaderboard points per match (sweeps + mini-sweeps + B&R + 8-on-break)`}
                 className="rounded-full bg-[var(--color-brass)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]"
               >
-                ✨ {(candidate.specialShotsRate * 100).toFixed(0)}%
+                🧹 +{candidate.specialShotsRate.toFixed(1)} pts
               </span>
             )}
             {candidate.lastPlayedDaysAgo !== null && candidate.lastPlayedDaysAgo > 42 && (
@@ -1790,8 +1924,8 @@ function CandidateRow({
               {candidate.reasoning.length > 0 && (
                 <ul className="space-y-1">
                   {candidate.reasoning.map((r, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="mt-1 text-[var(--color-brass-bright)]">▸</span>
+                    <li key={i} className="flex gap-2 leading-relaxed">
+                      <span aria-hidden className="shrink-0 select-none text-[var(--color-brass-bright)]">▸</span>
                       <span>{r}</span>
                     </li>
                   ))}
@@ -1806,6 +1940,33 @@ function CandidateRow({
               )}
             </div>
           </div>
+
+          {/* What-if: how does picking THIS candidate change night-win-prob? */}
+          {!isTop && recommendedNightProb !== undefined && (
+            <WhatIfStrip
+              ifPicked={candidate.nightWinProbIfPicked}
+              recommended={recommendedNightProb}
+              candidateName={candidate.playerName}
+            />
+          )}
+
+          {candidate.currentStreak && candidate.currentStreak.length >= 3 && (
+            <p className="mt-2 text-xs text-[var(--fg-dim)]">
+              {candidate.currentStreak.type === "W" ? "🔥" : "❄️"}{" "}
+              <span
+                className={cn(
+                  "font-semibold",
+                  candidate.currentStreak.type === "W"
+                    ? "text-[var(--color-felt-bright)]"
+                    : "text-[var(--color-pop-bright)]",
+                )}
+              >
+                {candidate.currentStreak.length}{" "}
+                {candidate.currentStreak.type === "W" ? "W" : "L"} streak
+              </span>{" "}
+              — recent run of consecutive {candidate.currentStreak.type === "W" ? "wins" : "losses"}.
+            </p>
+          )}
 
           <LookaheadStrip
             teamValue={candidate.components.lookahead}
@@ -1864,8 +2025,11 @@ function DoneScreen({
   onRewind: (position: number) => void;
   onReset: () => void;
 }) {
-  const ourScore = log.filter((t) => t.outcome === "W").length;
-  const theirScore = log.filter((t) => t.outcome === "L").length;
+  const teamScore = tallyTeamScoreUI(log);
+  const ourScore = teamScore.our;
+  const theirScore = teamScore.their;
+  const ourMatchWins = log.filter((t) => t.outcome === "W").length;
+  const theirMatchWins = log.filter((t) => t.outcome === "L").length;
   const won = ourScore > theirScore;
   const [copied, setCopied] = useState(false);
 
@@ -1901,7 +2065,8 @@ function DoneScreen({
     const haveGameScores = log.some((t) => typeof t.ourGames === "number");
     const lines: string[] = [
       `🎱 Top Dogs ${ourScore}–${theirScore} ${opponentTeam}${won ? " ✅" : theirScore > ourScore ? " ❌" : ""}`,
-      ...(haveGameScores ? [`Games: ${ourGamesTotal}–${theirGamesTotal}`] : []),
+      `Individual matches: ${ourMatchWins}–${theirMatchWins}` +
+        (haveGameScores ? ` · Total games: ${ourGamesTotal}–${theirGamesTotal}` : ""),
       "",
       ...log.map((t) => {
         const player = roster.find((p) => p.id === t.ourPlayerId);
@@ -1912,13 +2077,14 @@ function DoneScreen({
           typeof t.ourGames === "number" && typeof t.theirGames === "number"
             ? ` ${t.ourGames}–${t.theirGames}`
             : "";
-        // Sweep tag for the chat recap.
+        const pts = teamMatchPointsUI(t);
+        const ptsStr = ` [${pts.ourPts}-${pts.theirPts}]`;
         let tag = "";
         if (typeof t.ourGames === "number" && typeof t.theirGames === "number") {
           if (t.outcome === "W" && t.theirGames === 0) tag = " 🧹";
           else if (t.outcome === "L" && t.ourGames === 0) tag = " 🧹❌";
         }
-        return `M${t.position}: ${us} vs ${them} — ${outcome}${score}${tag}`;
+        return `M${t.position}: ${us} vs ${them} — ${outcome}${score}${ptsStr}${tag}`;
       }),
     ];
     const text = lines.join("\n");
@@ -1949,7 +2115,13 @@ function DoneScreen({
           {ourScore}–{theirScore}
         </p>
         <p className="mt-1 text-[11px] uppercase tracking-[0.32em] text-[var(--fg-dim)]">
-          Individual matches
+          Team match points
+        </p>
+        <p className="mt-1 text-sm text-[var(--fg-dim)]">
+          Individual matches:{" "}
+          <span className="font-semibold text-[var(--fg)]">
+            {ourMatchWins}–{theirMatchWins}
+          </span>
         </p>
         {(() => {
           const ogt = log.reduce((s, t) => s + (t.ourGames ?? 0), 0);
@@ -1957,7 +2129,7 @@ function DoneScreen({
           const has = log.some((t) => typeof t.ourGames === "number");
           if (!has) return null;
           return (
-            <p className="mt-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums text-[var(--fg-dim)]">
+            <p className="mt-2 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums text-[var(--fg-dim)]">
               {ogt}<span className="mx-1.5">–</span>{tgt}
               <span className="ml-2 text-[11px] uppercase tracking-[0.32em]">total games</span>
             </p>
@@ -2065,8 +2237,20 @@ function ThrowsSoFar({
                         ? "bg-[var(--color-felt)]/20 text-[var(--color-felt-bright)]"
                         : "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]",
                     )}
+                    title={(() => {
+                      const pts = teamMatchPointsUI(t);
+                      return `Awarded ${pts.ourPts}-${pts.theirPts} team points`;
+                    })()}
                   >
                     {t.ourGames}–{t.theirGames}
+                    {(() => {
+                      const pts = teamMatchPointsUI(t);
+                      return (
+                        <span className="ml-1.5 opacity-80">
+                          ({pts.ourPts}-{pts.theirPts} pts)
+                        </span>
+                      );
+                    })()}
                   </span>
                 )}
                 {scoreTag && (
@@ -2433,44 +2617,71 @@ function H2HHistory({
 }
 
 /**
- * Race-to-3 clinch pips. Three squares per side; filled ones = individual
- * matches won. Visualizes "how close are we to clinching?" at a glance.
+ * Team-match points progress bar.
+ *
+ * 15 total points are available across 5 individual matches (each awards
+ * 2 or 3 points: sweep 3-0, mini 2-0, hill-hill 2-1). The bar shows our
+ * earned points (green), their earned points (red), and the unawarded
+ * remainder. The clinch threshold sits at 8 (more than half), but the
+ * actual clinch math is "lead > opp's max remaining".
  */
-function ClinchPips({
-  count,
-  accent,
-  alignRight = false,
+function PointsProgressBar({
+  our,
+  their,
+  slotsRemaining,
 }: {
-  count: number;
-  accent: "felt" | "pop";
-  alignRight?: boolean;
+  our: number;
+  their: number;
+  slotsRemaining: number;
 }) {
-  const filledCls =
-    accent === "felt"
-      ? "bg-[var(--color-felt-bright)] border-[var(--color-felt-bright)]"
-      : "bg-[var(--color-pop-bright)] border-[var(--color-pop-bright)]";
+  const MAX = 15;
+  const ourPct = (our / MAX) * 100;
+  const theirPct = (their / MAX) * 100;
+  const totalAwarded = our + their;
+  const unawardedPct = ((MAX - totalAwarded) / MAX) * 100;
+  const clinchPct = (8 / MAX) * 100; // 8 = more than half
   return (
-    <div className={cn("flex items-center gap-1", alignRight && "justify-end")}>
-      <span
-        className={cn(
-          "text-[9px] font-semibold uppercase tracking-[0.2em]",
-          accent === "felt" ? "text-[var(--color-felt-bright)]" : "text-[var(--color-pop-bright)]",
-        )}
+    <div>
+      <div className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+        <span>
+          <span className="font-bold text-[var(--color-felt-bright)]">Us {our}</span>
+          <span className="mx-2">·</span>
+          <span className="font-bold text-[var(--color-pop-bright)]">Them {their}</span>
+        </span>
+        <span className="opacity-70">
+          {slotsRemaining > 0 && `${slotsRemaining * 3} pts available`}
+        </span>
+      </div>
+      <div
+        className="relative mt-1 flex h-3 w-full overflow-hidden rounded-full bg-[var(--bg-soft)]"
+        role="img"
+        aria-label={`Team match score: ${our} to ${their} of ${MAX} points`}
       >
-        {accent === "felt" ? "Us" : "Them"}
-      </span>
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className={cn(
-            "h-2.5 w-5 rounded-sm border transition-colors",
-            i < count ? filledCls : "border-[var(--border)] bg-[var(--bg-soft)]",
-          )}
+        <div
+          className="bg-[var(--color-felt-bright)] transition-all duration-300"
+          style={{ width: `${ourPct}%` }}
         />
-      ))}
+        <div
+          className="bg-[var(--color-pop-bright)] transition-all duration-300"
+          style={{ width: `${theirPct}%` }}
+        />
+        <div className="bg-transparent" style={{ width: `${unawardedPct}%` }} />
+        {/* Clinch midpoint marker */}
+        <div
+          className="absolute top-0 h-full border-l border-dashed border-[var(--fg-dim)]/60"
+          style={{ left: `${clinchPct}%` }}
+          aria-label="clinch threshold"
+        />
+      </div>
+      <div className="mt-1 text-[9px] text-[var(--fg-dim)]">
+        Dashed line = 8 pts (more than half · usually clinches)
+      </div>
     </div>
   );
 }
+
+// (ClinchPips removed — replaced by PointsProgressBar after switching to
+// APA team-match points scoring.)
 
 /**
  * Mini horizontal probability bar — used in the candidate list rows for a
@@ -2483,6 +2694,110 @@ function ClinchPips({
  * always see "how good is our position right now" + "what's left on their
  * bench" at a glance.
  */
+/**
+ * Collapsed glossary explaining every metric the advisor surfaces. Sits in
+ * the header area so the captain can always click it open mid-night to
+ * remind themselves what a number means.
+ */
+function Legend() {
+  return (
+    <details className="surface text-sm">
+      <summary className="cursor-pointer list-none px-4 py-2.5">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+          ❓ What do these numbers mean?
+        </span>
+        <span className="ml-2 text-xs text-[var(--fg-dim)]">
+          tap to expand
+        </span>
+      </summary>
+      <div className="space-y-3 border-t border-[var(--border)] px-4 py-3 text-xs leading-relaxed text-[var(--fg-dim)]">
+        <LegendItem
+          icon="📊"
+          term="Win % (the donut gauge)"
+          desc="The probability our player wins this individual match. Built from H2H + vs-SL + form + slot fit + race-chart equity, blended Bayesian-style. The ±X% beneath is the 95% confidence band — wider when we have less data."
+        />
+        <LegendItem
+          icon="🌙"
+          term="Tonight (night win prob)"
+          desc="Probability we win the team match (more total points than them) given optimal play from here. Markov over remaining slots — recomputes after every result."
+        />
+        <LegendItem
+          icon="🔥"
+          term="Form"
+          desc="The player's win rate over their last 8 individual matches, recency-weighted (newer matches count more, 45-day half-life). Surfaced as 'Form 70%'."
+        />
+        <LegendItem
+          icon="💪"
+          term="Clutch"
+          desc="The player's W-L in TIGHT team-match states (score gap ≤ 1 — when the pressure is on). Some players step up under pressure, others fold. Only weighted into the recommendation when the current state is itself tight."
+        />
+        <LegendItem
+          icon="🧹"
+          term="Bonus pts (the 🧹 chip)"
+          desc="Average bonus leaderboard points per match. Sweep = 1, mini-sweep = 0.5, break-and-run = 1, 8-on-the-break = 1. A small ranking tiebreaker — when two candidates have similar win %, the special-shots producer climbs ahead."
+        />
+        <LegendItem
+          icon="🔥"
+          term="Streak (🔥 / ❄️)"
+          desc="Current consecutive run of wins or losses. Streaks ≥ 3 add a small log-odds nudge: a player on a 5-game heater is qualitatively above their form average."
+        />
+        <LegendItem
+          icon="💤"
+          term="Rusty"
+          desc="Player hasn't played in 6+ weeks. Their form data may be stale — factor that in."
+        />
+        <LegendItem
+          icon="🏁"
+          term="Race chart"
+          desc="APA 8-ball asymmetric race table. SL2 races to 2, SL7 races to 7 vs them — handicap for the lower SL. Race equity = their required wins ÷ (mine + theirs)."
+        />
+        <LegendItem
+          icon="🧠"
+          term="Lookahead"
+          desc="Lineup-wide team value if this candidate plays here. Greedy-pairs the rest of our roster to the rest of their bench by slot fit. Negative delta = picking them costs lineup value elsewhere."
+        />
+        <LegendItem
+          icon="💎"
+          term="Save for later"
+          desc="This player is the right call here, BUT a tougher-matched opponent is still on their bench. Holding them now means using them where they're most uniquely good."
+        />
+        <LegendItem
+          icon="🎯"
+          term="23-rule SL"
+          desc="APA caps any 5-player lineup at SL total ≤ 23. The header tracks how much budget you have left — picks that would overflow get demoted."
+        />
+        <LegendItem
+          icon="🏆"
+          term="Team match score (the big number)"
+          desc="Per APA: Sweep = 3-0. Mini-sweep (loser didn't reach hill) = 2-0. Hill-hill = 2-1. Total available = 15 points across 5 matches. More points than them at the end wins the team match."
+        />
+      </div>
+    </details>
+  );
+}
+
+function LegendItem({
+  icon,
+  term,
+  desc,
+}: {
+  icon: string;
+  term: string;
+  desc: string;
+}) {
+  return (
+    <div className="flex gap-3">
+      <span aria-hidden className="shrink-0 text-base leading-none">
+        {icon}
+      </span>
+      <div>
+        <div className="font-semibold text-[var(--fg)]">{term}</div>
+        <div className="text-[var(--fg-dim)]">{desc}</div>
+      </div>
+    </div>
+  );
+}
+
 function NightProbStrip({
   nightProb,
   ci,

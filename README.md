@@ -67,6 +67,7 @@ APA member portal (login required)
 | Past team         | once (frozen — sessions don't change)    |
 | Match scoresheet  | once `isFinalized`; otherwise every run  |
 | Member career     | weekly (configurable via `APA_MEMBER_TTL_DAYS`) |
+| Opponent teams    | every 5 days during their session (configurable via `APA_OPPONENT_TTL_DAYS`) — fetched for every team in our current-session schedule |
 
 ### Scripts
 
@@ -93,6 +94,7 @@ Captures every GraphQL request/response on the listed pages → `data/gql-captur
 | `APA_PASSWORD`              | yes               | APA member portal password                                 |
 | `APA_TEAM_URL`              | yes (default set) | Public APA team page URL (drives the team id)              |
 | `APA_MEMBER_TTL_DAYS`       | optional          | How often to re-fetch member career stats (default 7)      |
+| `APA_OPPONENT_TTL_DAYS`     | optional          | How often to re-fetch opponent team data (default 5)       |
 | `APA_MAX_PAST_SESSIONS`     | optional          | Cap past-team backfill (0 = unlimited, the default)        |
 | `APA_HEADFUL`               | optional          | `1` to show the browser during a scrape                    |
 | `YOUTUBE_API_KEY`           | optional          | Enables the Clips section + Hero highlight reel            |

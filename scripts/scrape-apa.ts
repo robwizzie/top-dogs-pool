@@ -40,6 +40,7 @@ import {
   leagueSlug,
   matchIdsFromTeam,
   memberIdsFromTeam,
+  opponentTeamIdsFromMatch,
   teamIdsFromMember,
   type DivisionCacheEntry,
   type MatchCacheEntry,
@@ -59,6 +60,9 @@ const HEADFUL = process.env.APA_HEADFUL === "1";
 const MEMBER_TTL =
   parseInt(process.env.APA_MEMBER_TTL_DAYS ?? "7", 10) * ONE_DAY;
 const MAX_PAST_SESSIONS = parseInt(process.env.APA_MAX_PAST_SESSIONS ?? "0", 10);
+// Opponent teams are re-fetched more often than past teams since their
+// roster + record changes weekly during the active session.
+const OPPONENT_TTL = parseInt(process.env.APA_OPPONENT_TTL_DAYS ?? "5", 10) * ONE_DAY;
 
 const TEAM_ID = (() => {
   const m = TEAM_URL.match(/\/team\/(\d+)/);
@@ -232,6 +236,75 @@ async function main() {
       console.log(`   ✓ fetched division #${id}`);
     } catch (e) {
       console.warn(`   ✗ division #${id}: ${(e as Error).message}`);
+    }
+  }
+  console.log();
+
+  // 5c. Opponent teams in our CURRENT-session schedule.
+  //
+  // For every team we're scheduled to play this session, fetch their full
+  // team profile (roster + their schedule + record). Then for each of their
+  // roster members, fetch career stats (TTL-gated). This builds up an
+  // incremental knowledge base of opposing teams over the season — re-run
+  // weekly to keep the upcoming opponent fresh, and the rest of the
+  // division backfills naturally.
+  console.log("==> fetching opponent teams from our schedule");
+  const ourScheduleMatchIds = matchIdsFromTeam(currentTeam);
+  const opponentTeamIds = new Set<number>();
+  for (const mid of ourScheduleMatchIds) {
+    const m = await cache.read<MatchCacheEntry>("matches", mid);
+    if (!m) continue;
+    for (const oid of opponentTeamIdsFromMatch(m.data, TEAM_ID)) {
+      opponentTeamIds.add(oid);
+    }
+  }
+  console.log(
+    `   discovered ${opponentTeamIds.size} opponent team(s) in this session's schedule`,
+  );
+
+  // Opponent teams: refresh on a 5-day TTL. Past-team backfill from member
+  // histories already covered the once-and-done case; this loop keeps
+  // active opponents current.
+  const opponentMemberIds = new Set<number>();
+  for (const oid of opponentTeamIds) {
+    if (oid === TEAM_ID) continue;
+    const cached = await cache.read<TeamCacheEntry>("teams", oid);
+    const stale = !cached || olderThan(cached, OPPONENT_TTL);
+    let teamEntry: TeamCacheEntry | null = cached?.data ?? null;
+    if (!stale) {
+      stats.teamsCached++;
+    } else {
+      try {
+        teamEntry = await fetchTeam(page, capture, cache, oid, SLUG);
+        stats.teamsFetched++;
+        console.log(`   ✓ fetched opp team #${oid}`);
+      } catch (e) {
+        console.warn(`   ✗ opp team #${oid}: ${(e as Error).message}`);
+      }
+    }
+    if (!teamEntry) continue;
+    for (const mid of memberIdsFromTeam(teamEntry)) opponentMemberIds.add(mid);
+  }
+  console.log();
+
+  // 5d. Opponent members — same TTL as our roster.
+  console.log("==> fetching opponent members");
+  console.log(
+    `   ${opponentMemberIds.size} unique opp member(s) discovered`,
+  );
+  for (const id of opponentMemberIds) {
+    const cached = await cache.read<MemberCacheEntry>("members", id);
+    const stale = !cached || olderThan(cached, MEMBER_TTL);
+    if (!stale) {
+      stats.membersCached++;
+      continue;
+    }
+    try {
+      await fetchMember(page, capture, cache, id, SLUG);
+      stats.membersFetched++;
+      console.log(`   ✓ fetched opp member #${id}`);
+    } catch (e) {
+      console.warn(`   ✗ opp member #${id}: ${(e as Error).message}`);
     }
   }
   console.log();

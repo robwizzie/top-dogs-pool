@@ -2656,6 +2656,18 @@ export type ThrowCandidate = {
    * since form data may be stale. null = never played.
    */
   lastPlayedDaysAgo: number | null;
+  /**
+   * Current consecutive run of identical outcomes (W or L) from the most
+   * recent matches. Null = no matches. Used as a small log-odds nudge for
+   * streaks ≥ 3 — captures "on a heater" beyond what form averaging shows.
+   */
+  currentStreak: { type: "W" | "L"; length: number } | null;
+  /**
+   * Probability of winning the team match if THIS specific candidate is
+   * locked at the current slot (Markov over remaining slots, with greedy
+   * SL-pairing for future slots). Lets the UI show "what-if" comparisons.
+   */
+  nightWinProbIfPicked: number;
   /** Bullet reasons, ordered from strongest to weakest. */
   reasoning: string[];
   /** Caveats / yellow flags. */
@@ -2840,21 +2852,39 @@ function wilson95(p: number, n: number): [number, number] {
  * For ≤ 5 slots this is at most 32 branches — instant.
  */
 function nightWinProbability(
-  currentWins: number,
-  currentLosses: number,
+  currentOurPoints: number,
+  currentTheirPoints: number,
   slotProbs: number[],
 ): number {
-  function recur(wins: number, losses: number, idx: number): number {
-    if (wins >= 3) return 1;
-    if (losses >= 3) return 0;
-    if (idx >= slotProbs.length) return 0;
+  // Each slot's outcome distribution, conditional on W or L. These are
+  // approximate league averages; tuned defaults work well enough across
+  // the throw advisor without per-player customisation.
+  // P(sweep | W) = 0.20, P(mini | W) = 0.50, P(hill-hill | W) = 0.30.
+  // Same for losses.
+  const SWEEP_P = 0.20;
+  const MINI_P = 0.50;
+  const HILL_P = 0.30;
+  // We track only the point delta — collapses state to a single dimension.
+  // Each slot can change delta by +3/+2/+1/-1/-2/-3 depending on outcome.
+  function recur(delta: number, idx: number): number {
+    if (idx >= slotProbs.length) {
+      if (delta > 0) return 1;
+      if (delta < 0) return 0;
+      return 0.5; // tie — APA rules sometimes have tiebreakers; we split the diff
+    }
     const p = slotProbs[idx];
     return (
-      p * recur(wins + 1, losses, idx + 1) +
-      (1 - p) * recur(wins, losses + 1, idx + 1)
+      p *
+        (SWEEP_P * recur(delta + 3, idx + 1) + // we sweep: +3
+          MINI_P * recur(delta + 2, idx + 1) + // we mini-sweep: +2
+          HILL_P * recur(delta + 1, idx + 1)) + // hill-hill win: +1 net
+      (1 - p) *
+        (HILL_P * recur(delta - 1, idx + 1) + // hill-hill loss: -1 net
+          MINI_P * recur(delta - 2, idx + 1) + // got mini-swept: -2
+          SWEEP_P * recur(delta - 3, idx + 1)) // got swept: -3
     );
   }
-  return recur(currentWins, currentLosses, 0);
+  return recur(currentOurPoints - currentTheirPoints, 0);
 }
 
 /**
@@ -2946,13 +2976,95 @@ function teamScoreStatesBeforeMatch(
 }
 
 /**
- * "Tight" state: |ourScore - theirScore| ≤ 1 with neither side at 3 yet.
- * That's match 1 (0-0), or any non-decisive close score: 1-0, 0-1, 1-1, 2-1,
- * 1-2, 2-2. Captures "the pressure is on" individual matches.
+ * "Tight" state: |ourScore - theirScore| ≤ 1 in TEAM-MATCH POINTS, with
+ * neither side at the clinched threshold. Captures "the pressure is on"
+ * for the clutch component. Used when scoring historical individual
+ * matches (where we walk the slot order) and when classifying the current
+ * live state.
  */
 function isTightTeamState(our: number, their: number): boolean {
-  if (our >= 3 || their >= 3) return false;
   return Math.abs(our - their) <= 1;
+}
+
+/**
+ * APA team-match points awarded for a single completed individual match.
+ *
+ * Per APA 8-ball rules:
+ *   - Sweep (loser scored 0 games):                 winner 3, loser 0
+ *   - Mini-sweep (loser ≥1 but didn't reach hill):  winner 2, loser 0
+ *   - Hill-hill (loser at hill, winner went over):  winner 2, loser 1
+ *
+ * Symmetric for losses. If game scores aren't recorded, falls back to a
+ * neutral 2-0 / 0-2 split based on outcome alone.
+ */
+function teamMatchPoints(t: ThrowMatchLog): { ourPts: number; theirPts: number } {
+  if (t.outcome === "pending") return { ourPts: 0, theirPts: 0 };
+  if (
+    typeof t.ourGames !== "number" ||
+    typeof t.theirGames !== "number" ||
+    t.ourSkillLevel == null ||
+    t.oppSkillLevel == null
+  ) {
+    return t.outcome === "W"
+      ? { ourPts: 2, theirPts: 0 }
+      : { ourPts: 0, theirPts: 2 };
+  }
+  const ourRace = winsRequired(t.ourSkillLevel, t.oppSkillLevel);
+  const theirRace = winsRequired(t.oppSkillLevel, t.ourSkillLevel);
+  const ourHill = ourRace - 1;
+  const theirHill = theirRace - 1;
+  if (t.outcome === "W") {
+    if (t.theirGames === 0) return { ourPts: 3, theirPts: 0 };
+    if (t.theirGames >= theirHill) return { ourPts: 2, theirPts: 1 };
+    return { ourPts: 2, theirPts: 0 };
+  }
+  // Loss
+  if (t.ourGames === 0) return { ourPts: 0, theirPts: 3 };
+  if (t.ourGames >= ourHill) return { ourPts: 1, theirPts: 2 };
+  return { ourPts: 0, theirPts: 2 };
+}
+
+/**
+ * Sum the team-match score from the throw log.
+ */
+function tallyTeamScore(log: ThrowMatchLog[]): { our: number; their: number } {
+  let our = 0;
+  let their = 0;
+  for (const t of log) {
+    const pts = teamMatchPoints(t);
+    our += pts.ourPts;
+    their += pts.theirPts;
+  }
+  return { our, their };
+}
+
+/**
+ * Recompute win probability for a candidate against a *hypothetical* opponent
+ * SL — used by the adversarial opener model to estimate "what if they
+ * counter-pick with their SL X". Reuses the candidate's existing form/slot/
+ * vs-team/clutch components but swaps in a fresh race-equity for the
+ * hypothetical opponent. H2H and vs-SL are deliberately treated as no-data
+ * because the hypothesised opponent is, well, hypothesized.
+ */
+function hypotheticalWinProbability(
+  candidate: ThrowCandidate,
+  hypotheticalOppSL: number,
+  isCurrentlyTight: boolean,
+): number {
+  const hypotheticalComponents = {
+    ...candidate.components,
+    h2h: emptyComponent(),
+    vsSL: emptyComponent(),
+    raceEquity: raceEquity(candidate.skillLevel, hypotheticalOppSL),
+  };
+  const { matchupScore } = computeWinProbability(
+    hypotheticalComponents,
+    isCurrentlyTight,
+    candidate.currentStreak,
+  );
+  // Apply SL-mismatch penalty in the hypothetical too.
+  const slAdj = slMismatchAdjustment(candidate.skillLevel, hypotheticalOppSL);
+  return Math.max(5, Math.min(95, matchupScore + slAdj.penalty));
 }
 
 /**
@@ -2991,6 +3103,12 @@ function computeWinProbability(
    * sits silent.
    */
   isCurrentlyTight: boolean,
+  /**
+   * Player's current streak (last consecutive run of W or L outcomes).
+   * Streaks ≥ 3 get a small log-odds nudge — a heater is a real signal
+   * beyond what form-averaging captures.
+   */
+  currentStreak: { type: "W" | "L"; length: number } | null,
 ): { matchupScore: number; ci: [number, number] } {
   const vsSLConf = confidenceWeight(components.vsSL.confidence);
 
@@ -3028,6 +3146,17 @@ function computeWinProbability(
     const cw = confidenceWeight(e.conf);
     if (cw === 0 || e.weight === 0) continue;
     logOdds += e.weight * cw * (logit(e.rate / 100) - logit(0.5));
+  }
+
+  // Streak nudge — small log-odds shift when the player's on a heater
+  // (3+ wins) or skid (3+ losses). Caps at length 6 to avoid runaway
+  // confidence on long streaks. Sign: +0.10 logit-units per game ≥ 3
+  // for wins, mirror for losses. So a 5-game W streak adds ~+0.30 logit
+  // ≈ +7pp at 50% baseline.
+  if (currentStreak && currentStreak.length >= 3) {
+    const len = Math.min(currentStreak.length, 6);
+    const sign = currentStreak.type === "W" ? 1 : -1;
+    logOdds += sign * 0.10 * (len - 2); // 0.10 at 3, 0.20 at 4, …, 0.40 at 6
   }
 
   const p = sigmoid(logOdds);
@@ -3140,14 +3269,18 @@ function slMismatchAdjustment(
 }
 
 function urgencyFor(ourScore: number, theirScore: number, remainingAfter: number): MatchUrgency {
-  // Pool team matches are typically race to ~3 team points (or first to 5
-  // depending on format) but at the per-individual level we have 5 points to
-  // give. We classify on the gap relative to remaining matches.
-  const gap = ourScore - theirScore;
+  // Scores here are in TEAM-MATCH POINTS, with each remaining slot capable of
+  // awarding up to 3 points to either side (sweep). The team match is decided
+  // by total points after all 5 slots.
   const remaining = remainingAfter + 1; // include this match
+  const maxRemainingForOpp = 3 * remaining;
+  const maxRemainingForUs = 3 * remaining;
+  const gap = ourScore - theirScore;
+  // Already clinched? (we lead by more than they could possibly catch up)
+  if (gap > maxRemainingForOpp) return "comfortable";
+  // Already lost? (we're behind by more than we could possibly recover)
+  if (-gap > maxRemainingForUs) return "must-win";
   if (gap === 0) return "even";
-  if (gap > 0 && gap >= remaining) return "comfortable";
-  if (gap < 0 && Math.abs(gap) >= remaining - 1) return "must-win";
   if (gap > 0) return "leverage";
   return "must-win";
 }
@@ -3252,7 +3385,7 @@ function scoreCandidate(
     clutch: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
   };
   // Form = chronological recent outcomes (recency-weighted).
-  const formOutcomes: Array<{ date: string; outcome: "W" | "L" }> = [];
+  const formOutcomes: Array<{ date: string; outcome: "W" | "L"; drift: number }> = [];
   // Per-opponent history strip — chronological W/L for the radar/H2H chart.
   const h2hHistory: Array<{ date: string; outcome: "W" | "L"; matchId: string }> = [];
   // Special-shots tally (sweep + mini×0.5 + B&R + 8oB) for the tiebreaker.
@@ -3263,12 +3396,24 @@ function scoreCandidate(
 
   for (const m of matches) {
     if (m.status !== "completed") continue;
-    const w = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    const baseW = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
     // Reconstruct the team-score state at each individual match in this team
     // match. Used for the clutch component.
     let scoreStates: Map<number, { ourBefore: number; theirBefore: number }> | null = null;
     for (const r of m.results) {
       if (r.playerId !== player.id) continue;
+      // SL drift: down-weight historical data from when this player was at
+      // a different SL. The race chart they were playing under was different,
+      // and their absolute skill was likely different too. Same SL → 1.0;
+      // ±1 drift → 0.65; ±2 → 0.40; ≥3 SL difference → 0.25.
+      const slDrift =
+        typeof r.skillLevel === "number" &&
+        typeof player.skillLevel === "number"
+          ? Math.abs(r.skillLevel - player.skillLevel)
+          : 0;
+      const driftFactor =
+        slDrift === 0 ? 1.0 : slDrift === 1 ? 0.65 : slDrift === 2 ? 0.40 : 0.25;
+      const w = baseW * driftFactor;
       const won = r.outcome === "W";
       const isWin = won ? 1 : 0;
       const isLoss = won ? 0 : 1;
@@ -3276,7 +3421,7 @@ function scoreCandidate(
       if (matchTs > lastPlayedTs) lastPlayedTs = matchTs;
 
       // Form (any match — uses chronology, weighted at score time)
-      formOutcomes.push({ date: m.date, outcome: r.outcome });
+      formOutcomes.push({ date: m.date, outcome: r.outcome, drift: driftFactor });
 
       // Special shots — counts toward leaderboard points; used as tiebreaker.
       specialShotsMatches += 1;
@@ -3349,7 +3494,7 @@ function scoreCandidate(
     .slice(-THROW_FORM_WINDOW);
   const formWeighted = { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 };
   for (const f of sortedForm) {
-    const w = recencyWeight(f.date, refDate, THROW_FORM_HALFLIFE_DAYS);
+    const w = recencyWeight(f.date, refDate, THROW_FORM_HALFLIFE_DAYS) * f.drift;
     if (f.outcome === "W") {
       formWeighted.wins += w;
       formWeighted.rawWins += 1;
@@ -3358,6 +3503,30 @@ function scoreCandidate(
       formWeighted.rawLosses += 1;
     }
   }
+
+  // ---- Current streak (last consecutive run of same outcome) -----
+  // A separate signal from form: a player on a 4-game heater is qualitatively
+  // different from someone hitting 50% form. Computed by walking form
+  // chronologically newest→oldest until the outcome changes.
+  const sortedFormDesc = [...formOutcomes].sort(
+    (a, b) => +new Date(b.date) - +new Date(a.date),
+  );
+  let streakType: "W" | "L" | null = null;
+  let streakLength = 0;
+  for (const f of sortedFormDesc) {
+    if (streakType === null) {
+      streakType = f.outcome;
+      streakLength = 1;
+    } else if (f.outcome === streakType) {
+      streakLength++;
+    } else {
+      break;
+    }
+  }
+  const currentStreak: { type: "W" | "L"; length: number } | null =
+    streakType !== null && streakLength > 0
+      ? { type: streakType, length: streakLength }
+      : null;
 
   const components = {
     h2h: buildComponent(acc.h2h),
@@ -3380,6 +3549,7 @@ function scoreCandidate(
   const { matchupScore, ci: matchupScoreCI } = computeWinProbability(
     components,
     isCurrentlyTight,
+    currentStreak,
   );
   // The "overall" ranking score starts at the win probability and gets
   // strategic adjustments (SL mismatch, lookahead) layered on later in
@@ -3490,6 +3660,8 @@ function scoreCandidate(
     matchupScoreCI,
     specialShotsRate,
     lastPlayedDaysAgo,
+    currentStreak,
+    nightWinProbIfPicked: 0, // filled in later by recommendThrow
     h2hHistory: trimmedHistory,
     verdict: "viable", // placeholder — re-tagged after we know the field
     components,
@@ -3511,8 +3683,10 @@ export function recommendThrow(
     (s, t) => s + (t.ourSkillLevel ?? 0),
     0,
   );
-  const ourScore = input.log.filter((t) => t.outcome === "W").length;
-  const theirScore = input.log.filter((t) => t.outcome === "L").length;
+  // Team-match points (per APA 8-ball: sweep=3, mini=2, hill-hill=2-1).
+  const teamScore = tallyTeamScore(input.log);
+  const ourScore = teamScore.our;
+  const theirScore = teamScore.their;
   const positionsLockedIn = new Set(input.log.map((t) => t.position));
   const remainingPositions = [1, 2, 3, 4, 5].filter(
     (p) => !positionsLockedIn.has(p) && p !== input.currentPosition,
@@ -3856,32 +4030,49 @@ export function recommendThrow(
     }
   }
 
-  // ----- Night win probability --------------------------------------
-  // Pull the recommended pick (top non-saved feasible) and compute the
-  // probability of winning the team match (race-to-3 individual wins)
-  // assuming optimal play from here on. The current slot uses the top
-  // pick's matchupScore directly; future slots are estimated by greedy
-  // SL-pairing over the remaining roster vs the opponent's bench.
+  // ----- Night win probability (per-candidate) ---------------------
+  // Compute "night win prob if you pick THIS candidate" for every feasible
+  // candidate. The recommendation uses the top non-saved candidate's value;
+  // the rest power "what-if" comparisons in the UI when the user wonders
+  // about overriding.
+  // Each candidate's night-win-prob:
+  //   - current slot uses their own matchupScore
+  //   - future slots: greedy SL-pairing of remaining roster (without this
+  //     candidate) vs opponent's pending bench
+  const pendingOppSLs = pendingOpponents.map((p) => p.latestSL!);
+  for (const c of candidates) {
+    if (!c.feasible) continue;
+    const remainingIfPicked = candidates.filter(
+      (x) => x.feasible && x !== c,
+    );
+    const futureSlotProbs = estimateFutureSlotProbs(
+      remainingIfPicked,
+      pendingOppSLs,
+    );
+    const padded = futureSlotProbs.slice(0, remainingPositionsAfter);
+    while (padded.length < remainingPositionsAfter) padded.push(0.5);
+    const slotProbs = [c.matchupScore / 100, ...padded];
+    c.nightWinProbIfPicked = Math.round(
+      nightWinProbability(ourScore, theirScore, slotProbs) * 1000,
+    ) / 10;
+  }
+
+  // Recommendation-level night win prob: take the recommended pick's value
+  // (top non-saved feasible). CI uses its matchupScoreCI bounds.
   const topForNight = candidates.find((c) => c.feasible && !c.saveForLater);
-  let nightWinProb = 0.5;
   let nightWinProbCI: [number, number] = [0, 100];
+  let nightWinProbPct = 50;
   if (topForNight) {
+    nightWinProbPct = topForNight.nightWinProbIfPicked;
     const remainingForFuture = candidates.filter(
       (c) => c.feasible && c !== topForNight,
     );
     const futureSlotProbs = estimateFutureSlotProbs(
       remainingForFuture,
-      pendingOpponents.map((p) => p.latestSL!),
+      pendingOppSLs,
     );
-    // Pad to remainingPositionsAfter slots with neutral 0.5 if we ran out of
-    // candidate/opponent pairs (rare in real usage but possible if rosters
-    // are mid-night-incomplete).
     const padded = futureSlotProbs.slice(0, remainingPositionsAfter);
     while (padded.length < remainingPositionsAfter) padded.push(0.5);
-    const slotProbs = [topForNight.matchupScore / 100, ...padded];
-    nightWinProb = nightWinProbability(ourScore, theirScore, slotProbs);
-    // CI for night prob: feed the topForNight's CI bounds in for the current
-    // slot, leave future slots at point estimate. Gives a reasonable band.
     const loProbs = [topForNight.matchupScoreCI[0] / 100, ...padded];
     const hiProbs = [topForNight.matchupScoreCI[1] / 100, ...padded];
     nightWinProbCI = [
@@ -3889,7 +4080,6 @@ export function recommendThrow(
       Math.round(nightWinProbability(ourScore, theirScore, hiProbs) * 1000) / 10,
     ];
   }
-  const nightWinProbPct = Math.round(nightWinProb * 1000) / 10;
 
   // Add a one-line night-prob summary to the narrative.
   if (topForNight) {
@@ -3953,6 +4143,13 @@ export type OpenerAdvisorInput = {
   currentPosition: number;
   availablePlayerIds: Set<string>;
   log: ThrowMatchLog[];
+  /**
+   * Opponent team's known roster — used by the *adversarial* opener model.
+   * When we throw first, the opponent counter-picks to MINIMIZE our win
+   * probability. Knowing their pending players lets us predict the worst-
+   * case counter for each of our candidates and rank by minimax.
+   */
+  opponentRoster?: Array<{ name: string; latestSL: number | null }>;
 };
 
 function scoreOpenerCandidate(
@@ -3974,23 +4171,32 @@ function scoreOpenerCandidate(
     position: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
     clutch: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
   };
-  const formOutcomes: Array<{ date: string; outcome: "W" | "L" }> = [];
+  const formOutcomes: Array<{ date: string; outcome: "W" | "L"; drift: number }> = [];
   let specialShotsTotal = 0;
   let specialShotsMatches = 0;
   let lastPlayedTs = 0;
 
   for (const m of matches) {
     if (m.status !== "completed") continue;
-    const w = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    const baseW = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
     let scoreStates: Map<number, { ourBefore: number; theirBefore: number }> | null = null;
     for (const r of m.results) {
       if (r.playerId !== player.id) continue;
+      // SL drift down-weighting (see scoreCandidate for rationale).
+      const slDrift =
+        typeof r.skillLevel === "number" &&
+        typeof player.skillLevel === "number"
+          ? Math.abs(r.skillLevel - player.skillLevel)
+          : 0;
+      const driftFactor =
+        slDrift === 0 ? 1.0 : slDrift === 1 ? 0.65 : slDrift === 2 ? 0.40 : 0.25;
+      const w = baseW * driftFactor;
       const won = r.outcome === "W";
       const isWin = won ? 1 : 0;
       const isLoss = won ? 0 : 1;
       const matchTs = +new Date(m.date);
       if (matchTs > lastPlayedTs) lastPlayedTs = matchTs;
-      formOutcomes.push({ date: m.date, outcome: r.outcome });
+      formOutcomes.push({ date: m.date, outcome: r.outcome, drift: driftFactor });
 
       specialShotsMatches += 1;
       if (r.sweep) specialShotsTotal += 1;
@@ -4035,7 +4241,7 @@ function scoreOpenerCandidate(
     .slice(-THROW_FORM_WINDOW);
   const formWeighted = { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 };
   for (const f of sortedForm) {
-    const w = recencyWeight(f.date, refDate, THROW_FORM_HALFLIFE_DAYS);
+    const w = recencyWeight(f.date, refDate, THROW_FORM_HALFLIFE_DAYS) * f.drift;
     if (f.outcome === "W") {
       formWeighted.wins += w;
       formWeighted.rawWins += 1;
@@ -4044,6 +4250,26 @@ function scoreOpenerCandidate(
       formWeighted.rawLosses += 1;
     }
   }
+  // Current streak — see scoreCandidate for explanation.
+  const sortedFormDescOpener = [...formOutcomes].sort(
+    (a, b) => +new Date(b.date) - +new Date(a.date),
+  );
+  let openerStreakType: "W" | "L" | null = null;
+  let openerStreakLength = 0;
+  for (const f of sortedFormDescOpener) {
+    if (openerStreakType === null) {
+      openerStreakType = f.outcome;
+      openerStreakLength = 1;
+    } else if (f.outcome === openerStreakType) {
+      openerStreakLength++;
+    } else {
+      break;
+    }
+  }
+  const openerCurrentStreak: { type: "W" | "L"; length: number } | null =
+    openerStreakType !== null && openerStreakLength > 0
+      ? { type: openerStreakType, length: openerStreakLength }
+      : null;
 
   const components = {
     h2h: emptyComponent(),
@@ -4065,6 +4291,7 @@ function scoreOpenerCandidate(
   const { matchupScore, ci: matchupScoreCI } = computeWinProbability(
     components,
     isCurrentlyTight,
+    openerCurrentStreak,
   );
   const overall = matchupScore;
   const specialShotsRate =
@@ -4124,6 +4351,8 @@ function scoreOpenerCandidate(
     matchupScoreCI,
     specialShotsRate,
     lastPlayedDaysAgo,
+    currentStreak: openerCurrentStreak,
+    nightWinProbIfPicked: 0, // filled in later by recommendOpener
     h2hHistory: [], // blind/opener mode — no opponent named yet
     verdict: "viable",
     components,
@@ -4144,8 +4373,10 @@ export function recommendOpener(
     (s, t) => s + (t.ourSkillLevel ?? 0),
     0,
   );
-  const ourScore = input.log.filter((t) => t.outcome === "W").length;
-  const theirScore = input.log.filter((t) => t.outcome === "L").length;
+  // Team-match points (per APA 8-ball: sweep=3, mini=2, hill-hill=2-1).
+  const teamScore = tallyTeamScore(input.log);
+  const ourScore = teamScore.our;
+  const theirScore = teamScore.their;
   const positionsLockedIn = new Set(input.log.map((t) => t.position));
   const remainingPositions = [1, 2, 3, 4, 5].filter(
     (p) => !positionsLockedIn.has(p) && p !== input.currentPosition,
@@ -4165,6 +4396,44 @@ export function recommendOpener(
   const candidates = eligible.map((p) =>
     scoreOpenerCandidate(p, { matches, input, refDate, isCurrentlyTight }),
   );
+
+  // ----- Adversarial opener model -----------------------------------
+  // When we throw blind, the opponent will counter-pick to MINIMIZE our
+  // win probability. For each candidate, find their worst-case counter
+  // among the opponent's pending roster, then use the resulting
+  // worst-case win probability as the candidate's matchup score.
+  // This is a minimax: pick the candidate whose worst-case counter
+  // gives us the best worst-case win prob. Classic APA opener strategy.
+  const usedOppNamesOpener = new Set(
+    input.log.map((t) => (t.oppName ?? "").trim().toLowerCase()),
+  );
+  const pendingOppOpener = (input.opponentRoster ?? []).filter(
+    (p) =>
+      typeof p.latestSL === "number" &&
+      !usedOppNamesOpener.has(p.name.trim().toLowerCase()),
+  );
+  if (pendingOppOpener.length > 0) {
+    for (const c of candidates) {
+      if (typeof c.skillLevel !== "number") continue;
+      let worstProb = c.matchupScore;
+      let worstCounter: { name: string; sl: number } | null = null;
+      for (const op of pendingOppOpener) {
+        const sl = op.latestSL!;
+        const wp = hypotheticalWinProbability(c, sl, isCurrentlyTight);
+        if (wp < worstProb) {
+          worstProb = wp;
+          worstCounter = { name: op.name, sl };
+        }
+      }
+      if (worstCounter) {
+        c.matchupScore = Math.round(worstProb * 10) / 10;
+        c.overall = c.matchupScore;
+        c.reasoning.unshift(
+          `Likely counter: SL${worstCounter.sl} (${worstCounter.name}) — they'll throw their toughest matchup vs SL${c.skillLevel}.`,
+        );
+      }
+    }
+  }
 
   // 23-rule feasibility (same logic as recommendThrow).
   const otherSLs = candidates
@@ -4320,22 +4589,52 @@ export function recommendOpener(
     );
   }
 
-  // Opener: rough night-win-prob using the top pick at 50% race-equity
-  // (since opp SL is unknown) and future slots at their average estimate.
+  // Opener: per-candidate night-win-prob (powers what-if comparisons).
+  //   - CURRENT slot uses the candidate's adversarial matchupScore.
+  //   - FUTURE slots use a *neutral* estimate (median pending opp SL) — APA
+  //     throw order alternates, so future slots average between adversarial
+  //     and counter-pick scenarios.
+  const pendingSLsSorted = pendingOppOpener
+    .map((p) => p.latestSL!)
+    .sort((a, b) => a - b);
+  const medianPendingSL =
+    pendingSLsSorted.length > 0
+      ? pendingSLsSorted[Math.floor(pendingSLsSorted.length / 2)]
+      : 4;
+  for (const c of candidates) {
+    if (!c.feasible) continue;
+    const remainingIfPicked = candidates.filter(
+      (x) => x.feasible && x !== c,
+    );
+    const futureProbs = remainingIfPicked
+      .slice(0, remainingPositionsAfter)
+      .map((x) =>
+        typeof x.skillLevel === "number"
+          ? hypotheticalWinProbability(x, medianPendingSL, isCurrentlyTight) / 100
+          : x.matchupScore / 100,
+      );
+    while (futureProbs.length < remainingPositionsAfter) futureProbs.push(0.5);
+    const slotProbs = [c.matchupScore / 100, ...futureProbs];
+    c.nightWinProbIfPicked = Math.round(
+      nightWinProbability(ourScore, theirScore, slotProbs) * 1000,
+    ) / 10;
+  }
   let openerNightProb = 0.5;
   let openerNightCI: [number, number] = [0, 100];
   const topForNight = candidates.find((c) => c.feasible && !c.saveForLater);
   if (topForNight) {
+    openerNightProb = topForNight.nightWinProbIfPicked / 100;
     const remainingForFuture = candidates.filter(
       (c) => c.feasible && c !== topForNight,
     );
-    // Future slots: assume neutral 50% race equity (we don't know their roster).
-    // Use form-only nudges if available.
     const futureProbs = remainingForFuture
       .slice(0, remainingPositionsAfter)
-      .map((c) => c.matchupScore / 100);
-    const slotProbs = [topForNight.matchupScore / 100, ...futureProbs];
-    openerNightProb = nightWinProbability(ourScore, theirScore, slotProbs);
+      .map((c) =>
+        typeof c.skillLevel === "number"
+          ? hypotheticalWinProbability(c, medianPendingSL, isCurrentlyTight) / 100
+          : c.matchupScore / 100,
+      );
+    while (futureProbs.length < remainingPositionsAfter) futureProbs.push(0.5);
     const loProbs = [topForNight.matchupScoreCI[0] / 100, ...futureProbs];
     const hiProbs = [topForNight.matchupScoreCI[1] / 100, ...futureProbs];
     openerNightCI = [
@@ -4444,4 +4743,489 @@ export function throwAdvisorOpponents(
   }
   out.sort((a, b) => a.team.localeCompare(b.team));
   return out;
+}
+
+/* ============================================================ SCOUTING REPORT
+ *
+ * In-depth pre-match scouting on the opponent team — drives the Briefing
+ * tab. Aggregates everything our scoresheets reveal about them:
+ *   - Team record vs us (this session + lifetime)
+ *   - Per-player: SL, record vs us, win rate, recent form, preferred slot,
+ *     suspected real SL based on game-score margins
+ *   - Hot / cold flags per player
+ *   - Their lineup tendencies (high-SL slot patterns)
+ */
+
+export type OpponentScoutingPlayer = {
+  name: string;
+  /** Player id when we have a scraped profile — links to /players/[id]. */
+  playerId: string | null;
+  /** Latest SL we've seen them at. */
+  latestSL: number | null;
+  /** Career record against us. */
+  vsUs: { wins: number; losses: number; winPct: number };
+  /** Career record across the league (only when scraped via opp scraper). */
+  career: { wins: number; losses: number; matchesPlayed: number; winPct: number } | null;
+  /** Per-session SL trajectory (only when scraped). Latest first. */
+  slTrajectory: Array<{ sessionName: string; skillLevel: number | null; matchesPlayed: number; winPct?: number }>;
+  /** Most-recent N matches vs us (oldest → newest), bounded to 6. */
+  recent: Array<"W" | "L">;
+  /** Form trend: hot/cold/steady based on recent vs lifetime. */
+  trend: "hot" | "cold" | "steady";
+  /** Slot they put up at most often. */
+  preferredPosition: number | null;
+  /** Average game margin (their wins minus our wins) when they win — large
+   *  margin suggests they're playing above their stated SL. */
+  avgWinMargin: number;
+  /** Suspected real SL — if their average game-margin against same-SL opps
+   *  is well above what the race chart would predict for an "average" player
+   *  at their SL, they're probably underrated. Null if we can't tell. */
+  suspectedRealSL: number | null;
+  /** Top counter on our roster (the player who beats them most). */
+  topCounter: { playerId: string; playerName: string; wins: number; losses: number } | null;
+};
+
+export type OpponentScoutingReport = {
+  team: string;
+  /** Our team record vs them across the in-scope sessions. */
+  vsUs: { wins: number; losses: number; winPct: number };
+  /** Our team record vs them this session only (matches w/ sessionId == currentSessionId). */
+  vsUsThisSession: { wins: number; losses: number; winPct: number } | null;
+  /** Per-player scouting. */
+  players: OpponentScoutingPlayer[];
+  /** Their highest-SL putup we've seen — drives strategy. */
+  topSL: number | null;
+  /** Aggregate win % vs us across all their players (individual-level). */
+  individualWinPctVsUs: number;
+};
+
+export function opponentScoutingReport(
+  opponentTeam: string,
+  matches: Match[],
+  roster: Player[],
+  currentSessionId?: number,
+  /**
+   * Map of opponent player profiles (from snapshot.opponentPlayers).
+   * Optional — when present, enriches the per-player section with full
+   * career stats and per-session SL trajectory pulled from the league API.
+   */
+  opponentPlayers?: Record<string, import("@/lib/apa/schemas").PlayerProfile>,
+): OpponentScoutingReport {
+  const teamKey = opponentTeam.trim().toLowerCase();
+  const matchesVsThem = matches.filter(
+    (m) =>
+      m.status === "completed" &&
+      (m.opponent ?? "").trim().toLowerCase() === teamKey,
+  );
+
+  // Team-level record vs them.
+  let teamW = 0;
+  let teamL = 0;
+  let teamWThisSession = 0;
+  let teamLThisSession = 0;
+  for (const m of matchesVsThem) {
+    if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number") continue;
+    const isThisSession =
+      currentSessionId !== undefined && m.sessionId === currentSessionId;
+    if (m.teamScore > m.opponentScore) {
+      teamW++;
+      if (isThisSession) teamWThisSession++;
+    } else if (m.teamScore < m.opponentScore) {
+      teamL++;
+      if (isThisSession) teamLThisSession++;
+    }
+  }
+
+  // Per-opponent-player aggregation.
+  type Bucket = {
+    name: string;
+    /** Each individual match outcome from THEIR perspective (W = they won vs us). */
+    outcomes: Array<{ date: string; theirWon: boolean; theirGames: number; ourGames: number; ourSL?: number; theirSL?: number; matchPosition?: number; ourPlayerId: string }>;
+    slMap: Map<number, number>; // SL → count
+    posMap: Map<number, number>; // position → count
+    counters: Map<string, { id: string; name: string; ourWins: number; ourLosses: number }>;
+  };
+  const buckets = new Map<string, Bucket>();
+
+  for (const m of matchesVsThem) {
+    for (const r of m.results) {
+      const theirName = (r.opponentName ?? "").trim();
+      if (!theirName || theirName === "Opponent") continue;
+      let bucket = buckets.get(theirName);
+      if (!bucket) {
+        bucket = {
+          name: theirName,
+          outcomes: [],
+          slMap: new Map(),
+          posMap: new Map(),
+          counters: new Map(),
+        };
+        buckets.set(theirName, bucket);
+      }
+      const theirSL = r.opponentSkillLevel;
+      const ourSL = r.skillLevel;
+      const theirWon = r.outcome === "L"; // From our perspective, "L" means they beat us
+      // Game scores: r.score is "ourGames-theirGames"
+      let ourGames = 0;
+      let theirGames = 0;
+      if (r.score && r.score.includes("-")) {
+        const [a, b] = r.score.split("-").map((s) => parseInt(s, 10));
+        if (Number.isFinite(a)) ourGames = a;
+        if (Number.isFinite(b)) theirGames = b;
+      }
+      bucket.outcomes.push({
+        date: m.date,
+        theirWon,
+        theirGames,
+        ourGames,
+        ourSL: ourSL ?? undefined,
+        theirSL: theirSL ?? undefined,
+        matchPosition: r.matchPosition ?? undefined,
+        ourPlayerId: r.playerId,
+      });
+      if (typeof theirSL === "number") {
+        bucket.slMap.set(theirSL, (bucket.slMap.get(theirSL) ?? 0) + 1);
+      }
+      if (typeof r.matchPosition === "number") {
+        bucket.posMap.set(
+          r.matchPosition,
+          (bucket.posMap.get(r.matchPosition) ?? 0) + 1,
+        );
+      }
+      // Track our players who faced them.
+      const counter = bucket.counters.get(r.playerId) ?? {
+        id: r.playerId,
+        name: r.playerName,
+        ourWins: 0,
+        ourLosses: 0,
+      };
+      if (r.outcome === "W") counter.ourWins++;
+      else counter.ourLosses++;
+      bucket.counters.set(r.playerId, counter);
+    }
+  }
+
+  // Build OpponentScoutingPlayer entries.
+  const players: OpponentScoutingPlayer[] = [];
+  let totalIndW = 0;
+  let totalIndL = 0;
+  let topSLObserved = 0;
+  for (const b of buckets.values()) {
+    const wins = b.outcomes.filter((o) => o.theirWon).length;
+    const losses = b.outcomes.filter((o) => !o.theirWon).length;
+    totalIndW += losses; // OUR wins against them
+    totalIndL += wins; // OUR losses to them
+    const winPct =
+      wins + losses > 0 ? Math.round((wins / (wins + losses)) * 1000) / 10 : 0;
+    // Latest SL = most recent match's SL we have (chronologically).
+    const sorted = [...b.outcomes].sort(
+      (a, c) => +new Date(c.date) - +new Date(a.date),
+    );
+    const latestSL = sorted.find((o) => typeof o.theirSL === "number")?.theirSL ?? null;
+    if (latestSL !== null) topSLObserved = Math.max(topSLObserved, latestSL);
+    // Recent form (last 6 matches, chronological).
+    const recent: Array<"W" | "L"> = sorted
+      .slice(0, 6)
+      .reverse()
+      .map((o) => (o.theirWon ? "W" : "L"));
+    // Trend: compare last 4 win rate to lifetime.
+    const last4 = sorted.slice(0, 4);
+    const last4WinPct =
+      last4.length > 0
+        ? last4.filter((o) => o.theirWon).length / last4.length
+        : 0;
+    const lifetimeWinPct = wins / Math.max(1, wins + losses);
+    let trend: "hot" | "cold" | "steady" = "steady";
+    if (last4.length >= 3) {
+      if (last4WinPct - lifetimeWinPct >= 0.20) trend = "hot";
+      else if (last4WinPct - lifetimeWinPct <= -0.20) trend = "cold";
+    }
+    // Preferred position (most-played).
+    const positions = [...b.posMap.entries()].sort((a, c) => c[1] - a[1]);
+    const preferredPosition = positions[0]?.[0] ?? null;
+    // Average margin when they won.
+    const winsList = b.outcomes.filter((o) => o.theirWon);
+    const avgWinMargin =
+      winsList.length > 0
+        ? winsList.reduce((s, o) => s + (o.theirGames - o.ourGames), 0) /
+          winsList.length
+        : 0;
+    // Suspected real SL: if average win margin vs same-SL opponents is wide
+    // (≥ 2 games beyond the race chart's expected margin), suggest a +1 SL.
+    let suspectedRealSL: number | null = null;
+    if (latestSL !== null && winsList.length >= 3) {
+      // For an "average" player at their SL, expected margin vs same-SL = 1
+      // (race target − loser's typical hill). If avgWinMargin ≥ 2.5, bump.
+      if (avgWinMargin >= 3.0 && latestSL < 7) suspectedRealSL = latestSL + 1;
+      else if (avgWinMargin >= 4.0 && latestSL < 6)
+        suspectedRealSL = latestSL + 2;
+    }
+    // Top counter from our roster.
+    const ourCounters = [...b.counters.values()]
+      .filter((c) => roster.some((p) => p.id === c.id && p.visible !== false))
+      .sort(
+        (a, c) =>
+          c.ourWins - a.ourWins ||
+          c.ourWins / Math.max(1, c.ourWins + c.ourLosses) -
+            a.ourWins / Math.max(1, a.ourWins + a.ourLosses),
+      );
+    const topCounter =
+      ourCounters[0] && ourCounters[0].ourWins > 0
+        ? {
+            playerId: ourCounters[0].id,
+            playerName: ourCounters[0].name,
+            wins: ourCounters[0].ourWins,
+            losses: ourCounters[0].ourLosses,
+          }
+        : null;
+    // Enrich with scraped opp player profile when available — gives us their
+    // FULL career stats (across the whole league, not just vs us) plus SL
+    // trajectory across sessions.
+    let playerId: string | null = null;
+    let careerEnrichment: OpponentScoutingPlayer["career"] = null;
+    let slTrajectory: OpponentScoutingPlayer["slTrajectory"] = [];
+    if (opponentPlayers) {
+      // Find by name match (we don't have a stable id from scoresheets — APA
+      // scoresheets give the opponent display name only).
+      const match = Object.values(opponentPlayers).find(
+        (op) => op.name.trim().toLowerCase() === b.name.trim().toLowerCase(),
+      );
+      if (match) {
+        playerId = match.id;
+        careerEnrichment = {
+          wins: match.career.wins,
+          losses: match.career.losses,
+          matchesPlayed: match.career.matchesPlayed,
+          winPct: match.career.winPct,
+        };
+        slTrajectory = match.sessions
+          .slice(0, 6)
+          .map((s) => ({
+            sessionName: s.sessionName,
+            skillLevel: s.skillLevel ?? null,
+            matchesPlayed: s.matchesPlayed ?? 0,
+            winPct: s.winPct,
+          }));
+      }
+    }
+    players.push({
+      name: b.name,
+      playerId,
+      latestSL,
+      vsUs: { wins, losses, winPct },
+      career: careerEnrichment,
+      slTrajectory,
+      recent,
+      trend,
+      preferredPosition,
+      avgWinMargin: Math.round(avgWinMargin * 10) / 10,
+      suspectedRealSL,
+      topCounter,
+    });
+  }
+  // Sort: hot players first, then by appearances (proxy for "how often we'll see them").
+  players.sort((a, b) => {
+    const at = a.trend === "hot" ? 0 : a.trend === "steady" ? 1 : 2;
+    const bt = b.trend === "hot" ? 0 : b.trend === "steady" ? 1 : 2;
+    if (at !== bt) return at - bt;
+    return (b.vsUs.wins + b.vsUs.losses) - (a.vsUs.wins + a.vsUs.losses);
+  });
+
+  const teamWinPct =
+    teamW + teamL > 0 ? Math.round((teamW / (teamW + teamL)) * 1000) / 10 : 0;
+  const sessionTeamRecord =
+    teamWThisSession + teamLThisSession > 0
+      ? {
+          wins: teamWThisSession,
+          losses: teamLThisSession,
+          winPct:
+            Math.round(
+              (teamWThisSession / (teamWThisSession + teamLThisSession)) * 1000,
+            ) / 10,
+        }
+      : null;
+
+  return {
+    team: opponentTeam,
+    vsUs: { wins: teamW, losses: teamL, winPct: teamWinPct },
+    vsUsThisSession: sessionTeamRecord,
+    players,
+    topSL: topSLObserved > 0 ? topSLObserved : null,
+    individualWinPctVsUs:
+      totalIndW + totalIndL > 0
+        ? Math.round((totalIndW / (totalIndW + totalIndL)) * 1000) / 10
+        : 0,
+  };
+}
+
+/* ============================================================ CALIBRATION BACKTEST
+ *
+ * Replay the engine on every historical individual match using ONLY data
+ * that existed before that match's date, and compare the predicted win
+ * probability to the actual outcome. Outputs:
+ *   - Brier score (lower is better; 0 = perfect, 0.25 = random, > 0.25 = bad)
+ *   - Calibration bins (do 70% predictions actually win 70% of the time?)
+ *   - Per-prediction list for inspection
+ *
+ * This is the trust-building tool: tells us whether the win probabilities
+ * the captain sees are actually well-calibrated.
+ */
+
+export type CalibrationPrediction = {
+  matchId: string;
+  date: string;
+  playerId: string;
+  playerName: string;
+  playerSL: number | null;
+  oppName: string;
+  oppSL: number | null;
+  matchPosition: number | null;
+  /** Predicted win probability, 0..1. */
+  predicted: number;
+  /** Actual outcome — 1 if player won, 0 if they lost. */
+  actual: 0 | 1;
+};
+
+export type CalibrationBin = {
+  /** Bin's prediction range, e.g. [0.5, 0.6]. */
+  range: [number, number];
+  /** Number of predictions in this bin. */
+  n: number;
+  /** Average predicted probability of those in this bin. */
+  predicted: number;
+  /** Actual win rate (fraction) of those in this bin. */
+  actual: number;
+};
+
+export type CalibrationResult = {
+  predictions: CalibrationPrediction[];
+  /** Brier score = mean((predicted - actual)^2). 0 = perfect. */
+  brier: number;
+  /** Reliability bins for the calibration plot (10 bins). */
+  bins: CalibrationBin[];
+  /** Mean absolute calibration error across bins (lower is better). */
+  meanAbsError: number;
+};
+
+/**
+ * Run the backtest. For every individual match in `matches`, replay the
+ * engine using only matches dated strictly before. Skips early matches
+ * (< 5 prior matches) since the engine has nothing to go on.
+ *
+ * Cost: O(N²) where N is total individual matches. ~30k ops at our scale,
+ * so it's fast enough to run on the server.
+ */
+export function calibrationBacktest(
+  matches: Match[],
+  roster: Player[],
+): CalibrationResult {
+  const sortedMatches = [...matches]
+    .filter((m) => m.status === "completed")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  const predictions: CalibrationPrediction[] = [];
+  const rosterById = new Map(roster.map((p) => [p.id, p]));
+
+  for (let i = 0; i < sortedMatches.length; i++) {
+    const m = sortedMatches[i];
+    const priorMatches = sortedMatches.slice(0, i);
+    if (priorMatches.length < 5) continue; // need a minimum of priors
+    const refDate = new Date(m.date);
+    for (const r of m.results) {
+      const player = rosterById.get(r.playerId);
+      if (!player) continue;
+      // Skip non-real results (EBP placeholders).
+      if (r.playerId.startsWith("ebp:")) continue;
+      if (typeof r.opponentSkillLevel !== "number") continue;
+      if (!r.opponentName || r.opponentName === "Opponent") continue;
+
+      // Reconstruct what the team-score was BEFORE this individual match
+      // (so we know if it was a tight state, for clutch).
+      const states = teamScoreStatesBeforeMatch(m);
+      const state = state_(states, r.matchPosition);
+      const tight = state ? isTightTeamState(state.ourBefore, state.theirBefore) : false;
+
+      // Build a fake input as if the captain were predicting THIS throw.
+      const fakeInput: ThrowAdvisorInput = {
+        opponentTeam: m.opponent,
+        location: m.location,
+        currentPosition: r.matchPosition ?? 1,
+        opponentName: r.opponentName,
+        opponentSkillLevel: r.opponentSkillLevel,
+        availablePlayerIds: new Set([player.id]),
+        log: [],
+      };
+      // Score against priorMatches only — that's all the engine "knows".
+      const candidate = scoreCandidate(player, {
+        matches: priorMatches,
+        input: fakeInput,
+        refDate,
+        isCurrentlyTight: tight,
+      });
+      // We use matchupScore (pre-lookahead, pre-strategic-penalty) — that's
+      // the pure win probability prediction.
+      predictions.push({
+        matchId: m.id,
+        date: m.date,
+        playerId: r.playerId,
+        playerName: player.name,
+        playerSL: r.skillLevel ?? null,
+        oppName: r.opponentName,
+        oppSL: r.opponentSkillLevel,
+        matchPosition: r.matchPosition ?? null,
+        predicted: candidate.matchupScore / 100,
+        actual: r.outcome === "W" ? 1 : 0,
+      });
+    }
+  }
+
+  // Brier score
+  const brier =
+    predictions.length > 0
+      ? predictions.reduce(
+          (s, p) => s + (p.predicted - p.actual) ** 2,
+          0,
+        ) / predictions.length
+      : 0;
+
+  // Calibration bins (10 buckets across [0, 1])
+  const bins: CalibrationBin[] = [];
+  const numBins = 10;
+  for (let b = 0; b < numBins; b++) {
+    const lo = b / numBins;
+    const hi = (b + 1) / numBins;
+    const inBin = predictions.filter(
+      (p) => p.predicted >= lo && p.predicted < (b === numBins - 1 ? hi + 0.001 : hi),
+    );
+    if (inBin.length === 0) {
+      bins.push({ range: [lo, hi], n: 0, predicted: (lo + hi) / 2, actual: 0 });
+      continue;
+    }
+    const avgPred = inBin.reduce((s, p) => s + p.predicted, 0) / inBin.length;
+    const actualRate = inBin.filter((p) => p.actual === 1).length / inBin.length;
+    bins.push({ range: [lo, hi], n: inBin.length, predicted: avgPred, actual: actualRate });
+  }
+
+  // Mean absolute calibration error across non-empty bins, weighted by bin size
+  const totalN = predictions.length || 1;
+  const meanAbsError = bins.reduce(
+    (s, b) =>
+      b.n > 0 ? s + (Math.abs(b.predicted - b.actual) * b.n) / totalN : s,
+    0,
+  );
+
+  return {
+    predictions,
+    brier: Math.round(brier * 10000) / 10000,
+    bins,
+    meanAbsError: Math.round(meanAbsError * 1000) / 1000,
+  };
+}
+
+/** Helper: safe access to score-states map keyed by position. */
+function state_(
+  states: Map<number, { ourBefore: number; theirBefore: number }>,
+  position: number | undefined,
+): { ourBefore: number; theirBefore: number } | undefined {
+  if (typeof position !== "number") return undefined;
+  return states.get(position);
 }

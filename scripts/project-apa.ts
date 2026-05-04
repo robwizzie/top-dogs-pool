@@ -1224,6 +1224,220 @@ async function main() {
   const matchesMap: Record<string, Match> = {};
   for (const [id, m] of matchesById) matchesMap[id] = m;
 
+  // ---- Opponent teams + players (incremental, current-session) -------
+  // Walk our current-session schedule, find opponent team ids in matches we
+  // have cached, then for each opp team build an OpponentTeamProfile + a
+  // simplified PlayerProfile per roster member from the cached member data.
+  // Only includes opp teams whose data has been scraped; the opp scraper
+  // step runs each weekly sync and accumulates over time.
+  const opponentTeams: Record<string, AnyRec> = {};
+  const opponentPlayers: Record<string, AnyRec> = {};
+  if (currentSessionId) {
+    type ScheduleShape = { team?: { matches?: Array<{ id?: number }> } };
+    const ourCurrentSchedule =
+      ((currentTeam.teamSchedule as ScheduleShape).team?.matches ?? [])
+        .map((m) => m.id)
+        .filter((id): id is number => typeof id === "number");
+    const oppTeamIdsInSchedule = new Set<number>();
+    for (const mid of ourCurrentSchedule) {
+      const mc = matchCache.get(mid);
+      if (!mc) continue;
+      type MT = { team?: { id?: number } };
+      type M = { matchTeams?: MT[] };
+      for (const mt of (mc.match as M).matchTeams ?? []) {
+        if (typeof mt.team?.id === "number" && mt.team.id !== meta.teamId) {
+          oppTeamIdsInSchedule.add(mt.team.id);
+        }
+      }
+    }
+    for (const oid of oppTeamIdsInSchedule) {
+      const team = teams.get(oid);
+      if (!team) continue; // not yet scraped
+      const oMeta = pickTeamMeta(team);
+      if (!oMeta || !oMeta.session) continue;
+      const fmt = detectFormat(oMeta.divisionFormat);
+      const oRosterShape = team.teamRoster as RosterShape;
+      const opponentRoster: RosterPlayer[] = [];
+      const opponentMemberIds: number[] = [];
+      for (const r of oRosterShape?.team?.roster ?? []) {
+        if (!r.memberNumber) continue;
+        if (r.member?.id) opponentMemberIds.push(r.member.id);
+        const winPct =
+          r.matchesPlayed && r.matchesWon !== undefined
+            ? Math.round((r.matchesWon / r.matchesPlayed) * 1000) / 10
+            : undefined;
+        opponentRoster.push({
+          id: r.memberNumber,
+          name: r.displayName ?? "Unknown",
+          skillLevel: r.skillLevel ?? null,
+          format: detectFormat(r.__typename),
+          visible: true,
+          stats: {
+            wins: r.matchesWon,
+            matchesPlayed: r.matchesPlayed,
+            winPct,
+            ppm: r.ppm !== undefined ? Math.round(r.ppm * 100) / 100 : undefined,
+            pa: r.pa !== undefined ? Math.round(r.pa * 1000) / 10 : undefined,
+          },
+        });
+      }
+      // Project their schedule using the shared schedule projector.
+      const oppSchedule = projectScheduleMatches(
+        team,
+        matchCache,
+        ebpToMemberNumber,
+        oMeta.session,
+        fmt,
+      );
+      // matchesVsUs: filter their schedule for matches against any "ours" team.
+      const matchesVsUs = oppSchedule
+        .filter((m) => {
+          // Match belongs to "us" if the opponent label matches one of our team names
+          // OR opponent is in our schedule (we already cached the match scoresheet).
+          // Easier: search match's matchTeams for an "ours" id.
+          const mc = m.id ? matchCache.get(parseInt(m.id, 10)) : null;
+          if (!mc) return false;
+          type MT = { team?: { id?: number } };
+          type M = { matchTeams?: MT[] };
+          for (const mt of (mc.match as M).matchTeams ?? []) {
+            if (typeof mt.team?.id === "number" && oursTeamIds.has(mt.team.id))
+              return true;
+          }
+          return false;
+        })
+        .map((m) => m.id);
+      // Compute their record from completed matches in their schedule.
+      let oW = 0;
+      let oL = 0;
+      for (const m of oppSchedule) {
+        if (m.status !== "completed") continue;
+        if (typeof m.teamScore !== "number" || typeof m.opponentScore !== "number") continue;
+        // Note: m.teamScore here is the OPP team's score (since this schedule is theirs).
+        if (m.teamScore > m.opponentScore) oW++;
+        else if (m.teamScore < m.opponentScore) oL++;
+      }
+      opponentTeams[String(oid)] = {
+        id: oid,
+        name: oMeta.name,
+        number: oMeta.number,
+        division: oMeta.division,
+        divisionRank: oMeta.standing,
+        sessionId: oMeta.session.id,
+        sessionName: oMeta.session.name,
+        homeLocation: oMeta.homeLocation,
+        format: fmt,
+        url: `https://league.poolplayers.com/${meta.leagueSlug}/team/${oid}`,
+        record: {
+          wins: oW,
+          losses: oL,
+          rank: oMeta.standing,
+        },
+        roster: opponentRoster,
+        schedule: oppSchedule,
+        matchesVsUs,
+        lastFetched: new Date().toISOString(),
+      };
+      // Build a basic PlayerProfile per opp roster member from cached member
+      // data. Without recomputing from match scoresheets (we don't have all
+      // their scoresheets), this is a "career stats from APA's API" view.
+      for (const internalId of opponentMemberIds) {
+        const member = members.get(internalId);
+        if (!member) continue;
+        // Find their memberNumber from the roster entry
+        const rosterEntry = (oRosterShape.team?.roster ?? []).find(
+          (r) => r.member?.id === internalId,
+        );
+        const memberNumber = rosterEntry?.memberNumber;
+        if (!memberNumber) continue;
+        type AliasPlayer = {
+          team?: { id?: number; name?: string };
+          matchesPlayed?: number;
+          matchesWon?: number;
+          skillLevel?: number;
+          pa?: number;
+          ppm?: number;
+          rackless?: number;
+        };
+        type AliasData = {
+          alias?: { players?: AliasPlayer[]; firstName?: string; lastName?: string };
+        };
+        const aliasData = member.aliasSessionStats as AliasData;
+        const sessionRecords: Array<AnyRec> = [];
+        let careerMatches = 0;
+        let careerWins = 0;
+        for (const p of aliasData?.alias?.players ?? []) {
+          const tid = p.team?.id;
+          if (!tid) continue;
+          // Find what session this team was in.
+          const sessionInfo = teamIdToSessionInfo.get(tid);
+          if (!sessionInfo) continue;
+          const matchesPlayed = p.matchesPlayed ?? 0;
+          const wins = p.matchesWon ?? 0;
+          careerMatches += matchesPlayed;
+          careerWins += wins;
+          sessionRecords.push({
+            sessionId: sessionInfo.id,
+            sessionName: sessionInfo.name,
+            teamId: tid,
+            teamName: p.team?.name ?? sessionInfo.teamName,
+            skillLevel: p.skillLevel,
+            matchesPlayed,
+            wins,
+            winPct:
+              matchesPlayed > 0
+                ? Math.round((wins / matchesPlayed) * 1000) / 10
+                : undefined,
+            pa: p.pa !== undefined ? Math.round(p.pa * 1000) / 10 : undefined,
+            ppm: p.ppm !== undefined ? Math.round(p.ppm * 100) / 100 : undefined,
+            rackless: p.rackless,
+            levelUps: 0,
+          });
+        }
+        sessionRecords.sort(
+          (a, b) => Number(b.sessionId) - Number(a.sessionId),
+        );
+        const currentSessionRecord =
+          sessionRecords.find((r) => r.sessionId === currentSessionId) ?? null;
+        const fullName =
+          rosterEntry?.displayName ??
+          [aliasData?.alias?.firstName, aliasData?.alias?.lastName]
+            .filter(Boolean)
+            .join(" ") ??
+          memberNumber;
+        opponentPlayers[memberNumber] = {
+          id: memberNumber,
+          name: fullName,
+          firstName: aliasData?.alias?.firstName,
+          lastName: aliasData?.alias?.lastName,
+          internalId,
+          currentSkillLevel:
+            currentSessionRecord?.skillLevel ?? rosterEntry?.skillLevel ?? null,
+          format: detectFormat(rosterEntry?.__typename),
+          visible: true,
+          current: currentSessionRecord,
+          career: {
+            matchesPlayed: careerMatches,
+            wins: careerWins,
+            losses: Math.max(0, careerMatches - careerWins),
+            winPct:
+              careerMatches > 0
+                ? Math.round((careerWins / careerMatches) * 1000) / 10
+                : 0,
+            // Sweep/B&R/8oB stats require parsing every scoresheet they
+            // appeared in, which we don't have for non-vs-us matches.
+            points: 0,
+            sweeps: 0,
+            miniSweeps: 0,
+            breakAndRuns: 0,
+            eightOnBreaks: 0,
+            levelUps: 0,
+          },
+          sessions: sessionRecords,
+        };
+      }
+    }
+  }
+
   const out_ = {
     lastUpdated: new Date().toISOString(),
     teamId: meta.teamId,
@@ -1245,6 +1459,8 @@ async function main() {
     leaderboards,
     sessionRosters,
     sessionStandings,
+    opponentTeams,
+    opponentPlayers,
   };
 
   await writeFile(resolve("data/apa.json"), JSON.stringify(out_, null, 2));
