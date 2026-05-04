@@ -2072,11 +2072,9 @@ function SaveForLaterCallout({
 function WinProbGauge({
   pct,
   size = 132,
-  label = "win likelihood",
 }: {
   pct: number;
   size?: number;
-  label?: string;
 }) {
   const clamped = Math.max(0, Math.min(100, pct));
   const r = size * 0.4;
@@ -2097,7 +2095,7 @@ function WinProbGauge({
       height={size}
       className="block"
       role="img"
-      aria-label={`${Math.round(clamped)}% ${label}`}
+      aria-label={`${Math.round(clamped)}% win probability`}
     >
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--border)" strokeWidth={size * 0.08} />
       <circle
@@ -2114,21 +2112,13 @@ function WinProbGauge({
       />
       <text
         x={cx}
-        y={cy + size * 0.04}
+        y={cy}
         textAnchor="middle"
+        dominantBaseline="central"
         className="fill-[var(--fg)] font-[family-name:var(--font-display)]"
         style={{ fontSize: size * 0.32 }}
       >
         {Math.round(clamped)}%
-      </text>
-      <text
-        x={cx}
-        y={cy + size * 0.22}
-        textAnchor="middle"
-        className="fill-[var(--fg-dim)]"
-        style={{ fontSize: size * 0.075, letterSpacing: "0.18em", textTransform: "uppercase" }}
-      >
-        {label}
       </text>
     </svg>
   );

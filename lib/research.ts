@@ -2742,6 +2742,75 @@ function raceEquity(mySL: number | null, oppSL: number): number {
   return Math.round((theirs / (mine + theirs)) * 1000) / 10;
 }
 
+/**
+ * APA SL-mismatch tactical adjustment.
+ *
+ * The APA 8-ball race chart hands the lower-SL player a shorter race when
+ * SLs are mismatched — the structural handicap. SL7 vs SL2 is 7-vs-2
+ * (we have to win 7 games, they only need 2). SL7 vs SL5 is 5-vs-3 (still
+ * lopsided — they need 60% of our race target). Same-SL is fully even.
+ *
+ * On top of the race-equity component (which numerically captures the
+ * handicap), this helper applies a tactical *strategic* penalty for the
+ * larger gaps. Why two penalties? Two reasons:
+ *   1. Equity is one component among many — without an explicit nudge, a
+ *      stud's H2H/form data can outweigh the handicap and the tool would
+ *      still recommend SL7 vs SL2.
+ *   2. There's an opportunity cost beyond the race math: burning a high-SL
+ *      player here also wastes 23-rule SL budget you'll want for closer
+ *      matches later.
+ *
+ * Convention: `diff = ourSL - theirSL` (positive = we're the higher SL).
+ *   diff ≥ +5  (e.g., 7 vs 2): -25 pts — severe waste, save them
+ *   diff ≥ +4  (e.g., 7 vs 3): -16 pts — bad spot
+ *   diff ≥ +3  (e.g., 7 vs 4 or 6 vs 3): -9 pts — borderline
+ *   diff = +2  (e.g., 7 vs 5 or 5 vs 3): -4 pts — slight, but real edge to
+ *                                         the lower SL per the race chart
+ *   diff ≤ -2  (we're 2+ SL lower): +4 pts + positive flag — race-chart
+ *                                   leans our way, send the underdog
+ *   else:      neutral (diffs of 0 or ±1 race close enough to ignore)
+ */
+function slMismatchAdjustment(
+  ourSL: number | null,
+  theirSL: number,
+): { penalty: number; flag?: string; reason?: string } {
+  if (ourSL == null) return { penalty: 0 };
+  const diff = ourSL - theirSL;
+  const myReq = winsRequired(ourSL, theirSL);
+  const theirReq = winsRequired(theirSL, ourSL);
+  if (diff >= 5) {
+    return {
+      penalty: -25,
+      flag: `Bad SL spot: SL${ourSL} vs SL${theirSL} — race chart is ${myReq}–${theirReq}, we'd have to win ${myReq} games while they only need ${theirReq}. Save SL${ourSL} for a closer matchup.`,
+    };
+  }
+  if (diff >= 4) {
+    return {
+      penalty: -16,
+      flag: `Wasteful SL pairing: SL${ourSL} vs SL${theirSL} (race ${myReq}–${theirReq}). A closer-SL teammate gets a much fairer race here.`,
+    };
+  }
+  if (diff >= 3) {
+    return {
+      penalty: -9,
+      flag: `SL mismatch: race ${myReq}–${theirReq} — they have a structural edge. Closer SL would race more evenly.`,
+    };
+  }
+  if (diff === 2) {
+    return {
+      penalty: -4,
+      flag: `Slight SL edge to them: race ${myReq}–${theirReq}. A closer-SL teammate races more evenly here.`,
+    };
+  }
+  if (diff <= -2) {
+    return {
+      penalty: 4,
+      reason: `Underdog spot — race chart hands us the structural edge (we race to ${myReq}, they race to ${theirReq}).`,
+    };
+  }
+  return { penalty: 0 };
+}
+
 function urgencyFor(ourScore: number, theirScore: number, remainingAfter: number): MatchUrgency {
   // Pool team matches are typically race to ~3 team points (or first to 5
   // depending on format) but at the per-individual level we have 5 points to
@@ -2946,14 +3015,17 @@ function scoreCandidate(
   // Venue is intentionally weighted 0 — the data is shown for context but
   // doesn't move the score (bar venues with weird tables, the bar itself
   // doesn't really shift outcomes).
+  // Race-chart equity is weighted heavily because the APA 8-ball race chart
+  // structurally tilts win probability — a SL7 vs SL2 has to win 4 games while
+  // the SL2 only needs 2. That's a real handicap that shows up game-by-game.
   const baseWeights = {
-    h2h: 0.32,
-    vsSL: 0.20,
-    vsTeam: 0.12,
+    h2h: 0.28,
+    vsSL: 0.18,
+    vsTeam: 0.10,
     venue: 0.0,
-    form: 0.20,
+    form: 0.18,
     position: 0.10,
-    raceEquity: 0.06,
+    raceEquity: 0.16,
   } as const;
   const weights: Record<keyof typeof baseWeights, number> = {
     h2h: baseWeights.h2h * confidenceWeight(components.h2h.confidence),
@@ -3026,7 +3098,12 @@ function scoreCandidate(
       `${verb(components.venue.rate)} at ${input.location} (${components.venue.wins}-${components.venue.losses})`,
     );
   }
-  if (typeof player.skillLevel === "number") {
+  // Race-chart commentary — only printed for the non-mismatched cases. Severe
+  // mismatches get the more informative flag from slMismatchAdjustment below.
+  if (
+    typeof player.skillLevel === "number" &&
+    Math.abs(player.skillLevel - input.opponentSkillLevel) < 3
+  ) {
     if (components.raceEquity >= 55) {
       reasons.push(
         `Race-chart edge: SL${player.skillLevel} → ${winsRequired(player.skillLevel, input.opponentSkillLevel)} games vs ${winsRequired(input.opponentSkillLevel, player.skillLevel)}`,
@@ -3048,6 +3125,18 @@ function scoreCandidate(
     flags.push("Thin data — ranking is mostly priors");
   }
 
+  // SL mismatch tactical adjustment — explicit penalty/bonus on top of the
+  // race-equity component, with reasoning text that quotes the race numbers.
+  const slAdj = slMismatchAdjustment(player.skillLevel, input.opponentSkillLevel);
+  let adjustedOverall = overall + slAdj.penalty;
+  // Clamp matchup score to [0, 100] — the penalty can otherwise drag it
+  // below zero in extreme small-sample cases.
+  adjustedOverall = Math.max(0, Math.min(100, adjustedOverall));
+  // Round to one decimal.
+  adjustedOverall = Math.round(adjustedOverall * 10) / 10;
+  if (slAdj.flag) flags.unshift(slAdj.flag);
+  if (slAdj.reason) reasons.unshift(slAdj.reason);
+
   // Sort H2H history newest-first and trim — the chart only needs ~12.
   h2hHistory.sort((a, b) => +new Date(b.date) - +new Date(a.date));
   const trimmedHistory = h2hHistory.slice(0, 12);
@@ -3056,8 +3145,8 @@ function scoreCandidate(
     playerId: player.id,
     playerName: player.name,
     skillLevel: player.skillLevel,
-    overall,
-    matchupScore: overall, // pre-lookahead snapshot; lookahead penalty applied later
+    overall: adjustedOverall,
+    matchupScore: adjustedOverall, // pre-lookahead snapshot; lookahead penalty applied later
     h2hHistory: trimmedHistory,
     verdict: "viable", // placeholder — re-tagged after we know the field
     components,
