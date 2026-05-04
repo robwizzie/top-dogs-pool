@@ -305,10 +305,14 @@ function projectScheduleMatches(
   const out: Match[] = [];
   for (const m of data?.team?.matches ?? []) {
     if (!m?.id) continue;
-    const homeIsMine = m.home?.isMine === true;
-    const ourSide: SideKey = homeIsMine ? "HOME" : "AWAY";
-    const oppSide: SideKey = homeIsMine ? "AWAY" : "HOME";
-    const oppTeam = homeIsMine ? m.away : m.home;
+    // Identify which side IS this team. APA marks our logged-in user's
+    // matches with `isMine: true`, but for opponent teams we project too
+    // that flag is always false — fall back to matching the team id.
+    const homeIsOurs =
+      m.home?.isMine === true || (teamId !== 0 && m.home?.id === teamId);
+    const ourSide: SideKey = homeIsOurs ? "HOME" : "AWAY";
+    const oppSide: SideKey = homeIsOurs ? "AWAY" : "HOME";
+    const oppTeam = homeIsOurs ? m.away : m.home;
     const ourTeamRes = m.results?.find((r) => r.homeAway === ourSide);
     const oppTeamRes = m.results?.find((r) => r.homeAway === oppSide);
     const teamScore = ourTeamRes?.points?.total;
@@ -341,7 +345,7 @@ function projectScheduleMatches(
       date: m.startTime ?? new Date().toISOString(),
       opponent: isBye ? "BYE" : oppTeam?.name ?? "TBD",
       location: m.location?.name,
-      isHome: homeIsMine,
+      isHome: homeIsOurs,
       teamScore,
       opponentScore,
       status,

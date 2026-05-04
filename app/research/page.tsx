@@ -380,6 +380,7 @@ export default async function ResearchPage({ searchParams }: Props) {
             <ScoutingReport
               report={scoutingReport}
               teamId={scoutingTeamId}
+              oppTeamProfile={scoutingOppTeam}
               predictedWeFirst={predictedWeFirst}
               predictedTheyFirst={predictedTheyFirst}
             />
