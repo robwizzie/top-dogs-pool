@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { OpponentScoutingReport, PredictedLineup } from "@/lib/research";
+import type { OpponentTeamProfile } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
 
 /**
@@ -13,12 +14,16 @@ import { cn, formatDate } from "@/lib/utils";
 export function ScoutingReport({
   report,
   teamId,
+  oppTeamProfile,
   predictedWeFirst,
   predictedTheyFirst,
 }: {
   report: OpponentScoutingReport;
   /** When provided, the team header links to /opponents/[teamId]. */
   teamId?: number | null;
+  /** Full scraped opp team profile — when present we surface their own
+   *  record (separate from "vs us") and other team-level data. */
+  oppTeamProfile?: OpponentTeamProfile | null;
   /** Predicted lineup if WE throw first in match 1. */
   predictedWeFirst?: PredictedLineup | null;
   /** Predicted lineup if THEY throw first in match 1. */
@@ -42,16 +47,27 @@ export function ScoutingReport({
   return (
     <div className="space-y-5">
       {/* Top-level team record */}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {oppTeamProfile && (
+          <Stat
+            label={`${oppTeamProfile.name} this session`}
+            value={`${oppTeamProfile.record.wins}–${oppTeamProfile.record.losses}`}
+            sub={
+              oppTeamProfile.record.rank
+                ? `#${oppTeamProfile.record.rank} in division`
+                : "their team record"
+            }
+          />
+        )}
         <Stat
-          label="Team record vs them"
+          label="Our record vs them"
           value={teamRecord}
           sub={`${report.vsUs.winPct}% across all sessions`}
           tone={teamRecordTone}
         />
         {report.vsUsThisSession && (
           <Stat
-            label="This session"
+            label="Our vs them — this session"
             value={`${report.vsUsThisSession.wins}–${report.vsUsThisSession.losses}`}
             sub={`${report.vsUsThisSession.winPct}% so far`}
           />
