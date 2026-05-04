@@ -1,24 +1,34 @@
 /**
  * APA race-to-X chart for 8-ball.
  *
- * Each cell is the number of game wins that side needs to win the team match,
- * given their skill level vs. the opponent's. The chart is symmetric around
- * the diagonal (lower SL needs fewer wins; equal SL means equal race).
+ * Each cell is the number of game wins MY side needs to win the team match,
+ * given my skill level (row) vs. the opponent's skill level (column).
  *
- * Source: APA's published 8-Ball "Skill Level Race Chart". If APA tweaks the
- * matrix or you want to handle SL1/8/9 edge cases differently, edit here —
- * everything downstream (mini-sweep detection, leaderboard scoring) reads
- * `winsRequired()`.
+ * The chart is **asymmetric** — the lower SL gets the shorter race (handicap),
+ * which is the whole point of the system. SL2 vs SL7 is 2-vs-7 (the SL2 only
+ * needs 2 wins, the SL7 has to win 7); SL5 vs SL7 is 4-vs-5; same-SL pairs
+ * race to the standard target for that SL.
+ *
+ * The previous version of this chart had cells like (5,7)=5 and (7,5)=5,
+ * which made the engine treat every same-pair race as "even" and produced
+ * misleading 50% race-equity for every matchup. The correct chart hands the
+ * structural advantage to the lower SL — which the live data above this comment
+ * line in scoresheets reflects (SL2 winning at 2-anything, SL7 having to grind
+ * to 7 vs an SL2, SL4 needing only 2 vs an SL7, etc.).
+ *
+ * Source: APA's published 8-Ball "Skill Level Race Chart" + cross-checked
+ * against our division's own observed scoresheets (data/apa.json).
  */
 
 const EIGHT_BALL_RACE: Record<number, Record<number, number>> = {
-  // myWins given (mySL, theirSL)
-  2: { 2: 2, 3: 2, 4: 2, 5: 3, 6: 3, 7: 4 },
-  3: { 2: 2, 3: 2, 4: 3, 5: 3, 6: 4, 7: 4 },
-  4: { 2: 2, 3: 3, 4: 3, 5: 4, 6: 4, 7: 5 },
-  5: { 2: 3, 3: 3, 4: 4, 5: 4, 6: 5, 7: 5 },
-  6: { 2: 3, 3: 4, 4: 4, 5: 5, 6: 5, 7: 6 },
-  7: { 2: 4, 3: 4, 4: 5, 5: 5, 6: 6, 7: 7 },
+  // myWins given (mySL, theirSL).
+  // Read row-wise: row 7 col 2 = 7 means SL7 needs 7 wins vs SL2.
+  2: { 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2 },
+  3: { 2: 3, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2 },
+  4: { 2: 4, 3: 3, 4: 3, 5: 3, 6: 3, 7: 2 },
+  5: { 2: 5, 3: 4, 4: 4, 5: 4, 6: 4, 7: 3 },
+  6: { 2: 6, 3: 5, 4: 5, 5: 5, 6: 5, 7: 4 },
+  7: { 2: 7, 3: 6, 4: 5, 5: 5, 6: 5, 7: 5 },
 };
 
 /**
