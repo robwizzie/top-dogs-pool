@@ -2512,8 +2512,15 @@ export function playerPointsTrajectories(
  * stud here would force weak SLs into anchor slots.
  */
 
-const THROW_RECENCY_HALFLIFE_DAYS = 180;
-const THROW_FORM_WINDOW = 12;
+// 120-day half life — matches from 4 months ago count half as much as last
+// week, 8-month-old matches a quarter, etc. Tight enough that this season's
+// form drives the score; loose enough that an opponent we've only played
+// twice in 18 months still tells us something.
+const THROW_RECENCY_HALFLIFE_DAYS = 120;
+// Form looks at the most-recent matches, also recency-weighted, so an
+// 8-game window picks up the "is this player on a heater right now" signal.
+const THROW_FORM_WINDOW = 8;
+const THROW_FORM_HALFLIFE_DAYS = 45; // form should react quickly
 const APA_SL_BUDGET = 23; // 8-ball: sum of SLs in a 5-player lineup ≤ 23
 
 export type ThrowMatchLog = {
@@ -2807,7 +2814,7 @@ function scoreCandidate(
     .slice(-THROW_FORM_WINDOW);
   const formWeighted = { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 };
   for (const f of sortedForm) {
-    const w = recencyWeight(f.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    const w = recencyWeight(f.date, refDate, THROW_FORM_HALFLIFE_DAYS);
     if (f.outcome === "W") {
       formWeighted.wins += w;
       formWeighted.rawWins += 1;
@@ -3137,6 +3144,350 @@ export function recommendThrow(
       theirScore,
       urgency,
       narrative,
+    },
+  };
+}
+
+/* ============================================================ OPENER (blind)
+ *
+ * When we put up first we don't know who they'll counter with. The opener
+ * recommendation is a different beast than the counter-pick:
+ *   - H2H drops out (no specific opponent yet)
+ *   - vs SL drops out (we don't know their SL)
+ *   - We rely on: form, vs-team baseline, slot fit, venue
+ *   - "Don't burn your stud blind" — the algorithm prefers a mid-rated player
+ *     when the gap to the top is small, and explicitly saves your aces for
+ *     situations where you have actual H2H data on a known opponent putup.
+ *
+ * Same 23-rule + urgency + reasoning machinery as recommendThrow.
+ */
+
+export type OpenerAdvisorInput = {
+  opponentTeam: string;
+  location?: string;
+  currentPosition: number;
+  availablePlayerIds: Set<string>;
+  log: ThrowMatchLog[];
+};
+
+function scoreOpenerCandidate(
+  player: Player,
+  ctx: { matches: Match[]; input: OpenerAdvisorInput; refDate: Date },
+): ThrowCandidate {
+  const { matches, input, refDate } = ctx;
+  const oppTeamKey = input.opponentTeam.trim().toLowerCase();
+  const venueKey = (input.location ?? "").trim().toLowerCase();
+
+  const acc = {
+    vsTeam: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+    venue: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+    position: { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 },
+  };
+  const formOutcomes: Array<{ date: string; outcome: "W" | "L" }> = [];
+
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    const w = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    for (const r of m.results) {
+      if (r.playerId !== player.id) continue;
+      const won = r.outcome === "W";
+      const isWin = won ? 1 : 0;
+      const isLoss = won ? 0 : 1;
+      formOutcomes.push({ date: m.date, outcome: r.outcome });
+      if (oppTeamKey && (m.opponent ?? "").trim().toLowerCase() === oppTeamKey) {
+        acc.vsTeam.wins += isWin * w;
+        acc.vsTeam.losses += isLoss * w;
+        acc.vsTeam.rawWins += isWin;
+        acc.vsTeam.rawLosses += isLoss;
+      }
+      if (venueKey && (m.location ?? "").trim().toLowerCase() === venueKey) {
+        acc.venue.wins += isWin * w;
+        acc.venue.losses += isLoss * w;
+        acc.venue.rawWins += isWin;
+        acc.venue.rawLosses += isLoss;
+      }
+      if (r.matchPosition === input.currentPosition) {
+        acc.position.wins += isWin * w;
+        acc.position.losses += isLoss * w;
+        acc.position.rawWins += isWin;
+        acc.position.rawLosses += isLoss;
+      }
+    }
+  }
+
+  const sortedForm = formOutcomes
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date))
+    .slice(-THROW_FORM_WINDOW);
+  const formWeighted = { wins: 0, losses: 0, rawWins: 0, rawLosses: 0 };
+  for (const f of sortedForm) {
+    const w = recencyWeight(f.date, refDate, THROW_FORM_HALFLIFE_DAYS);
+    if (f.outcome === "W") {
+      formWeighted.wins += w;
+      formWeighted.rawWins += 1;
+    } else {
+      formWeighted.losses += w;
+      formWeighted.rawLosses += 1;
+    }
+  }
+
+  const components = {
+    h2h: emptyComponent(),
+    vsSL: emptyComponent(),
+    vsTeam: buildComponent(acc.vsTeam),
+    venue: buildComponent(acc.venue),
+    form: buildComponent(formWeighted),
+    position: buildComponent(acc.position),
+    raceEquity: 50, // unknown opponent SL → neutral
+  };
+
+  // Blind weights — vs-Team and form do most of the work, slot fit matters.
+  const baseWeights = {
+    vsTeam: 0.28,
+    form: 0.30,
+    position: 0.22,
+    venue: 0.10,
+    raceEquity: 0.10,
+  } as const;
+  const weights = {
+    vsTeam: baseWeights.vsTeam * confidenceWeight(components.vsTeam.confidence),
+    form: baseWeights.form * confidenceWeight(components.form.confidence),
+    position: baseWeights.position * confidenceWeight(components.position.confidence),
+    venue: baseWeights.venue * confidenceWeight(components.venue.confidence),
+    raceEquity: baseWeights.raceEquity, // always available (neutral 50)
+  };
+  const totalWeight = Object.values(weights).reduce((s, v) => s + v, 0) || 1;
+  const eff = {
+    vsTeam: weights.vsTeam / totalWeight,
+    form: weights.form / totalWeight,
+    position: weights.position / totalWeight,
+    venue: weights.venue / totalWeight,
+    raceEquity: weights.raceEquity / totalWeight,
+  };
+
+  const overall = Math.round(
+    (eff.vsTeam * components.vsTeam.smoothed +
+      eff.form * components.form.smoothed +
+      eff.position * components.position.smoothed +
+      eff.venue * components.venue.smoothed +
+      eff.raceEquity * components.raceEquity) * 10,
+  ) / 10;
+
+  const reasons: string[] = [];
+  const flags: string[] = [];
+  const verb = (rate: number) => {
+    if (rate >= 70) return "strong";
+    if (rate >= 55) return "solid";
+    if (rate >= 45) return "even";
+    if (rate >= 30) return "below-even";
+    return "rough";
+  };
+
+  if (!components.form.noData) {
+    reasons.push(
+      `Recent form: ${components.form.wins}-${components.form.losses} over last ${components.form.matches} (${components.form.rate}%)`,
+    );
+  }
+  if (!components.vsTeam.noData && components.vsTeam.matches >= 2) {
+    reasons.push(
+      `${verb(components.vsTeam.rate)} vs ${input.opponentTeam}: ${components.vsTeam.wins}-${components.vsTeam.losses}`,
+    );
+  } else {
+    flags.push(`No prior data vs ${input.opponentTeam}`);
+  }
+  if (!components.position.noData && components.position.matches >= 2) {
+    reasons.push(
+      `Slot ${input.currentPosition} record: ${components.position.wins}-${components.position.losses} (${components.position.rate}%)`,
+    );
+  }
+  if (!components.venue.noData && components.venue.matches >= 2 && input.location) {
+    reasons.push(
+      `${verb(components.venue.rate)} at ${input.location}`,
+    );
+  }
+  if (
+    components.form.noData &&
+    components.vsTeam.noData &&
+    components.position.noData
+  ) {
+    flags.push("No data — going on prior alone");
+  }
+  flags.push("Blind throw: their SL is unknown, race equity assumed neutral");
+
+  return {
+    playerId: player.id,
+    playerName: player.name,
+    skillLevel: player.skillLevel,
+    overall,
+    verdict: "viable",
+    components,
+    reasoning: reasons,
+    flags,
+    feasible: true,
+    saveForLater: false,
+  };
+}
+
+export function recommendOpener(
+  input: OpenerAdvisorInput,
+  matches: Match[],
+  roster: Player[],
+  refDate: Date = new Date(),
+): ThrowAdvisorResult {
+  const usedSLBudget = input.log.reduce(
+    (s, t) => s + (t.ourSkillLevel ?? 0),
+    0,
+  );
+  const ourScore = input.log.filter((t) => t.outcome === "W").length;
+  const theirScore = input.log.filter((t) => t.outcome === "L").length;
+  const positionsLockedIn = new Set(input.log.map((t) => t.position));
+  const remainingPositions = [1, 2, 3, 4, 5].filter(
+    (p) => !positionsLockedIn.has(p) && p !== input.currentPosition,
+  );
+  const remainingPositionsAfter = remainingPositions.length;
+  const remainingSLBudget = APA_SL_BUDGET - usedSLBudget;
+  const urgency = urgencyFor(ourScore, theirScore, remainingPositionsAfter);
+
+  const usedPlayerIds = new Set(input.log.map((t) => t.ourPlayerId));
+  const eligible = roster.filter(
+    (p) =>
+      p.visible !== false &&
+      !usedPlayerIds.has(p.id) &&
+      input.availablePlayerIds.has(p.id),
+  );
+  const candidates = eligible.map((p) =>
+    scoreOpenerCandidate(p, { matches, input, refDate }),
+  );
+
+  // 23-rule feasibility (same logic as recommendThrow).
+  const otherSLs = candidates
+    .map((c) => c.skillLevel)
+    .filter((sl): sl is number => typeof sl === "number")
+    .sort((a, b) => a - b);
+  for (const c of candidates) {
+    if (typeof c.skillLevel !== "number") continue;
+    const slLeft = remainingSLBudget - c.skillLevel;
+    if (slLeft < 0) {
+      c.feasible = false;
+      c.feasibilityNote = `SL${c.skillLevel} blows the 23-rule budget (${remainingSLBudget} left).`;
+      c.flags.push(c.feasibilityNote);
+      continue;
+    }
+    if (remainingPositionsAfter === 0) continue;
+    const ms = [...otherSLs];
+    const idx = ms.indexOf(c.skillLevel);
+    if (idx >= 0) ms.splice(idx, 1);
+    const need = remainingPositionsAfter;
+    if (ms.length < need) {
+      c.flags.push(
+        `Only ${ms.length} other player${ms.length === 1 ? "" : "s"} available for the remaining ${need} slot${need === 1 ? "" : "s"} — confirm subs.`,
+      );
+      continue;
+    }
+    const minSumAfter = ms.slice(0, need).reduce((s, v) => s + v, 0);
+    if (minSumAfter > slLeft) {
+      c.feasible = false;
+      c.feasibilityNote = `Picking SL${c.skillLevel} here forces the rest over the 23-rule budget (need at least ${minSumAfter} more; only ${slLeft} left).`;
+      c.flags.push(c.feasibilityNote);
+    }
+  }
+
+  candidates.sort((a, b) => {
+    if (a.feasible !== b.feasible) return a.feasible ? -1 : 1;
+    return b.overall - a.overall;
+  });
+
+  // Blind-throw save logic: we're more eager to save aces when we don't have
+  // a known opponent. Trigger save-for-later when:
+  //   - top is 7+ pts ahead of #2 (lower bar than counter-pick — blind)
+  //   - 2+ acceptable subs (>= 50)
+  //   - no must-win pressure
+  //   - not the anchor slot (5)
+  const top = candidates.find((c) => c.feasible) ?? null;
+  const second = candidates.filter((c) => c.feasible && c !== top)[0];
+  const acceptableSubs = candidates.filter(
+    (c) => c.feasible && c !== top && c.overall >= 50,
+  );
+  const noPressure = urgency === "leverage" || urgency === "comfortable" || urgency === "even";
+  if (
+    top &&
+    second &&
+    top.overall - second.overall >= 7 &&
+    acceptableSubs.length >= 2 &&
+    input.currentPosition < 5 &&
+    noPressure
+  ) {
+    top.saveForLater = true;
+    top.reasoning.unshift(
+      `Hold ${top.playerName.split(" ")[0]} for a known counter — there are ${acceptableSubs.length} solid mid-tier openers we can use here instead.`,
+    );
+  }
+
+  for (let i = 0; i < candidates.length; i++) {
+    const c = candidates[i];
+    if (!c.feasible) {
+      c.verdict = "infeasible";
+      continue;
+    }
+    if (c.saveForLater) {
+      c.verdict = "save";
+      continue;
+    }
+    if (i === 0) c.verdict = "top-pick";
+    else if (c.overall >= 60) c.verdict = "strong";
+    else if (c.overall >= 50) c.verdict = "viable";
+    else c.verdict = "stretch";
+  }
+
+  const topPick = candidates.find((c) => c.feasible && !c.saveForLater) ?? null;
+  let minAvgSLAfter = 0;
+  if (topPick && typeof topPick.skillLevel === "number" && remainingPositionsAfter > 0) {
+    const slLeft = remainingSLBudget - topPick.skillLevel;
+    minAvgSLAfter = Math.round((slLeft / remainingPositionsAfter) * 10) / 10;
+  }
+
+  const narrativeBits: string[] = [];
+  if (urgency === "must-win") {
+    narrativeBits.push(
+      `Down ${theirScore}-${ourScore} — even blind, send your most reliable player.`,
+    );
+  } else if (urgency === "comfortable") {
+    narrativeBits.push(
+      `Up ${ourScore}-${theirScore} — opener doesn't need to be your best; keep aces dry for a known counter.`,
+    );
+  } else if (urgency === "leverage") {
+    narrativeBits.push(
+      `Up ${ourScore}-${theirScore} — solid opener keeps the foot on their throat.`,
+    );
+  } else if (urgency === "even") {
+    if (input.log.length === 0) {
+      narrativeBits.push("First putup. Don't tip your hand — opener should be a steady mid-tier pick.");
+    } else {
+      narrativeBits.push(
+        `Tied ${ourScore}-${theirScore} — pick blind but reliable.`,
+      );
+    }
+  }
+  narrativeBits.push(
+    `${remainingSLBudget} SL left across ${remainingPositionsAfter + 1} remaining slot${remainingPositionsAfter === 0 ? "" : "s"}.`,
+  );
+  if (topPick && topPick.saveForLater) {
+    narrativeBits.push(
+      `${topPick.playerName} is the highest-rated, but better held until we know who they're putting up.`,
+    );
+  }
+
+  return {
+    candidates,
+    topPick,
+    context: {
+      remainingPositionsAfter,
+      usedSLBudget,
+      remainingSLBudget,
+      minAvgSLAfter,
+      ourScore,
+      theirScore,
+      urgency,
+      narrative: narrativeBits.join(" "),
     },
   };
 }
