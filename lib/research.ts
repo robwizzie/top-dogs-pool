@@ -2591,6 +2591,19 @@ export type ThrowCandidate = {
      * Above 50 = race favors us.
      */
     raceEquity: number;
+    /**
+     * Lookahead — lineup-wide team value if this candidate plays the current
+     * slot and the remaining roster is greedily assigned to the future slots
+     * (best slot-fit per remaining slot, no double-use). Higher = this player
+     * leaves the rest of the night in a better spot. Range: 0..100.
+     */
+    lookahead: number;
+    /**
+     * Lookahead delta vs the BEST team-value across all candidates at this
+     * slot. 0 = team-optimal pick. Negative numbers mean burning this player
+     * here costs N points of expected lineup value.
+     */
+    lookaheadDelta: number;
   };
   /** Bullet reasons, ordered from strongest to weakest. */
   reasoning: string[];
@@ -2729,6 +2742,74 @@ function urgencyFor(ourScore: number, theirScore: number, remainingAfter: number
  * session, with a recency half-life applied so older sessions still count
  * but not as much).
  */
+
+/**
+ * Recency-weighted, smoothed slot-fit score for `player` at `position`. Used
+ * by the lookahead engine to estimate how well a player would do at any
+ * given slot. Range: 0..100 (with smoothing, a no-data slot returns 50).
+ */
+function slotFitScore(
+  player: Player,
+  position: number,
+  matches: Match[],
+  refDate: Date,
+): number {
+  let wW = 0,
+    wL = 0;
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    const w = recencyWeight(m.date, refDate, THROW_RECENCY_HALFLIFE_DAYS);
+    for (const r of m.results) {
+      if (r.playerId !== player.id) continue;
+      if (r.matchPosition !== position) continue;
+      if (r.outcome === "W") wW += w;
+      else wL += w;
+    }
+  }
+  return smoothedRate(wW, wL);
+}
+
+/**
+ * Greedy maximum-fit assignment of `available` players to `positions`. For
+ * each (player, position) pair, score with `slotFit`, sort all pairs desc,
+ * iterate top-down assigning the first unused player to the first unused
+ * position. Returns sum of assigned scores.
+ *
+ * Approximates the optimal assignment well enough at this scale (≤ 9 players,
+ * ≤ 4 future positions). A full Hungarian solver would be ~5% better in the
+ * worst case and isn't worth the complexity here.
+ */
+function greedyAssignmentValue(
+  available: Player[],
+  positions: number[],
+  slotFit: (p: Player, pos: number) => number,
+): number {
+  if (positions.length === 0) return 0;
+  type Pair = { player: string; pos: number; score: number };
+  const pairs: Pair[] = [];
+  for (const p of available) {
+    for (const pos of positions) {
+      pairs.push({ player: p.id, pos, score: slotFit(p, pos) });
+    }
+  }
+  pairs.sort((a, b) => b.score - a.score);
+  const usedPlayer = new Set<string>();
+  const usedPos = new Set<number>();
+  let total = 0;
+  for (const pair of pairs) {
+    if (usedPlayer.has(pair.player) || usedPos.has(pair.pos)) continue;
+    usedPlayer.add(pair.player);
+    usedPos.add(pair.pos);
+    total += pair.score;
+    if (usedPos.size === positions.length) break;
+  }
+  // Penalize unfilled slots at a "no data" baseline so a tight roster doesn't
+  // get artificially praised.
+  const unfilled = positions.length - usedPos.size;
+  total += unfilled * 35;
+  return total;
+}
+
 function scoreCandidate(
   player: Player,
   ctx: {
@@ -2832,18 +2913,24 @@ function scoreCandidate(
     form: buildComponent(formWeighted),
     position: buildComponent(acc.position),
     raceEquity: raceEquity(player.skillLevel, input.opponentSkillLevel),
+    // Filled in later by recommendThrow once it knows the field.
+    lookahead: 0,
+    lookaheadDelta: 0,
   };
 
   // Composite weighting. Components without data drop out — the remaining
   // weights are renormalized so the score stays in 0..100.
+  // Venue is intentionally weighted 0 — the data is shown for context but
+  // doesn't move the score (bar venues with weird tables, the bar itself
+  // doesn't really shift outcomes).
   const baseWeights = {
     h2h: 0.32,
-    vsSL: 0.18,
-    vsTeam: 0.10,
-    venue: 0.05,
-    form: 0.18,
+    vsSL: 0.20,
+    vsTeam: 0.12,
+    venue: 0.0,
+    form: 0.20,
     position: 0.10,
-    raceEquity: 0.07,
+    raceEquity: 0.06,
   } as const;
   const weights: Record<keyof typeof baseWeights, number> = {
     h2h: baseWeights.h2h * confidenceWeight(components.h2h.confidence),
@@ -3034,40 +3121,89 @@ export function recommendThrow(
     }
   }
 
+  // ----- Lookahead --------------------------------------------------
+  // Compute lineup-wide team value for every feasible candidate. For each
+  // candidate we lock them at the current slot, then greedily assign the
+  // remaining roster to the future slots by slot-fit. The candidate that
+  // maximizes this total is the team-optimal pick.
+  const futurePositions = remainingPositions.slice();
+  const eligibleAtThisSlot = candidates.filter((c) => c.feasible);
+  const slotFitMemo = new Map<string, number>();
+  const slotFit = (p: Player, pos: number) => {
+    const key = `${p.id}|${pos}`;
+    let v = slotFitMemo.get(key);
+    if (v === undefined) {
+      v = slotFitScore(p, pos, matches, refDate);
+      slotFitMemo.set(key, v);
+    }
+    return v;
+  };
+  let bestTeamValue = 0;
+  for (const c of eligibleAtThisSlot) {
+    const candidatePlayer = roster.find((p) => p.id === c.playerId);
+    if (!candidatePlayer) continue;
+    const myFit = slotFit(candidatePlayer, input.currentPosition);
+    const others = roster.filter(
+      (p) =>
+        p.id !== c.playerId &&
+        p.visible !== false &&
+        !usedPlayerIds.has(p.id) &&
+        input.availablePlayerIds.has(p.id),
+    );
+    const futureValue = greedyAssignmentValue(others, futurePositions, slotFit);
+    // Normalize: total possible is (futurePositions.length + 1) * 100. Convert
+    // to 0..100 so it sits next to the other component bars.
+    const slots = futurePositions.length + 1;
+    const teamValue = Math.round(((myFit + futureValue) / (slots * 100)) * 1000) / 10;
+    c.components.lookahead = teamValue;
+    if (teamValue > bestTeamValue) bestTeamValue = teamValue;
+  }
+  for (const c of eligibleAtThisSlot) {
+    c.components.lookaheadDelta = Math.round(
+      (c.components.lookahead - bestTeamValue) * 10,
+    ) / 10;
+  }
+  // Fold lookahead into the composite — small but meaningful nudge so the
+  // team-optimal pick climbs ahead of "I have one good H2H but I'm needed
+  // elsewhere later".
+  for (const c of eligibleAtThisSlot) {
+    // 0..-15-pt penalty proportional to how much team value we'd give up.
+    // Cap at -15 so a single component doesn't fully dominate.
+    const penalty = Math.max(c.components.lookaheadDelta * 0.5, -15);
+    c.overall = Math.round((c.overall + penalty) * 10) / 10;
+  }
+
   // Sort by overall (feasible first, then highest score).
   candidates.sort((a, b) => {
     if (a.feasible !== b.feasible) return a.feasible ? -1 : 1;
     return b.overall - a.overall;
   });
 
-  // Verdict tiers + save-for-later reasoning.
-  // Save logic:
-  //   - If a candidate is the only one with a strong record vs an opponent
-  //     player who is *likely* to come up later (i.e. on opp roster, not yet
-  //     thrown), and there are several "good enough" options for THIS putup,
-  //     mark them save-for-later.
-  // We don't have visibility into the opponent's untaken roster here without
-  // more inputs, so the save signal is a SIMPLER heuristic:
-  //   - Top candidate by overall is far ahead of #2 (10+ pts) AND
-  //   - At least 2 other candidates are >= 55 overall (i.e. acceptable subs)
-  //   - AND we're in 'leverage' or 'comfortable' urgency (no must-win pressure)
-  //   - AND it's an early slot (<=3) so a later slot still benefits.
+  // ----- Save-for-later (informed by lookahead) ---------------------
+  // A candidate gets the save-for-later flag when:
+  //   - They top the per-slot composite (overall) BUT
+  //   - Picking them costs ≥ 6 pts of team-wide value (lookaheadDelta ≤ -6),
+  //     meaning a substitute can fill this slot decently while preserving
+  //     them for a future slot where they're more uniquely good
+  //   - There's an acceptable sub for this slot (overall >= 55)
+  //   - We're not under must-win pressure
+  //   - And it's not the anchor slot (M5)
   const top = candidates.find((c) => c.feasible) ?? null;
-  const second = candidates.filter((c) => c.feasible && c !== top)[0];
-  const acceptableSubs = candidates.filter((c) => c.feasible && c !== top && c.overall >= 55);
-  const isEarlySlot = input.currentPosition <= 3;
-  const noPressure = urgency === "leverage" || urgency === "comfortable";
+  const acceptableSubs = candidates.filter(
+    (c) => c.feasible && c !== top && c.overall >= 55,
+  );
+  const noPressure = urgency === "leverage" || urgency === "comfortable" || urgency === "even";
   if (
     top &&
-    second &&
-    top.overall - second.overall >= 10 &&
-    acceptableSubs.length >= 2 &&
-    isEarlySlot &&
+    top.components.lookaheadDelta <= -6 &&
+    acceptableSubs.length >= 1 &&
+    input.currentPosition < 5 &&
     noPressure
   ) {
     top.saveForLater = true;
+    const sub = acceptableSubs[0];
     top.reasoning.unshift(
-      `Consider saving — we're ${urgency === "comfortable" ? "ahead" : "even"} and there are ${acceptableSubs.length} acceptable subs for this slot.`,
+      `Save for later — costs ~${Math.abs(top.components.lookaheadDelta).toFixed(1)} pts of lineup value to use here. ${sub.playerName} (${sub.overall}) is a viable sub.`,
     );
   }
 
@@ -3238,14 +3374,17 @@ function scoreOpenerCandidate(
     form: buildComponent(formWeighted),
     position: buildComponent(acc.position),
     raceEquity: 50, // unknown opponent SL → neutral
+    lookahead: 0,
+    lookaheadDelta: 0,
   };
 
   // Blind weights — vs-Team and form do most of the work, slot fit matters.
+  // Venue is shown but not weighted (the bar itself doesn't shift outcomes).
   const baseWeights = {
-    vsTeam: 0.28,
-    form: 0.30,
-    position: 0.22,
-    venue: 0.10,
+    vsTeam: 0.30,
+    form: 0.34,
+    position: 0.26,
+    venue: 0.0,
     raceEquity: 0.10,
   } as const;
   const weights = {
@@ -3391,34 +3530,70 @@ export function recommendOpener(
     }
   }
 
+  // Lookahead — same algorithm as recommendThrow.
+  const futurePositions = remainingPositions.slice();
+  const eligibleAtThisSlot = candidates.filter((c) => c.feasible);
+  const slotFitMemo = new Map<string, number>();
+  const slotFit = (p: Player, pos: number) => {
+    const key = `${p.id}|${pos}`;
+    let v = slotFitMemo.get(key);
+    if (v === undefined) {
+      v = slotFitScore(p, pos, matches, refDate);
+      slotFitMemo.set(key, v);
+    }
+    return v;
+  };
+  let bestTeamValue = 0;
+  for (const c of eligibleAtThisSlot) {
+    const candidatePlayer = roster.find((p) => p.id === c.playerId);
+    if (!candidatePlayer) continue;
+    const myFit = slotFit(candidatePlayer, input.currentPosition);
+    const others = roster.filter(
+      (p) =>
+        p.id !== c.playerId &&
+        p.visible !== false &&
+        !usedPlayerIds.has(p.id) &&
+        input.availablePlayerIds.has(p.id),
+    );
+    const futureValue = greedyAssignmentValue(others, futurePositions, slotFit);
+    const slots = futurePositions.length + 1;
+    const teamValue = Math.round(((myFit + futureValue) / (slots * 100)) * 1000) / 10;
+    c.components.lookahead = teamValue;
+    if (teamValue > bestTeamValue) bestTeamValue = teamValue;
+  }
+  for (const c of eligibleAtThisSlot) {
+    c.components.lookaheadDelta = Math.round(
+      (c.components.lookahead - bestTeamValue) * 10,
+    ) / 10;
+  }
+  for (const c of eligibleAtThisSlot) {
+    const penalty = Math.max(c.components.lookaheadDelta * 0.5, -15);
+    c.overall = Math.round((c.overall + penalty) * 10) / 10;
+  }
+
   candidates.sort((a, b) => {
     if (a.feasible !== b.feasible) return a.feasible ? -1 : 1;
     return b.overall - a.overall;
   });
 
-  // Blind-throw save logic: we're more eager to save aces when we don't have
-  // a known opponent. Trigger save-for-later when:
-  //   - top is 7+ pts ahead of #2 (lower bar than counter-pick — blind)
-  //   - 2+ acceptable subs (>= 50)
-  //   - no must-win pressure
-  //   - not the anchor slot (5)
+  // Blind-throw save logic: we're eager to save aces when we don't know who
+  // they're putting up. Use lookahead delta as the primary signal.
   const top = candidates.find((c) => c.feasible) ?? null;
-  const second = candidates.filter((c) => c.feasible && c !== top)[0];
   const acceptableSubs = candidates.filter(
     (c) => c.feasible && c !== top && c.overall >= 50,
   );
   const noPressure = urgency === "leverage" || urgency === "comfortable" || urgency === "even";
   if (
     top &&
-    second &&
-    top.overall - second.overall >= 7 &&
-    acceptableSubs.length >= 2 &&
+    top.components.lookaheadDelta <= -4 &&
+    acceptableSubs.length >= 1 &&
     input.currentPosition < 5 &&
     noPressure
   ) {
     top.saveForLater = true;
+    const sub = acceptableSubs[0];
     top.reasoning.unshift(
-      `Hold ${top.playerName.split(" ")[0]} for a known counter — there are ${acceptableSubs.length} solid mid-tier openers we can use here instead.`,
+      `Hold ${top.playerName.split(" ")[0]} for a known counter — costs ~${Math.abs(top.components.lookaheadDelta).toFixed(1)} pts of lineup value to use blind. ${sub.playerName} (${sub.overall}) is a solid opener.`,
     );
   }
 

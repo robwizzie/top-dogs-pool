@@ -110,6 +110,107 @@ export function ThrowAdvisor({
   });
   const [step, setStep] = useState<Step>("pick-ours");
 
+  // ---------------- Persist to localStorage --------------------------
+  // Resume mid-night refreshes. Stale state (>14h old, or roster mismatch)
+  // is auto-cleared so a stale session doesn't haunt next week.
+  const STORAGE_KEY = "topDogs.throwAdvisor.v2";
+  const STORAGE_TTL_MS = 14 * 60 * 60 * 1000;
+
+  // Load on mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as {
+        savedAt: number;
+        phase: Phase;
+        opponentTeam: string;
+        location: string;
+        availableIds: string[];
+        firstPutup: "us" | "them";
+        log: ThrowMatchLog[];
+        live: LiveMatchState;
+        step: Step;
+      };
+      if (Date.now() - parsed.savedAt > STORAGE_TTL_MS) {
+        window.localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      // Sanity-check the available IDs against current roster.
+      const validIds = parsed.availableIds.filter((id) =>
+        visibleRoster.some((p) => p.id === id),
+      );
+      if (validIds.length === 0) return;
+      setPhase(parsed.phase);
+      setOpponentTeam(parsed.opponentTeam);
+      setLocation(parsed.location);
+      setAvailable(new Set(validIds));
+      setFirstPutup(parsed.firstPutup);
+      setLog(parsed.log);
+      setLive(parsed.live);
+      setStep(parsed.step);
+    } catch {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
+    // Only run once on mount; we don't want to auto-overwrite the saved state
+    // before the user actually starts editing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save on every state change.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // Don't persist a fresh-out-of-the-box setup state with no log.
+    if (phase === "setup" && log.length === 0) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    try {
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          savedAt: Date.now(),
+          phase,
+          opponentTeam,
+          location,
+          availableIds: [...available],
+          firstPutup,
+          log,
+          live,
+          step,
+        }),
+      );
+    } catch {
+      // localStorage full or disabled — silently skip.
+    }
+  }, [phase, opponentTeam, location, available, firstPutup, log, live, step]);
+
+  // ---------------- Step-change side effects -------------------------
+  // Auto-scroll the new step card to the top of the viewport (smooth).
+  // Haptic feedback (where supported) on transitions.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (phase === "setup") return;
+    // Scroll to top of the throw advisor section (look for our section anchor).
+    const target = document.getElementById("throw");
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      const top = window.scrollY + rect.top - 16;
+      window.scrollTo({ top, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // Light tap-tap haptic if supported.
+    if ("vibrate" in window.navigator) {
+      try {
+        window.navigator.vibrate?.(8);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [phase, step, live.position]);
+
   function startNight() {
     setLog([]);
     setLive({ position: 1, weThrowFirst: firstPutup === "us" });
@@ -950,15 +1051,21 @@ function ResultStep({
         <div className="mt-3 grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => onSubmit("W")}
-            className="min-h-[64px] rounded-2xl border-2 border-[var(--color-felt-bright)] bg-[var(--color-felt)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt)]/25"
+            onClick={() => {
+              haptic([20, 30, 40]);
+              onSubmit("W");
+            }}
+            className="min-h-[64px] rounded-2xl border-2 border-[var(--color-felt-bright)] bg-[var(--color-felt)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-felt-bright)] active:scale-95 hover:bg-[var(--color-felt)]/25 transition-transform"
           >
             ✓ We won
           </button>
           <button
             type="button"
-            onClick={() => onSubmit("L")}
-            className="min-h-[64px] rounded-2xl border-2 border-[var(--color-pop-bright)] bg-[var(--color-pop)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-pop-bright)] hover:bg-[var(--color-pop)]/25"
+            onClick={() => {
+              haptic(60);
+              onSubmit("L");
+            }}
+            className="min-h-[64px] rounded-2xl border-2 border-[var(--color-pop-bright)] bg-[var(--color-pop)]/15 px-4 py-3 text-lg font-semibold text-[var(--color-pop-bright)] active:scale-95 hover:bg-[var(--color-pop)]/25 transition-transform"
           >
             ✗ We lost
           </button>
@@ -1064,12 +1171,21 @@ function RecommendationCard({
         <ComponentBar label="Form" c={top.components.form} />
         <ComponentBar label="vs Team" c={top.components.vsTeam} />
         <ComponentBar label="Slot fit" c={top.components.position} />
-        <ComponentBar label="Venue" c={top.components.venue} />
+        <VenueBar c={top.components.venue} />
       </div>
+
+      <LookaheadStrip
+        teamValue={top.components.lookahead}
+        delta={top.components.lookaheadDelta}
+        race={top.components.raceEquity}
+      />
 
       <button
         type="button"
-        onClick={() => onLockIn(top)}
+        onClick={() => {
+          haptic(15);
+          onLockIn(top);
+        }}
         className="sticky bottom-4 z-10 mt-5 flex w-full min-h-[52px] items-center justify-center gap-2 rounded-full bg-[var(--color-brass)] px-6 py-3 text-base font-semibold text-[var(--color-ink)] shadow-lg hover:bg-[var(--color-brass-bright)]"
       >
         {ctaLabel} → {top.playerName.split(" ")[0]}
@@ -1170,19 +1286,20 @@ function CandidateRow({
             <ComponentBar label="Form" c={candidate.components.form} />
             <ComponentBar label="vs Team" c={candidate.components.vsTeam} />
             <ComponentBar label="Slot fit" c={candidate.components.position} />
-            <ComponentBar label="Venue" c={candidate.components.venue} />
+            <VenueBar c={candidate.components.venue} />
           </div>
-          <div className="mt-3 flex justify-between text-[11px] text-[var(--fg-dim)]">
-            <span>
-              Race-chart equity:{" "}
-              <span className="font-semibold text-[var(--fg)]">
-                {candidate.components.raceEquity}%
-              </span>
-            </span>
+          <LookaheadStrip
+            teamValue={candidate.components.lookahead}
+            delta={candidate.components.lookaheadDelta}
+            race={candidate.components.raceEquity}
+            compact
+          />
+          <div className="mt-3 flex justify-end text-[11px]">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
+                haptic(15);
                 onPick();
               }}
               disabled={!candidate.feasible}
@@ -1215,6 +1332,59 @@ function DoneScreen({
   const ourScore = log.filter((t) => t.outcome === "W").length;
   const theirScore = log.filter((t) => t.outcome === "L").length;
   const won = ourScore > theirScore;
+  const [copied, setCopied] = useState(false);
+
+  // Confetti on a team win — fire once on mount.
+  useEffect(() => {
+    if (!won) return;
+    haptic([20, 40, 20, 40, 60]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const mod = await import("canvas-confetti");
+        if (cancelled) return;
+        const fire = mod.default;
+        fire({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.3 },
+          colors: ["#c9a24a", "#f0d27a", "#1f9d55", "#e64a4a"],
+        });
+        setTimeout(() => fire({ particleCount: 60, spread: 100, origin: { y: 0.5 } }), 350);
+      } catch {
+        /* canvas-confetti optional */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [won]);
+
+  function copySummary() {
+    const lines: string[] = [
+      `🎱 Top Dogs ${ourScore}–${theirScore} ${opponentTeam}${won ? " ✅" : theirScore > ourScore ? " ❌" : ""}`,
+      "",
+      ...log.map((t) => {
+        const player = roster.find((p) => p.id === t.ourPlayerId);
+        const us = `${player?.name ?? t.ourPlayerId}${t.ourSkillLevel != null ? ` (SL${t.ourSkillLevel})` : ""}`;
+        const them = `${t.oppName}${t.oppSkillLevel != null ? ` (SL${t.oppSkillLevel})` : ""}`;
+        const outcome = t.outcome === "W" ? "W" : t.outcome === "L" ? "L" : "·";
+        return `M${t.position}: ${us} vs ${them} — ${outcome}`;
+      }),
+    ];
+    const text = lines.join("\n");
+    navigator.clipboard?.writeText(text).then(
+      () => {
+        setCopied(true);
+        haptic(20);
+        setTimeout(() => setCopied(false), 2000);
+      },
+      () => {
+        /* ignore */
+      },
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="surface p-6 text-center">
@@ -1234,13 +1404,22 @@ function DoneScreen({
         </p>
       </div>
       <ThrowsSoFar log={log} roster={roster} onRewind={onRewind} />
-      <button
-        type="button"
-        onClick={onReset}
-        className="w-full min-h-[52px] rounded-full border border-[var(--border)] px-6 py-3 text-base font-semibold text-[var(--fg-dim)] hover:text-[var(--fg)]"
-      >
-        Start a new night
-      </button>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={copySummary}
+          className="min-h-[52px] rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/10 px-6 py-3 text-base font-semibold text-[var(--color-brass-bright)] hover:bg-[var(--color-brass)]/20"
+        >
+          {copied ? "✓ Copied to clipboard" : "📋 Copy night summary"}
+        </button>
+        <button
+          type="button"
+          onClick={onReset}
+          className="min-h-[52px] rounded-full border border-[var(--border)] px-6 py-3 text-base font-semibold text-[var(--fg-dim)] hover:text-[var(--fg)]"
+        >
+          Start a new night
+        </button>
+      </div>
     </div>
   );
 }
@@ -1509,4 +1688,109 @@ function ComponentBar({ label, c }: { label: string; c: ThrowComponentScore }) {
       </div>
     </div>
   );
+}
+
+/** Same shape as ComponentBar but rendered in a muted "info only" treatment. */
+function VenueBar({ c }: { c: ThrowComponentScore }) {
+  const pct = c.noData ? 0 : Math.round(c.smoothed);
+  return (
+    <div className="rounded-md border border-dashed border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 opacity-80">
+      <div className="flex items-baseline justify-between text-[11px]">
+        <span className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Venue <span className="ml-1 normal-case tracking-normal opacity-60">(info)</span>
+        </span>
+        <span className="tabular-nums text-[var(--fg-dim)]">
+          {c.noData ? "—" : `${c.wins}-${c.losses}`}
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 rounded-full bg-[var(--bg-soft)]">
+        <div
+          className="h-full rounded-full bg-[var(--fg-dim)]/40"
+          style={{ width: `${c.noData ? 0 : pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Lookahead + race-chart strip — small horizontal info row that prints two
+ * lineup-wide signals next to each other:
+ *   - Team value (lookahead): how good is the rest of the night if we lock
+ *     this player here? Higher is better. Delta vs the team-optimal pick is
+ *     shown as a coloured ± nudge.
+ *   - Race-chart equity: APA's asymmetric race chart, > 50 = race favors us.
+ */
+function LookaheadStrip({
+  teamValue,
+  delta,
+  race,
+  compact = false,
+}: {
+  teamValue: number;
+  delta: number;
+  race: number;
+  compact?: boolean;
+}) {
+  const isOptimal = delta >= -0.5;
+  const deltaCls = isOptimal
+    ? "text-[var(--color-felt-bright)]"
+    : delta >= -5
+      ? "text-[var(--color-brass-bright)]"
+      : "text-[var(--color-pop-bright)]";
+  return (
+    <div
+      className={cn(
+        "mt-3 grid grid-cols-2 gap-2 rounded-md border border-[var(--border)] bg-[var(--bg-soft)]/50 px-3 py-2 text-[11px]",
+        compact && "mt-2",
+      )}
+    >
+      <div>
+        <div className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Lineup look-ahead
+        </div>
+        <div className="mt-0.5 flex items-baseline gap-2">
+          <span className="font-semibold tabular-nums text-[var(--fg)]">
+            {teamValue}
+          </span>
+          <span className={cn("tabular-nums", deltaCls)}>
+            {isOptimal ? "team-optimal" : `${delta.toFixed(1)} vs best`}
+          </span>
+        </div>
+      </div>
+      <div>
+        <div className="font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Race equity
+        </div>
+        <div className="mt-0.5 flex items-baseline gap-2">
+          <span
+            className={cn(
+              "font-semibold tabular-nums",
+              race >= 55
+                ? "text-[var(--color-felt-bright)]"
+                : race <= 45
+                  ? "text-[var(--color-pop-bright)]"
+                  : "text-[var(--fg)]",
+            )}
+          >
+            {race}%
+          </span>
+          <span className="text-[var(--fg-dim)]">
+            {race >= 55 ? "favors us" : race <= 45 ? "favors them" : "even"}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Lightweight haptic helper — runs only when the browser supports it. */
+function haptic(pattern: number | number[]) {
+  if (typeof window === "undefined") return;
+  if (!("vibrate" in window.navigator)) return;
+  try {
+    window.navigator.vibrate?.(pattern);
+  } catch {
+    /* ignore */
+  }
 }
