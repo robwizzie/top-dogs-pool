@@ -2532,6 +2532,14 @@ export type ThrowMatchLog = {
   oppSkillLevel: number | null;
   /** "W" if we won this individual match; "L" if we lost; "pending" if mid-game. */
   outcome: "W" | "L" | "pending";
+  /**
+   * Per-individual-match race score. Optional — if absent, the recap renders
+   * just "W"/"L" with no game score. Populated by the race-score result step.
+   * Game wins for our player (0..our race target).
+   */
+  ourGames?: number;
+  /** Game wins for the opponent's player (0..their race target). */
+  theirGames?: number;
 };
 
 export type ThrowAdvisorInput = {
