@@ -294,20 +294,23 @@ export function isMatchFinalized(entry: MatchCacheEntry): boolean {
 
 /**
  * Pull opponent team ids from a cached match. APA stores both teams in
- * `match.matchTeams[].team.id`; we filter out our own team.
+ * `match.home` / `match.away`; we filter out our own team.
+ *
+ * (An earlier version of this used `match.matchTeams[]` — that field
+ * doesn't exist on APA's MatchPage payload; it returned [] for every
+ * match, which silently broke the entire opp-data discovery.)
  */
 export function opponentTeamIdsFromMatch(
   entry: MatchCacheEntry,
   ourTeamId: number,
 ): number[] {
   type Team = { id?: number };
-  type MatchTeam = { team?: Team };
-  type M = { matchTeams?: MatchTeam[] };
+  type M = { home?: Team; away?: Team };
   const m = entry.match as M;
   const out: number[] = [];
-  for (const mt of m.matchTeams ?? []) {
-    if (typeof mt.team?.id === "number" && mt.team.id !== ourTeamId) {
-      out.push(mt.team.id);
+  for (const side of [m.home, m.away]) {
+    if (typeof side?.id === "number" && side.id !== ourTeamId) {
+      out.push(side.id);
     }
   }
   return out;

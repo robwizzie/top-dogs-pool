@@ -5097,42 +5097,176 @@ export function opponentScoutingReport(
 
 /* ============================================================ PREDICTED LINEUP
  *
- * Build a 5-slot prediction of how the night could play out under each
- * starting throw order (we-throw-first vs they-throw-first). Each slot
- * alternates per APA rule. Per slot:
- *   - If we throw first: pick our blind opener (recommendOpener-style),
- *     then predict their counter (their not-yet-used player whose race
- *     equity vs our pick is best for them).
- *   - If they throw first: predict their putup (their highest-SL not-yet-
- *     used player, then fall back to preferred-slot heuristics), then
- *     pick our counter (recommendThrow-style).
+ * Build a per-slot prediction of how the night could play out, under
+ * either starting throw order. The output for each slot is rich:
  *
- * Output is a list of 5 PredictedSlot entries with the matchup, the
- * predicted win prob, and which side picked first that slot.
+ *   - WHO they're most likely to put up (top-N opp players with
+ *     probabilities, computed from how often each opp player has
+ *     historically appeared at this slot vs us, normalized over the
+ *     opp roster minus already-used players)
+ *   - OUR best counter (or opener if we throw first), accounting for
+ *     - the probability distribution above (we maximize EXPECTED win
+ *       prob, not just win prob against the most-likely opp)
+ *     - the 23-rule SL budget across the running log
+ *     - lookahead so studs aren't burned in slot 1
+ *   - The expected win probability over the distribution
+ *
+ * The state evolves slot-by-slot: each pick removes the player from
+ * both rosters and bumps the SL budget tracker, so later slots see a
+ * realistic remaining-roster scenario.
  */
+
+export type OpponentLikelihood = {
+  name: string;
+  sl: number | null;
+  /** 0..1 probability they put up at this slot, given the remaining roster. */
+  probability: number;
+  /** How many times we've seen them at this slot historically (for confidence). */
+  observedAtThisSlot: number;
+  /** Their total appearances vs us. */
+  totalAppearances: number;
+};
 
 export type PredictedSlot = {
   position: number;
   weThrowFirst: boolean;
-  ourPlayerId: string | null;
-  ourPlayerName: string;
-  ourSkillLevel: number | null;
-  oppName: string | null;
-  oppSL: number | null;
-  /** 0..100 win probability for our pick at this slot. */
-  winProb: number;
+  /** Their probability distribution over remaining opp roster (top 4). */
+  opponentLikelihoods: OpponentLikelihood[];
+  /** Our recommended pick for this slot. */
+  ourPick: {
+    playerId: string;
+    playerName: string;
+    skillLevel: number | null;
+    /** Win prob against their MOST-LIKELY opp pick. */
+    winProbVsTopLikely: number;
+    /** Expected win prob averaged over the opponent likelihood distribution. */
+    expectedWinProb: number;
+    /** SL after this slot — for budget tracking display. */
+    slBudgetUsed: number;
+    /** Brief reasoning (top 1-2 bullets from the engine). */
+    reasoning: string[];
+  } | null;
+  /** True if no feasible pick (e.g., 23-budget exhausted). */
+  blocked: boolean;
 };
 
 export type PredictedLineup = {
   scenario: "we-first" | "they-first";
   slots: PredictedSlot[];
-  /** Our predicted total team-match points. */
+  /** Predicted team-match points (us / them). */
   ourPoints: number;
-  /** Opp's predicted total team-match points. */
   theirPoints: number;
-  /** Probability we win the team match. */
+  /** Probability we win the team match (Markov over slot win probs). */
   nightWinProbability: number;
 };
+
+/**
+ * Build per-opp-player slot frequency map from match history.
+ * Returns: oppName → Map<slot, count>
+ */
+function opponentSlotFrequencies(
+  matches: Match[],
+  opponentTeam: string,
+): Map<string, Map<number, number>> {
+  const teamKey = opponentTeam.trim().toLowerCase();
+  const out = new Map<string, Map<number, number>>();
+  for (const m of matches) {
+    if (m.status !== "completed") continue;
+    if ((m.opponent ?? "").trim().toLowerCase() !== teamKey) continue;
+    for (const r of m.results) {
+      const name = (r.opponentName ?? "").trim();
+      if (!name || name === "Opponent") continue;
+      if (typeof r.matchPosition !== "number") continue;
+      let inner = out.get(name);
+      if (!inner) {
+        inner = new Map();
+        out.set(name, inner);
+      }
+      inner.set(r.matchPosition, (inner.get(r.matchPosition) ?? 0) + 1);
+    }
+  }
+  return out;
+}
+
+/**
+ * Compute per-slot probability distribution over remaining opp players.
+ * Uses Beta-smoothed slot affinity: a player's score for slot N is
+ *   (their appearances at N + 0.5) / (their total appearances + 2.5)
+ * which keeps tiny samples from dominating but lets clear preferences
+ * show. Probabilities are normalized across the remaining roster.
+ */
+function opponentLikelihoodsForSlot(
+  remainingOpp: Array<{ name: string; latestSL: number | null }>,
+  slot: number,
+  freqMap: Map<string, Map<number, number>>,
+): OpponentLikelihood[] {
+  if (remainingOpp.length === 0) return [];
+  const scored: Array<{
+    name: string;
+    sl: number | null;
+    score: number;
+    observedAtThisSlot: number;
+    totalAppearances: number;
+  }> = [];
+  for (const op of remainingOpp) {
+    const slotCounts = freqMap.get(op.name);
+    let totalAt = 0;
+    let total = 0;
+    if (slotCounts) {
+      totalAt = slotCounts.get(slot) ?? 0;
+      for (const v of slotCounts.values()) total += v;
+    }
+    // Beta-smoothed slot affinity: prior of 0.5/2.5 = 20% baseline.
+    const slotAffinity = (totalAt + 0.5) / (total + 2.5);
+    // Players with no history get a small prior so they're still in the mix.
+    scored.push({
+      name: op.name,
+      sl: op.latestSL,
+      score: slotAffinity,
+      observedAtThisSlot: totalAt,
+      totalAppearances: total,
+    });
+  }
+  const totalScore = scored.reduce((s, x) => s + x.score, 0) || 1;
+  const normalized = scored
+    .map((x) => ({
+      name: x.name,
+      sl: x.sl,
+      probability: x.score / totalScore,
+      observedAtThisSlot: x.observedAtThisSlot,
+      totalAppearances: x.totalAppearances,
+    }))
+    .sort((a, b) => b.probability - a.probability);
+  return normalized.slice(0, 4);
+}
+
+/**
+ * Predict the opponent's adversarial counter to OUR pick. They'll choose
+ * the remaining opp player who minimizes our win probability — race chart
+ * + their SL is enough signal here.
+ */
+function adversarialCounterFor(
+  candidate: ThrowCandidate,
+  remainingOpp: Array<{ name: string; latestSL: number | null }>,
+): { name: string; sl: number | null } | null {
+  if (remainingOpp.length === 0) return null;
+  if (typeof candidate.skillLevel !== "number") {
+    const fallback = remainingOpp[0];
+    return fallback ? { name: fallback.name, sl: fallback.latestSL } : null;
+  }
+  let worstWinProb = 100;
+  let worst: { name: string; sl: number | null } | null = null;
+  for (const op of remainingOpp) {
+    if (typeof op.latestSL !== "number") continue;
+    // Approx: race equity is the dominant factor for unknown opponents.
+    const re = raceEquity(candidate.skillLevel, op.latestSL);
+    if (re < worstWinProb) {
+      worstWinProb = re;
+      worst = { name: op.name, sl: op.latestSL };
+    }
+  }
+  return worst;
+}
 
 export function predictLineup(
   scenario: "we-first" | "they-first",
@@ -5145,8 +5279,13 @@ export function predictLineup(
 ): PredictedLineup {
   const usedOurIds = new Set<string>();
   const usedOppNames = new Set<string>();
+  // Running log so SL budget + lookahead reflect prior slot decisions.
+  const log: ThrowMatchLog[] = [];
   const slots: PredictedSlot[] = [];
-  const slotProbs: number[] = [];
+  const expectedWinProbs: number[] = [];
+
+  // Per-opp-player slot frequency map (precomputed once).
+  const freqMap = opponentSlotFrequencies(matches, opponentTeam);
 
   for (let pos = 1; pos <= 5; pos++) {
     const weThrowFirst =
@@ -5154,20 +5293,26 @@ export function predictLineup(
     const remainingOpp = opponentRoster.filter(
       (p) => !usedOppNames.has(p.name),
     );
+    const likelihoods = opponentLikelihoodsForSlot(remainingOpp, pos, freqMap);
+
+    // Available our roster (not yet used + visible + on-bar).
+    const availIds = new Set(
+      roster
+        .filter((p) => p.visible !== false && !usedOurIds.has(p.id))
+        .map((p) => p.id),
+    );
 
     if (weThrowFirst) {
-      // Use the opener engine — adversarial picks our minimax pick.
+      // Adversarial opener — engine returns the candidate whose worst-case
+      // counter gives us the best worst-case win prob, with lookahead +
+      // 23-rule + saveForLater all baked in.
       const result = recommendOpener(
         {
           opponentTeam,
           location,
           currentPosition: pos,
-          availablePlayerIds: new Set(
-            roster
-              .filter((p) => p.visible !== false && !usedOurIds.has(p.id))
-              .map((p) => p.id),
-          ),
-          log: [],
+          availablePlayerIds: availIds,
+          log,
           opponentRoster: remainingOpp.map((p) => ({
             name: p.name,
             latestSL: p.latestSL,
@@ -5182,83 +5327,92 @@ export function predictLineup(
         slots.push({
           position: pos,
           weThrowFirst,
-          ourPlayerId: null,
-          ourPlayerName: "(no pick)",
-          ourSkillLevel: null,
-          oppName: null,
-          oppSL: null,
-          winProb: 50,
+          opponentLikelihoods: likelihoods,
+          ourPick: null,
+          blocked: true,
         });
-        slotProbs.push(0.5);
+        expectedWinProbs.push(0.5);
         continue;
       }
-      // Predict their counter — the opp player giving us the worst race.
-      let worstOpp: { name: string; sl: number | null } | null = null;
-      let worstWinProb = top.matchupScore;
-      for (const op of remainingOpp) {
-        if (typeof op.latestSL !== "number") continue;
-        const re = raceEquity(top.skillLevel, op.latestSL);
-        // Use race equity directly as their counter-strength signal.
-        if (re < worstWinProb) {
-          worstWinProb = re;
-          worstOpp = { name: op.name, sl: op.latestSL };
-        }
-      }
-      const finalOpp = worstOpp ?? {
+      // Their predicted counter (adversarial pick from remaining roster).
+      const adversarial = adversarialCounterFor(top, remainingOpp);
+      const oppForLog = adversarial ?? {
         name: remainingOpp[0]?.name ?? "TBD",
         sl: remainingOpp[0]?.latestSL ?? null,
       };
+      // Expected win prob: weighted across the likelihoods. (When we throw
+      // first the opp picks adversarially though, so likelihoods aren't the
+      // actual distribution — but they still inform "what if their captain
+      // doesn't pick optimally". Average the two as a reasonable middle
+      // ground.)
+      const adversarialWP =
+        adversarial && typeof adversarial.sl === "number"
+          ? hypotheticalWinProbability(top, adversarial.sl, false)
+          : top.matchupScore;
+      let expectedAcrossDist = 0;
+      let probSum = 0;
+      for (const l of likelihoods) {
+        if (typeof l.sl !== "number") continue;
+        const wp = hypotheticalWinProbability(top, l.sl, false);
+        expectedAcrossDist += l.probability * wp;
+        probSum += l.probability;
+      }
+      if (probSum > 0) expectedAcrossDist /= probSum;
+      const expectedWP =
+        Math.round(((adversarialWP + expectedAcrossDist) / 2) * 10) / 10;
+      log.push({
+        position: pos,
+        ourPlayerId: top.playerId,
+        ourSkillLevel: top.skillLevel,
+        oppName: oppForLog.name,
+        oppSkillLevel: oppForLog.sl,
+        outcome: "pending",
+      });
       usedOurIds.add(top.playerId);
-      usedOppNames.add(finalOpp.name);
+      if (adversarial) usedOppNames.add(adversarial.name);
       slots.push({
         position: pos,
-        weThrowFirst: true,
-        ourPlayerId: top.playerId,
-        ourPlayerName: top.playerName,
-        ourSkillLevel: top.skillLevel,
-        oppName: finalOpp.name,
-        oppSL: finalOpp.sl,
-        winProb: top.matchupScore,
+        weThrowFirst,
+        opponentLikelihoods: likelihoods,
+        ourPick: {
+          playerId: top.playerId,
+          playerName: top.playerName,
+          skillLevel: top.skillLevel,
+          winProbVsTopLikely: Math.round(adversarialWP * 10) / 10,
+          expectedWinProb: expectedWP,
+          slBudgetUsed: log.reduce((s, t) => s + (t.ourSkillLevel ?? 0), 0),
+          reasoning: top.reasoning.slice(0, 2),
+        },
+        blocked: false,
       });
-      slotProbs.push(top.matchupScore / 100);
+      expectedWinProbs.push(expectedWP / 100);
     } else {
-      // They throw first → predict their putup (highest pending SL,
-      // tie-break by preferred position match), then we counter.
-      const sortedOpp = [...remainingOpp].sort((a, c) => {
-        const slDiff = (c.latestSL ?? 0) - (a.latestSL ?? 0);
-        if (slDiff !== 0) return slDiff;
-        const aPref = a.preferredPosition === pos ? 1 : 0;
-        const cPref = c.preferredPosition === pos ? 1 : 0;
-        return cPref - aPref;
-      });
-      const oppPick = sortedOpp[0];
-      if (!oppPick || typeof oppPick.latestSL !== "number") {
+      // They throw first. Use the most-likely opp player as the named
+      // "current opponent" but pick OUR player to maximize EXPECTED win
+      // prob across the full distribution.
+      const top = likelihoods[0];
+      if (!top || typeof top.sl !== "number") {
         slots.push({
           position: pos,
-          weThrowFirst: false,
-          ourPlayerId: null,
-          ourPlayerName: "(no opp data)",
-          ourSkillLevel: null,
-          oppName: oppPick?.name ?? null,
-          oppSL: oppPick?.latestSL ?? null,
-          winProb: 50,
+          weThrowFirst,
+          opponentLikelihoods: likelihoods,
+          ourPick: null,
+          blocked: true,
         });
-        slotProbs.push(0.5);
+        expectedWinProbs.push(0.5);
         continue;
       }
+      // Run recommendThrow against the most-likely opp player (gives us
+      // ranked candidates with full reasoning + 23-rule + lookahead).
       const result = recommendThrow(
         {
           opponentTeam,
           location,
           currentPosition: pos,
-          opponentName: oppPick.name,
-          opponentSkillLevel: oppPick.latestSL,
-          availablePlayerIds: new Set(
-            roster
-              .filter((p) => p.visible !== false && !usedOurIds.has(p.id))
-              .map((p) => p.id),
-          ),
-          log: [],
+          opponentName: top.name,
+          opponentSkillLevel: top.sl,
+          availablePlayerIds: availIds,
+          log,
           opponentRoster: opponentRoster.map((p) => ({
             name: p.name,
             latestSL: p.latestSL,
@@ -5268,51 +5422,83 @@ export function predictLineup(
         roster,
         refDate,
       );
-      const top = result.candidates.find((c) => c.feasible);
-      if (!top) {
-        usedOppNames.add(oppPick.name);
+      // Maximize expected win prob across opp likelihoods, not just vs the
+      // top likely. Use hypotheticalWinProbability per (candidate, opp).
+      let bestCandidate: ThrowCandidate | null = null;
+      let bestExpected = -1;
+      for (const c of result.candidates) {
+        if (!c.feasible || c.saveForLater) continue;
+        let exp = 0;
+        let probSum = 0;
+        for (const l of likelihoods) {
+          if (typeof l.sl !== "number") continue;
+          const wp = hypotheticalWinProbability(c, l.sl, false);
+          exp += l.probability * wp;
+          probSum += l.probability;
+        }
+        if (probSum > 0) exp /= probSum;
+        if (exp > bestExpected) {
+          bestExpected = exp;
+          bestCandidate = c;
+        }
+      }
+      if (!bestCandidate) {
+        // Fall back to topPick from engine.
+        bestCandidate = result.topPick;
+      }
+      if (!bestCandidate) {
+        usedOppNames.add(top.name);
         slots.push({
           position: pos,
-          weThrowFirst: false,
-          ourPlayerId: null,
-          ourPlayerName: "(no pick)",
-          ourSkillLevel: null,
-          oppName: oppPick.name,
-          oppSL: oppPick.latestSL,
-          winProb: 50,
+          weThrowFirst,
+          opponentLikelihoods: likelihoods,
+          ourPick: null,
+          blocked: true,
         });
-        slotProbs.push(0.5);
+        expectedWinProbs.push(0.5);
         continue;
       }
-      usedOurIds.add(top.playerId);
-      usedOppNames.add(oppPick.name);
+      const winVsTop = bestCandidate.matchupScore;
+      const expectedWP =
+        bestExpected >= 0 ? Math.round(bestExpected * 10) / 10 : winVsTop;
+      log.push({
+        position: pos,
+        ourPlayerId: bestCandidate.playerId,
+        ourSkillLevel: bestCandidate.skillLevel,
+        oppName: top.name,
+        oppSkillLevel: top.sl,
+        outcome: "pending",
+      });
+      usedOurIds.add(bestCandidate.playerId);
+      usedOppNames.add(top.name);
       slots.push({
         position: pos,
-        weThrowFirst: false,
-        ourPlayerId: top.playerId,
-        ourPlayerName: top.playerName,
-        ourSkillLevel: top.skillLevel,
-        oppName: oppPick.name,
-        oppSL: oppPick.latestSL,
-        winProb: top.matchupScore,
+        weThrowFirst,
+        opponentLikelihoods: likelihoods,
+        ourPick: {
+          playerId: bestCandidate.playerId,
+          playerName: bestCandidate.playerName,
+          skillLevel: bestCandidate.skillLevel,
+          winProbVsTopLikely: Math.round(winVsTop * 10) / 10,
+          expectedWinProb: expectedWP,
+          slBudgetUsed: log.reduce((s, t) => s + (t.ourSkillLevel ?? 0), 0),
+          reasoning: bestCandidate.reasoning.slice(0, 2),
+        },
+        blocked: false,
       });
-      slotProbs.push(top.matchupScore / 100);
+      expectedWinProbs.push(expectedWP / 100);
     }
   }
 
-  // Estimate team-match points from slot probs using the same league-average
-  // sweep/mini/hill distribution the engine uses elsewhere.
+  // Expected team-match points from slot win probs (league-average sweep/
+  // mini/hill distribution: 20%/50%/30%).
   let ourPts = 0;
   let theirPts = 0;
-  for (const p of slotProbs) {
-    // Expected ours: p × (0.20×3 + 0.50×2 + 0.30×2) + (1-p) × (0.30×1) =
-    //               p × 2.20 + (1-p) × 0.30
-    // Expected theirs: p × (0.30×1) + (1-p) × (0.20×3 + 0.50×2 + 0.30×2) =
-    //               p × 0.30 + (1-p) × 2.20
+  for (const p of expectedWinProbs) {
     ourPts += p * 2.2 + (1 - p) * 0.3;
     theirPts += p * 0.3 + (1 - p) * 2.2;
   }
-  const nightProb = nightWinProbability(0, 0, slotProbs);
+  const nightProb = nightWinProbability(0, 0, expectedWinProbs);
 
   return {
     scenario,
