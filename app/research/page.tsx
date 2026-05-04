@@ -2771,55 +2771,233 @@ function CalendarHeatmap({
   if (cells.length === 0) {
     return <p className="surface p-6 text-sm text-[var(--fg-dim)]">No matches.</p>;
   }
+  // calendarHeatmap returns oldest→newest. Reverse so the most-recent
+  // match sits on the LEFT (latest action first).
+  const reversed = [...cells].reverse();
   const maxAbsMargin = Math.max(...cells.map((c) => Math.abs(c.margin)), 1);
+
+  // Played-only stats (excludes byes + upcoming).
+  const played = cells.filter((c) => c.outcome === "W" || c.outcome === "L" || c.outcome === "T");
+  const totalRec = countRecord(played);
+  // Last 10 of completed matches.
+  const last10 = played.slice(-10);
+  const last10Rec = countRecord(last10);
+  // Streak (consecutive same-outcome from the most recent played match).
+  const streak = (() => {
+    if (played.length === 0) return null as null | { kind: "W" | "L" | "T"; count: number };
+    const last = played[played.length - 1].outcome as "W" | "L" | "T";
+    let n = 0;
+    for (let i = played.length - 1; i >= 0; i--) {
+      if (played[i].outcome === last) n++;
+      else break;
+    }
+    return { kind: last, count: n };
+  })();
+
   return (
-    <div className="surface p-4">
-      <div className="grid gap-1 sm:grid-cols-10 md:grid-cols-13 lg:grid-cols-19 grid-cols-7">
-        {cells.map((c) => {
-          const intensity = Math.min(1, Math.abs(c.margin) / maxAbsMargin);
-          const bg =
-            c.outcome === "W"
-              ? `color-mix(in oklab, var(--color-felt-bright) ${20 + intensity * 60}%, transparent)`
-              : c.outcome === "L"
-                ? `color-mix(in oklab, var(--color-pop) ${20 + intensity * 60}%, transparent)`
-                : c.outcome === "BYE"
-                  ? "var(--bg-soft)"
-                  : c.outcome === "UPCOMING"
-                    ? "transparent"
-                    : "var(--bg-soft)";
-          const border = c.outcome === "UPCOMING" ? "border-dashed" : "border-solid";
-          return (
-            <Link
-              key={c.matchId}
-              href={`/matches/${c.matchId}`}
-              title={`Wk${c.week ?? "?"} · vs ${c.opponent} · ${c.teamScore ?? "?"}-${c.opponentScore ?? "?"}`}
-              className={cn(
-                "relative flex aspect-square items-center justify-center rounded border text-[9px] font-bold",
-                border,
-                "border-[var(--border)] hover:border-[var(--color-brass)]",
-              )}
-              style={{ backgroundColor: bg }}
-            >
-              <span
-                className={cn(
-                  c.outcome === "W"
-                    ? "text-[var(--color-felt-bright)]"
-                    : c.outcome === "L"
-                      ? "text-[var(--color-pop-bright)]"
-                      : "text-[var(--fg-dim)]",
-                )}
-              >
-                {c.outcome === "W" ? "W" : c.outcome === "L" ? "L" : c.outcome === "BYE" ? "B" : "·"}
-              </span>
-            </Link>
-          );
-        })}
+    <div className="space-y-3">
+      {/* Summary strip — total + last-10 + streak */}
+      <div className="grid gap-3 sm:grid-cols-3">
+        <SummaryStat
+          label="Season"
+          value={fmtRecord(totalRec)}
+          sub={`${played.length} match${played.length === 1 ? "" : "es"} played`}
+        />
+        <SummaryStat
+          label="Last 10"
+          value={fmtRecord(last10Rec)}
+          sub={
+            last10.length > 0
+              ? `${Math.round((last10Rec.w / Math.max(1, last10Rec.w + last10Rec.l + last10Rec.t)) * 100)}% win rate`
+              : "—"
+          }
+          tone={
+            last10Rec.w > last10Rec.l
+              ? "text-[var(--color-felt-bright)]"
+              : last10Rec.w < last10Rec.l
+                ? "text-[var(--color-pop-bright)]"
+                : undefined
+          }
+        />
+        {streak && streak.count >= 2 ? (
+          <SummaryStat
+            label="Current streak"
+            value={`${streak.count}${streak.kind}`}
+            sub={
+              streak.kind === "W"
+                ? "wins in a row 🐕"
+                : streak.kind === "L"
+                  ? "losses in a row"
+                  : "ties in a row"
+            }
+            tone={
+              streak.kind === "W"
+                ? "text-[var(--color-felt-bright)]"
+                : streak.kind === "L"
+                  ? "text-[var(--color-pop-bright)]"
+                  : undefined
+            }
+          />
+        ) : (
+          <SummaryStat
+            label="Most recent"
+            value={
+              played.length > 0
+                ? (played[played.length - 1].outcome as string)
+                : "—"
+            }
+            sub={played.length > 0 ? `vs ${played[played.length - 1].opponent}` : ""}
+          />
+        )}
       </div>
-      <p className="mt-3 text-[10px] text-[var(--fg-dim)]">
-        Hover a cell for the matchup. Color intensity = team-point margin.
-      </p>
+
+      {/* Match cards — most recent first (left). Horizontally scrollable on
+          mobile, wrapping grid on desktop. */}
+      <div className="surface p-3 sm:p-4">
+        <div className="-mx-1 flex gap-2 overflow-x-auto pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible">
+          {reversed.map((c) => (
+            <MatchCell key={c.matchId} cell={c} maxAbsMargin={maxAbsMargin} />
+          ))}
+        </div>
+        <p className="mt-2 text-[10px] text-[var(--fg-dim)]">
+          Most recent on the left. Color intensity scales with the team-point margin. Tap any card to open the match.
+        </p>
+      </div>
     </div>
   );
+}
+
+function countRecord(cells: ReturnType<typeof calendarHeatmap>) {
+  let w = 0,
+    l = 0,
+    t = 0;
+  for (const c of cells) {
+    if (c.outcome === "W") w++;
+    else if (c.outcome === "L") l++;
+    else if (c.outcome === "T") t++;
+  }
+  return { w, l, t };
+}
+
+function fmtRecord({ w, l, t }: { w: number; l: number; t: number }) {
+  return t > 0 ? `${w}–${l}–${t}` : `${w}–${l}`;
+}
+
+function SummaryStat({
+  label,
+  value,
+  sub,
+  tone,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: string;
+}) {
+  return (
+    <div className="surface p-4">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+        {label}
+      </p>
+      <p
+        className={cn(
+          "mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums",
+          tone ?? "text-[var(--color-cream)]",
+        )}
+      >
+        {value}
+      </p>
+      {sub && <p className="text-[10px] text-[var(--fg-dim)]">{sub}</p>}
+    </div>
+  );
+}
+
+function MatchCell({
+  cell,
+  maxAbsMargin,
+}: {
+  cell: ReturnType<typeof calendarHeatmap>[number];
+  maxAbsMargin: number;
+}) {
+  const intensity = Math.min(1, Math.abs(cell.margin) / maxAbsMargin);
+  const tone =
+    cell.outcome === "W"
+      ? "text-[var(--color-felt-bright)]"
+      : cell.outcome === "L"
+        ? "text-[var(--color-pop-bright)]"
+        : cell.outcome === "T"
+          ? "text-[var(--color-brass-bright)]"
+          : "text-[var(--fg-dim)]";
+  const bg =
+    cell.outcome === "W"
+      ? `color-mix(in oklab, var(--color-felt-bright) ${15 + intensity * 50}%, transparent)`
+      : cell.outcome === "L"
+        ? `color-mix(in oklab, var(--color-pop) ${15 + intensity * 50}%, transparent)`
+        : cell.outcome === "T"
+          ? `color-mix(in oklab, var(--color-brass) 25%, transparent)`
+          : cell.outcome === "BYE"
+            ? "var(--bg-soft)"
+            : "transparent";
+  const border =
+    cell.outcome === "UPCOMING"
+      ? "border-dashed border-[var(--border)]"
+      : "border-solid border-[var(--border)]";
+  const badge =
+    cell.outcome === "W"
+      ? "W"
+      : cell.outcome === "L"
+        ? "L"
+        : cell.outcome === "T"
+          ? "T"
+          : cell.outcome === "BYE"
+            ? "BYE"
+            : "—";
+  const dateStr = formatShortDate(cell.date);
+  const scoreStr =
+    typeof cell.teamScore === "number" && typeof cell.opponentScore === "number"
+      ? `${cell.teamScore}–${cell.opponentScore}`
+      : null;
+  const oppLabel = cell.outcome === "BYE" ? "BYE" : cell.opponent;
+  const isUpcoming = cell.outcome === "UPCOMING";
+  return (
+    <Link
+      href={`/matches/${cell.matchId}`}
+      title={`${dateStr} · vs ${oppLabel}${scoreStr ? ` · ${scoreStr}` : ""}`}
+      className={cn(
+        "group flex w-[140px] shrink-0 flex-col gap-1.5 rounded-md border-2 px-3 py-2.5 transition-colors",
+        "hover:border-[var(--color-brass)] sm:w-[160px]",
+        border,
+      )}
+      style={{ backgroundColor: bg }}
+    >
+      <div className="flex items-baseline justify-between gap-1">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          Wk{cell.week ?? "?"} · {dateStr}
+        </span>
+        <span className={cn("text-[11px] font-bold uppercase tracking-[0.2em]", tone)}>
+          {badge}
+        </span>
+      </div>
+      <div className="truncate text-sm font-semibold text-[var(--fg)]" title={oppLabel}>
+        vs {oppLabel}
+      </div>
+      <div className="text-[11px] tabular-nums">
+        {scoreStr ? (
+          <span className={tone}>{scoreStr}</span>
+        ) : isUpcoming ? (
+          <span className="text-[var(--fg-dim)]">upcoming</span>
+        ) : (
+          <span className="text-[var(--fg-dim)]">—</span>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+function formatShortDate(iso: string) {
+  const d = new Date(iso);
+  if (isNaN(+d)) return "?";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 /* ============================================== Level-Up Watch */
