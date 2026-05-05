@@ -12,7 +12,10 @@ import type { MatchResult } from "@/lib/apa/schemas";
 
 export const revalidate = 3600;
 
-type Props = { params: Promise<{ matchId: string }> };
+type Props = {
+  params: Promise<{ matchId: string }>;
+  searchParams: Promise<{ team?: string }>;
+};
 
 export async function generateMetadata({ params }: Props) {
   const { matchId } = await params;
@@ -20,8 +23,9 @@ export async function generateMetadata({ params }: Props) {
   return { title: match ? `vs ${match.opponent}` : "Match" };
 }
 
-export default async function MatchPage({ params }: Props) {
+export default async function MatchPage({ params, searchParams }: Props) {
   const { matchId } = await params;
+  const { team: teamPerspective } = await searchParams;
   const [match, clips, oppTeams, snapshot] = await Promise.all([
     getMatch(matchId),
     getClipsForMatch(matchId),
@@ -30,12 +34,32 @@ export default async function MatchPage({ params }: Props) {
   ]);
   if (!match) notFound();
 
-  // Resolve opp team id by name match — used to deep-link the opponent
-  // header to /opponents/[teamId] when we have a profile for them.
-  const oppTeamKey = match.opponent.trim().toLowerCase();
-  const oppTeamMatch = oppTeams.find(
-    (t) => t.name.trim().toLowerCase() === oppTeamKey,
-  );
+  // Determine the SUBJECT team for this view. With no ?team= param, we
+  // assume our team's perspective (existing behavior). When ?team=X is set
+  // and X has an opp profile, we render the page from THEIR perspective
+  // — useful when arriving here from /opponents/X (their schedule, their
+  // score on the left, their players on the left side of each round).
+  let subjectName = "Top Dogs";
+  let oppLink: { id: number; name: string } | null = null;
+  if (teamPerspective) {
+    const subj = oppTeams.find((t) => String(t.id) === teamPerspective);
+    if (subj) {
+      subjectName = subj.name;
+    }
+    // Resolve the opposing side of THIS match (the team that isn't subj).
+    const oppKey = match.opponent.trim().toLowerCase();
+    const opp = oppTeams.find(
+      (t) => t.name.trim().toLowerCase() === oppKey,
+    );
+    if (opp) oppLink = { id: opp.id, name: opp.name };
+  } else {
+    // Default (our perspective): the "opponent" is the other team.
+    const oppKey = match.opponent.trim().toLowerCase();
+    const opp = oppTeams.find(
+      (t) => t.name.trim().toLowerCase() === oppKey,
+    );
+    if (opp) oppLink = { id: opp.id, name: opp.name };
+  }
   // Resolve opp player ids by name match — used to deep-link each opponent
   // in the round results to their /players/[id] profile when we've scraped
   // them. Built once per page render so per-row lookups are O(1).
@@ -107,8 +131,58 @@ export default async function MatchPage({ params }: Props) {
     arc.push({ position: round.position, us: usWins, them: themWins });
   }
 
-  const recapText = match.status === "completed" ? matchRecap(match) : null;
+  const recapText =
+    match.status === "completed" ? matchRecap(match, subjectName) : null;
   const mvp = match.status === "completed" ? matchMvp(match) : null;
+
+  // ----- Fun stats — work on any match with results -----------------------
+  // Counts that drive the highlight strip: sweeps, mini-sweeps, B&Rs, 8oBs,
+  // total games played, biggest individual margin, fastest match (lowest
+  // total games), etc.
+  const named = match.results.filter(
+    (r) => !r.playerId.startsWith("hidden:") && !r.playerId.startsWith("ebp:"),
+  );
+  const ourWinsCount = named.filter((r) => r.outcome === "W").length;
+  const ourSweeps = named.filter((r) => r.outcome === "W" && r.sweep).length;
+  const ourMinis = named.filter(
+    (r) => r.outcome === "W" && !r.sweep && r.miniSweep,
+  ).length;
+  const oppSweeps = named.filter((r) => r.outcome === "L" && r.sweep).length;
+  const oppMinis = named.filter(
+    (r) => r.outcome === "L" && !r.sweep && r.miniSweep,
+  ).length;
+  const breakAndRunCount = named.filter((r) => r.breakAndRun).length;
+  const eightOnBreakCount = named.filter((r) => r.eightOnBreak).length;
+  // Closest match: smallest |a - b| with both > 0 (skip forfeits / 5-0s
+  // when we're hunting for "drama" — we want a hill-hill or near-hill).
+  const closestRow = (() => {
+    let best: { row: MatchResult; diff: number } | null = null;
+    for (const r of named) {
+      if (!r.score) continue;
+      const m = r.score.match(/(\d+)-(\d+)/);
+      if (!m) continue;
+      const a = parseInt(m[1], 10);
+      const b = parseInt(m[2], 10);
+      if (!Number.isFinite(a) || !Number.isFinite(b)) continue;
+      if (a === 0 || b === 0) continue;
+      const diff = Math.abs(a - b);
+      if (!best || diff < best.diff) best = { row: r, diff };
+    }
+    return best?.row ?? null;
+  })();
+  // Biggest individual blowout — largest game differential when one side
+  // wins decisively.
+  const blowoutRow = (() => {
+    let best: { row: MatchResult; diff: number } | null = null;
+    for (const r of named) {
+      if (!r.score) continue;
+      const m = r.score.match(/(\d+)-(\d+)/);
+      if (!m) continue;
+      const diff = Math.abs(parseInt(m[1], 10) - parseInt(m[2], 10));
+      if (!best || diff > best.diff) best = { row: r, diff };
+    }
+    return best?.row ?? null;
+  })();
 
   return (
     <>
@@ -120,10 +194,11 @@ export default async function MatchPage({ params }: Props) {
         }
         title={
           <span>
-            vs{" "}
-            {oppTeamMatch ? (
+            <span className="mr-1 text-[var(--fg)]">{subjectName}</span>
+            <span className="mx-1 text-[var(--fg-dim)]">vs</span>{" "}
+            {oppLink ? (
               <Link
-                href={`/opponents/${oppTeamMatch.id}`}
+                href={`/opponents/${oppLink.id}`}
                 className="text-[var(--color-brass-bright)] hover:underline"
               >
                 {match.opponent}
@@ -160,12 +235,41 @@ export default async function MatchPage({ params }: Props) {
           <ArrowLeft size={14} /> Back to schedule
         </Link>
 
+        {/* Upcoming card — when the match hasn't been played yet */}
+        {match.status === "upcoming" && (
+          <section className="surface mb-8 p-6">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+              Upcoming match
+            </p>
+            <p className="mt-2 text-2xl">
+              {subjectName} vs{" "}
+              <span className="text-[var(--color-brass-bright)]">
+                {match.opponent}
+              </span>
+            </p>
+            <p className="mt-1 text-sm text-[var(--fg-dim)]">
+              {formatDate(match.date)} · {formatTime(match.date)}
+              {match.location && ` · ${match.location}`}
+            </p>
+            {oppLink && (
+              <p className="mt-3 text-xs">
+                <Link
+                  href={`/opponents/${oppLink.id}`}
+                  className="font-semibold text-[var(--color-brass)] hover:underline"
+                >
+                  Scout {oppLink.name} →
+                </Link>
+              </p>
+            )}
+          </section>
+        )}
+
         {/* Score + recap + MVP combined hero card */}
         {match.teamScore !== undefined && match.opponentScore !== undefined && (
           <section className="surface mb-8 overflow-hidden">
             <div className="grid gap-0 lg:grid-cols-[auto_1fr]">
               <div className="flex items-center justify-around gap-6 border-b border-[var(--border)] p-8 lg:border-b-0 lg:border-r">
-                <ScoreBlock label="Top Dogs" score={match.teamScore} winner={isWin} tie={isTie} />
+                <ScoreBlock label={subjectName} score={match.teamScore} winner={isWin} tie={isTie} />
                 <span className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--fg-dim)]">
                   vs
                 </span>
@@ -213,6 +317,68 @@ export default async function MatchPage({ params }: Props) {
           </section>
         )}
 
+        {/* Fun stats — sweep/mini count, B&Rs, 8oBs, closest match,
+            biggest blowout. Renders for any completed match with results. */}
+        {match.status === "completed" && named.length > 0 && (
+          <section className="mb-8">
+            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+              By the numbers
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <FunStat
+                label="Individual matches"
+                value={`${ourWinsCount}–${named.length - ourWinsCount}`}
+                sub={`${named.length} total · ${subjectName}'s side`}
+              />
+              <FunStat
+                label="Sweeps"
+                value={`${ourSweeps} 🧹 / ${oppSweeps}`}
+                sub={
+                  ourMinis + oppMinis > 0
+                    ? `Mini-sweeps: ${ourMinis} ✨ / ${oppMinis}`
+                    : "no mini-sweeps"
+                }
+                tone={
+                  ourSweeps > oppSweeps
+                    ? "text-[var(--color-felt-bright)]"
+                    : ourSweeps < oppSweeps
+                      ? "text-[var(--color-pop-bright)]"
+                      : undefined
+                }
+              />
+              <FunStat
+                label="Special shots"
+                value={`${breakAndRunCount + eightOnBreakCount}`}
+                sub={
+                  breakAndRunCount + eightOnBreakCount === 0
+                    ? "no B&Rs / 8-on-break"
+                    : `${breakAndRunCount} B&R · ${eightOnBreakCount} 8oB`
+                }
+                tone={
+                  breakAndRunCount + eightOnBreakCount > 0
+                    ? "text-[var(--color-brass-bright)]"
+                    : undefined
+                }
+              />
+              {closestRow ? (
+                <FunStat
+                  label="Closest match"
+                  value={closestRow.score ?? "—"}
+                  sub={`${closestRow.playerName} vs ${closestRow.opponentName}`}
+                />
+              ) : blowoutRow ? (
+                <FunStat
+                  label="Biggest blowout"
+                  value={blowoutRow.score ?? "—"}
+                  sub={`${blowoutRow.playerName} vs ${blowoutRow.opponentName}`}
+                />
+              ) : (
+                <FunStat label="Drama" value="—" sub="all forfeits / no scores" />
+              )}
+            </div>
+          </section>
+        )}
+
         {/* Score arc — per-round running tally of individual wins */}
         {arc.length >= 2 && (
           <section className="mb-10">
@@ -220,7 +386,11 @@ export default async function MatchPage({ params }: Props) {
               The Arc
             </h2>
             <div className="surface p-5">
-              <ScoreArc arc={arc} opponent={match.opponent} />
+              <ScoreArc
+                arc={arc}
+                opponent={match.opponent}
+                subject={subjectName}
+              />
             </div>
           </section>
         )}
@@ -317,6 +487,36 @@ export default async function MatchPage({ params }: Props) {
         )}
       </div>
     </>
+  );
+}
+
+function FunStat({
+  label,
+  value,
+  sub,
+  tone,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: string;
+}) {
+  return (
+    <div className="surface p-4">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+        {label}
+      </p>
+      <p
+        className={
+          tone
+            ? `mt-1 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums ${tone}`
+            : "mt-1 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums text-[var(--color-cream)]"
+        }
+      >
+        {value}
+      </p>
+      {sub && <p className="text-[10px] text-[var(--fg-dim)]">{sub}</p>}
+    </div>
   );
 }
 
@@ -418,9 +618,11 @@ function ResultRow({
 function ScoreArc({
   arc,
   opponent,
+  subject = "Top Dogs",
 }: {
   arc: Array<{ position: number; us: number; them: number }>;
   opponent: string;
+  subject?: string;
 }) {
   const W = 600;
   const H = 160;
@@ -447,7 +649,7 @@ function ScoreArc({
     <svg
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label={`Round-by-round individual wins: Top Dogs ${lastUs}, ${opponent} ${lastThem}`}
+      aria-label={`Round-by-round individual wins: ${subject} ${lastUs}, ${opponent} ${lastThem}`}
       className="w-full"
     >
       {/* Y gridlines */}
@@ -514,10 +716,21 @@ function ScoreArc({
       <g transform={`translate(${padX}, 12)`}>
         <rect width={10} height={3} y={4} fill="var(--color-brass-bright)" />
         <text x={16} y={9} fontSize={11} fill="var(--fg)">
-          Top Dogs
+          {subject}
         </text>
-        <rect width={10} height={3} x={86} y={4} fill="var(--color-pop-bright)" />
-        <text x={102} y={9} fontSize={11} fill="var(--fg)">
+        <rect
+          width={10}
+          height={3}
+          x={subject.length * 6 + 30}
+          y={4}
+          fill="var(--color-pop-bright)"
+        />
+        <text
+          x={subject.length * 6 + 46}
+          y={9}
+          fontSize={11}
+          fill="var(--fg)"
+        >
           {opponent}
         </text>
       </g>

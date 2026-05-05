@@ -393,6 +393,7 @@ export default async function OpponentTeamPage({ params }: Props) {
                     key={p.id}
                     player={p}
                     trend={trendOf(p.career)}
+                    currentSessionId={team.sessionId ?? null}
                   />
                 ))}
             </ul>
@@ -450,7 +451,11 @@ export default async function OpponentTeamPage({ params }: Props) {
                         </span>
                       )}
                     </Link>
-                    <span className="text-sm tabular-nums">
+                    <Link
+                      href={`/matches/${m.id}`}
+                      className="rounded px-1 text-sm tabular-nums transition-colors hover:bg-[var(--bg-soft)]"
+                      title="View this match"
+                    >
                       <span className="text-[var(--color-felt-bright)]">
                         {m.teamScore ?? "—"}
                       </span>
@@ -458,7 +463,7 @@ export default async function OpponentTeamPage({ params }: Props) {
                       <span className="text-[var(--color-pop-bright)]">
                         {m.opponentScore ?? "—"}
                       </span>
-                    </span>
+                    </Link>
                   </li>
                 );
               })}
@@ -565,31 +570,34 @@ export default async function OpponentTeamPage({ params }: Props) {
                 return (
                   <li
                     key={m.id}
-                    className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3"
+                    className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3 transition-colors hover:bg-[var(--bg-soft)]/40"
                   >
-                    <span className="flex flex-wrap items-baseline gap-2">
+                    <Link
+                      href={`/matches/${m.id}?team=${team.id}`}
+                      className="flex flex-1 flex-wrap items-baseline gap-2"
+                    >
                       <span className="text-xs uppercase tracking-[0.2em] text-[var(--fg-dim)]">
                         Wk{m.week ?? "?"}
                       </span>
-                      vs{" "}
-                      {linkedOpp ? (
-                        <Link
-                          href={`/opponents/${linkedOpp.id}`}
-                          className="font-medium hover:text-[var(--color-brass)]"
-                        >
-                          {m.opponent}
-                        </Link>
-                      ) : (
-                        <span className="font-medium">{m.opponent}</span>
-                      )}
+                      <span>
+                        vs <span className="font-medium">{m.opponent}</span>
+                      </span>
                       {m.location && (
                         <span className="text-xs text-[var(--fg-dim)]">
                           @ {m.location}
                         </span>
                       )}
-                    </span>
-                    <span className="text-xs text-[var(--fg-dim)]">
-                      {formatDate(m.date)}
+                    </Link>
+                    <span className="flex items-baseline gap-2 text-xs text-[var(--fg-dim)]">
+                      {linkedOpp && (
+                        <Link
+                          href={`/opponents/${linkedOpp.id}`}
+                          className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-brass)] hover:underline"
+                        >
+                          team →
+                        </Link>
+                      )}
+                      <span>{formatDate(m.date)}</span>
                     </span>
                   </li>
                 );
@@ -622,12 +630,22 @@ export default async function OpponentTeamPage({ params }: Props) {
                   m.opponent.trim().toLowerCase(),
                 );
                 const isVsUs = team.matchesVsUs.includes(m.id);
+                // Use the vs-us match id when available so the link goes to
+                // OUR scoresheet (with our perspective as default); otherwise
+                // pass team= so the match page renders from this opp's
+                // perspective.
+                const matchHref = isVsUs
+                  ? `/matches/${m.id}`
+                  : `/matches/${m.id}?team=${team.id}`;
                 return (
                   <li
                     key={m.id}
-                    className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+                    className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-[var(--bg-soft)]/40"
                   >
-                    <span className="flex flex-1 flex-wrap items-baseline gap-2">
+                    <Link
+                      href={matchHref}
+                      className="flex flex-1 flex-wrap items-baseline gap-2"
+                    >
                       <span
                         className={cn(
                           "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em]",
@@ -649,30 +667,30 @@ export default async function OpponentTeamPage({ params }: Props) {
                       <span className="text-xs uppercase tracking-[0.2em] text-[var(--fg-dim)]">
                         Wk{m.week ?? "?"}
                       </span>
-                      <span>
-                        vs{" "}
-                        {linkedOpp ? (
-                          <Link
-                            href={`/opponents/${linkedOpp.id}`}
-                            className="font-medium hover:text-[var(--color-brass)]"
-                          >
-                            {m.opponent}
-                          </Link>
-                        ) : (
-                          <span className="font-medium">{m.opponent}</span>
-                        )}
-                      </span>
-                    </span>
+                      <span>vs <span className="font-medium">{m.opponent}</span></span>
+                    </Link>
                     <span className="flex items-baseline gap-3 text-sm tabular-nums">
-                      <span
+                      <Link
+                        href={matchHref}
                         className={cn(
+                          "rounded px-1 transition-colors hover:bg-[var(--bg-soft)]",
                           won && "font-semibold text-[var(--color-pop-bright)]",
                           lost && "font-semibold text-[var(--color-felt-bright)]",
                           tied && "font-semibold text-[var(--color-brass-bright)]",
                         )}
+                        title="View this match"
                       >
                         {m.teamScore ?? "-"}–{m.opponentScore ?? "-"}
-                      </span>
+                      </Link>
+                      {linkedOpp && (
+                        <Link
+                          href={`/opponents/${linkedOpp.id}`}
+                          className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-brass)] hover:underline"
+                          title={`View ${m.opponent}`}
+                        >
+                          team →
+                        </Link>
+                      )}
                       <span className="text-xs text-[var(--fg-dim)]">
                         {formatDate(m.date)}
                       </span>
@@ -815,13 +833,16 @@ type RosterEnriched = Player & {
 function RosterCard({
   player,
   trend,
+  currentSessionId,
 }: {
   player: RosterEnriched;
   trend: "hot" | "cold" | "steady";
+  currentSessionId: number | null;
 }) {
   const sessionRec = player.stats;
-  // SL trajectory — last 3 sessions with SL data (newest first → reversed
-  // for left-to-right "oldest to newest" arrows).
+  // SL trajectory — last 4 sessions with SL data (newest first → reversed
+  // for left-to-right "oldest to newest" arrows). Capture sessionId on
+  // each chip so we can highlight the current session distinctly.
   const trajectory = [...(player.sessions ?? [])]
     .filter((s) => s.skillLevel != null)
     .slice(0, 4)
@@ -875,15 +896,27 @@ function RosterCard({
               SL trajectory
             </span>
             <div className="flex items-baseline gap-1">
-              {trajectory.map((s, i) => (
-                <span
-                  key={`${s.sessionId}-${i}`}
-                  className="rounded border border-[var(--border)] px-1 py-px text-[10px] tabular-nums text-[var(--fg-dim)]"
-                  title={`${s.sessionName}: ${s.matchesPlayed ?? 0} matches${s.winPct != null ? ` · ${s.winPct}%` : ""}`}
-                >
-                  {s.skillLevel ?? "?"}
-                </span>
-              ))}
+              {trajectory.map((s, i) => {
+                const isCurrent =
+                  currentSessionId != null && s.sessionId === currentSessionId;
+                return (
+                  <span
+                    key={`${s.sessionId}-${i}`}
+                    className={cn(
+                      "rounded px-1 py-px text-[10px] tabular-nums",
+                      isCurrent
+                        ? "border border-[var(--color-brass)] bg-[var(--color-brass)]/15 font-bold text-[var(--color-brass-bright)]"
+                        : "border border-[var(--border)] text-[var(--fg-dim)]",
+                    )}
+                    title={`${s.sessionName}${isCurrent ? " (current)" : ""}: ${s.matchesPlayed ?? 0} matches${s.winPct != null ? ` · ${s.winPct}%` : ""}`}
+                  >
+                    {s.skillLevel ?? "?"}
+                    {isCurrent && (
+                      <span className="ml-0.5 text-[8px]">●</span>
+                    )}
+                  </span>
+                );
+              })}
             </div>
           </div>
         )}
