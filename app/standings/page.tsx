@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { PageHeader } from "@/components/ui/Section";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
+  getOpponentTeams,
   getSessions,
   getStandings,
 } from "@/lib/apa";
@@ -25,9 +27,10 @@ type Props = {
 
 export default async function StandingsPage({ searchParams }: Props) {
   const { session } = await searchParams;
-  const [sessions, currentSession] = await Promise.all([
+  const [sessions, currentSession, oppTeams] = await Promise.all([
     getSessions(),
     getCurrentSession(),
+    getOpponentTeams(),
   ]);
   const allIds = sessions.map((s) => s.id);
   const scope = parseSessionScope(session, allIds);
@@ -36,6 +39,8 @@ export default async function StandingsPage({ searchParams }: Props) {
   const primaryId = Math.max(...selectedIds);
 
   const standings = await getStandings(primaryId);
+  // Index opp teams by id so we can wire up clickable rows quickly.
+  const oppTeamIds = new Set(oppTeams.map((t) => t.id));
   const primaryName = sessions.find((s) => s.id === primaryId)?.name;
   const sessionLabel =
     selectedIds.size > 1
@@ -89,28 +94,20 @@ export default async function StandingsPage({ searchParams }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {standings.map((s) => (
-                  <tr
-                    key={`${s.rank}-${s.team}`}
-                    className={cn(
-                      "border-b border-[var(--border)] last:border-0",
-                      s.isOurs && "bg-[var(--color-felt-deep)]/40",
-                    )}
-                  >
-                    <td className="px-4 py-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums">
-                      {s.rank}
-                      {s.isTied && (
-                        <span className="ml-0.5 text-xs text-[var(--fg-dim)]">
-                          T
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 font-medium">
+                {standings.map((s) => {
+                  const linkable =
+                    !s.isOurs &&
+                    typeof s.teamId === "number" &&
+                    oppTeamIds.has(s.teamId);
+                  const teamLabel = (
+                    <>
                       <span
                         className={
                           s.isOurs
                             ? "rounded-full bg-[var(--color-brass)] px-2 py-0.5 text-[var(--color-ink)]"
-                            : ""
+                            : linkable
+                              ? "hover:text-[var(--color-brass)]"
+                              : ""
                         }
                       >
                         {s.team}
@@ -120,18 +117,49 @@ export default async function StandingsPage({ searchParams }: Props) {
                           ({s.teamNumber})
                         </span>
                       )}
-                    </td>
-                    <td className="hidden px-4 py-3 text-right tabular-nums text-[var(--fg-dim)] sm:table-cell">
-                      {s.pointsLastWeek ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-[var(--fg-dim)]">
-                      {s.matchesPlayed}
-                    </td>
-                    <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-xl tracking-wide tabular-nums text-[var(--color-brass-bright)]">
-                      {s.points}
-                    </td>
-                  </tr>
-                ))}
+                    </>
+                  );
+                  return (
+                    <tr
+                      key={`${s.rank}-${s.team}`}
+                      className={cn(
+                        "border-b border-[var(--border)] last:border-0",
+                        s.isOurs && "bg-[var(--color-felt-deep)]/40",
+                        linkable && "transition-colors hover:bg-[var(--bg-soft)]/50",
+                      )}
+                    >
+                      <td className="px-4 py-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums">
+                        {s.rank}
+                        {s.isTied && (
+                          <span className="ml-0.5 text-xs text-[var(--fg-dim)]">
+                            T
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 font-medium">
+                        {linkable ? (
+                          <Link
+                            href={`/opponents/${s.teamId}`}
+                            className="block"
+                          >
+                            {teamLabel}
+                          </Link>
+                        ) : (
+                          teamLabel
+                        )}
+                      </td>
+                      <td className="hidden px-4 py-3 text-right tabular-nums text-[var(--fg-dim)] sm:table-cell">
+                        {s.pointsLastWeek ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                        {s.matchesPlayed}
+                      </td>
+                      <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-xl tracking-wide tabular-nums text-[var(--color-brass-bright)]">
+                        {s.points}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
