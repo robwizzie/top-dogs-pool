@@ -46,6 +46,7 @@ import { PlayerComparison } from "@/components/research/PlayerComparison";
 import { ThrowAdvisor } from "@/components/research/ThrowAdvisor";
 import { CalibrationView } from "@/components/research/CalibrationView";
 import { ScoutingReport } from "@/components/research/ScoutingReport";
+import { TeamBriefing } from "@/components/research/TeamBriefing";
 import type { CounterPickRow } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
@@ -359,13 +360,28 @@ export default async function ResearchPage({ searchParams }: Props) {
 
         {briefing && (
           <Section
-            title="Next-Match Briefing"
-            subtitle={`Heads-up for ${briefing.opponentName} on ${formatDate(briefing.match.date)}. Opponent profile inferred from past head-to-heads.`}
+            title="Pre-Match Briefing"
+            subtitle="Tonight's read — toggle who's playing to recompute the lineup, then tap “Share with team” to send a public link the rest of the team can open without the password."
             anchor="briefing"
             forTab="briefing"
             activeTab={tab}
           >
-            <NextMatchBriefingView briefing={briefing} />
+            <TeamBriefing
+              briefing={briefing}
+              scouting={scoutingReport}
+              oppTeam={scoutingOppTeam}
+              inputs={{
+                matches,
+                roster,
+                opponentTeam: briefing.opponentName,
+                opponentRoster: oppRosterForLineup,
+                location: briefing.match.location,
+              }}
+              initialAvailableIds={roster
+                .filter((p) => p.visible !== false)
+                .map((p) => p.id)}
+              editable
+            />
           </Section>
         )}
 
@@ -2221,136 +2237,6 @@ function winRateClass(pct: number, matches: number): string {
   if (pct >= 45) return "text-[var(--fg)]";
   if (pct >= 30) return "bg-[var(--color-pop)]/10 text-[var(--fg)]";
   return "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]";
-}
-
-/* ============================================== Next-Match Briefing */
-
-function NextMatchBriefingView({
-  briefing,
-}: {
-  briefing: NonNullable<ReturnType<typeof nextMatchBriefing>>;
-}) {
-  const { match, opponentProfile, suggestedCounters } = briefing;
-  return (
-    <div className="space-y-5">
-      <div className="surface flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Tuesday Night
-          </p>
-          <p className="mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide">
-            vs {briefing.opponentName}
-          </p>
-          <p className="mt-1 text-sm text-[var(--fg-dim)]">
-            {formatDate(match.date)} · {match.location ?? "TBD"}
-          </p>
-        </div>
-        <Link
-          href={`/matches/${match.id}`}
-          className="inline-flex items-center gap-2 self-start rounded-full bg-[var(--color-brass)] px-4 py-2 text-sm font-semibold text-[var(--color-ink)] hover:bg-[var(--color-brass-bright)] sm:self-auto"
-        >
-          Match details →
-        </Link>
-      </div>
-
-      {/* Suggested counters */}
-      <div>
-        <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-          Suggested Counters (their probable putups)
-        </h3>
-        <div className="grid gap-3 sm:grid-cols-5">
-          {[1, 2, 3, 4, 5].map((pos) => {
-            const sc = suggestedCounters.find((s) => s.position === pos);
-            return (
-              <div key={pos} className="surface p-3 text-center">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-                  Match {pos}
-                </p>
-                {sc ? (
-                  <>
-                    <p className="mt-1 text-xs text-[var(--fg-dim)]">
-                      vs {sc.opponentName}
-                      {sc.opponentSL ? ` · SL${sc.opponentSL}` : ""}
-                    </p>
-                    <Link
-                      href={`/roster/${sc.counterPlayerId}`}
-                      className="mt-1 block font-[family-name:var(--font-display)] text-xl tracking-wide hover:text-[var(--color-brass)]"
-                    >
-                      {sc.counterPlayerName}
-                    </Link>
-                    <p className="mt-1 text-[10px] text-[var(--fg-dim)]">
-                      {sc.rationale}
-                    </p>
-                  </>
-                ) : (
-                  <p className="mt-2 text-xs text-[var(--fg-dim)]">No data</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Opponent profile */}
-      {opponentProfile.length > 0 && (
-        <div>
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Opponent Roster (from prior matchups)
-          </h3>
-          <div className="surface overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
-                  <th className="px-4 py-3">Player</th>
-                  <th className="px-3 py-3 text-right">Avg SL</th>
-                  <th className="px-3 py-3 text-right">Top SL</th>
-                  <th className="px-3 py-3 text-right">Position</th>
-                  <th className="px-3 py-3 text-right">vs Us</th>
-                  <th className="px-3 py-3 text-right">Best Counter</th>
-                </tr>
-              </thead>
-              <tbody>
-                {opponentProfile.slice(0, 12).map((op) => (
-                  <tr
-                    key={op.name}
-                    className="border-b border-[var(--border)] last:border-0"
-                  >
-                    <td className="px-4 py-3 font-medium">{op.name}</td>
-                    <td className="px-3 py-3 text-right tabular-nums">
-                      {op.averageSL || "—"}
-                    </td>
-                    <td className="px-3 py-3 text-right tabular-nums">
-                      {op.topSL || "—"}
-                    </td>
-                    <td className="px-3 py-3 text-right tabular-nums">
-                      {op.preferredPosition || "—"}
-                    </td>
-                    <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
-                      {op.ourRecordVsThem.wins}-{op.ourRecordVsThem.losses}
-                    </td>
-                    <td className="px-3 py-3 text-right text-xs">
-                      {op.bestCounter ? (
-                        <>
-                          <span className="font-semibold">
-                            {op.bestCounter.playerName}
-                          </span>{" "}
-                          <span className="text-[var(--fg-dim)]">
-                            {op.bestCounter.wins}-{op.bestCounter.losses}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-[var(--fg-dim)]">—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
 }
 
 /* ============================================== Player Impact (with/without) */
