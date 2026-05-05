@@ -94,7 +94,17 @@ export async function getCurrentSession(): Promise<{
  */
 export async function getMatch(id: string): Promise<Match | null> {
   const snap = await loadSnapshot();
-  return snap.matches[id] ?? snap.schedule.find((m) => m.id === id) ?? null;
+  if (snap.matches[id]) return snap.matches[id];
+  const ours = snap.schedule.find((m) => m.id === id);
+  if (ours) return ours;
+  // Fall back to opp team schedules — when we scrape an opp team's full
+  // schedule, the projector embeds match results (with player IDs) on each
+  // schedule entry, so opp-vs-opp matches are still viewable.
+  for (const t of Object.values(snap.opponentTeams)) {
+    const m = t.schedule.find((s) => s.id === id);
+    if (m) return m;
+  }
+  return null;
 }
 
 /** Full career-spanning player profile. */

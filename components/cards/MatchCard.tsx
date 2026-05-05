@@ -155,12 +155,14 @@ export function MatchCard({
     </article>
   );
 
-  // Wrap in Link only when there's a destination (completed matches).
-  return match.status === "completed" ? (
+  // Always link to the match scoresheet — even upcoming matches benefit
+  // from the page (location, time, weekly context) and the eventual recap.
+  // Bye matches are the only no-content case.
+  return match.status === "bye" ? (
+    <div className="h-full">{inner}</div>
+  ) : (
     <Link href={`/matches/${match.id}`} className="block h-full">
       {inner}
     </Link>
-  ) : (
-    <div className="h-full">{inner}</div>
   );
 }

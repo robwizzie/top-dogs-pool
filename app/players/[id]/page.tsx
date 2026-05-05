@@ -1,7 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/Section";
-import { getAnyPlayerProfile } from "@/lib/apa";
+import { getAnyPlayerProfile, getCurrentSession } from "@/lib/apa";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,10 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function PlayerPage({ params }: Props) {
   const { id } = await params;
-  const { profile, isOpponent } = await getAnyPlayerProfile(id);
+  const [{ profile, isOpponent }, currentSession] = await Promise.all([
+    getAnyPlayerProfile(id),
+    getCurrentSession(),
+  ]);
   if (!profile) notFound();
   // For OUR players, redirect to the existing roster page (richer feature set).
   if (!isOpponent) redirect(`/roster/${id}`);
@@ -31,6 +35,7 @@ export default async function PlayerPage({ params }: Props) {
   // per-session SL trajectory, and team affiliations.
   const career = profile.career;
   const sessions = profile.sessions;
+  const currentSessionId = currentSession?.id ?? null;
 
   return (
     <>
@@ -84,39 +89,58 @@ export default async function PlayerPage({ params }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {sessions.map((s) => (
-                    <tr
-                      key={`${s.sessionId}-${s.teamId}`}
-                      className="border-b border-[var(--border)] last:border-0"
-                    >
-                      <td className="px-4 py-3 text-[var(--fg-dim)]">
-                        {s.sessionName}
-                      </td>
-                      <td className="px-4 py-3">
-                        <Link
-                          href={`/opponents/${s.teamId}`}
-                          className="hover:text-[var(--color-brass)]"
+                  {sessions.map((s) => {
+                    const isCurrent =
+                      currentSessionId != null && s.sessionId === currentSessionId;
+                    return (
+                      <tr
+                        key={`${s.sessionId}-${s.teamId}`}
+                        className={cn(
+                          "border-b border-[var(--border)] last:border-0",
+                          isCurrent && "bg-[var(--color-brass)]/10",
+                        )}
+                      >
+                        <td className="px-4 py-3 text-[var(--fg-dim)]">
+                          <span className="flex items-baseline gap-2">
+                            <span>{s.sessionName}</span>
+                            {isCurrent && (
+                              <span className="rounded-full bg-[var(--color-brass)]/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]">
+                                current
+                              </span>
+                            )}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Link
+                            href={`/opponents/${s.teamId}`}
+                            className="hover:text-[var(--color-brass)]"
+                          >
+                            {s.teamName}
+                          </Link>
+                        </td>
+                        <td
+                          className={cn(
+                            "px-3 py-3 text-center font-semibold tabular-nums",
+                            isCurrent && "text-[var(--color-brass-bright)]",
+                          )}
                         >
-                          {s.teamName}
-                        </Link>
-                      </td>
-                      <td className="px-3 py-3 text-center font-semibold tabular-nums">
-                        {s.skillLevel ?? "—"}
-                      </td>
-                      <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
-                        {s.wins ?? 0}/{s.matchesPlayed ?? 0}
-                      </td>
-                      <td className="px-3 py-3 text-right tabular-nums">
-                        {s.winPct != null ? `${s.winPct}%` : "—"}
-                      </td>
-                      <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
-                        {s.pa ?? "—"}
-                      </td>
-                      <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
-                        {s.ppm ?? "—"}
-                      </td>
-                    </tr>
-                  ))}
+                          {s.skillLevel ?? "—"}
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                          {s.wins ?? 0}/{s.matchesPlayed ?? 0}
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums">
+                          {s.winPct != null ? `${s.winPct}%` : "—"}
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                          {s.pa ?? "—"}
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                          {s.ppm ?? "—"}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -63,7 +63,13 @@ export function matchMvp(match: Match): MatchMvp | null {
  *   "Top Dogs squeaked out a 12-11 win over Lights Out, with Patrick
  *    going 2-0 to seal it. Meghan's 5-0 sweep was the highlight."
  */
-export function matchRecap(match: Match): string | null {
+export function matchRecap(
+  match: Match,
+  /** Subject team's display name. Defaults to "Top Dogs" for backwards-
+   *  compat with our-team views; pass the opp team's name when rendering
+   *  one of their non-vs-us matches. */
+  subjectName: string = "Top Dogs",
+): string | null {
   if (match.status !== "completed") return null;
   if (
     typeof match.teamScore !== "number" ||
@@ -89,8 +95,8 @@ export function matchRecap(match: Match): string | null {
   const result =
     margin > 0 ? "win" : margin < 0 ? "loss" : "tie";
 
-  let lead = `Top Dogs ${verb} ${match.opponent} ${match.teamScore}-${match.opponentScore}`;
-  if (margin === 0) lead = `Top Dogs tied ${match.opponent} ${match.teamScore}-${match.opponentScore}`;
+  let lead = `${subjectName} ${verb} ${match.opponent} ${match.teamScore}-${match.opponentScore}`;
+  if (margin === 0) lead = `${subjectName} tied ${match.opponent} ${match.teamScore}-${match.opponentScore}`;
 
   // Skip anonymized rows (hidden:* and ebp:*) from highlight selection so we
   // never produce "Unknown's sweep was the highlight."
