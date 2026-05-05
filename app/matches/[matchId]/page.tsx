@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, MapPin, Star } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
 import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
-import { getMatch } from "@/lib/apa";
+import { getMatch, getOpponentTeams } from "@/lib/apa";
+import { loadSnapshot } from "@/lib/apa/client";
 import { getClipsForMatch } from "@/lib/youtube/client";
 import { matchMvp, matchRecap } from "@/lib/recap";
 import { formatDate, formatTime } from "@/lib/utils";
@@ -21,11 +22,27 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function MatchPage({ params }: Props) {
   const { matchId } = await params;
-  const [match, clips] = await Promise.all([
+  const [match, clips, oppTeams, snapshot] = await Promise.all([
     getMatch(matchId),
     getClipsForMatch(matchId),
+    getOpponentTeams(),
+    loadSnapshot(),
   ]);
   if (!match) notFound();
+
+  // Resolve opp team id by name match — used to deep-link the opponent
+  // header to /opponents/[teamId] when we have a profile for them.
+  const oppTeamKey = match.opponent.trim().toLowerCase();
+  const oppTeamMatch = oppTeams.find(
+    (t) => t.name.trim().toLowerCase() === oppTeamKey,
+  );
+  // Resolve opp player ids by name match — used to deep-link each opponent
+  // in the round results to their /players/[id] profile when we've scraped
+  // them. Built once per page render so per-row lookups are O(1).
+  const oppPlayerByName = new Map<string, string>();
+  for (const p of Object.values(snapshot.opponentPlayers ?? {})) {
+    if (p.name) oppPlayerByName.set(p.name.trim().toLowerCase(), p.id);
+  }
 
   const isWin =
     match.teamScore !== undefined &&
@@ -104,9 +121,18 @@ export default async function MatchPage({ params }: Props) {
         title={
           <span>
             vs{" "}
-            <span className="text-[var(--color-brass-bright)]">
-              {match.opponent}
-            </span>
+            {oppTeamMatch ? (
+              <Link
+                href={`/opponents/${oppTeamMatch.id}`}
+                className="text-[var(--color-brass-bright)] hover:underline"
+              >
+                {match.opponent}
+              </Link>
+            ) : (
+              <span className="text-[var(--color-brass-bright)]">
+                {match.opponent}
+              </span>
+            )}
           </span>
         }
         subtitle={
@@ -247,7 +273,11 @@ export default async function MatchPage({ params }: Props) {
                     </div>
                     <ul className="divide-y divide-[var(--border)]">
                       {round.rows.map((r) => (
-                        <ResultRow key={`${r.playerId}-${r.opponentName}`} r={r} />
+                        <ResultRow
+                          key={`${r.playerId}-${r.opponentName}`}
+                          r={r}
+                          oppPlayerByName={oppPlayerByName}
+                        />
                       ))}
                     </ul>
                   </li>
@@ -260,7 +290,11 @@ export default async function MatchPage({ params }: Props) {
                   </div>
                   <ul className="divide-y divide-[var(--border)]">
                     {otherRows.map((r) => (
-                      <ResultRow key={`${r.playerId}-${r.opponentName}`} r={r} />
+                      <ResultRow
+                        key={`${r.playerId}-${r.opponentName}`}
+                        r={r}
+                        oppPlayerByName={oppPlayerByName}
+                      />
                     ))}
                   </ul>
                 </li>
@@ -303,9 +337,17 @@ function labelForPosition(position: number): string {
   }
 }
 
-function ResultRow({ r }: { r: MatchResult }) {
+function ResultRow({
+  r,
+  oppPlayerByName,
+}: {
+  r: MatchResult;
+  oppPlayerByName: Map<string, string>;
+}) {
   const isAnon =
     r.playerId.startsWith("hidden:") || r.playerId.startsWith("ebp:");
+  // Map opp player name → /players/[id] when we've scraped them.
+  const oppPlayerId = oppPlayerByName.get(r.opponentName.trim().toLowerCase());
   return (
     <li className="flex flex-wrap items-center gap-3 p-4 sm:flex-nowrap">
       <span
@@ -334,7 +376,16 @@ function ResultRow({ r }: { r: MatchResult }) {
           )}
           {r.skillLevel !== undefined && <SLBadge level={r.skillLevel} />}
           <span className="text-xs text-[var(--fg-dim)]">vs</span>
-          <span className="text-sm text-[var(--fg)]">{r.opponentName}</span>
+          {oppPlayerId ? (
+            <Link
+              href={`/players/${oppPlayerId}`}
+              className="text-sm text-[var(--fg)] hover:text-[var(--color-brass)]"
+            >
+              {r.opponentName}
+            </Link>
+          ) : (
+            <span className="text-sm text-[var(--fg)]">{r.opponentName}</span>
+          )}
           {r.opponentSkillLevel !== undefined && (
             <SLBadge level={r.opponentSkillLevel} dim />
           )}
