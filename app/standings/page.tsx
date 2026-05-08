@@ -7,12 +7,58 @@ import {
   getSessions,
   getStandings,
 } from "@/lib/apa";
+import type { Standing } from "@/lib/apa/schemas";
 import { cn } from "@/lib/utils";
 import {
   parseSessionScope,
   resolveScope,
   scopeLabel,
 } from "@/lib/session-scope";
+
+/**
+ * Rank teams by `pointsLastWeek` (descending) to derive last week's standings,
+ * keyed by team name. Returns a map from team → previous rank. Teams without
+ * a `pointsLastWeek` value are omitted (we can't show a meaningful delta).
+ */
+function computePrevRanks(standings: Standing[]): Map<string, number> {
+  const eligible = standings.filter(
+    (s) => s.pointsLastWeek !== null && s.pointsLastWeek !== undefined,
+  );
+  if (eligible.length === 0) return new Map();
+  const sorted = [...eligible].sort(
+    (a, b) => (b.pointsLastWeek ?? 0) - (a.pointsLastWeek ?? 0),
+  );
+  const ranks = new Map<string, number>();
+  let lastPts = Number.POSITIVE_INFINITY;
+  let lastRank = 0;
+  sorted.forEach((s, i) => {
+    const pts = s.pointsLastWeek ?? 0;
+    const rank = pts === lastPts ? lastRank : i + 1;
+    ranks.set(s.team, rank);
+    lastPts = pts;
+    lastRank = rank;
+  });
+  return ranks;
+}
+
+function RankDelta({ delta }: { delta: number }) {
+  if (!delta) return null;
+  const up = delta > 0;
+  return (
+    <span
+      className={cn(
+        "rank-delta inline-flex items-center gap-0.5 text-[10px] font-bold tabular-nums",
+        up ? "text-[var(--color-felt-bright)]" : "text-[var(--color-pop-bright)]",
+      )}
+      title={up ? `Up ${delta} from last week` : `Down ${Math.abs(delta)} from last week`}
+      aria-label={up ? `Up ${delta}` : `Down ${Math.abs(delta)}`}
+      data-direction={up ? "up" : "down"}
+    >
+      <span aria-hidden>{up ? "▲" : "▼"}</span>
+      <span>{Math.abs(delta)}</span>
+    </span>
+  );
+}
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +85,9 @@ export default async function StandingsPage({ searchParams }: Props) {
   const primaryId = Math.max(...selectedIds);
 
   const standings = await getStandings(primaryId);
+  // Compute "delta vs last week" by ranking the previous-week point totals
+  // (pointsLastWeek). Ties share a rank using competition-style ordering.
+  const prevRanks = computePrevRanks(standings);
   // Index opp teams by id so we can wire up clickable rows quickly.
   const oppTeamIds = new Set(oppTeams.map((t) => t.id));
   const primaryName = sessions.find((s) => s.id === primaryId)?.name;
@@ -94,7 +143,12 @@ export default async function StandingsPage({ searchParams }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {standings.map((s) => {
+                {standings.map((s, idx) => {
+                  const prev = prevRanks.get(s.team);
+                  const delta =
+                    prev !== undefined && Number.isFinite(prev)
+                      ? prev - s.rank
+                      : 0;
                   const linkable =
                     !s.isOurs &&
                     typeof s.teamId === "number" &&
@@ -123,18 +177,22 @@ export default async function StandingsPage({ searchParams }: Props) {
                     <tr
                       key={`${s.rank}-${s.team}`}
                       className={cn(
-                        "border-b border-[var(--border)] last:border-0",
+                        "fade-in-up border-b border-[var(--border)] last:border-0",
                         s.isOurs && "bg-[var(--color-felt-deep)]/40",
                         linkable && "transition-colors hover:bg-[var(--bg-soft)]/50",
                       )}
+                      style={{ animationDelay: `${idx * 30}ms` }}
                     >
                       <td className="px-4 py-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums">
-                        {s.rank}
-                        {s.isTied && (
-                          <span className="ml-0.5 text-xs text-[var(--fg-dim)]">
-                            T
-                          </span>
-                        )}
+                        <span className="inline-flex items-baseline gap-1.5">
+                          <span>{s.rank}</span>
+                          {s.isTied && (
+                            <span className="text-xs text-[var(--fg-dim)]">
+                              T
+                            </span>
+                          )}
+                          <RankDelta delta={delta} />
+                        </span>
                       </td>
                       <td className="px-4 py-3 font-medium">
                         {linkable ? (

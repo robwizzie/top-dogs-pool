@@ -1,6 +1,7 @@
 import { PageHeader, Section } from "@/components/ui/Section";
 import { MatchCard } from "@/components/cards/MatchCard";
 import { MatchHistoryEntry } from "@/components/schedule/MatchHistoryEntry";
+import { ScheduleHeatmap } from "@/components/schedule/ScheduleHeatmap";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
@@ -87,6 +88,12 @@ export default async function SchedulePage({ searchParams }: Props) {
           showAllTime={false}
         />
       </div>
+
+      {schedule.length > 0 && (
+        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+          <ScheduleHeatmap matches={schedule} />
+        </div>
+      )}
 
       {isCurrentOnly && (
         <Section

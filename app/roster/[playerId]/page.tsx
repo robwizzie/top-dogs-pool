@@ -3,14 +3,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
+import { StatCounter } from "@/components/ui/StatCounter";
 import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
+import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
+import { StreakBadge } from "@/components/cards/StreakBadge";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import { parseSessionScope, resolveScope } from "@/lib/session-scope";
 import {
   getCurrentSession,
+  getLeaderboard,
   getMatch,
   getPlayer,
+  getPlayerHistory,
   getSessions,
 } from "@/lib/apa";
 import { getClipsForPlayer } from "@/lib/youtube/client";
@@ -34,13 +39,26 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function PlayerPage({ params, searchParams }: Props) {
   const [{ playerId }, sp] = await Promise.all([params, searchParams]);
-  const [{ player, profile }, sessions, currentSession, clips] =
-    await Promise.all([
-      getPlayer(playerId),
-      getSessions(),
-      getCurrentSession(),
-      getClipsForPlayer(playerId),
-    ]);
+  const [
+    { player, profile },
+    sessions,
+    currentSession,
+    clips,
+    history,
+    currentLeaderboard,
+  ] = await Promise.all([
+    getPlayer(playerId),
+    getSessions(),
+    getCurrentSession(),
+    getClipsForPlayer(playerId),
+    getPlayerHistory(),
+    getLeaderboard(),
+  ]);
+  const playerHistory = history.get(playerId);
+  const isTopDog =
+    currentLeaderboard.length > 0 &&
+    currentLeaderboard[0].playerId === playerId &&
+    currentLeaderboard[0].points > 0;
   if (!player) notFound();
   // Hidden players (visible:false) shouldn't have a public profile page.
   if (player.visible === false) notFound();
@@ -147,6 +165,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
           teamLabel={display.teamLabel}
           actionImage={actionImage}
           profileImage={profileImage}
+          isTopDog={isTopDog}
         />
       ) : (
         <PageHeader
@@ -182,32 +201,49 @@ export default async function PlayerPage({ params, searchParams }: Props) {
           />
         </div>
 
-        <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-          {display.label}
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatTile label="Points" accent>
-            {display.points}
-          </StatTile>
-          <StatTile label="Record">
-            {display.wins}
-            <span className="text-[var(--fg-dim)]">–</span>
-            {display.losses}
-          </StatTile>
-          <StatTile label="Win %">
-            {display.matchesPlayed ? `${display.winPct}%` : "—"}
-          </StatTile>
-          <StatTile label="Sweeps" accent>
-            {display.sweeps}
-          </StatTile>
-          <StatTile label="Mini-Sweeps">{display.miniSweeps}</StatTile>
-          <StatTile label="Break & Runs">{display.breakAndRuns}</StatTile>
-          <StatTile label="8 on Break">{display.eightOnBreaks}</StatTile>
-          {display.pa !== undefined ? (
-            <StatTile label="PA">{display.pa}%</StatTile>
-          ) : (
-            <StatTile label="Matches">{display.matchesPlayed}</StatTile>
+        <div className="mb-3 flex items-center gap-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+            {display.label}
+          </h2>
+          {playerHistory?.streak && (
+            <StreakBadge streak={playerHistory.streak} size="md" />
           )}
+          {playerHistory && playerHistory.outcomes.length > 0 && (
+            <div className="hidden items-center gap-2 text-[11px] text-[var(--fg-dim)] sm:flex">
+              <span>Recent:</span>
+              <OutcomeBars outcomes={playerHistory.outcomes} max={10} />
+            </div>
+          )}
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <AnimatedStatTile label="Points" value={display.points} decimals={Number.isInteger(display.points) ? 0 : 1} accent delay={0} />
+          <RecordTile wins={display.wins} losses={display.losses} delay={80} />
+          <AnimatedStatTile
+            label="Win %"
+            value={display.matchesPlayed ? display.winPct : 0}
+            empty={!display.matchesPlayed}
+            suffix="%"
+            decimals={1}
+            delay={160}
+          />
+          <AnimatedStatTile label="Sweeps" value={display.sweeps} accent delay={240} />
+          <AnimatedStatTile label="Mini-Sweeps" value={display.miniSweeps} delay={320} />
+          <AnimatedStatTile label="Break & Runs" value={display.breakAndRuns} delay={400} />
+          <AnimatedStatTile label="8 on Break" value={display.eightOnBreaks} delay={480} />
+          {display.pa !== undefined ? (
+            <AnimatedStatTile label="PA" value={display.pa} suffix="%" delay={560} />
+          ) : (
+            <AnimatedStatTile label="Matches" value={display.matchesPlayed} delay={560} />
+          )}
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-3 text-xs">
+          <Link
+            href={`/compare?players=${playerId}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-1.5 font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)] hover:bg-[var(--color-brass)]/10"
+          >
+            Compare with another player →
+          </Link>
         </div>
 
         {profile && profile.sessions.length > 1 && (
@@ -370,6 +406,7 @@ function PlayerHero({
   teamLabel,
   actionImage,
   profileImage,
+  isTopDog = false,
 }: {
   name: string;
   format: string;
@@ -377,6 +414,7 @@ function PlayerHero({
   teamLabel?: string;
   actionImage: string;
   profileImage?: string;
+  isTopDog?: boolean;
 }) {
   return (
     <section className="relative isolate overflow-hidden border-b border-[var(--border)]">
@@ -386,12 +424,21 @@ function PlayerHero({
         fill
         priority
         sizes="100vw"
-        className="-z-10 object-cover"
+        className="-z-10 object-cover hero-zoom"
       />
       <div
         className="absolute inset-0 -z-10 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/70 to-transparent"
         aria-hidden
       />
+      {isTopDog && (
+        <div
+          className="top-dog-stamp pointer-events-none absolute right-4 top-6 z-10 sm:right-8 sm:top-10"
+          aria-label="Top Dog — current sweeps leader"
+        >
+          <span className="block">TOP</span>
+          <span className="block">DOG</span>
+        </div>
+      )}
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-12 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:px-8 lg:pb-20 lg:pt-48">
         <div className="flex items-end gap-5">
           {profileImage && (
@@ -421,14 +468,22 @@ function PlayerHero({
   );
 }
 
-function StatTile({
+function AnimatedStatTile({
   label,
-  children,
+  value,
+  decimals = 0,
+  suffix = "",
   accent = false,
+  empty = false,
+  delay = 0,
 }: {
   label: string;
-  children: React.ReactNode;
+  value: number;
+  decimals?: number;
+  suffix?: string;
   accent?: boolean;
+  empty?: boolean;
+  delay?: number;
 }) {
   return (
     <div className="surface px-5 py-4">
@@ -436,12 +491,40 @@ function StatTile({
         {label}
       </p>
       <p
-        className={`mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide ${
+        className={`mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums ${
           accent ? "text-[var(--color-pop-bright)]" : "text-[var(--color-cream)]"
         }`}
       >
-        {children}
+        {empty ? (
+          "—"
+        ) : (
+          <StatCounter value={value} decimals={decimals} suffix={suffix} delay={delay} />
+        )}
       </p>
     </div>
   );
 }
+
+function RecordTile({
+  wins,
+  losses,
+  delay = 0,
+}: {
+  wins: number;
+  losses: number;
+  delay?: number;
+}) {
+  return (
+    <div className="surface px-5 py-4">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+        Record
+      </p>
+      <p className="mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums text-[var(--color-cream)]">
+        <StatCounter value={wins} delay={delay} />
+        <span className="text-[var(--fg-dim)]">–</span>
+        <StatCounter value={losses} delay={delay} />
+      </p>
+    </div>
+  );
+}
+

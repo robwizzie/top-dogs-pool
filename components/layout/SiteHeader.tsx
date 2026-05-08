@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { LogoMark } from "@/components/brand/Logo";
 import { LiveDot } from "@/components/live/LiveCTA";
 import { useIsPoolNightLive } from "@/lib/hooks/useIsPoolNightLive";
@@ -61,6 +61,16 @@ export function SiteHeader() {
               LIVE
             </a>
           )}
+          <button
+            type="button"
+            onClick={() =>
+              window.dispatchEvent(new Event("topdogs:open-cmdk"))
+            }
+            aria-label="Search"
+            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)]"
+          >
+            <Search size={16} />
+          </button>
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}

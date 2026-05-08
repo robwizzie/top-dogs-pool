@@ -184,6 +184,215 @@ button:hover .hover-roll {
   animation: brand-roll 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Trading-card flip — used by PlayerCard. The outer .card-3d gives perspective
+ * and respects a flipped state set on the inner .card-3d-inner via the
+ * data-flipped attribute (mobile tap) or :hover (desktop). */
+.card-3d {
+  perspective: 1200px;
+}
+.card-3d-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  transform-style: preserve-3d;
+}
+@media (hover: hover) {
+  .card-3d:hover .card-3d-inner {
+    transform: rotateY(180deg);
+  }
+}
+.card-3d-inner[data-flipped="true"] {
+  transform: rotateY(180deg);
+}
+.card-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.card-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Hot/cold streak badge — flame for hot, snowflake for cold. */
+@keyframes streak-flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 6px currentColor); }
+  50%      { transform: scale(1.08) rotate(-3deg); filter: drop-shadow(0 0 10px currentColor); }
+}
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+.streak-badge[data-kind="hot"] {
+  color: #ff8a3d;
+  background: rgba(255, 138, 61, 0.1);
+}
+.streak-badge[data-kind="cold"] {
+  color: #7fc6ff;
+  background: rgba(127, 198, 255, 0.1);
+}
+.streak-badge .streak-icon {
+  animation: streak-flicker 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak-badge .streak-icon { animation: none; }
+}
+
+/* Rank delta indicator — slides in from below (up) or above (down). */
+@keyframes rank-up-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rank-down-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rank-delta {
+  opacity: 0;
+  animation-duration: 0.55s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+.rank-delta[data-direction="up"]   { animation-name: rank-up-in; }
+.rank-delta[data-direction="down"] { animation-name: rank-down-in; }
+
+/* TOP DOG stamp — current sweeps leader on the player profile hero. Inked
+ * brass border at a slight tilt with a fade-in zoom. */
+@keyframes stamp-in {
+  0%   { opacity: 0; transform: rotate(-12deg) scale(1.6); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: rotate(-7deg) scale(1); }
+}
+.top-dog-stamp {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  font-size: 24px;
+  line-height: 0.95;
+  color: var(--color-brass-bright);
+  border: 3px solid var(--color-brass);
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 0 0 1px rgba(201, 162, 74, 0.35), 0 12px 30px -12px rgba(201, 162, 74, 0.55);
+  background: rgba(7, 7, 7, 0.55);
+  backdrop-filter: blur(2px);
+  transform: rotate(-7deg);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  animation: stamp-in 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) 0.3s both;
+}
+@media (min-width: 640px) {
+  .top-dog-stamp { font-size: 32px; padding: 0.6rem 1.1rem; }
+}
+
+/* Command palette (⌘K) */
+.cmdk-overlay {
+  background: color-mix(in oklab, var(--color-ink) 80%, transparent);
+  backdrop-filter: blur(6px);
+  animation: fade-in 0.18s ease-out forwards;
+}
+.cmdk-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  box-shadow: var(--shadow-felt), 0 0 0 1px rgba(201, 162, 74, 0.15);
+  animation: cmdk-pop 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  transform-origin: top center;
+}
+@keyframes cmdk-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.cmdk-item {
+  transition: background 0.15s ease;
+}
+.cmdk-item[data-active="true"] {
+  background: var(--bg-soft);
+}
+.cmdk-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.3rem;
+  padding: 0 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+}
+.cmdk-launcher .cmdk-kbd { color: inherit; opacity: 0.85; }
+
+/* Rack skeleton — pool balls "break" outward on mount, then settle. Each
+ * ball gets its own scatter vector (via inline style) translated to a CSS
+ * transform; we keep the keyframe simple and re-use the same shape while
+ * each ball's individual delay gives the cascading break feel. */
+@keyframes rack-break {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0.9; }
+  40%      { transform: translate3d(var(--rb-dx, 0px), var(--rb-dy, 0px), 0) rotate(var(--rb-rot, 0deg)); opacity: 1; }
+}
+.rack-ball {
+  display: inline-flex;
+  animation: rack-break 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rack-ball { animation: none; }
+}
+
+/* Cinematic glow for special-event badges in match recaps. Pulses brand
+ * colors so sweeps / B&Rs feel alive without being noisy. */
+@keyframes glow-pulse-pop {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 82, 72, 0.0); }
+  50%      { box-shadow: 0 0 18px 2px rgba(232, 82, 72, 0.55); }
+}
+@keyframes glow-pulse-felt {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.0); }
+  50%      { box-shadow: 0 0 18px 2px rgba(46, 139, 87, 0.55); }
+}
+@keyframes glow-pulse-brass {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 190, 107, 0.0); }
+  50%      { box-shadow: 0 0 18px 2px rgba(224, 190, 107, 0.55); }
+}
+.glow-pop   { animation: glow-pulse-pop   2.4s ease-in-out infinite; }
+.glow-felt  { animation: glow-pulse-felt  2.4s ease-in-out infinite; }
+.glow-brass { animation: glow-pulse-brass 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .glow-pop, .glow-felt, .glow-brass { animation: none; }
+}
+
+/* Score arc — animate stroke "drawing in" on first paint. */
+@keyframes draw-line {
+  from { stroke-dashoffset: var(--draw-len, 800); }
+  to   { stroke-dashoffset: 0; }
+}
+.draw-in {
+  stroke-dasharray: var(--draw-len, 800);
+  stroke-dashoffset: var(--draw-len, 800);
+  animation: draw-line 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.2s forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .draw-in { animation: none; stroke-dashoffset: 0; }
+}
+
+/* Heatmap cell entrance — subtle pop-in for calendar tiles. */
+@keyframes cell-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.heatmap-cell { animation: cell-pop 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; opacity: 0; }
+
 /* Pulsing live dot */
 @keyframes pulse-pop {
   0%, 100% {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, MapPin, Star } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
+import { StatCounter } from "@/components/ui/StatCounter";
 import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { getMatch, getOpponentTeams } from "@/lib/apa";
 import { loadSnapshot } from "@/lib/apa/client";
@@ -269,7 +270,7 @@ export default async function MatchPage({ params, searchParams }: Props) {
           <section className="surface mb-8 overflow-hidden">
             <div className="grid gap-0 lg:grid-cols-[auto_1fr]">
               <div className="flex items-center justify-around gap-6 border-b border-[var(--border)] p-8 lg:border-b-0 lg:border-r">
-                <ScoreBlock label={subjectName} score={match.teamScore} winner={isWin} tie={isTie} />
+                <ScoreBlock label={subjectName} score={match.teamScore} winner={isWin} tie={isTie} delay={150} />
                 <span className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--fg-dim)]">
                   vs
                 </span>
@@ -278,6 +279,7 @@ export default async function MatchPage({ params, searchParams }: Props) {
                   score={match.opponentScore}
                   winner={isLoss}
                   tie={isTie}
+                  delay={300}
                 />
               </div>
               <div className="grid gap-0 sm:grid-cols-[1fr_auto]">
@@ -303,11 +305,11 @@ export default async function MatchPage({ params, searchParams }: Props) {
                       </p>
                     )}
                     <div className="mt-3 flex flex-wrap gap-1.5">
-                      {mvp.sweep && <Badge tone="pop">SWEEP</Badge>}
+                      {mvp.sweep && <Badge tone="pop" glow>SWEEP</Badge>}
                       {!mvp.sweep && mvp.miniSweep && (
-                        <Badge tone="brass">MINI</Badge>
+                        <Badge tone="brass" glow>MINI</Badge>
                       )}
-                      {mvp.breakAndRun && <Badge tone="felt">B&amp;R</Badge>}
+                      {mvp.breakAndRun && <Badge tone="felt" glow>B&amp;R</Badge>}
                       {mvp.eightOnBreak && <Badge tone="cream">8oB</Badge>}
                     </div>
                   </aside>
@@ -326,11 +328,13 @@ export default async function MatchPage({ params, searchParams }: Props) {
             </h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <FunStat
+                index={0}
                 label="Individual matches"
                 value={`${ourWinsCount}–${named.length - ourWinsCount}`}
                 sub={`${named.length} total · ${subjectName}'s side`}
               />
               <FunStat
+                index={1}
                 label="Sweeps"
                 value={`${ourSweeps} 🧹 / ${oppSweeps}`}
                 sub={
@@ -347,6 +351,7 @@ export default async function MatchPage({ params, searchParams }: Props) {
                 }
               />
               <FunStat
+                index={2}
                 label="Special shots"
                 value={`${breakAndRunCount + eightOnBreakCount}`}
                 sub={
@@ -362,18 +367,20 @@ export default async function MatchPage({ params, searchParams }: Props) {
               />
               {closestRow ? (
                 <FunStat
+                  index={3}
                   label="Closest match"
                   value={closestRow.score ?? "—"}
                   sub={`${closestRow.playerName} vs ${closestRow.opponentName}`}
                 />
               ) : blowoutRow ? (
                 <FunStat
+                  index={3}
                   label="Biggest blowout"
                   value={blowoutRow.score ?? "—"}
                   sub={`${blowoutRow.playerName} vs ${blowoutRow.opponentName}`}
                 />
               ) : (
-                <FunStat label="Drama" value="—" sub="all forfeits / no scores" />
+                <FunStat index={3} label="Drama" value="—" sub="all forfeits / no scores" />
               )}
             </div>
           </section>
@@ -409,7 +416,11 @@ export default async function MatchPage({ params, searchParams }: Props) {
                 const afterThem = arc[idx]?.them ?? 0;
                 const ourWonRound = afterUs > beforeUs;
                 return (
-                  <li key={round.position} className="surface overflow-hidden">
+                  <li
+                    key={round.position}
+                    className="surface fade-in-up overflow-hidden"
+                    style={{ animationDelay: `${idx * 90}ms` }}
+                  >
                     <div className="flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-soft)] px-5 py-2.5">
                       <div className="flex items-center gap-3">
                         <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide text-[var(--color-brass-bright)]">
@@ -495,14 +506,19 @@ function FunStat({
   value,
   sub,
   tone,
+  index = 0,
 }: {
   label: string;
   value: string;
   sub?: string;
   tone?: string;
+  index?: number;
 }) {
   return (
-    <div className="surface p-4">
+    <div
+      className="surface fade-in-up p-4"
+      style={{ animationDelay: `${index * 70}ms` }}
+    >
       <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
         {label}
       </p>
@@ -596,9 +612,9 @@ function ResultRow({
           r.eightOnBreak ||
           r.forfeited) && (
           <div className="mt-1 flex flex-wrap gap-1.5">
-            {r.sweep && <Badge tone="pop">SWEEP · 1pt</Badge>}
+            {r.sweep && <Badge tone="pop" glow>SWEEP · 1pt</Badge>}
             {!r.sweep && r.miniSweep && <Badge tone="brass">MINI · 0.5pt</Badge>}
-            {r.breakAndRun && <Badge tone="felt">BREAK &amp; RUN · 1pt</Badge>}
+            {r.breakAndRun && <Badge tone="felt" glow>BREAK &amp; RUN · 1pt</Badge>}
             {r.eightOnBreak && <Badge tone="cream">8 ON BREAK · 1pt</Badge>}
             {r.forfeited && <Badge tone="pop">FORFEIT</Badge>}
           </div>
@@ -681,7 +697,7 @@ function ScoreArc({
           R{a.position}
         </text>
       ))}
-      {/* Lines */}
+      {/* Lines — animate drawing in on first paint */}
       <path
         d={path("them")}
         fill="none"
@@ -690,6 +706,8 @@ function ScoreArc({
         strokeLinecap="round"
         strokeLinejoin="round"
         opacity={0.85}
+        className="draw-in"
+        style={{ ["--draw-len" as string]: `${(arc.length + 1) * stepX * 1.2}` }}
       />
       <path
         d={path("us")}
@@ -698,6 +716,11 @@ function ScoreArc({
         strokeWidth={2.8}
         strokeLinecap="round"
         strokeLinejoin="round"
+        className="draw-in"
+        style={{
+          ["--draw-len" as string]: `${(arc.length + 1) * stepX * 1.2}`,
+          animationDelay: "0.45s",
+        }}
       />
       {/* Endpoint dots + labels */}
       <circle
@@ -743,11 +766,13 @@ function ScoreBlock({
   score,
   winner,
   tie,
+  delay = 0,
 }: {
   label: string;
   score: number;
   winner?: boolean;
   tie?: boolean;
+  delay?: number;
 }) {
   return (
     <div className="text-center">
@@ -763,7 +788,7 @@ function ScoreBlock({
         {label}
       </p>
       <p
-        className={`mt-1 font-[family-name:var(--font-display)] text-6xl leading-none tracking-wide ${
+        className={`mt-1 font-[family-name:var(--font-display)] text-6xl leading-none tracking-wide tabular-nums ${
           winner
             ? "text-[var(--color-brass-bright)]"
             : tie
@@ -771,7 +796,7 @@ function ScoreBlock({
               : "text-[var(--fg)]"
         }`}
       >
-        {score}
+        <StatCounter value={score} duration={1400} delay={delay} />
       </p>
     </div>
   );
@@ -794,9 +819,11 @@ function SLBadge({ level, dim = false }: { level: number; dim?: boolean }) {
 function Badge({
   children,
   tone,
+  glow = false,
 }: {
   children: React.ReactNode;
   tone: "pop" | "brass" | "felt" | "cream";
+  glow?: boolean;
 }) {
   const cls =
     tone === "pop"
@@ -806,9 +833,18 @@ function Badge({
         : tone === "felt"
           ? "bg-[var(--color-felt)]/30 text-[var(--color-felt-bright)]"
           : "bg-[var(--color-cream)]/15 text-[var(--color-cream)]";
+  const glowCls = glow
+    ? tone === "pop"
+      ? "glow-pop"
+      : tone === "felt"
+        ? "glow-felt"
+        : tone === "brass"
+          ? "glow-brass"
+          : ""
+    : "";
   return (
     <span
-      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${cls}`}
+      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${cls} ${glowCls}`}
     >
       {children}
     </span>

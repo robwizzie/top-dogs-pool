@@ -4,17 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { PoolBall } from "@/components/brand/PoolBall";
+import { StreakBadge } from "@/components/cards/StreakBadge";
+import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
 import type { LeaderboardRow } from "@/lib/apa/schemas";
+import type { Streak } from "@/lib/streaks";
 import { cn } from "@/lib/utils";
 
 export function SweepRow({
   row,
   rank,
   celebrate = false,
+  streak,
+  outcomes,
 }: {
   row: LeaderboardRow;
   rank: number;
   celebrate?: boolean;
+  streak?: Streak | null;
+  outcomes?: ("W" | "L")[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -75,17 +82,20 @@ export function SweepRow({
         <PoolBall number={((rank - 1) % 7) + 1} size={36} />
       )}
       <div className="min-w-0 flex-1">
-        <Link
-          href={`/roster/${row.playerId}`}
-          className="block truncate text-base font-medium hover:text-[var(--color-brass)]"
-        >
-          {row.playerName}
-          {row.skillLevel && (
-            <span className="ml-2 text-xs text-[var(--fg-dim)]">
-              SL{row.skillLevel}
-            </span>
-          )}
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/roster/${row.playerId}`}
+            className="truncate text-base font-medium hover:text-[var(--color-brass)]"
+          >
+            {row.playerName}
+            {row.skillLevel && (
+              <span className="ml-2 text-xs text-[var(--fg-dim)]">
+                SL{row.skillLevel}
+              </span>
+            )}
+          </Link>
+          {streak && <StreakBadge streak={streak} />}
+        </div>
         <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--fg-dim)]">
           {row.sweeps > 0 && (
             <span>
@@ -132,6 +142,11 @@ export function SweepRow({
           </span>
         </div>
       </div>
+      {outcomes && outcomes.length > 0 && (
+        <div className="hidden shrink-0 sm:block">
+          <OutcomeBars outcomes={outcomes} />
+        </div>
+      )}
       <div className="shrink-0 text-right">
         <p className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--color-brass-bright)]">
           {row.points}
