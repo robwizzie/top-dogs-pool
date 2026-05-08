@@ -16,9 +16,9 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Leaderboard",
+  title: "Patch Watch",
   description:
-    "Top Dogs leaderboard — points from sweeps, mini-sweeps, break-and-runs, 8-on-breaks, and level-ups. Pick any session(s) or All Time.",
+    "Top Dogs Patch Watch — points from sweeps, mini-sweeps, break-and-runs, 8-on-breaks, and level-ups (the things that earn an APA patch). Pick any session(s) or All Time.",
 };
 
 type Props = {
@@ -47,8 +47,8 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   return (
     <>
       <PageHeader
-        eyebrow="Sweeps Tracker"
-        title="Leaderboard"
+        eyebrow="Patches Earned"
+        title="Patch Watch"
         subtitle={`${headerLabel} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini`}
       />
 

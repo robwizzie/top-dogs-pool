@@ -12,7 +12,7 @@ export function SiteFooter() {
           <Link href="/schedule" className="hover:text-[var(--color-brass)]">Schedule</Link>
           <Link href="/roster" className="hover:text-[var(--color-brass)]">Roster</Link>
           <Link href="/standings" className="hover:text-[var(--color-brass)]">Standings</Link>
-          <Link href="/leaderboard" className="hover:text-[var(--color-brass)]">Sweeps</Link>
+          <Link href="/leaderboard" className="hover:text-[var(--color-brass)]">Patch Watch</Link>
           <a href={TIKTOK_PROFILE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-brass)]">TikTok</a>
         </div>
         <p className="text-xs text-[var(--fg-dim)]">
