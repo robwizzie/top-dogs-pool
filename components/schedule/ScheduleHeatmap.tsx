@@ -126,8 +126,8 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
         <ol
           className="flex snap-x snap-mandatory gap-4 overflow-x-auto py-7 [scrollbar-width:thin]"
           style={{
-            paddingInlineStart: "clamp(1.5rem, 3vw, 2.5rem)",
-            paddingInlineEnd: "clamp(2rem, 4vw, 3.5rem)",
+            paddingInlineStart: "clamp(2rem, 4.5vw, 3.25rem)",
+            paddingInlineEnd: "clamp(2.5rem, 5vw, 4rem)",
           }}
         >
           {ordered.map((m, idx) => (
