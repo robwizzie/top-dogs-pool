@@ -215,36 +215,101 @@ button:hover .hover-roll {
   transform: rotateY(180deg);
 }
 
-/* Hot/cold streak badge — flame for hot, snowflake for cold. */
-@keyframes streak-flicker {
-  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 6px currentColor); }
-  50%      { transform: scale(1.08) rotate(-3deg); filter: drop-shadow(0 0 10px currentColor); }
+/* Streak indicator — pill / chip / tag variants. Refined: chevron + count
+ * + a quiet label, brand-toned, no emoji. The chevron gets a slow vertical
+ * nudge so the eye finds it without the badge feeling busy. */
+@keyframes chevron-nudge-up {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1.5px); }
 }
-.streak-badge {
+@keyframes chevron-nudge-down {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(1.5px); }
+}
+.streak-pill,
+.streak-chip,
+.streak-tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.18rem 0.5rem;
+  font-variant-numeric: tabular-nums;
   border-radius: 999px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Pill — primary form on cards / hero. */
+.streak-pill {
+  gap: 0.4rem;
+  padding: 0.2rem 0.55rem 0.2rem 0.45rem;
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  border: 1px solid;
+  background: color-mix(in oklab, currentColor 8%, transparent);
+}
+.streak-pill .streak-count {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.streak-pill .streak-label {
   text-transform: uppercase;
-  border: 1px solid currentColor;
+  letter-spacing: 0.16em;
+  opacity: 0.85;
 }
-.streak-badge[data-kind="hot"] {
-  color: #ff8a3d;
-  background: rgba(255, 138, 61, 0.1);
+
+/* Chip — denser, no label, used inline next to player names in lists. */
+.streak-chip {
+  gap: 0.3rem;
+  padding: 0.1rem 0.45rem 0.1rem 0.4rem;
+  font-size: 10px;
+  border: 1px solid;
+  background: color-mix(in oklab, currentColor 6%, transparent);
 }
-.streak-badge[data-kind="cold"] {
-  color: #7fc6ff;
-  background: rgba(127, 198, 255, 0.1);
+.streak-chip .streak-count {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
 }
-.streak-badge .streak-icon {
-  animation: streak-flicker 1.8s ease-in-out infinite;
+.streak-chip .streak-label { display: none; }
+
+/* Tag — minimal inline form. */
+.streak-tag {
+  gap: 0.2rem;
+  padding: 0 0.3rem;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  border: 1px solid color-mix(in oklab, currentColor 35%, transparent);
+}
+
+/* Tones */
+.streak-pill[data-kind="hot"],
+.streak-chip[data-kind="hot"],
+.streak-tag[data-kind="hot"] {
+  color: var(--color-brass-bright);
+  border-color: color-mix(in oklab, var(--color-brass-bright) 45%, transparent);
+}
+.streak-pill[data-kind="cold"],
+.streak-chip[data-kind="cold"],
+.streak-tag[data-kind="cold"] {
+  color: #7c8da3;
+  border-color: rgba(124, 141, 163, 0.45);
+}
+
+.streak-chevron { flex-shrink: 0; }
+.streak-pill[data-kind="hot"] .streak-chevron,
+.streak-chip[data-kind="hot"] .streak-chevron,
+.streak-tag[data-kind="hot"] .streak-chevron {
+  animation: chevron-nudge-up 2.4s ease-in-out infinite;
+}
+.streak-pill[data-kind="cold"] .streak-chevron,
+.streak-chip[data-kind="cold"] .streak-chevron,
+.streak-tag[data-kind="cold"] .streak-chevron {
+  animation: chevron-nudge-down 2.4s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .streak-badge .streak-icon { animation: none; }
+  .streak-chevron { animation: none !important; }
 }
 
 /* Rank delta indicator — slides in from below (up) or above (down). */
@@ -386,12 +451,89 @@ button:hover .hover-roll {
   .draw-in { animation: none; stroke-dashoffset: 0; }
 }
 
-/* Heatmap cell entrance — subtle pop-in for calendar tiles. */
-@keyframes cell-pop {
-  from { opacity: 0; transform: scale(0.85); }
-  to   { opacity: 1; transform: scale(1); }
+/* Season ribbon — week tiles for the schedule heatmap. Tone-colored left
+ * rail for an at-a-glance read; full tile picks up a soft tinted background
+ * on hover so the click target feels generous. */
+.ribbon-tile {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 12px 12px 18px;
+  overflow: hidden;
+  transition: border-color 0.18s ease, transform 0.18s ease,
+    background 0.18s ease;
+  animation: fade-in-up 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  opacity: 0;
 }
-.heatmap-cell { animation: cell-pop 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; opacity: 0; }
+.ribbon-tile::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--ribbon-rail, var(--border));
+}
+.ribbon-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ribbon-tint, transparent);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+.group:hover .ribbon-tile,
+.ribbon-tile:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.group:hover .ribbon-tile::after,
+.ribbon-tile:hover::after { opacity: 0.18; }
+
+.ribbon-tile[data-tone="win"] {
+  --ribbon-rail: var(--color-felt-bright);
+  --ribbon-tint: radial-gradient(120% 80% at 0% 100%, rgba(46, 139, 87, 0.55), transparent 60%);
+}
+.ribbon-tile[data-tone="loss"] {
+  --ribbon-rail: var(--color-pop);
+  --ribbon-tint: radial-gradient(120% 80% at 0% 100%, rgba(200, 54, 47, 0.5), transparent 60%);
+}
+.ribbon-tile[data-tone="tie"] {
+  --ribbon-rail: var(--color-tie);
+  --ribbon-tint: radial-gradient(120% 80% at 0% 100%, rgba(224, 168, 46, 0.45), transparent 60%);
+}
+.ribbon-tile[data-tone="upcoming"] {
+  --ribbon-rail: var(--color-brass);
+  --ribbon-tint: radial-gradient(120% 80% at 0% 100%, rgba(201, 162, 74, 0.4), transparent 60%);
+}
+.ribbon-tile[data-tone="bye"] {
+  --ribbon-rail: var(--color-cream-dim);
+  --ribbon-tint: radial-gradient(120% 80% at 0% 100%, rgba(185, 173, 141, 0.25), transparent 60%);
+}
+.ribbon-tile[data-tone="forfeit"] {
+  --ribbon-rail: var(--color-pop-bright);
+  --ribbon-tint: radial-gradient(120% 80% at 0% 100%, rgba(232, 82, 72, 0.4), transparent 60%);
+}
+
+.ribbon-swatch {
+  display: inline-block;
+  height: 10px;
+  width: 14px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+.ribbon-swatch[data-tone="win"]      { background: var(--color-felt-bright); }
+.ribbon-swatch[data-tone="loss"]     { background: var(--color-pop); }
+.ribbon-swatch[data-tone="tie"]      { background: var(--color-tie); }
+.ribbon-swatch[data-tone="upcoming"] { background: var(--color-brass); }
+.ribbon-swatch[data-tone="bye"]      { background: var(--color-cream-dim); }
+.ribbon-swatch[data-tone="forfeit"]  { background: var(--color-pop-bright); }
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-tile { animation: none; opacity: 1; transform: none; }
+  .ribbon-tile:hover { transform: none; }
+}
 
 /* Pulsing live dot */
 @keyframes pulse-pop {
