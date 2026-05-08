@@ -1,12 +1,12 @@
 import Link from "next/link";
 import type { Match } from "@/lib/apa/schemas";
 
-type Tone = "win" | "loss" | "tie" | "upcoming" | "bye" | "forfeit";
+type Tone = "win" | "loss" | "tie" | "next" | "upcoming" | "bye" | "forfeit";
 
-function toneFor(match: Match): Tone {
+function toneFor(match: Match, isNext: boolean): Tone {
   if (match.status === "bye") return "bye";
   if (match.status === "forfeit") return "forfeit";
-  if (match.status === "upcoming") return "upcoming";
+  if (match.status === "upcoming") return isNext ? "next" : "upcoming";
   if (
     typeof match.teamScore === "number" &&
     typeof match.opponentScore === "number"
@@ -15,14 +15,15 @@ function toneFor(match: Match): Tone {
     if (match.teamScore < match.opponentScore) return "loss";
     return "tie";
   }
-  return "upcoming";
+  return isNext ? "next" : "upcoming";
 }
 
 const TONE_LABEL: Record<Tone, string> = {
   win: "W",
   loss: "L",
   tie: "T",
-  upcoming: "·",
+  next: "NEXT",
+  upcoming: "UP",
   bye: "BYE",
   forfeit: "FF",
 };
@@ -36,39 +37,54 @@ function shortOpponent(name: string): string {
 }
 
 /**
- * "Season ribbon" — a horizontally-scrolling row of week tiles, each rich
- * with: week #, date, opponent, score (or BYE / FF / TBD), and tone-colored
- * left rail. Replaces the prior tiny-cell heatmap that was too sparse to be
- * useful at a glance.
+ * Season ribbon — horizontally scrolling row of rich week tiles ordered
+ * with the most useful matches first:
+ *   1. Closest upcoming match (highlighted with a NEXT badge)
+ *   2. Remaining upcoming matches in chronological order
+ *   3. Completed matches in reverse chronological order (newest → oldest)
+ *
+ * Each tile shows Wk #, opponent, date, score, with a tone-colored left rail
+ * and a tinted glow that strengthens on hover.
  */
 export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
   if (matches.length === 0) return null;
 
-  // Sort by date — keeps weeks in chronological order even if APA returns
-  // them shuffled. Render one tile per match, no need to bucket by day
-  // because pool nights are always Tuesdays in this league.
-  const sorted = [...matches].sort(
-    (a, b) => +new Date(a.date) - +new Date(b.date),
-  );
+  const now = Date.now();
+  const upcoming = matches
+    .filter(
+      (m) => m.status === "upcoming" || new Date(m.date).getTime() >= now,
+    )
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  const completed = matches
+    .filter(
+      (m) =>
+        m.status === "completed" ||
+        m.status === "forfeit" ||
+        m.status === "bye",
+    )
+    .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 
-  const completed = sorted.filter((m) => m.status === "completed");
-  const wins = completed.filter(
+  const ordered = [...upcoming, ...completed];
+  const nextId = upcoming[0]?.id ?? null;
+
+  // Season summary chips
+  const completedReal = completed.filter((m) => m.status === "completed");
+  const wins = completedReal.filter(
     (m) =>
       typeof m.teamScore === "number" &&
       typeof m.opponentScore === "number" &&
       m.teamScore > m.opponentScore,
   ).length;
-  const losses = completed.filter(
+  const losses = completedReal.filter(
     (m) =>
       typeof m.teamScore === "number" &&
       typeof m.opponentScore === "number" &&
       m.teamScore < m.opponentScore,
   ).length;
 
-  // Sweeps + B&Rs across our results — a nice "season" headline number.
   let sweeps = 0;
   let breakAndRuns = 0;
-  for (const m of completed) {
+  for (const m of completedReal) {
     for (const r of m.results ?? []) {
       if (r.outcome === "W" && r.sweep) sweeps++;
       if (r.breakAndRun) breakAndRuns++;
@@ -76,20 +92,23 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
   }
 
   return (
-    <div className="surface overflow-hidden">
-      {/* Header row: title + season summary chips */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-soft)] px-5 py-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
-          Season ribbon
-        </p>
-        <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
-          <SummaryChip label="Played" value={`${completed.length}`} />
+    <section className="surface overflow-hidden">
+      {/* Header — title + summary chips */}
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-soft)] px-6 py-4">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+            Season ribbon
+          </p>
+          <p className="mt-0.5 text-[11px] text-[var(--fg-dim)]">
+            Up next on the left · most recent results follow
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+          <SummaryChip label="Played" value={`${completedReal.length}`} />
           <SummaryChip
             label="Record"
             value={`${wins}-${losses}`}
-            tone={
-              wins > losses ? "felt" : wins < losses ? "pop" : undefined
-            }
+            tone={wins > losses ? "felt" : wins < losses ? "pop" : undefined}
           />
           {sweeps > 0 && (
             <SummaryChip label="Sweeps" value={`${sweeps}`} tone="brass" />
@@ -98,34 +117,43 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
             <SummaryChip label="B&R" value={`${breakAndRuns}`} tone="felt" />
           )}
         </div>
-      </div>
+      </header>
 
-      {/* Tiles */}
-      <div className="relative">
-        <ol className="flex snap-x gap-3 overflow-x-auto p-4 [scrollbar-width:thin]">
-          {sorted.map((m, idx) => (
+      {/* Tiles — fade edges on the scroll axis */}
+      <div className="ribbon-scroll relative">
+        <ol className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 py-5 [scrollbar-width:thin]">
+          {ordered.map((m, idx) => (
             <li key={m.id} className="snap-start">
-              <WeekTile match={m} index={idx} />
+              <WeekTile match={m} index={idx} isNext={m.id === nextId} />
             </li>
           ))}
         </ol>
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-3 border-t border-[var(--border)] bg-[var(--bg-soft)] px-5 py-2 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+      <footer className="flex flex-wrap items-center gap-4 border-t border-[var(--border)] bg-[var(--bg-soft)] px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+        <Swatch tone="next" label="Next up" />
         <Swatch tone="win" label="Win" />
         <Swatch tone="loss" label="Loss" />
         <Swatch tone="tie" label="Tie" />
         <Swatch tone="upcoming" label="Upcoming" />
         <Swatch tone="bye" label="Bye" />
         <Swatch tone="forfeit" label="Forfeit" />
-      </div>
-    </div>
+      </footer>
+    </section>
   );
 }
 
-function WeekTile({ match, index }: { match: Match; index: number }) {
-  const tone = toneFor(match);
+function WeekTile({
+  match,
+  index,
+  isNext,
+}: {
+  match: Match;
+  index: number;
+  isNext: boolean;
+}) {
+  const tone = toneFor(match, isNext);
   const date = new Date(match.date);
   const dateLabel = date.toLocaleString(undefined, {
     month: "short",
@@ -139,43 +167,67 @@ function WeekTile({ match, index }: { match: Match; index: number }) {
       ? `${match.teamScore}–${match.opponentScore}`
       : null;
 
+  // Days-to label for the next-up tile, e.g. "in 4 days"
+  const daysUntil = Math.round(
+    (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  );
+  const relativeLabel =
+    isNext && match.status !== "completed"
+      ? daysUntil <= 0
+        ? "Tonight"
+        : daysUntil === 1
+          ? "Tomorrow"
+          : `In ${daysUntil} days`
+      : null;
+
   const inner = (
-    <div
-      className="ribbon-tile group flex h-[112px] w-[160px] flex-col justify-between"
+    <article
+      className="ribbon-tile group flex h-[140px] w-[200px] flex-col justify-between"
       data-tone={tone}
-      style={{ animationDelay: `${index * 25}ms` }}
+      data-next={isNext || undefined}
+      style={{ animationDelay: `${index * 30}ms` }}
     >
-      <div className="flex items-start justify-between gap-2">
-        <span className="font-[family-name:var(--font-display)] text-base leading-none tracking-wide text-[var(--color-cream)]">
+      {/* Top — week number + tone badge */}
+      <header className="flex items-start justify-between gap-2">
+        <span className="font-[family-name:var(--font-display)] text-lg leading-none tracking-wide text-[var(--color-cream)]">
           {week !== undefined ? `Wk ${week}` : dateLabel}
         </span>
-        <span className="rounded-sm border border-[var(--border)] bg-[var(--bg-soft)] px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[10px] tracking-[0.12em] text-[var(--fg-dim)]">
+        <span className="ribbon-tone-badge" data-tone={tone}>
           {TONE_LABEL[tone]}
         </span>
-      </div>
-      <div>
+      </header>
+
+      {/* Middle — opponent + date / countdown */}
+      <div className="min-w-0">
         <p
-          className="line-clamp-1 text-[12px] font-medium text-[var(--color-cream)]"
+          className="line-clamp-1 text-[13px] font-semibold text-[var(--color-cream)]"
           title={match.opponent}
         >
           vs {opp}
         </p>
-        <p className="mt-0.5 text-[10px] uppercase tracking-[0.16em] text-[var(--fg-dim)]">
-          {dateLabel}
+        <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+          {relativeLabel ?? dateLabel}
         </p>
       </div>
-      <div className="flex items-baseline justify-between">
+
+      {/* Bottom — score (if any) or status */}
+      <footer className="flex items-end justify-between">
         {score ? (
-          <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums text-[var(--color-cream)]">
+          <span className="font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide tabular-nums text-[var(--color-cream)]">
             {score}
           </span>
         ) : (
           <span className="font-[family-name:var(--font-display)] text-base tracking-[0.16em] text-[var(--fg-dim)]">
-            {tone === "bye" ? "BYE WEEK" : tone === "forfeit" ? "FORFEIT" : "TBD"}
+            {tone === "bye" ? "BYE" : tone === "forfeit" ? "FF" : "TBD"}
           </span>
         )}
-      </div>
-    </div>
+        {match.location && (
+          <span className="ml-2 line-clamp-1 max-w-[60%] truncate text-right text-[10px] text-[var(--fg-dim)]">
+            {match.location}
+          </span>
+        )}
+      </footer>
+    </article>
   );
 
   if (match.status === "bye") {
@@ -212,7 +264,9 @@ function SummaryChip({
   return (
     <span className="inline-flex items-baseline gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-2.5 py-1">
       <span>{label}</span>
-      <span className={`font-[family-name:var(--font-display)] text-[13px] tracking-wide tabular-nums ${valueClass}`}>
+      <span
+        className={`font-[family-name:var(--font-display)] text-[13px] tracking-wide tabular-nums ${valueClass}`}
+      >
         {value}
       </span>
     </span>

@@ -2,10 +2,11 @@ import type { Streak } from "@/lib/streaks";
 import { streakBadge } from "@/lib/streaks";
 
 /**
- * Compact, refined streak indicator. Three variants:
- *   - "pill"  (default): inline lozenge with chevron + count, brand-toned
- *   - "chip" : same look but tighter (used in dense lists like leaderboard)
- *   - "tag"  : monospace minimal, e.g. for inline use next to a name
+ * Streak indicator. Reads "HOT" / "COLD" with a chevron + count, all
+ * brand-typed. Three variants:
+ *   - "pill"  (default): full label, used on cards / hero
+ *   - "chip" : compact form, used in dense lists like leaderboard rows
+ *   - "tag"  : minimal monospace `↑3W`-style for inline use
  */
 export function StreakBadge({
   streak,
@@ -17,16 +18,16 @@ export function StreakBadge({
   const badge = streakBadge(streak);
   if (!badge) return null;
   const isHot = badge.kind === "hot";
-  const label = `${badge.count}-game ${isHot ? "winning" : "losing"} streak`;
+  const stateLabel = isHot ? "Hot" : "Cold";
+  const aria = `${badge.count}-game ${isHot ? "winning" : "losing"} streak`;
 
-  // Tag — terse inline form: "W3" / "L3" with subtle color, no chrome.
   if (variant === "tag") {
     return (
       <span
         className="streak-tag"
         data-kind={badge.kind}
-        title={label}
-        aria-label={label}
+        title={aria}
+        aria-label={aria}
       >
         <Chevron up={isHot} />
         {badge.count}
@@ -39,13 +40,15 @@ export function StreakBadge({
     <span
       className={variant === "chip" ? "streak-chip" : "streak-pill"}
       data-kind={badge.kind}
-      title={label}
-      aria-label={label}
+      title={aria}
+      aria-label={aria}
     >
       <Chevron up={isHot} />
-      <span className="streak-count">{badge.count}</span>
-      <span className="streak-label">
-        {isHot ? "Win streak" : "Cold"}
+      <span className="streak-state">{stateLabel}</span>
+      <span className="streak-divider" aria-hidden />
+      <span className="streak-count">
+        {badge.count}
+        <span className="streak-count-suffix">{isHot ? "W" : "L"}</span>
       </span>
     </span>
   );
