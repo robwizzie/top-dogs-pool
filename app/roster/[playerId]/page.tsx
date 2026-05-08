@@ -237,6 +237,15 @@ export default async function PlayerPage({ params, searchParams }: Props) {
           )}
         </div>
 
+        <div className="mt-5 flex flex-wrap gap-3 text-xs">
+          <Link
+            href={`/compare?players=${playerId}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-1.5 font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)] hover:bg-[var(--color-brass)]/10"
+          >
+            Compare with another player →
+          </Link>
+        </div>
+
         {profile && profile.sessions.length > 1 && (
           <section className="mt-12">
             <h2 className="mb-4 font-[family-name:var(--font-display)] text-2xl tracking-wide">

@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/ui/Section";
 import { PlayerCard } from "@/components/cards/PlayerCard";
+import { RackSkeleton } from "@/components/ui/RackSkeleton";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
@@ -65,9 +66,9 @@ export default async function RosterPage({ searchParams }: Props) {
         </div>
 
         {roster.length === 0 ? (
-          <p className="surface p-6 text-sm text-[var(--fg-dim)]">
-            Roster syncing from APA — refresh in a minute.
-          </p>
+          <div className="surface">
+            <RackSkeleton message="Racking the roster — pull again in a minute" />
+          </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {roster.map((p, i) => (

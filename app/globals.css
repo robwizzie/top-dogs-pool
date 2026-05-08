@@ -334,6 +334,65 @@ button:hover .hover-roll {
 }
 .cmdk-launcher .cmdk-kbd { color: inherit; opacity: 0.85; }
 
+/* Rack skeleton — pool balls "break" outward on mount, then settle. Each
+ * ball gets its own scatter vector (via inline style) translated to a CSS
+ * transform; we keep the keyframe simple and re-use the same shape while
+ * each ball's individual delay gives the cascading break feel. */
+@keyframes rack-break {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0.9; }
+  40%      { transform: translate3d(var(--rb-dx, 0px), var(--rb-dy, 0px), 0) rotate(var(--rb-rot, 0deg)); opacity: 1; }
+}
+.rack-ball {
+  display: inline-flex;
+  animation: rack-break 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rack-ball { animation: none; }
+}
+
+/* Cinematic glow for special-event badges in match recaps. Pulses brand
+ * colors so sweeps / B&Rs feel alive without being noisy. */
+@keyframes glow-pulse-pop {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 82, 72, 0.0); }
+  50%      { box-shadow: 0 0 18px 2px rgba(232, 82, 72, 0.55); }
+}
+@keyframes glow-pulse-felt {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.0); }
+  50%      { box-shadow: 0 0 18px 2px rgba(46, 139, 87, 0.55); }
+}
+@keyframes glow-pulse-brass {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 190, 107, 0.0); }
+  50%      { box-shadow: 0 0 18px 2px rgba(224, 190, 107, 0.55); }
+}
+.glow-pop   { animation: glow-pulse-pop   2.4s ease-in-out infinite; }
+.glow-felt  { animation: glow-pulse-felt  2.4s ease-in-out infinite; }
+.glow-brass { animation: glow-pulse-brass 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .glow-pop, .glow-felt, .glow-brass { animation: none; }
+}
+
+/* Score arc — animate stroke "drawing in" on first paint. */
+@keyframes draw-line {
+  from { stroke-dashoffset: var(--draw-len, 800); }
+  to   { stroke-dashoffset: 0; }
+}
+.draw-in {
+  stroke-dasharray: var(--draw-len, 800);
+  stroke-dashoffset: var(--draw-len, 800);
+  animation: draw-line 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.2s forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .draw-in { animation: none; stroke-dashoffset: 0; }
+}
+
+/* Heatmap cell entrance — subtle pop-in for calendar tiles. */
+@keyframes cell-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.heatmap-cell { animation: cell-pop 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; opacity: 0; }
+
 /* Pulsing live dot */
 @keyframes pulse-pop {
   0%, 100% {
