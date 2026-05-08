@@ -7,6 +7,8 @@ import { StatCounter } from "@/components/ui/StatCounter";
 import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
 import { StreakBadge } from "@/components/cards/StreakBadge";
+import { PointsBreakdown } from "@/components/cards/PointsBreakdown";
+import { CareerArc } from "@/components/cards/CareerArc";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import { parseSessionScope, resolveScope } from "@/lib/session-scope";
@@ -89,6 +91,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         miniSweeps: profile?.career.miniSweeps ?? 0,
         breakAndRuns: profile?.career.breakAndRuns ?? 0,
         eightOnBreaks: profile?.career.eightOnBreaks ?? 0,
+        levelUps: profile?.career.levelUps ?? 0,
         skillLevel: profile?.currentSkillLevel ?? null,
         pa: undefined as number | undefined,
         ppm: undefined as number | undefined,
@@ -108,6 +111,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         miniSweeps: s?.miniSweeps ?? 0,
         breakAndRuns: s?.breakAndRuns ?? 0,
         eightOnBreaks: s?.eightOnBreaks ?? 0,
+        levelUps: s?.levelUps ?? 0,
         skillLevel: s?.skillLevel ?? null,
         pa: s?.pa,
         ppm: s?.ppm,
@@ -121,7 +125,8 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       sw = 0,
       ms = 0,
       br = 0,
-      eob = 0;
+      eob = 0,
+      lvl = 0;
     for (const s of inScope) {
       mp += s.matchesPlayed ?? 0;
       w += s.wins ?? 0;
@@ -130,6 +135,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       ms += s.miniSweeps ?? 0;
       br += s.breakAndRuns ?? 0;
       eob += s.eightOnBreaks ?? 0;
+      lvl += s.levelUps ?? 0;
     }
     return {
       label: `${selectedIds.size} sessions combined`,
@@ -142,6 +148,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       miniSweeps: ms,
       breakAndRuns: br,
       eightOnBreaks: eob,
+      levelUps: lvl,
       skillLevel: inScope[inScope.length - 1]?.skillLevel ?? null,
       pa: undefined as number | undefined,
       ppm: undefined as number | undefined,
@@ -186,9 +193,10 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
           href="/roster"
-          className="mb-6 inline-flex items-center gap-1 text-sm text-[var(--fg-dim)] hover:text-[var(--color-brass)]"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass)] focus:outline-none focus-visible:text-[var(--color-brass)]"
         >
-          <ArrowLeft size={14} /> Back to roster
+          <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
+          Back to roster
         </Link>
 
         <div className="mb-6">
@@ -206,7 +214,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
             {display.label}
           </h2>
           {playerHistory?.streak && (
-            <StreakBadge streak={playerHistory.streak} size="md" />
+            <StreakBadge streak={playerHistory.streak} />
           )}
           {playerHistory && playerHistory.outcomes.length > 0 && (
             <div className="hidden items-center gap-2 text-[11px] text-[var(--fg-dim)] sm:flex">
@@ -237,13 +245,18 @@ export default async function PlayerPage({ params, searchParams }: Props) {
           )}
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-3 text-xs">
-          <Link
-            href={`/compare?players=${playerId}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-1.5 font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)] hover:bg-[var(--color-brass)]/10"
-          >
-            Compare with another player →
-          </Link>
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <PointsBreakdown
+            points={display.points}
+            sweeps={display.sweeps}
+            miniSweeps={display.miniSweeps}
+            breakAndRuns={display.breakAndRuns}
+            eightOnBreaks={display.eightOnBreaks}
+            levelUps={display.levelUps}
+          />
+          {playerHistory && playerHistory.outcomes.length >= 2 && (
+            <CareerArc outcomes={playerHistory.outcomes} />
+          )}
         </div>
 
         {profile && profile.sessions.length > 1 && (

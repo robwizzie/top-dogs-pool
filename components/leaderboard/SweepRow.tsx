@@ -94,7 +94,7 @@ export function SweepRow({
               </span>
             )}
           </Link>
-          {streak && <StreakBadge streak={streak} />}
+          {streak && <StreakBadge streak={streak} variant="chip" />}
         </div>
         <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--fg-dim)]">
           {row.sweeps > 0 && (
