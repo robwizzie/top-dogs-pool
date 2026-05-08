@@ -1,4 +1,5 @@
 import { ApaFetchError, loadSnapshot } from "./client";
+import { computeStreaks, type Streak } from "@/lib/streaks";
 import type {
   LeaderboardRow,
   Match,
@@ -298,6 +299,15 @@ export async function getLeaderboard(
         b.wins - a.wins ||
         a.playerName.localeCompare(b.playerName),
     );
+}
+
+/**
+ * Current trailing W/L streak per player, computed across every match in the
+ * snapshot (career — not session-scoped). Returns a map keyed by playerId.
+ */
+export async function getPlayerStreaks(): Promise<Map<string, Streak>> {
+  const snap = await loadSnapshot();
+  return computeStreaks(Object.values(snap.matches));
 }
 
 export async function getLastUpdated(): Promise<Date | null> {

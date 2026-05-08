@@ -1,7 +1,12 @@
 import { PageHeader } from "@/components/ui/Section";
 import { PlayerCard } from "@/components/cards/PlayerCard";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
-import { getCurrentSession, getRoster, getSessions } from "@/lib/apa";
+import {
+  getCurrentSession,
+  getPlayerStreaks,
+  getRoster,
+  getSessions,
+} from "@/lib/apa";
 import {
   parseSessionScope,
   resolveScope,
@@ -31,7 +36,10 @@ export default async function RosterPage({ searchParams }: Props) {
   // Roster is per-session — show the most recent of the selection.
   const primaryId = Math.max(...selectedIds);
 
-  const roster = await getRoster(primaryId);
+  const [roster, streaks] = await Promise.all([
+    getRoster(primaryId),
+    getPlayerStreaks(),
+  ]);
   const primaryName = sessions.find((s) => s.id === primaryId)?.name;
   const sessionLabel =
     selectedIds.size > 1
@@ -63,7 +71,12 @@ export default async function RosterPage({ searchParams }: Props) {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {roster.map((p, i) => (
-              <PlayerCard key={p.id} player={p} index={i} />
+              <PlayerCard
+                key={p.id}
+                player={p}
+                index={i}
+                streak={streaks.get(p.id) ?? null}
+              />
             ))}
           </div>
         )}

@@ -184,6 +184,69 @@ button:hover .hover-roll {
   animation: brand-roll 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Trading-card flip — used by PlayerCard. The outer .card-3d gives perspective
+ * and respects a flipped state set on the inner .card-3d-inner via the
+ * data-flipped attribute (mobile tap) or :hover (desktop). */
+.card-3d {
+  perspective: 1200px;
+}
+.card-3d-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  transform-style: preserve-3d;
+}
+@media (hover: hover) {
+  .card-3d:hover .card-3d-inner {
+    transform: rotateY(180deg);
+  }
+}
+.card-3d-inner[data-flipped="true"] {
+  transform: rotateY(180deg);
+}
+.card-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.card-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Hot/cold streak badge — flame for hot, snowflake for cold. */
+@keyframes streak-flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 6px currentColor); }
+  50%      { transform: scale(1.08) rotate(-3deg); filter: drop-shadow(0 0 10px currentColor); }
+}
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+.streak-badge[data-kind="hot"] {
+  color: #ff8a3d;
+  background: rgba(255, 138, 61, 0.1);
+}
+.streak-badge[data-kind="cold"] {
+  color: #7fc6ff;
+  background: rgba(127, 198, 255, 0.1);
+}
+.streak-badge .streak-icon {
+  animation: streak-flicker 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak-badge .streak-icon { animation: none; }
+}
+
 /* Pulsing live dot */
 @keyframes pulse-pop {
   0%, 100% {

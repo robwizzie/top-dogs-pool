@@ -4,6 +4,7 @@ import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
   getLeaderboard,
+  getPlayerStreaks,
   getSessions,
 } from "@/lib/apa";
 import {
@@ -34,9 +35,10 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const scope = parseSessionScope(session, allIds);
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
 
-  const rows = await getLeaderboard(
-    scope.kind === "all" ? "all" : selectedIds,
-  );
+  const [rows, streaks] = await Promise.all([
+    getLeaderboard(scope.kind === "all" ? "all" : selectedIds),
+    getPlayerStreaks(),
+  ]);
   const headerLabel = scopeLabel(selectedIds, sessions);
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
   const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
@@ -72,6 +74,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
                 row={row}
                 rank={i + 1}
                 celebrate={i < 3 && row.points > 0}
+                streak={streaks.get(row.playerId) ?? null}
               />
             ))}
           </div>
