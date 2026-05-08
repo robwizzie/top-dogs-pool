@@ -75,7 +75,7 @@ export function SweepRow({
             alt={row.playerName}
             fill
             sizes="36px"
-            className="object-cover"
+            className="object-cover object-top"
           />
         </div>
       ) : (

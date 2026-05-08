@@ -210,7 +210,7 @@ export function CommandPalette({ items }: { items: SearchItem[] }) {
                               alt=""
                               width={36}
                               height={36}
-                              className="h-9 w-9 object-cover"
+                              className="h-9 w-9 object-cover object-top"
                             />
                           ) : (
                             <KindGlyph kind={r.kind} />
