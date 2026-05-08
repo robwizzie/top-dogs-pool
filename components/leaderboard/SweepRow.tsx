@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { StreakBadge } from "@/components/cards/StreakBadge";
+import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
 import type { LeaderboardRow } from "@/lib/apa/schemas";
 import type { Streak } from "@/lib/streaks";
 import { cn } from "@/lib/utils";
@@ -14,11 +15,13 @@ export function SweepRow({
   rank,
   celebrate = false,
   streak,
+  outcomes,
 }: {
   row: LeaderboardRow;
   rank: number;
   celebrate?: boolean;
   streak?: Streak | null;
+  outcomes?: ("W" | "L")[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -139,6 +142,11 @@ export function SweepRow({
           </span>
         </div>
       </div>
+      {outcomes && outcomes.length > 0 && (
+        <div className="hidden shrink-0 sm:block">
+          <OutcomeBars outcomes={outcomes} />
+        </div>
+      )}
       <div className="shrink-0 text-right">
         <p className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--color-brass-bright)]">
           {row.points}

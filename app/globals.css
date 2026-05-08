@@ -247,6 +247,93 @@ button:hover .hover-roll {
   .streak-badge .streak-icon { animation: none; }
 }
 
+/* Rank delta indicator — slides in from below (up) or above (down). */
+@keyframes rank-up-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rank-down-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rank-delta {
+  opacity: 0;
+  animation-duration: 0.55s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+.rank-delta[data-direction="up"]   { animation-name: rank-up-in; }
+.rank-delta[data-direction="down"] { animation-name: rank-down-in; }
+
+/* TOP DOG stamp — current sweeps leader on the player profile hero. Inked
+ * brass border at a slight tilt with a fade-in zoom. */
+@keyframes stamp-in {
+  0%   { opacity: 0; transform: rotate(-12deg) scale(1.6); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: rotate(-7deg) scale(1); }
+}
+.top-dog-stamp {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  font-size: 24px;
+  line-height: 0.95;
+  color: var(--color-brass-bright);
+  border: 3px solid var(--color-brass);
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 0 0 1px rgba(201, 162, 74, 0.35), 0 12px 30px -12px rgba(201, 162, 74, 0.55);
+  background: rgba(7, 7, 7, 0.55);
+  backdrop-filter: blur(2px);
+  transform: rotate(-7deg);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  animation: stamp-in 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) 0.3s both;
+}
+@media (min-width: 640px) {
+  .top-dog-stamp { font-size: 32px; padding: 0.6rem 1.1rem; }
+}
+
+/* Command palette (⌘K) */
+.cmdk-overlay {
+  background: color-mix(in oklab, var(--color-ink) 80%, transparent);
+  backdrop-filter: blur(6px);
+  animation: fade-in 0.18s ease-out forwards;
+}
+.cmdk-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  box-shadow: var(--shadow-felt), 0 0 0 1px rgba(201, 162, 74, 0.15);
+  animation: cmdk-pop 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  transform-origin: top center;
+}
+@keyframes cmdk-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.cmdk-item {
+  transition: background 0.15s ease;
+}
+.cmdk-item[data-active="true"] {
+  background: var(--bg-soft);
+}
+.cmdk-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.3rem;
+  padding: 0 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+}
+.cmdk-launcher .cmdk-kbd { color: inherit; opacity: 0.85; }
+
 /* Pulsing live dot */
 @keyframes pulse-pop {
   0%, 100% {

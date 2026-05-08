@@ -4,7 +4,7 @@ import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
   getLeaderboard,
-  getPlayerStreaks,
+  getPlayerHistory,
   getSessions,
 } from "@/lib/apa";
 import {
@@ -35,9 +35,9 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const scope = parseSessionScope(session, allIds);
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
 
-  const [rows, streaks] = await Promise.all([
+  const [rows, history] = await Promise.all([
     getLeaderboard(scope.kind === "all" ? "all" : selectedIds),
-    getPlayerStreaks(),
+    getPlayerHistory(),
   ]);
   const headerLabel = scopeLabel(selectedIds, sessions);
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
@@ -68,15 +68,19 @@ export default async function LeaderboardPage({ searchParams }: Props) {
           </p>
         ) : (
           <div className="surface divide-y divide-[var(--border)]">
-            {rows.map((row, i) => (
-              <SweepRow
-                key={row.playerId}
-                row={row}
-                rank={i + 1}
-                celebrate={i < 3 && row.points > 0}
-                streak={streaks.get(row.playerId) ?? null}
-              />
-            ))}
+            {rows.map((row, i) => {
+              const h = history.get(row.playerId);
+              return (
+                <SweepRow
+                  key={row.playerId}
+                  row={row}
+                  rank={i + 1}
+                  celebrate={i < 3 && row.points > 0}
+                  streak={h?.streak ?? null}
+                  outcomes={h?.outcomes}
+                />
+              );
+            })}
           </div>
         )}
 

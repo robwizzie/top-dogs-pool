@@ -8,18 +8,14 @@ export type Streak = {
 };
 
 /**
- * Compute current trailing W/L streak for every player across the supplied
- * matches. Forfeits are skipped (they're neither hot nor cold). The "current"
- * streak walks back from the most-recent completed match.
+ * Build per-player chronological outcome lists (oldest → newest), skipping
+ * forfeits. Shared base for streaks + recent-outcome bars.
  */
-export function computeStreaks(matches: Match[]): Map<string, Streak> {
-  // Per-player ordered outcome history (oldest → newest).
+export function buildOutcomeHistory(matches: Match[]): Map<string, ("W" | "L")[]> {
   const history = new Map<string, ("W" | "L")[]>();
-
   const sorted = [...matches]
     .filter((m) => m.status === "completed")
     .sort((a, b) => +new Date(a.date) - +new Date(b.date));
-
   for (const match of sorted) {
     for (const r of match.results ?? []) {
       if (r.forfeited) continue;
@@ -29,19 +25,33 @@ export function computeStreaks(matches: Match[]): Map<string, Streak> {
       history.set(r.playerId, list);
     }
   }
+  return history;
+}
 
-  const streaks = new Map<string, Streak>();
-  for (const [playerId, outcomes] of history) {
-    if (outcomes.length === 0) continue;
-    const last = outcomes[outcomes.length - 1];
-    let count = 1;
-    for (let i = outcomes.length - 2; i >= 0; i--) {
-      if (outcomes[i] === last) count++;
-      else break;
-    }
-    streaks.set(playerId, { type: last, count });
+export function streakFromHistory(outcomes: ("W" | "L")[]): Streak | null {
+  if (outcomes.length === 0) return null;
+  const last = outcomes[outcomes.length - 1];
+  let count = 1;
+  for (let i = outcomes.length - 2; i >= 0; i--) {
+    if (outcomes[i] === last) count++;
+    else break;
   }
-  return streaks;
+  return { type: last, count };
+}
+
+/**
+ * Compute current trailing W/L streak for every player across the supplied
+ * matches. Forfeits are skipped (they're neither hot nor cold). The "current"
+ * streak walks back from the most-recent completed match.
+ */
+export function computeStreaks(matches: Match[]): Map<string, Streak> {
+  const history = buildOutcomeHistory(matches);
+  const out = new Map<string, Streak>();
+  for (const [id, outcomes] of history) {
+    const s = streakFromHistory(outcomes);
+    if (s) out.set(id, s);
+  }
+  return out;
 }
 
 /** Hot if 3+ in a row, cold if 3+ losses in a row. Otherwise null. */

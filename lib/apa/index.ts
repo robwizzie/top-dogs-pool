@@ -1,5 +1,10 @@
 import { ApaFetchError, loadSnapshot } from "./client";
-import { computeStreaks, type Streak } from "@/lib/streaks";
+import {
+  buildOutcomeHistory,
+  computeStreaks,
+  streakFromHistory,
+  type Streak,
+} from "@/lib/streaks";
 import type {
   LeaderboardRow,
   Match,
@@ -308,6 +313,23 @@ export async function getLeaderboard(
 export async function getPlayerStreaks(): Promise<Map<string, Streak>> {
   const snap = await loadSnapshot();
   return computeStreaks(Object.values(snap.matches));
+}
+
+/**
+ * Per-player chronological outcome list (oldest → newest) AND streak.
+ * Returned together so callers building leaderboard rows don't double-walk
+ * the matches map. Forfeits are skipped.
+ */
+export async function getPlayerHistory(): Promise<
+  Map<string, { outcomes: ("W" | "L")[]; streak: Streak | null }>
+> {
+  const snap = await loadSnapshot();
+  const history = buildOutcomeHistory(Object.values(snap.matches));
+  const out = new Map<string, { outcomes: ("W" | "L")[]; streak: Streak | null }>();
+  for (const [id, outcomes] of history) {
+    out.set(id, { outcomes, streak: streakFromHistory(outcomes) });
+  }
+  return out;
 }
 
 export async function getLastUpdated(): Promise<Date | null> {

@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import { Bebas_Neue, Inter } from 'next/font/google';
+import { Suspense } from 'react';
 import './globals.css';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SeasonBanner } from '@/components/layout/SeasonBanner';
 import { MobileTabBar } from '@/components/layout/MobileTabBar';
 import { SiteFooter } from '@/components/layout/SiteFooter';
+import { SessionScopeMemory } from '@/components/layout/SessionScopeMemory';
+import { CommandPaletteShell } from '@/components/ui/CommandPaletteShell';
 import { TEAM_NAME, TEAM_TAGLINE } from '@/lib/config';
 
 const inter = Inter({
@@ -46,11 +49,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang='en' data-theme='dark'>
 			<body className={`${inter.variable} ${bebas.variable}`}>
+				<Suspense fallback={null}>
+					<SessionScopeMemory />
+				</Suspense>
 				<SiteHeader />
 				<SeasonBanner />
 				<main className='pb-20 md:pb-0'>{children}</main>
 				<SiteFooter />
 				<MobileTabBar />
+				<Suspense fallback={null}>
+					<CommandPaletteShell />
+				</Suspense>
 			</body>
 		</html>
 	);
