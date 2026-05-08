@@ -69,7 +69,7 @@ export function PlayerCard({
                     alt={player.name}
                     fill
                     sizes="56px"
-                    className="object-cover"
+                    className="object-cover object-top"
                   />
                 ) : (
                   initials || "?"
@@ -142,9 +142,9 @@ export function PlayerCard({
                   alt=""
                   fill
                   sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover opacity-25"
+                  className="object-contain object-center opacity-30"
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-[var(--bg-card)]/85 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-[var(--bg-card)]/85 to-[var(--bg-card)]/40" />
               </>
             )}
 

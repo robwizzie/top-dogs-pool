@@ -431,16 +431,28 @@ function PlayerHero({
 }) {
   return (
     <section className="relative isolate overflow-hidden border-b border-[var(--border)]">
+      {/* Soft blurred background fill so contain doesn't leave hard letterbox
+          bars — gives the hero a polished, full-bleed feel while keeping the
+          entire action shot visible. */}
+      <Image
+        src={actionImage}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        aria-hidden
+        className="-z-20 scale-110 object-cover blur-2xl opacity-50"
+      />
       <Image
         src={actionImage}
         alt={`${name} action shot`}
         fill
         priority
         sizes="100vw"
-        className="-z-10 object-cover hero-zoom"
+        className="-z-10 object-contain object-center hero-zoom"
       />
       <div
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/70 to-transparent"
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/55 to-[var(--bg)]/30"
         aria-hidden
       />
       {isTopDog && (
@@ -461,7 +473,7 @@ function PlayerHero({
                 alt={name}
                 fill
                 sizes="96px"
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
           )}

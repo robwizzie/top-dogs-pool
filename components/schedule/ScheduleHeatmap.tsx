@@ -119,9 +119,10 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
         </div>
       </header>
 
-      {/* Tiles — fade edges on the scroll axis */}
+      {/* Tiles — horizontal scroll with explicit padding so leftmost tile
+          breathes on default load. */}
       <div className="ribbon-scroll relative">
-        <ol className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 py-5 [scrollbar-width:thin]">
+        <ol className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 py-6 sm:px-8 [scrollbar-width:thin]">
           {ordered.map((m, idx) => (
             <li key={m.id} className="snap-start">
               <WeekTile match={m} index={idx} isNext={m.id === nextId} />
