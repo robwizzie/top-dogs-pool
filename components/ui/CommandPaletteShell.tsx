@@ -97,11 +97,11 @@ export async function CommandPaletteShell() {
   for (const s of sessions) {
     items.push({
       id: `session:${s.id}`,
-      label: `Sweeps · ${s.name}`,
+      label: `Patch Watch · ${s.name}`,
       sublabel: "Leaderboard for this session",
       kind: "Session",
       href: `/leaderboard?session=${s.id}`,
-      keywords: `sweeps leaderboard ${s.name}`.toLowerCase(),
+      keywords: `patch watch sweeps leaderboard ${s.name}`.toLowerCase(),
     });
   }
 

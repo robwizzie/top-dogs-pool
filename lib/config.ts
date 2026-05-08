@@ -25,7 +25,7 @@ export const NAV_LINKS = [
   { href: "/roster", label: "Roster", ball: 2 },
   { href: "/schedule", label: "Schedule", ball: 3 },
   { href: "/standings", label: "Standings", ball: 4 },
-  { href: "/leaderboard", label: "Sweeps", ball: 5 },
+  { href: "/leaderboard", label: "Patch Watch", ball: 5 },
   { href: "/research", label: "Research", ball: 6 },
   { href: "/clips", label: "Clips", ball: 7 },
   { href: "/live", label: "Live", ball: 8 },
