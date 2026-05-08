@@ -2,6 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { SessionRecord } from "@/lib/apa/schemas";
 import { serializeSessionScope, toggleSessionInScope } from "@/lib/session-scope";
+import { ResetSessionScope } from "@/components/leaderboard/ResetSessionScope";
 
 /**
  * Multi-select session picker. Each pill toggles its session in/out of the
@@ -92,27 +93,39 @@ export function SessionPicker({
         );
       })}
       {showAllTime && !singleSelect && (
-        <Link
-          href={allHref}
-          scroll={false}
-          className={cn(
-            "rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide uppercase transition-colors",
-            isAllSelected
-              ? "bg-[var(--color-pop)] text-white"
-              : "border border-[var(--color-pop)]/50 text-[var(--color-pop-bright)] hover:bg-[var(--color-pop)]/15",
-          )}
-        >
-          {isAllSelected ? "All ✓" : "All"}
-        </Link>
+        // When "All" is currently active, clicking it deselects → same
+        // URL as Reset → use ResetSessionScope so the persisted scope
+        // clears too, otherwise SessionScopeMemory restores "all" instantly.
+        isAllSelected ? (
+          <ResetSessionScope
+            href={allHref}
+            className={cn(
+              "cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors",
+              "bg-[var(--color-pop)] text-white",
+            )}
+          >
+            All ✓
+          </ResetSessionScope>
+        ) : (
+          <Link
+            href={allHref}
+            scroll={false}
+            className={cn(
+              "rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors",
+              "border border-[var(--color-pop)]/50 text-[var(--color-pop-bright)] hover:bg-[var(--color-pop)]/15",
+            )}
+          >
+            All
+          </Link>
+        )
       )}
       {hasMulti && (
-        <Link
+        <ResetSessionScope
           href={clearHref}
-          scroll={false}
-          className="ml-auto rounded-full px-2.5 py-1 text-[11px] tracking-wide text-[var(--fg-dim)] hover:text-[var(--color-brass)]"
+          className="ml-auto cursor-pointer rounded-full px-2.5 py-1 text-[11px] tracking-wide text-[var(--fg-dim)] hover:text-[var(--color-brass)]"
         >
           Reset
-        </Link>
+        </ResetSessionScope>
       )}
     </div>
   );
