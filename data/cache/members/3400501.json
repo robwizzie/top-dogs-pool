@@ -1,0 +1,280 @@
+{
+  "fetchedAt": "2026-05-11T16:42:42.164Z",
+  "data": {
+    "aliasSessionStats": {
+      "alias": {
+        "id": 3264709,
+        "league": {
+          "id": 890,
+          "currentSessionId": 138,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "players": [
+          {
+            "id": 92369011,
+            "team": {
+              "id": 13051645,
+              "name": "The Railhouse",
+              "number": "06803",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 91260647,
+            "team": {
+              "id": 12894544,
+              "name": "Just Here For Shots",
+              "number": "01608",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.5384615384615384,
+            "ppm": 1.6153846153846154,
+            "eightBallMatchPointsEarned": 21,
+            "matchesWon": 9,
+            "matchesPlayed": 13,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90959850,
+            "team": {
+              "id": 12857715,
+              "name": "#STFUandShoot",
+              "number": "01608",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 2,
+            "matchesPlayed": 6,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90214008,
+            "team": {
+              "id": 12757748,
+              "name": "#STFUandShoot",
+              "number": "01604",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.6944444444444445,
+            "ppm": 2.0833333333333335,
+            "eightBallMatchPointsEarned": 25,
+            "matchesWon": 8,
+            "matchesPlayed": 12,
+            "eightBallBreakAndRuns": 1,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 2,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 89841631,
+            "team": {
+              "id": 12623166,
+              "name": "#STFUandShoot",
+              "number": "01604",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.4666666666666666,
+            "ppm": 1.4,
+            "eightBallMatchPointsEarned": 14,
+            "matchesWon": 4,
+            "matchesPlayed": 10,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "aliasSessionStatsDropdown": {
+      "alias": {
+        "id": 3264709,
+        "sessions": [
+          {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
+            "id": 138,
+            "name": "Spring 2026",
+            "__typename": "Session"
+          },
+          {
+            "id": 137,
+            "name": "Fall 2025",
+            "__typename": "Session"
+          },
+          {
+            "id": 136,
+            "name": "Summer 2025",
+            "__typename": "Session"
+          },
+          {
+            "id": 135,
+            "name": "Spring 2025",
+            "__typename": "Session"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getEightBallStats": {
+      "alias": {
+        "players": [
+          {
+            "id": 92369011,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 91260647,
+            "session": {
+              "id": 138,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90959850,
+            "session": {
+              "id": 137,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 90214008,
+            "session": {
+              "id": 136,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 1,
+            "rackless": 2,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 89841631,
+            "session": {
+              "id": 135,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "id": 3264709,
+        "displayName": "Keziah Law",
+        "EightBallStats": [
+          {
+            "id": 803264709,
+            "matchesWon": 25,
+            "matchesPlayed": 45,
+            "CLA": 0,
+            "defensiveShotAvg": 1.27,
+            "matchCountForLastTwoYrs": 78,
+            "lastPlayed": "2026-05-07T00:00:00Z",
+            "__typename": "EightBallLifetimeStatistics"
+          }
+        ],
+        "NineBallStats": [
+          {
+            "id": 903264709,
+            "matchesWon": null,
+            "matchesPlayed": 0,
+            "CLA": 0,
+            "defensiveShotAvg": 0,
+            "matchCountForLastTwoYrs": 0,
+            "lastPlayed": null,
+            "__typename": "NineBallLifetimeStatistics"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getMembershipHistory": {
+      "alias": {
+        "id": 3264709,
+        "member": {
+          "id": 3400501,
+          "consecutiveYearsPlayed": 2,
+          "membershipHistory": [
+            {
+              "id": 7483009,
+              "year": 2025,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7735823,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            }
+          ],
+          "__typename": "Member"
+        },
+        "__typename": "Alias"
+      }
+    }
+  }
+}

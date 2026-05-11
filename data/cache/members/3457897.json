@@ -1,0 +1,190 @@
+{
+  "fetchedAt": "2026-05-11T16:42:37.730Z",
+  "data": {
+    "aliasSessionStats": {
+      "alias": {
+        "id": 3350532,
+        "league": {
+          "id": 890,
+          "currentSessionId": 138,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "players": [
+          {
+            "id": 92155442,
+            "team": {
+              "id": 13022655,
+              "name": "Just Here For Shots",
+              "number": "01608",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92369010,
+            "team": {
+              "id": 13051645,
+              "name": "The Railhouse",
+              "number": "06803",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 91754800,
+            "team": {
+              "id": 12894544,
+              "name": "Just Here For Shots",
+              "number": "01608",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.358974358974359,
+            "ppm": 1.0769230769230769,
+            "eightBallMatchPointsEarned": 14,
+            "matchesWon": 6,
+            "matchesPlayed": 13,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "aliasSessionStatsDropdown": {
+      "alias": {
+        "id": 3350532,
+        "sessions": [
+          {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
+            "id": 138,
+            "name": "Spring 2026",
+            "__typename": "Session"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getEightBallStats": {
+      "alias": {
+        "players": [
+          {
+            "id": 92155442,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92369010,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 91754800,
+            "session": {
+              "id": 138,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "id": 3350532,
+        "displayName": "Cody Eldred",
+        "EightBallStats": [
+          {
+            "id": 803350532,
+            "matchesWon": 6,
+            "matchesPlayed": 13,
+            "CLA": 0,
+            "defensiveShotAvg": 1.08,
+            "matchCountForLastTwoYrs": 13,
+            "lastPlayed": "2026-04-30T00:00:00Z",
+            "__typename": "EightBallLifetimeStatistics"
+          }
+        ],
+        "NineBallStats": [
+          {
+            "id": 903350532,
+            "matchesWon": null,
+            "matchesPlayed": 0,
+            "CLA": 0,
+            "defensiveShotAvg": 0,
+            "matchCountForLastTwoYrs": 0,
+            "lastPlayed": null,
+            "__typename": "NineBallLifetimeStatistics"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getMembershipHistory": {
+      "alias": {
+        "id": 3350532,
+        "member": {
+          "id": 3457897,
+          "consecutiveYearsPlayed": 1,
+          "membershipHistory": [
+            {
+              "id": 7760058,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            }
+          ],
+          "__typename": "Member"
+        },
+        "__typename": "Alias"
+      }
+    }
+  }
+}
