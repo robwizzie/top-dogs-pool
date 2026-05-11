@@ -265,6 +265,36 @@ export function teamIdsFromMember(member: MemberCacheEntry): number[] {
   return [...out];
 }
 
+/**
+ * Extract every {id, number, name} tuple this member has played on. Used to
+ * detect when our team has rolled over into a new session: the team `number`
+ * (e.g. "06806") is persistent across sessions while the `id` increments.
+ */
+export function teamsFromMember(
+  member: MemberCacheEntry,
+): Array<{ id: number; number?: string; name?: string }> {
+  type Player = { team?: { id?: number; number?: string; name?: string } };
+  type Alias = { players?: Player[] };
+  type Data = { alias?: Alias };
+  const data = member.aliasSessionStats as Data;
+  const out: Array<{ id: number; number?: string; name?: string }> = [];
+  const seen = new Set<number>();
+  for (const p of data?.alias?.players ?? []) {
+    const id = p.team?.id;
+    if (typeof id !== "number" || seen.has(id)) continue;
+    seen.add(id);
+    out.push({ id, number: p.team?.number, name: p.team?.name });
+  }
+  return out;
+}
+
+/** Pull the team `number` (persistent across sessions) from a cached team. */
+export function teamNumberFromTeam(team: TeamCacheEntry): string | null {
+  type Page = { team?: { number?: string } };
+  const n = (team.teamPage as Page).team?.number;
+  return typeof n === "string" && n.length > 0 ? n : null;
+}
+
 /** Pull `team.division.id` from a cached team's teamPage payload. */
 export function divisionIdFromTeam(team: TeamCacheEntry): number | null {
   type Page = { team?: { division?: { id?: number } } };

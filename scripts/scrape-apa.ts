@@ -47,6 +47,8 @@ import {
   memberIdsFromTeam,
   opponentTeamIdsFromMatch,
   teamIdsFromMember,
+  teamNumberFromTeam,
+  teamsFromMember,
   type DivisionCacheEntry,
   type MatchCacheEntry,
   type MemberCacheEntry,
@@ -56,9 +58,11 @@ import {
 loadEnv({ path: ".env.local" });
 loadEnv();
 
+// Default URL is just a seed; the scraper auto-pivots to the newest-session
+// team via the persistent team `number` (see auto-pivot block in main()).
 const TEAM_URL =
   process.env.APA_TEAM_URL ??
-  "https://league.poolplayers.com/southjersey/team/12894673";
+  "https://league.poolplayers.com/southjersey/team/13022793";
 const USERNAME = process.env.APA_USERNAME;
 const PASSWORD = process.env.APA_PASSWORD;
 const HEADFUL = process.env.APA_HEADFUL === "1";
@@ -78,11 +82,14 @@ const startedAt = Date.now();
 const budgetExceeded = () =>
   TIME_BUDGET_MS > 0 && Date.now() - startedAt > TIME_BUDGET_MS;
 
-const TEAM_ID = (() => {
+// `let` because we may pivot to a newer-session team id if APA has rolled
+// over into the next session. See "auto-pivot" block in main() below.
+let TEAM_ID = (() => {
   const m = TEAM_URL.match(/\/team\/(\d+)/);
   if (!m) throw new Error(`Cannot parse team id from APA_TEAM_URL: ${TEAM_URL}`);
   return parseInt(m[1], 10);
 })();
+let TEAM_URL_RESOLVED = TEAM_URL;
 const SLUG = leagueSlug(TEAM_URL);
 
 if (!USERNAME || !PASSWORD) {
@@ -125,35 +132,80 @@ async function main() {
     divisionsCached: 0,
   };
 
+  const refreshMembers = async (ids: number[]) => {
+    for (const id of ids) {
+      const cached = await cache.read<MemberCacheEntry>("members", id);
+      const stale = !cached || olderThan(cached, MEMBER_TTL);
+      if (!stale) {
+        stats.membersCached++;
+        console.log(`   · member #${id} cached`);
+        continue;
+      }
+      try {
+        await fetchMember(page, capture, cache, id, SLUG);
+        stats.membersFetched++;
+        console.log(`   ✓ fetched member #${id}`);
+      } catch (e) {
+        console.warn(`   ✗ member #${id}: ${(e as Error).message}`);
+      }
+    }
+  };
+
   // 2. Always re-fetch the CURRENT team.
   console.log("==> fetching current team");
-  const currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG);
+  let currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG);
   stats.teamsFetched++;
-  const currentSessionId = pickSessionId(currentTeam);
+  let currentSessionId = pickSessionId(currentTeam);
   console.log(
     `   ✓ team #${TEAM_ID}, session=${currentSessionId ?? "?"}, ${memberIdsFromTeam(currentTeam).length} roster\n`,
   );
 
   // 3. Members — fetch any whose cache is missing or stale.
   console.log("==> ensuring member data is fresh");
-  const memberIds = memberIdsFromTeam(currentTeam);
-  for (const id of memberIds) {
-    const cached = await cache.read<MemberCacheEntry>("members", id);
-    const stale = !cached || olderThan(cached, MEMBER_TTL);
-    if (!stale) {
-      stats.membersCached++;
-      console.log(`   · member #${id} cached`);
-      continue;
+  let memberIds = memberIdsFromTeam(currentTeam);
+  await refreshMembers(memberIds);
+  console.log();
+
+  // 3b. Auto-pivot to a newer session if APA has rolled the team forward.
+  //
+  // The configured APA_TEAM_URL may point at a team id that's now in a
+  // past session (the team got a fresh `team/<id>` URL for the new
+  // session). The team `number` (e.g. "06806") is persistent across
+  // sessions, so we can scan every roster member's alias data for newer
+  // entries with the same `team.number` — if found, that's the new
+  // current team. Pivot, re-fetch its roster, and continue as if it had
+  // been configured directly.
+  //
+  // Without this, scrapes silently keep refreshing the old (finalized)
+  // team forever and never pick up the new session's schedule.
+  const ourTeamNumber = teamNumberFromTeam(currentTeam);
+  if (ourTeamNumber) {
+    let newestId = TEAM_ID;
+    for (const id of memberIds) {
+      const m = await cache.read<MemberCacheEntry>("members", id);
+      if (!m) continue;
+      for (const t of teamsFromMember(m.data)) {
+        if (t.number === ourTeamNumber && t.id > newestId) newestId = t.id;
+      }
     }
-    try {
-      await fetchMember(page, capture, cache, id, SLUG);
-      stats.membersFetched++;
-      console.log(`   ✓ fetched member #${id}`);
-    } catch (e) {
-      console.warn(`   ✗ member #${id}: ${(e as Error).message}`);
+    if (newestId !== TEAM_ID) {
+      console.log(
+        `==> detected newer session: pivoting current team #${TEAM_ID} → #${newestId} (team number ${ourTeamNumber})`,
+      );
+      TEAM_ID = newestId;
+      TEAM_URL_RESOLVED = `https://league.poolplayers.com/${SLUG}/team/${TEAM_ID}`;
+      currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG);
+      stats.teamsFetched++;
+      currentSessionId = pickSessionId(currentTeam);
+      memberIds = memberIdsFromTeam(currentTeam);
+      console.log(
+        `   ✓ pivoted to team #${TEAM_ID}, session=${currentSessionId ?? "?"}, ${memberIds.length} roster`,
+      );
+      console.log("==> ensuring new-session member data is fresh");
+      await refreshMembers(memberIds);
+      console.log();
     }
   }
-  console.log();
 
   // 4. Past teams — collect IDs, fetch any that aren't cached.
   console.log("==> backfilling past teams");
@@ -439,7 +491,7 @@ async function main() {
   // 6. Persist meta.
   await cache.writeMeta({
     teamId: TEAM_ID,
-    sourceUrl: TEAM_URL,
+    sourceUrl: TEAM_URL_RESOLVED,
     leagueSlug: SLUG,
     currentSessionId,
     lastScrapeAt: new Date().toISOString(),

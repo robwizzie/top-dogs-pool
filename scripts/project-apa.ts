@@ -396,19 +396,19 @@ function pointsForResult(r: MatchResult): number {
 
 async function main() {
   const cache = new ApaCache();
-  const meta = (await cache.readMeta<{
+  const meta = await cache.readMeta<{
     teamId: number;
     sourceUrl: string;
     leagueSlug: string;
     currentSessionId: number | null;
     lastScrapeAt: string;
-  }>()) ?? {
-    teamId: 12894673,
-    sourceUrl: "",
-    leagueSlug: "southjersey",
-    currentSessionId: null,
-    lastScrapeAt: new Date().toISOString(),
-  };
+  }>();
+  if (!meta) {
+    console.error(
+      "No cache/meta.json found. Run `npm run scrape` first to populate the cache.",
+    );
+    process.exit(1);
+  }
 
   const playersConfig = await loadPlayersConfig();
   const teamRecords = await cache.readAll<TeamCacheEntry>("teams");
