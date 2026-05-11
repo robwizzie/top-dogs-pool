@@ -235,7 +235,9 @@ export default async function OpponentTeamPage({ params }: Props) {
               {team.record.wins}–{team.record.losses}
               {team.record.ties ? `–${team.record.ties}` : ""}
             </span>
-            {team.record.rank && <span>#{team.record.rank} in division</span>}
+            {team.record.rank ? (
+              <span>#{team.record.rank} in division</span>
+            ) : null}
             {team.record.points != null && (
               <span>{team.record.points} pts</span>
             )}

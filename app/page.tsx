@@ -43,6 +43,11 @@ export default async function HomePage() {
   const recapText = lastCompleted ? matchRecap(lastCompleted) : null;
   const lastMvp = lastCompleted ? matchMvp(lastCompleted) : null;
   const dataReady = !!team && roster.length > 0;
+  // Treat rank 0 as "no rank yet" — APA fills standings after the first
+  // match week. Pass undefined so the Hero renders a dash.
+  const rawRank = ourStanding?.rank ?? team?.divisionRank;
+  const divisionRank =
+    typeof rawRank === "number" && rawRank > 0 ? rawRank : undefined;
 
   // Tonight banner — live or within ~36h of pool night.
   const now = new Date();
@@ -89,7 +94,7 @@ export default async function HomePage() {
         division={team?.division}
         homeLocation={team?.homeLocation}
         nextOpponent={upcoming?.opponent}
-        divisionRank={ourStanding?.rank ?? team?.divisionRank}
+        divisionRank={divisionRank}
         divisionSize={standings.length || undefined}
       />
 

@@ -114,14 +114,18 @@ export function Hero({
               )}
             </Stat>
             {winPct !== null && <Stat label="Win %">{winPct}%</Stat>}
-            {divisionRank && (
-              <Stat label="Division" icon={<Trophy size={12} />}>
-                #{divisionRank}
-                {divisionSize && (
-                  <span className="text-base text-[var(--fg-dim)]">/{divisionSize}</span>
-                )}
-              </Stat>
-            )}
+            <Stat label="Division" icon={<Trophy size={12} />}>
+              {divisionRank ? (
+                <>
+                  #{divisionRank}
+                  {divisionSize && (
+                    <span className="text-base text-[var(--fg-dim)]">/{divisionSize}</span>
+                  )}
+                </>
+              ) : (
+                <span className="text-[var(--fg-dim)]">—</span>
+              )}
+            </Stat>
             <Stat label="Matches">{totalMatches}</Stat>
           </dl>
         </div>
