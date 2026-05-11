@@ -104,7 +104,9 @@ export default async function StandingsPage({ searchParams }: Props) {
         title="Standings"
         subtitle={
           ours
-            ? `${sessionLabel} · Top Dogs at #${ours.rank}${ours.isTied ? " (T)" : ""} with ${ours.points} pts`
+            ? ours.rank > 0
+              ? `${sessionLabel} · Top Dogs at #${ours.rank}${ours.isTied ? " (T)" : ""} with ${ours.points} pts`
+              : `${sessionLabel} · standings open after week 1 · Top Dogs ${ours.points} pts`
             : `${sessionLabel} · ${standings.length} team${standings.length === 1 ? "" : "s"}`
         }
       />
@@ -185,8 +187,12 @@ export default async function StandingsPage({ searchParams }: Props) {
                     >
                       <td className="px-4 py-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums">
                         <span className="inline-flex items-baseline gap-1.5">
-                          <span>{s.rank}</span>
-                          {s.isTied && (
+                          {s.rank > 0 ? (
+                            <span>{s.rank}</span>
+                          ) : (
+                            <span className="text-[var(--fg-dim)]">—</span>
+                          )}
+                          {s.isTied && s.rank > 0 && (
                             <span className="text-xs text-[var(--fg-dim)]">
                               T
                             </span>
