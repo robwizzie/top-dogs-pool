@@ -1209,7 +1209,10 @@ async function main() {
     name: teamMeta.name,
     number: teamMeta.number,
     division: teamMeta.division,
-    divisionRank: teamMeta.standing,
+    // APA returns standing=null at session-start (no matches played yet);
+    // the snapshot schema only allows number-or-undefined, so coerce.
+    divisionRank:
+      typeof teamMeta.standing === "number" ? teamMeta.standing : undefined,
     session: teamMeta.session?.name,
     homeLocation: teamMeta.homeLocation,
     format: detectFormat(teamMeta.divisionFormat),
