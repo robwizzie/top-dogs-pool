@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-02T20:15:43.956Z",
+  "fetchedAt": "2026-05-11T16:22:30.167Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -11,6 +11,26 @@
           "__typename": "League"
         },
         "players": [
+          {
+            "id": 92156441,
+            "team": {
+              "id": 13022793,
+              "name": "Eight Men Out",
+              "number": "06806",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91261582,
             "team": {
@@ -320,6 +340,11 @@
         "id": 2923578,
         "sessions": [
           {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 138,
             "name": "Spring 2026",
             "__typename": "Session"
@@ -401,6 +426,18 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 92156441,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91261582,
             "session": {
@@ -599,12 +636,12 @@
         "EightBallStats": [
           {
             "id": 802923578,
-            "matchesWon": 57,
-            "matchesPlayed": 149,
+            "matchesWon": 58,
+            "matchesPlayed": 150,
             "CLA": 0,
             "defensiveShotAvg": 0.7,
             "matchCountForLastTwoYrs": 62,
-            "lastPlayed": "2026-04-21T00:00:00Z",
+            "lastPlayed": "2026-05-05T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],

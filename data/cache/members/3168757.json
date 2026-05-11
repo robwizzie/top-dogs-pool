@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-02T20:15:29.518Z",
+  "fetchedAt": "2026-05-11T16:22:15.426Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -11,6 +11,26 @@
           "__typename": "League"
         },
         "players": [
+          {
+            "id": 92156439,
+            "team": {
+              "id": 13022793,
+              "name": "Eight Men Out",
+              "number": "06806",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91261580,
             "team": {
@@ -340,6 +360,11 @@
         "id": 2915214,
         "sessions": [
           {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 138,
             "name": "Spring 2026",
             "__typename": "Session"
@@ -426,6 +451,30 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 92156439,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92158239,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
           {
             "id": 91261580,
             "session": {
@@ -720,24 +769,24 @@
         "EightBallStats": [
           {
             "id": 802915214,
-            "matchesWon": 68,
-            "matchesPlayed": 159,
+            "matchesWon": 69,
+            "matchesPlayed": 160,
             "CLA": 0,
             "defensiveShotAvg": 0.69,
-            "matchCountForLastTwoYrs": 60,
-            "lastPlayed": "2026-04-28T00:00:00Z",
+            "matchCountForLastTwoYrs": 61,
+            "lastPlayed": "2026-05-05T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902915214,
-            "matchesWon": 40,
-            "matchesPlayed": 76,
+            "matchesWon": 41,
+            "matchesPlayed": 77,
             "CLA": 0,
             "defensiveShotAvg": 0.79,
-            "matchCountForLastTwoYrs": 66,
-            "lastPlayed": "2026-04-27T00:00:00Z",
+            "matchCountForLastTwoYrs": 67,
+            "lastPlayed": "2026-05-04T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
