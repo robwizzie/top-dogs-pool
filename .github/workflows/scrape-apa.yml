@@ -43,7 +43,12 @@ jobs:
         env:
           APA_USERNAME: ${{ secrets.APA_USERNAME }}
           APA_PASSWORD: ${{ secrets.APA_PASSWORD }}
-          APA_TEAM_URL: ${{ vars.APA_TEAM_URL || 'https://league.poolplayers.com/southjersey/team/12894673' }}
+          # The scraper auto-pivots to the newest-session team via the
+          # persistent team `number`, so this fallback only matters when
+          # the configured id is so old that no current roster member's
+          # alias history reaches it. Keep it on a recent Eight Men Out
+          # team id.
+          APA_TEAM_URL: ${{ vars.APA_TEAM_URL || 'https://league.poolplayers.com/southjersey/team/13022793' }}
         run: npm run sync
 
       - name: Commit & push if data changed
