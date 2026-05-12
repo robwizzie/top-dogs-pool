@@ -1,0 +1,121 @@
+{
+  "fetchedAt": "2026-05-11T16:42:51.458Z",
+  "data": {
+    "aliasSessionStats": {
+      "alias": {
+        "id": 3361708,
+        "league": {
+          "id": 890,
+          "currentSessionId": 138,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "players": [
+          {
+            "id": 92382360,
+            "team": {
+              "id": 13051645,
+              "name": "The Railhouse",
+              "number": "06803",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "aliasSessionStatsDropdown": {
+      "alias": {
+        "id": 3361708,
+        "sessions": [
+          {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getEightBallStats": {
+      "alias": {
+        "players": [
+          {
+            "id": 92382360,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "id": 3361708,
+        "displayName": "Anthony Carter",
+        "EightBallStats": [
+          {
+            "id": 803361708,
+            "matchesWon": null,
+            "matchesPlayed": 0,
+            "CLA": 0,
+            "defensiveShotAvg": 0,
+            "matchCountForLastTwoYrs": 0,
+            "lastPlayed": null,
+            "__typename": "EightBallLifetimeStatistics"
+          }
+        ],
+        "NineBallStats": [
+          {
+            "id": 903361708,
+            "matchesWon": null,
+            "matchesPlayed": 0,
+            "CLA": 0,
+            "defensiveShotAvg": 0,
+            "matchCountForLastTwoYrs": 0,
+            "lastPlayed": null,
+            "__typename": "NineBallLifetimeStatistics"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getMembershipHistory": {
+      "alias": {
+        "id": 3361708,
+        "member": {
+          "id": 3466803,
+          "consecutiveYearsPlayed": 1,
+          "membershipHistory": [
+            {
+              "id": 7793010,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            }
+          ],
+          "__typename": "Member"
+        },
+        "__typename": "Alias"
+      }
+    }
+  }
+}

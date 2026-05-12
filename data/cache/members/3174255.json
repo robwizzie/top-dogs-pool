@@ -1,0 +1,291 @@
+{
+  "fetchedAt": "2026-05-11T16:40:01.974Z",
+  "data": {
+    "aliasSessionStats": {
+      "alias": {
+        "id": 2921805,
+        "league": {
+          "id": 890,
+          "currentSessionId": 138,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "players": [
+          {
+            "id": 92365797,
+            "team": {
+              "id": 13022793,
+              "name": "Eight Men Out",
+              "number": "06806",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 85062234,
+            "team": {
+              "id": 12041790,
+              "name": "Eight Men Out",
+              "number": "05303",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.5,
+            "ppm": 1.5,
+            "eightBallMatchPointsEarned": 9,
+            "matchesWon": 3,
+            "matchesPlayed": 6,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 84374467,
+            "team": {
+              "id": 11944145,
+              "name": "Eight Men Out",
+              "number": "06811",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 3,
+            "matchesPlayed": 8,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 83860300,
+            "team": {
+              "id": 11875646,
+              "name": "Eight Men Out",
+              "number": "05304",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.5416666666666666,
+            "ppm": 1.625,
+            "eightBallMatchPointsEarned": 13,
+            "matchesWon": 4,
+            "matchesPlayed": 8,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 2,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 83419825,
+            "team": {
+              "id": 11788262,
+              "name": "Eight Men Out",
+              "number": "05301",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.2777777777777778,
+            "ppm": 0.8333333333333334,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 2,
+            "matchesPlayed": 12,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "aliasSessionStatsDropdown": {
+      "alias": {
+        "id": 2921805,
+        "sessions": [
+          {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
+            "id": 123,
+            "name": "Summer 2022",
+            "__typename": "Session"
+          },
+          {
+            "id": 119,
+            "name": "Spring 2022",
+            "__typename": "Session"
+          },
+          {
+            "id": 118,
+            "name": "Fall 2021",
+            "__typename": "Session"
+          },
+          {
+            "id": 117,
+            "name": "Summer 2021",
+            "__typename": "Session"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getEightBallStats": {
+      "alias": {
+        "players": [
+          {
+            "id": 92365797,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 85062234,
+            "session": {
+              "id": 123,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 84374467,
+            "session": {
+              "id": 119,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 83860300,
+            "session": {
+              "id": 118,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 2,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 83419825,
+            "session": {
+              "id": 117,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          }
+        ],
+        "id": 2921805,
+        "displayName": "Greg Carpenter",
+        "EightBallStats": [
+          {
+            "id": 802921805,
+            "matchesWon": 12,
+            "matchesPlayed": 35,
+            "CLA": 0,
+            "defensiveShotAvg": 0.21,
+            "matchCountForLastTwoYrs": 0,
+            "lastPlayed": "2022-08-23T00:00:00Z",
+            "__typename": "EightBallLifetimeStatistics"
+          }
+        ],
+        "NineBallStats": [
+          {
+            "id": 902921805,
+            "matchesWon": null,
+            "matchesPlayed": 0,
+            "CLA": 0,
+            "defensiveShotAvg": 0,
+            "matchCountForLastTwoYrs": 0,
+            "lastPlayed": null,
+            "__typename": "NineBallLifetimeStatistics"
+          }
+        ],
+        "__typename": "Alias"
+      }
+    },
+    "getMembershipHistory": {
+      "alias": {
+        "id": 2921805,
+        "member": {
+          "id": 3174255,
+          "consecutiveYearsPlayed": 1,
+          "membershipHistory": [
+            {
+              "id": 6435854,
+              "year": 2021,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 6620082,
+              "year": 2022,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7799570,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            }
+          ],
+          "__typename": "Member"
+        },
+        "__typename": "Alias"
+      }
+    }
+  }
+}
