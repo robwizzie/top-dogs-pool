@@ -1,7 +1,7 @@
 import type { Match, MatchResult } from "@/lib/apa/schemas";
 
 /**
- * Pick the Top Dogs player who performed best in this match — used as a
+ * Pick the Top Dawgs player who performed best in this match — used as a
  * "Match MVP" headline. Score weights: win=10, sweep=+3, mini=+1, B&R=+2,
  * 8oB=+2, plus 0.5 per game won. Ties broken by win-margin then name.
  */
@@ -60,15 +60,15 @@ export function matchMvp(match: Match): MatchMvp | null {
  * function from the match's results — no LLM, just template stitching
  * that reads like a tidy recap line.
  *
- *   "Top Dogs squeaked out a 12-11 win over Lights Out, with Patrick
+ *   "Top Dawgs squeaked out a 12-11 win over Lights Out, with Patrick
  *    going 2-0 to seal it. Meghan's 5-0 sweep was the highlight."
  */
 export function matchRecap(
   match: Match,
-  /** Subject team's display name. Defaults to "Top Dogs" for backwards-
+  /** Subject team's display name. Defaults to "Top Dawgs" for backwards-
    *  compat with our-team views; pass the opp team's name when rendering
    *  one of their non-vs-us matches. */
-  subjectName: string = "Top Dogs",
+  subjectName: string = "Top Dawgs",
 ): string | null {
   if (match.status !== "completed") return null;
   if (

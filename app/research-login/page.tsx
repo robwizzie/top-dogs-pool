@@ -53,7 +53,7 @@ export default async function ResearchLoginPage({ searchParams }: Props) {
         <span aria-hidden className="block h-px w-12 bg-gradient-to-r from-[var(--color-brass)] to-transparent" />
         <div className="mt-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
           <Lock size={12} />
-          Top Dogs only
+          Top Dawgs only
         </div>
         <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-4xl">
           Research is locked

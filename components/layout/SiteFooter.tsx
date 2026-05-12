@@ -16,7 +16,7 @@ export function SiteFooter() {
           <a href={TIKTOK_PROFILE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-brass)]">TikTok</a>
         </div>
         <p className="text-xs text-[var(--fg-dim)]">
-          © {new Date().getFullYear()} Top Dogs · Stats live from APA.
+          © {new Date().getFullYear()} Top Dawgs · Stats live from APA.
         </p>
       </div>
     </footer>

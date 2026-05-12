@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Patch Watch",
   description:
-    "Top Dogs Patch Watch — points from sweeps, mini-sweeps, break-and-runs, 8-on-breaks, and level-ups (the things that earn an APA patch). Pick any session(s) or All Time.",
+    "Top Dawgs Patch Watch — points from sweeps, mini-sweeps, break-and-runs, 8-on-breaks, and level-ups (the things that earn an APA patch). Pick any session(s) or All Time.",
 };
 
 type Props = {

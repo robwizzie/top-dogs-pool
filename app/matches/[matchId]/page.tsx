@@ -40,7 +40,7 @@ export default async function MatchPage({ params, searchParams }: Props) {
   // and X has an opp profile, we render the page from THEIR perspective
   // — useful when arriving here from /opponents/X (their schedule, their
   // score on the left, their players on the left side of each round).
-  let subjectName = "Top Dogs";
+  let subjectName = "Top Dawgs";
   let oppLink: { id: number; name: string } | null = null;
   if (teamPerspective) {
     const subj = oppTeams.find((t) => String(t.id) === teamPerspective);
@@ -634,7 +634,7 @@ function ResultRow({
 function ScoreArc({
   arc,
   opponent,
-  subject = "Top Dogs",
+  subject = "Top Dawgs",
 }: {
   arc: Array<{ position: number; us: number; them: number }>;
   opponent: string;

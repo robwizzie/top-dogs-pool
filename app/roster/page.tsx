@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Roster",
-  description: "Top Dogs roster — current and historical, by session.",
+  description: "Top Dawgs roster — current and historical, by session.",
 };
 
 type Props = {

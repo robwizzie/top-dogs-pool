@@ -472,13 +472,18 @@ async function main() {
   const currentSessionId = currentMeta.session?.id ?? meta.currentSessionId ?? null;
   const currentFormat = detectFormat(currentMeta.divisionFormat);
 
-  // 3. Identify "Top Dogs lineage" — teams that count as us across sessions.
+  // 3. Identify "Top Dawgs lineage" — teams that count as us across sessions.
   // Match current team's name first (APA team names persist across sessions
   // for stable rosters). Members can also play for other teams in the same
   // session (e.g. Patrick on Bobby D's Cue Crew); those don't count.
   // If you rename the team on APA later, add the old name to OUR_TEAM_ALIASES.
   const OUR_TEAM_ALIASES = new Set<string>(
-    [currentMeta.name, "Top Dogs", "Eight Men Out"].filter(Boolean) as string[],
+    [
+      currentMeta.name,
+      "Top Dawgs",
+      "Top Dogs",
+      "Eight Men Out",
+    ].filter(Boolean) as string[],
   );
   const oursTeamIds = new Set<number>([meta.teamId]);
   for (const [tid, team] of teams) {
@@ -486,11 +491,11 @@ async function main() {
     if (m && OUR_TEAM_ALIASES.has(m.name)) oursTeamIds.add(tid);
   }
   console.log(
-    `→ identified ${oursTeamIds.size} team(s) as Top Dogs lineage:`,
+    `→ identified ${oursTeamIds.size} team(s) as Top Dawgs lineage:`,
     [...oursTeamIds].sort().join(", "),
   );
 
-  // 4. Sessions registry — only sessions where Top Dogs lineage played.
+  // 4. Sessions registry — only sessions where Top Dawgs lineage played.
   type SessionEntry = { name: string; ourTeamId: number; format: string };
   const sessionsBySessionId = new Map<number, SessionEntry>();
   for (const [tid, team] of teams) {
@@ -514,9 +519,9 @@ async function main() {
     }))
     .sort((a, b) => b.id - a.id);
 
-  // 4. Project every match across every Top Dogs lineage team.
+  // 4. Project every match across every Top Dawgs lineage team.
   // (Matches from other teams members also play on are NOT included anywhere
-  // on the site — leaderboard, player history, match detail are all Top Dogs only.)
+  // on the site — leaderboard, player history, match detail are all Top Dawgs only.)
   const matchesById = new Map<string, Match>();
   for (const [tid, team] of teams) {
     if (!oursTeamIds.has(tid)) continue;
@@ -554,7 +559,7 @@ async function main() {
     }
   }
 
-  // session id → Top Dogs team for that session. Restricted to ours so a
+  // session id → Top Dawgs team for that session. Restricted to ours so a
   // session's "team" is always the Eight Men Out lineage team, never a
   // parallel team some current member also plays on.
   const sessionTeamFor = new Map<number, { teamId: number; teamName: string }>();
@@ -737,7 +742,7 @@ async function main() {
     visible?: boolean;
   };
   const players = new Map<string, PlayerProfile>();
-  // Build the union of every internal ID that has appeared on a Top Dogs
+  // Build the union of every internal ID that has appeared on a Top Dawgs
   // lineage roster — current AND past — so past teammates (e.g. Greg
   // Carpenter, Colleen Mooney) get profile cards too.
   const allTopDogsInternalIds = new Set<number>();
@@ -795,8 +800,8 @@ async function main() {
     }
 
     // Merge AliasSessionStats supplements (PA/PPM/rackless from APA's API)
-    // — but ONLY for Top Dogs lineage teams. Members may have played for other
-    // teams the same season; those don't belong on a Top Dogs profile.
+    // — but ONLY for Top Dawgs lineage teams. Members may have played for other
+    // teams the same season; those don't belong on a Top Dawgs profile.
     if (member) {
       const aliasData = member.aliasSessionStats as AliasData;
       for (const p of aliasData?.alias?.players ?? []) {
@@ -846,7 +851,7 @@ async function main() {
             : 0,
         }
       : (() => {
-          // Fallback to AliasSessionStats sums — restricted to Top Dogs teams.
+          // Fallback to AliasSessionStats sums — restricted to Top Dawgs teams.
           const aliasData = member?.aliasSessionStats as AliasData | undefined;
           let mp = 0,
             wins = 0,
@@ -1033,7 +1038,7 @@ async function main() {
   leaderboards["all"] = buildLeaderboard("all");
 
   // 9. Per-session rosters for the roster page session selector.
-  // ONLY Top Dogs lineage teams — never the parallel non-ours teams that
+  // ONLY Top Dawgs lineage teams — never the parallel non-ours teams that
   // current roster members may also play on.
   const sessionRosters: Record<string, RosterPlayer[]> = {};
   for (const [tid, team] of teams) {

@@ -1,6 +1,6 @@
-# Top Dogs
+# Top Dawgs
 
-The official site for the **Top Dogs** APA pool team — South Jersey.
+The official site for the **Top Dawgs** APA pool team — South Jersey.
 
 Live roster, schedule, deep player stats, sweeps & mini-sweeps leaderboard,
 match recaps with embedded clips, and a TikTok live link. Match data is

@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Live",
-  description: "Watch Top Dogs match nights live on TikTok — Tuesdays 7:30pm.",
+  description: "Watch Top Dawgs match nights live on TikTok — Tuesdays 7:30pm.",
 };
 
 export default async function LivePage() {
@@ -59,7 +59,7 @@ export default async function LivePage() {
             {live ? (
               <p className="mt-3 max-w-xl text-[var(--fg-dim)]">
                 Every match, every break, every shot. We&apos;re on the felt right
-                now — drop in, drop a comment, cheer the Top Dogs.
+                now — drop in, drop a comment, cheer the Top Dawgs.
               </p>
             ) : (
               <p className="mt-3 max-w-xl text-[var(--fg-dim)]">

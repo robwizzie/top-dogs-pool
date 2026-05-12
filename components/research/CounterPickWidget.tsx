@@ -65,7 +65,7 @@ export function CounterPickWidget({
       {picked && (
         <div className="mt-5">
           <p className="mb-2 text-xs text-[var(--fg-dim)]">
-            Best Top Dogs to throw vs <strong>{picked}</strong> (Bayesian-smoothed
+            Best Top Dawgs to throw vs <strong>{picked}</strong> (Bayesian-smoothed
             so a 1-0 doesn&apos;t outrank a 5-1):
           </p>
           {rows.length === 0 ? (

@@ -1,4 +1,4 @@
-export const TEAM_NAME = "Top Dogs";
+export const TEAM_NAME = "Top Dawgs";
 export const TEAM_TAGLINE = "APA Pool — South Jersey";
 
 export const APA_TEAM_URL =

@@ -7,7 +7,7 @@ export const revalidate = 1800;
 
 export const metadata = {
   title: "Clips",
-  description: "Highlights from Top Dogs matches.",
+  description: "Highlights from Top Dawgs matches.",
 };
 
 export default async function ClipsPage() {

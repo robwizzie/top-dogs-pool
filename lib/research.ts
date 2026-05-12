@@ -721,7 +721,7 @@ export type ChemistryRow = {
 };
 
 /**
- * Each pair of current Top Dogs members → team match record when both played
+ * Each pair of current Top Dawgs members → team match record when both played
  * together. Lift compares vs the average of their solo (only-one-of-them)
  * records.
  */
@@ -991,7 +991,7 @@ export type PlayerOpponentRow = {
 };
 
 /**
- * For each Top Dogs player, group their results by individual opponent name.
+ * For each Top Dawgs player, group their results by individual opponent name.
  * Surface their strongest and weakest head-to-head records — strategic value
  * for "who to throw" in a given matchup.
  *

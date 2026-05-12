@@ -2282,7 +2282,7 @@ function DoneScreen({
     const theirGamesTotal = log.reduce((s, t) => s + (t.theirGames ?? 0), 0);
     const haveGameScores = log.some((t) => typeof t.ourGames === "number");
     const lines: string[] = [
-      `🎱 Top Dogs ${ourScore}–${theirScore} ${opponentTeam}${won ? " ✅" : theirScore > ourScore ? " ❌" : ""}`,
+      `🎱 Top Dawgs ${ourScore}–${theirScore} ${opponentTeam}${won ? " ✅" : theirScore > ourScore ? " ❌" : ""}`,
       `Individual matches: ${ourMatchWins}–${theirMatchWins}` +
         (haveGameScores ? ` · Total games: ${ourGamesTotal}–${theirGamesTotal}` : ""),
       "",
@@ -2354,7 +2354,7 @@ function DoneScreen({
           );
         })()}
         <p className="mt-2 text-sm text-[var(--fg-dim)]">
-          {won ? "Top Dogs win 🐕" : theirScore > ourScore ? "We dropped this one." : "Drawn."}
+          {won ? "Top Dawgs win 🐕" : theirScore > ourScore ? "We dropped this one." : "Drawn."}
         </p>
       </div>
       <ThrowsSoFar log={log} roster={roster} onRewind={onRewind} />
