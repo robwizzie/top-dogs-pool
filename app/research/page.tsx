@@ -61,7 +61,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Research",
   description:
-    "Top Dogs analytics — best lineups, position strategy, opponent records, form, and a recommended starting five.",
+    "Top Dawgs analytics — best lineups, position strategy, opponent records, form, and a recommended starting five.",
 };
 
 type TabKey =

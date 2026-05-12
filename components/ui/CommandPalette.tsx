@@ -249,7 +249,7 @@ export function CommandPalette({ items }: { items: SearchItem[] }) {
                   <kbd className="cmdk-kbd">↵</kbd> Open
                 </span>
               </span>
-              <span>Top Dogs</span>
+              <span>Top Dawgs</span>
             </div>
           </div>
         </div>

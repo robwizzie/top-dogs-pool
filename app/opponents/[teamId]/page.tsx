@@ -161,7 +161,7 @@ export default async function OpponentTeamPage({ params }: Props) {
 
   // Common opponents — teams both they and we have played this session.
   // For each shared opponent, compare their result vs ours.
-  const ourTeamName = ourTeam?.name ?? "Top Dogs";
+  const ourTeamName = ourTeam?.name ?? "Top Dawgs";
   type CommonOppRow = {
     opponent: string;
     oppTeamId: number | null;

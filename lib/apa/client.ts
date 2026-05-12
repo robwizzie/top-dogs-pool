@@ -17,7 +17,7 @@ const EMPTY_SNAPSHOT: ApaSnapshot = {
   currentSession: null,
   sessions: [],
   team: {
-    name: "Top Dogs",
+    name: "Top Dawgs",
     format: "8-ball",
     record: { wins: 0, losses: 0 },
     upcomingMatch: null,

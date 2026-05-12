@@ -105,8 +105,8 @@ export default async function StandingsPage({ searchParams }: Props) {
         subtitle={
           ours
             ? ours.rank > 0
-              ? `${sessionLabel} · Top Dogs at #${ours.rank}${ours.isTied ? " (T)" : ""} with ${ours.points} pts`
-              : `${sessionLabel} · standings open after week 1 · Top Dogs ${ours.points} pts`
+              ? `${sessionLabel} · Top Dawgs at #${ours.rank}${ours.isTied ? " (T)" : ""} with ${ours.points} pts`
+              : `${sessionLabel} · standings open after week 1 · Top Dawgs ${ours.points} pts`
             : `${sessionLabel} · ${standings.length} team${standings.length === 1 ? "" : "s"}`
         }
       />
@@ -236,7 +236,7 @@ export default async function StandingsPage({ searchParams }: Props) {
           <p className="text-xs">
             APA awards each team up to 25 points per match week. Ties in rank
             are flagged with a small <strong>T</strong>. The{" "}
-            <span className="text-[var(--color-brass-bright)]">Top Dogs</span>{" "}
+            <span className="text-[var(--color-brass-bright)]">Top Dawgs</span>{" "}
             row is highlighted.
           </p>
         </div>

@@ -20,7 +20,7 @@
  *
  * Env:
  *   APA_USERNAME / APA_PASSWORD — required (set in .env.local)
- *   APA_TEAM_URL                 — current team URL (defaults to Top Dogs)
+ *   APA_TEAM_URL                 — current team URL (defaults to Top Dawgs)
  *   APA_HEADFUL=1                — visible browser (debug)
  *   APA_MEMBER_TTL_DAYS=7        — re-fetch members older than N days
  *   APA_OPPONENT_TTL_DAYS=5      — re-fetch opp teams older than N days

@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Schedule",
-  description: "Top Dogs match schedule + recaps, by session.",
+  description: "Top Dawgs match schedule + recaps, by session.",
 };
 
 type Props = {

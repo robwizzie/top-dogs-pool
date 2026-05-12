@@ -68,7 +68,7 @@ export function Hero({
             style={{ animationDelay: "60ms" }}
           >
             <span className="block text-[var(--color-cream)]">TOP</span>
-            <span className="block text-[var(--color-brass-bright)]">DOGS</span>
+            <span className="block text-[var(--color-brass-bright)]">DAWGS</span>
           </h1>
 
           {nextOpponent && (

@@ -360,7 +360,7 @@ export default async function HomePage() {
             </h3>
             <p className="mt-2 max-w-xl text-[var(--fg-dim)]">
               We stream the table live every match night. Drop a comment, cheer
-              the Top Dogs, hop in chat.
+              the Top Dawgs, hop in chat.
             </p>
           </div>
           <div className="relative">
