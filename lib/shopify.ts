@@ -19,7 +19,6 @@ export type ProductVariant = {
   id: string;
   title: string;
   availableForSale: boolean;
-  quantityAvailable: number | null;
   price: Money;
   compareAtPrice: Money | null;
   selectedOptions: { name: string; value: string }[];
@@ -37,7 +36,6 @@ export type ProductSummary = {
   title: string;
   description: string;
   availableForSale: boolean;
-  totalInventory: number | null;
   featuredImage: ProductImage | null;
   priceRange: { min: Money; max: Money };
   compareAtPriceRange: { min: Money; max: Money } | null;
@@ -124,7 +122,6 @@ const PRODUCT_SUMMARY_FRAGMENT = /* GraphQL */ `
     title
     description
     availableForSale
-    totalInventory
     tags
     featuredImage {
       url
@@ -151,7 +148,6 @@ const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
     description
     descriptionHtml
     availableForSale
-    totalInventory
     tags
     featuredImage { url altText width height }
     priceRange {
@@ -175,7 +171,6 @@ const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
           id
           title
           availableForSale
-          quantityAvailable
           price { amount currencyCode }
           compareAtPrice { amount currencyCode }
           selectedOptions { name value }
@@ -192,7 +187,6 @@ type RawProductSummary = {
   title: string;
   description: string;
   availableForSale: boolean;
-  totalInventory: number | null;
   tags: string[];
   featuredImage: ProductImage | null;
   priceRange: { minVariantPrice: Money; maxVariantPrice: Money };
@@ -213,7 +207,6 @@ function mapSummary(p: RawProductSummary): ProductSummary {
     title: p.title,
     description: p.description,
     availableForSale: p.availableForSale,
-    totalInventory: p.totalInventory,
     tags: p.tags ?? [],
     featuredImage: p.featuredImage,
     priceRange: { min: p.priceRange.minVariantPrice, max: p.priceRange.maxVariantPrice },
