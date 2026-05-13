@@ -29,4 +29,5 @@ export const NAV_LINKS = [
   { href: "/research", label: "Research", ball: 6 },
   { href: "/clips", label: "Clips", ball: 7 },
   { href: "/live", label: "Live", ball: 8 },
+  { href: "/store", label: "Shop", ball: 9 },
 ] as const;
