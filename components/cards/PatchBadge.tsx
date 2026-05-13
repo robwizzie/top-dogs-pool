@@ -11,7 +11,8 @@ export type PatchKind =
   | "break-and-run"
   | "8-on-break"
   | "level-up"
-  | "first-win";
+  | "first-win"
+  | "mvp";
 
 const PATCHES: Record<
   PatchKind,
@@ -66,6 +67,13 @@ const PATCHES: Record<
     tintRgb: "31, 110, 61",
     pointEach: 1,
   },
+  mvp: {
+    src: "/patches/mvp.svg",
+    label: "Session MVP",
+    tint: "#4ca0d8",
+    tintRgb: "76, 160, 216",
+    pointEach: 1,
+  },
 };
 
 /** Formats `points` as "1 pt" / "0.5 pt" / "3 pts" without trailing zeros. */
@@ -103,11 +111,14 @@ export function PatchBadge({
   kind,
   count,
   size = "sm",
+  instances,
   className,
 }: {
   kind: PatchKind;
   count: number;
   size?: Size;
+  /** Optional list of where this patch was earned. Renders in the lightbox. */
+  instances?: PatchInstance[];
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -185,6 +196,7 @@ export function PatchBadge({
           <PatchLightbox
             kind={kind}
             count={count}
+            instances={instances}
             onClose={() => setOpen(false)}
           />,
           document.body,
@@ -196,10 +208,12 @@ export function PatchBadge({
 function PatchLightbox({
   kind,
   count,
+  instances,
   onClose,
 }: {
   kind: PatchKind;
   count: number;
+  instances?: PatchInstance[];
   onClose: () => void;
 }) {
   const patch = PATCHES[kind];
@@ -265,10 +279,65 @@ function PatchLightbox({
             <span className="patch-lightbox-label-total">{totalLabel} total</span>
           </span>
         </p>
+        {instances && instances.length > 0 && (
+          <div className="patch-lightbox-instances">
+            <p className="patch-lightbox-instances-heading">Earned in</p>
+            <ul>
+              {instances.map((inst, i) => {
+                const body = (
+                  <>
+                    <span className="patch-lightbox-instance-label">
+                      {inst.label}
+                    </span>
+                    {inst.score && (
+                      <span className="patch-lightbox-instance-score">
+                        {inst.score}
+                      </span>
+                    )}
+                    {inst.sublabel && (
+                      <span className="patch-lightbox-instance-sublabel">
+                        {inst.sublabel}
+                      </span>
+                    )}
+                  </>
+                );
+                return (
+                  <li key={`${inst.matchId ?? "i"}-${i}`}>
+                    {inst.matchId ? (
+                      <a
+                        href={`/matches/${inst.matchId}`}
+                        className="patch-lightbox-instance-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {body}
+                      </a>
+                    ) : (
+                      <span className="patch-lightbox-instance-link">{body}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
+export type PatchInstance = {
+  /** Match this instance was earned in. For MVP, this is the session-end
+   *  attribution and `matchId` may be null. */
+  matchId?: string;
+  /** ISO date for sorting / display. */
+  date?: string;
+  /** Display label — "vs Foo" for matches, "Spring 2025" for MVP. */
+  label: string;
+  /** Optional score (e.g. "3-0") shown next to the match label. */
+  score?: string;
+  /** Optional sub-label like "Eight Men Out · SL3 → SL4" for level-ups. */
+  sublabel?: string;
+};
 
 /**
  * A trophy-wall showcase for the player profile page. Each earned patch
@@ -283,6 +352,8 @@ export function PatchShowcase({
   eightOnBreaks,
   levelUps,
   firstWin,
+  mvp,
+  instances,
   className,
 }: {
   sweeps: number;
@@ -291,6 +362,8 @@ export function PatchShowcase({
   eightOnBreaks: number;
   levelUps: number;
   firstWin: number;
+  mvp: number;
+  instances?: Partial<Record<PatchKind, PatchInstance[]>>;
   className?: string;
 }) {
   const items: { kind: PatchKind; count: number }[] = (
@@ -301,6 +374,7 @@ export function PatchShowcase({
       { kind: "8-on-break", count: eightOnBreaks },
       { kind: "level-up", count: levelUps },
       { kind: "first-win", count: firstWin },
+      { kind: "mvp", count: mvp },
     ] as const
   )
     .map((i) => ({ kind: i.kind as PatchKind, count: i.count }))
@@ -315,7 +389,12 @@ export function PatchShowcase({
         const total = item.count * patch.pointEach;
         return (
           <div key={item.kind} className="patch-showcase-tile" data-kind={item.kind}>
-            <PatchBadge kind={item.kind} count={item.count} size="md" />
+            <PatchBadge
+              kind={item.kind}
+              count={item.count}
+              size="md"
+              instances={instances?.[item.kind]}
+            />
             <div className="patch-showcase-meta">
               <span className="patch-showcase-label">{patch.label}</span>
               <span className="patch-showcase-worth">
@@ -341,6 +420,8 @@ export function PatchTrophyStrip({
   eightOnBreaks,
   levelUps,
   firstWin,
+  mvp,
+  instances,
   size = "sm",
   className,
 }: {
@@ -350,6 +431,8 @@ export function PatchTrophyStrip({
   eightOnBreaks?: number;
   levelUps?: number;
   firstWin?: number;
+  mvp?: number;
+  instances?: Partial<Record<PatchKind, PatchInstance[]>>;
   size?: Size;
   className?: string;
 }) {
@@ -357,23 +440,26 @@ export function PatchTrophyStrip({
   const ob = eightOnBreaks ?? 0;
   const lu = levelUps ?? 0;
   const fw = firstWin ?? 0;
+  const mv = mvp ?? 0;
   if (
     sweeps <= 0 &&
     miniSweeps <= 0 &&
     br <= 0 &&
     ob <= 0 &&
     lu <= 0 &&
-    fw <= 0
+    fw <= 0 &&
+    mv <= 0
   )
     return null;
   return (
     <div className={cn("patch-strip", className)} data-size={size}>
-      <PatchBadge kind="sweep" count={sweeps} size={size} />
-      <PatchBadge kind="mini-sweep" count={miniSweeps} size={size} />
-      <PatchBadge kind="break-and-run" count={br} size={size} />
-      <PatchBadge kind="8-on-break" count={ob} size={size} />
-      <PatchBadge kind="level-up" count={lu} size={size} />
-      <PatchBadge kind="first-win" count={fw} size={size} />
+      <PatchBadge kind="sweep" count={sweeps} size={size} instances={instances?.sweep} />
+      <PatchBadge kind="mini-sweep" count={miniSweeps} size={size} instances={instances?.["mini-sweep"]} />
+      <PatchBadge kind="break-and-run" count={br} size={size} instances={instances?.["break-and-run"]} />
+      <PatchBadge kind="8-on-break" count={ob} size={size} instances={instances?.["8-on-break"]} />
+      <PatchBadge kind="level-up" count={lu} size={size} instances={instances?.["level-up"]} />
+      <PatchBadge kind="first-win" count={fw} size={size} instances={instances?.["first-win"]} />
+      <PatchBadge kind="mvp" count={mv} size={size} instances={instances?.mvp} />
     </div>
   );
 }

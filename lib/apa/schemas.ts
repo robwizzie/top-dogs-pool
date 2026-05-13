@@ -19,6 +19,8 @@ const PlayerStatsBlock = z
     levelUps: z.number().int().min(0).optional(),
     /** Career milestone — 1 if the player has ever recorded a first win, else 0. */
     firstWin: z.number().int().min(0).max(1).optional(),
+    /** Number of sessions where the player finished 1st in MVP rank. */
+    mvp: z.number().int().min(0).optional(),
   })
   .partial();
 
@@ -174,6 +176,8 @@ export const SessionPlayerRecord = z.object({
   levelUps: z.number().int().min(0).default(0),
   /** 1 if the player's first-ever observed career win landed in this session. */
   firstWin: z.number().int().min(0).max(1).default(0),
+  /** 1 if the player finished 1st in MVP rank for this session. */
+  mvp: z.number().int().min(0).max(1).default(0),
 });
 export type SessionPlayerRecord = z.infer<typeof SessionPlayerRecord>;
 
@@ -204,6 +208,8 @@ export const PlayerProfile = z.object({
     levelUps: z.number().int().min(0).default(0),
     /** 1 if the player has ever recorded a first observed career win, else 0. */
     firstWin: z.number().int().min(0).max(1).default(0),
+    /** Total number of sessions where the player finished 1st in MVP rank. */
+    mvp: z.number().int().min(0).default(0),
   }),
   sessions: z.array(SessionPlayerRecord),
 });
@@ -212,7 +218,7 @@ export type PlayerProfile = z.infer<typeof PlayerProfile>;
 export const LeaderboardRow = z.object({
   playerId: z.string(),
   playerName: z.string(),
-  /** Total leaderboard points (sweep=1, mini=0.5, B&R=1, 8oB=1, level-up=1, first-win=1). */
+  /** Total leaderboard points (sweep=1, mini=0.5, B&R=1, 8oB=1, level-up=1, first-win=1, mvp=1 per session). */
   points: z.number().min(0),
   sweeps: z.number().int().min(0),
   miniSweeps: z.number().int().min(0),
@@ -222,6 +228,8 @@ export const LeaderboardRow = z.object({
   levelUps: z.number().int().min(0).default(0),
   /** 1 if the player's first observed career win landed in this scope, else 0. */
   firstWin: z.number().int().min(0).max(1).default(0),
+  /** Sessions in this scope where the player finished 1st in MVP rank. */
+  mvp: z.number().int().min(0).default(0),
   matchesPlayed: z.number().int().min(0),
   wins: z.number().int().min(0),
   /** Skill level — current for "all", in-session ending SL for per-session leaderboards. */

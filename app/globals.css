@@ -882,6 +882,69 @@ button:hover .hover-roll {
   font-weight: 600;
 }
 
+/* "Earned in" match list inside the lightbox. */
+.patch-lightbox-instances {
+  width: min(78vmin, 640px);
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  text-align: left;
+}
+.patch-lightbox-instances-heading {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-brass);
+}
+.patch-lightbox-instances ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+.patch-lightbox-instance-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--fg);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+a.patch-lightbox-instance-link:hover {
+  background: var(--bg-soft);
+  color: var(--color-brass-bright);
+}
+.patch-lightbox-instance-label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.patch-lightbox-instance-score {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--color-brass-bright);
+  tabular-nums: 1;
+}
+.patch-lightbox-instance-sublabel {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .patch-lightbox,
   .patch-lightbox-content {

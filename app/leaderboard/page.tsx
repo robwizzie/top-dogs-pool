@@ -4,6 +4,7 @@ import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
   getLeaderboard,
+  getPatchInstances,
   getPlayerHistory,
   getSessions,
 } from "@/lib/apa";
@@ -35,22 +36,24 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const scope = parseSessionScope(session, allIds);
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
 
-  const [rows, history] = await Promise.all([
+  const [rows, history, patchInstances] = await Promise.all([
     getLeaderboard(scope.kind === "all" ? "all" : selectedIds),
     getPlayerHistory(),
+    getPatchInstances(scope.kind === "all" ? "all" : selectedIds),
   ]);
   const headerLabel = scopeLabel(selectedIds, sessions);
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
   const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
   const totalMini = rows.reduce((s, r) => s + r.miniSweeps, 0);
   const totalFirstWins = rows.reduce((s, r) => s + r.firstWin, 0);
+  const totalMvp = rows.reduce((s, r) => s + r.mvp, 0);
 
   return (
     <>
       <PageHeader
         eyebrow="Patches Earned"
         title="Patch Watch"
-        subtitle={`${headerLabel} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini${totalFirstWins > 0 ? ` · ${totalFirstWins} first win${totalFirstWins === 1 ? "" : "s"}` : ""}`}
+        subtitle={`${headerLabel} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini${totalFirstWins > 0 ? ` · ${totalFirstWins} first win${totalFirstWins === 1 ? "" : "s"}` : ""}${totalMvp > 0 ? ` · ${totalMvp} MVP${totalMvp === 1 ? "" : "s"}` : ""}`}
       />
 
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
@@ -79,6 +82,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
                   celebrate={i < 3 && row.points > 0}
                   streak={h?.streak ?? null}
                   outcomes={h?.outcomes}
+                  patchInstances={patchInstances.get(row.playerId)}
                 />
               );
             })}
@@ -126,6 +130,11 @@ export default async function LeaderboardPage({ searchParams }: Props) {
               </strong>{" "}
               · 1 pt — a brand-new player&apos;s first-ever career win on the
               Top Dawgs. Awarded once per player, in the session it happens.
+            </li>
+            <li>
+              <strong style={{ color: "#4ca0d8" }}>Session MVP</strong> · 1 pt
+              — finishing 1st in APA&apos;s MVP rank for a Top Dawgs session.
+              Pulled from each member&apos;s Teams page on poolplayers.com.
             </li>
             <li className="pt-2 italic">
               Pick multiple sessions to combine totals, or hit{" "}

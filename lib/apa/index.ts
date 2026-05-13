@@ -219,6 +219,7 @@ function toRosterPlayer(profile: PlayerProfile): Player {
       eightOnBreaks: profile.career.eightOnBreaks,
       levelUps: profile.career.levelUps,
       firstWin: profile.career.firstWin,
+      mvp: profile.career.mvp,
     },
   };
 }
@@ -273,6 +274,7 @@ export async function getLeaderboard(
           eightOnBreaks: 0,
           levelUps: 0,
           firstWin: 0,
+          mvp: 0,
           matchesPlayed: 0,
           wins: 0,
           _seen: true,
@@ -288,6 +290,9 @@ export async function getLeaderboard(
       // firstWin is binary career-wide — at most one of the included sessions
       // can be the one where the patch was earned.
       cur.firstWin = Math.max(cur.firstWin, r.firstWin);
+      // mvp is binary per-session but a player can MVP multiple sessions,
+      // so sum across selected sessions.
+      cur.mvp += r.mvp;
       cur.matchesPlayed += r.matchesPlayed;
       cur.wins += r.wins;
       // Latest SL we've seen wins.
@@ -343,6 +348,177 @@ export async function getLastUpdated(): Promise<Date | null> {
   if (snap.lastUpdated.startsWith("1970-")) return null;
   const d = new Date(snap.lastUpdated);
   return isNaN(d.getTime()) ? null : d;
+}
+
+export type PatchInstanceKind =
+  | "sweep"
+  | "mini-sweep"
+  | "break-and-run"
+  | "8-on-break"
+  | "level-up"
+  | "first-win"
+  | "mvp";
+
+export type PatchInstance = {
+  matchId?: string;
+  date?: string;
+  label: string;
+  score?: string;
+  sublabel?: string;
+};
+
+export type PlayerPatchInstances = Partial<
+  Record<PatchInstanceKind, PatchInstance[]>
+>;
+
+/**
+ * Build the per-patch "earned in" list for every player in scope. Walks the
+ * snapshot's matches map once and groups instances per (playerId, kind).
+ *
+ *  - sweep / mini-sweep / break-and-run / 8-on-break → one entry per match
+ *    where the player got the flag
+ *  - first-win → the single earliest "W" match (career-wide; null if before
+ *    our snapshot's history)
+ *  - level-up → the match where the player's skill level first went above
+ *    its prior max, one entry per increment
+ *  - mvp → one entry per session-record carrying mvp=1 (sessions, not
+ *    matches — they link to the session's leaderboard page)
+ *
+ * `scope` controls which sessions count: undefined = current session, "all"
+ * = career, number = single session, Set = arbitrary subset.
+ */
+export async function getPatchInstances(
+  scope?: number | "all" | Set<number>,
+): Promise<Map<string, PlayerPatchInstances>> {
+  const snap = await loadSnapshot();
+
+  // Resolve scope to a session-id set (or null = include all).
+  let sessionFilter: Set<number> | null;
+  if (scope === undefined) {
+    sessionFilter = snap.currentSession
+      ? new Set([snap.currentSession.id])
+      : null;
+  } else if (scope === "all") {
+    sessionFilter = null;
+  } else if (typeof scope === "number") {
+    sessionFilter = new Set([scope]);
+  } else {
+    sessionFilter = new Set(scope);
+  }
+  const inScope = (sessionId: number | undefined): boolean => {
+    if (sessionFilter === null) return true;
+    if (sessionId === undefined) return false;
+    return sessionFilter.has(sessionId);
+  };
+
+  const matches = Object.values(snap.matches)
+    .filter((m) => m.status === "completed")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+
+  const out = new Map<string, PlayerPatchInstances>();
+  const ensure = (pid: string): PlayerPatchInstances => {
+    let cur = out.get(pid);
+    if (!cur) {
+      cur = {};
+      out.set(pid, cur);
+    }
+    return cur;
+  };
+  const push = (
+    pid: string,
+    kind: PatchInstanceKind,
+    instance: PatchInstance,
+  ) => {
+    const bag = ensure(pid);
+    (bag[kind] ??= []).push(instance);
+  };
+  const matchLabel = (m: { opponent: string }) => `vs ${m.opponent}`;
+  const fmtDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+  // First-win is career-wide (NOT scope-filtered) — we still emit it only
+  // when the match falls inside the requested scope, since per-session
+  // leaderboards already award the point in just that session.
+  const firstWinSeen = new Set<string>();
+
+  // Walk matches chronologically so first-win + level-ups resolve correctly.
+  // Track each player's running max SL to detect increments.
+  const priorMaxSL = new Map<string, number>();
+
+  for (const m of matches) {
+    const matchInScope = inScope(m.sessionId);
+    for (const r of m.results) {
+      if (r.playerId.startsWith("ebp:") || r.playerId.startsWith("hidden:")) {
+        continue;
+      }
+      // Track first career win regardless of scope so we don't double-award
+      // in a partial-scope view.
+      const isWin = r.outcome === "W" && !r.forfeited;
+      const isFirstWin = isWin && !firstWinSeen.has(r.playerId);
+      if (isWin) firstWinSeen.add(r.playerId);
+
+      if (matchInScope) {
+        const base: PatchInstance = {
+          matchId: m.id,
+          date: m.date,
+          label: `${fmtDate(m.date)} · ${matchLabel(m)}`,
+          score: r.score,
+        };
+        if (r.sweep) push(r.playerId, "sweep", base);
+        else if (r.miniSweep) push(r.playerId, "mini-sweep", base);
+        if (r.breakAndRun) push(r.playerId, "break-and-run", base);
+        if (r.eightOnBreak) push(r.playerId, "8-on-break", base);
+        if (isFirstWin) {
+          push(r.playerId, "first-win", {
+            ...base,
+            sublabel: "First career win",
+          });
+        }
+      }
+
+      // Level-up detection — uses the chronological SL walk regardless of
+      // scope, but only EMITS instances when the qualifying match is in scope.
+      const sl = r.skillLevel;
+      if (typeof sl === "number") {
+        const prior = priorMaxSL.get(r.playerId);
+        if (prior !== undefined && sl > prior) {
+          if (matchInScope) {
+            for (let lvl = prior + 1; lvl <= sl; lvl += 1) {
+              push(r.playerId, "level-up", {
+                matchId: m.id,
+                date: m.date,
+                label: `${fmtDate(m.date)} · ${matchLabel(m)}`,
+                sublabel: `SL${lvl - 1} → SL${lvl}`,
+              });
+            }
+          }
+          priorMaxSL.set(r.playerId, sl);
+        } else if (prior === undefined) {
+          priorMaxSL.set(r.playerId, sl);
+        }
+      }
+    }
+  }
+
+  // MVP instances — pulled from each player's session records (the projector
+  // stamps mvp=1 on the relevant session). Each entry links to the session's
+  // leaderboard (not a single match).
+  for (const profile of Object.values(snap.players)) {
+    for (const s of profile.sessions) {
+      if (s.mvp !== 1) continue;
+      if (sessionFilter !== null && !sessionFilter.has(s.sessionId)) continue;
+      push(profile.id, "mvp", {
+        label: s.sessionName,
+        sublabel: `${s.teamName} · 1st place`,
+      });
+    }
+  }
+
+  return out;
 }
 
 export { ApaFetchError };

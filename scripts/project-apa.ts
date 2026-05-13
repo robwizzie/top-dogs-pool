@@ -99,6 +99,7 @@ type LeaderboardRow = {
   eightOnBreaks: number;
   levelUps: number;
   firstWin: number;
+  mvp: number;
   matchesPlayed: number;
   wins: number;
   skillLevel?: number;
@@ -127,6 +128,7 @@ type SessionPlayerRecord = {
   eightOnBreaks?: number;
   levelUps?: number;
   firstWin?: number;
+  mvp?: number;
 };
 
 type PlayerProfile = {
@@ -378,6 +380,8 @@ type SessionAgg = {
   eightOnBreaks: number;
   /** 1 if the player's first observed career win landed in this session. */
   firstWin: number;
+  /** 1 if the player finished 1st in MVP rank for this session. */
+  mvp: number;
   // From AliasSessionStats:
   pa?: number;
   ppm?: number;
@@ -394,6 +398,93 @@ function pointsForResult(r: MatchResult): number {
   if (r.breakAndRun) p += 1;
   if (r.eightOnBreak) p += 1;
   return p;
+}
+
+/**
+ * APA renders MVP rank as "1st"/"2nd"/.../"-" strings on the member's
+ * Teams page. The GraphQL backing query returns this either as a number
+ * or as a stringified position. Normalize to an integer rank, returning
+ * undefined when the player didn't finish (or the field is missing).
+ */
+function parseMvpRank(value: unknown): number | undefined {
+  if (typeof value === "number" && value > 0) return value;
+  if (typeof value === "string") {
+    const m = value.match(/(\d+)/);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (Number.isFinite(n) && n > 0) return n;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Walk a captured `memberTeams` payload (any shape) and emit
+ * (teamId, sessionId, rank) tuples — one per session/team row in the
+ * page table. The captured GraphQL operation name isn't documented, so
+ * we search recursively for objects that carry both a team-id-ish
+ * field and a rank/mvp-ish field. Returns rank=1 entries → MVP.
+ */
+function extractMvpRows(
+  memberTeams: Record<string, Record<string, unknown>> | undefined,
+): Array<{ teamId: number; sessionId?: number; rank: number }> {
+  if (!memberTeams) return [];
+  const out: Array<{ teamId: number; sessionId?: number; rank: number }> = [];
+  const rankKeys = ["mvp", "mvpRank", "rank", "finishingPosition", "place", "ranking"];
+  const teamKeys = ["team", "teamId", "team_id"];
+  const sessionKeys = ["session", "sessionId", "session_id"];
+
+  const visit = (node: unknown): void => {
+    if (node === null || node === undefined) return;
+    if (Array.isArray(node)) {
+      for (const item of node) visit(item);
+      return;
+    }
+    if (typeof node !== "object") return;
+    const rec = node as Record<string, unknown>;
+    // Detect a "row" — has both team-ish and rank-ish fields.
+    let teamId: number | undefined;
+    for (const key of teamKeys) {
+      const v = rec[key];
+      if (typeof v === "number") {
+        teamId = v;
+        break;
+      }
+      if (v && typeof v === "object" && typeof (v as { id?: unknown }).id === "number") {
+        teamId = (v as { id: number }).id;
+        break;
+      }
+    }
+    let sessionId: number | undefined;
+    for (const key of sessionKeys) {
+      const v = rec[key];
+      if (typeof v === "number") {
+        sessionId = v;
+        break;
+      }
+      if (v && typeof v === "object" && typeof (v as { id?: unknown }).id === "number") {
+        sessionId = (v as { id: number }).id;
+        break;
+      }
+    }
+    let rank: number | undefined;
+    for (const key of rankKeys) {
+      if (key in rec) {
+        const parsed = parseMvpRank(rec[key]);
+        if (parsed !== undefined) {
+          rank = parsed;
+          break;
+        }
+      }
+    }
+    if (teamId !== undefined && rank !== undefined) {
+      out.push({ teamId, sessionId, rank });
+    }
+    // Recurse into children.
+    for (const value of Object.values(rec)) visit(value);
+  };
+  for (const payload of Object.values(memberTeams)) visit(payload);
+  return out;
 }
 
 /* ------------------------------------------------------ projection main */
@@ -662,6 +753,7 @@ async function main() {
       breakAndRuns,
       eightOnBreaks,
       firstWin,
+      mvp: 0,
     };
     aggregations.set(k, agg);
 
@@ -681,6 +773,7 @@ async function main() {
         breakAndRuns: 0,
         eightOnBreaks: 0,
         firstWin: 0,
+        mvp: 0,
         firstSessionId: sessionId,
         latestSessionId: sessionId,
       };
@@ -758,6 +851,48 @@ async function main() {
     }
   }
 
+  // 6b. MVP stamping. Walk each cached member's "Teams" page payload
+  // (captured via fetchMember) for 1st-place finishes, then mark the
+  // matching per-session aggregation. Awards +1 leaderboard point per MVP.
+  // Only Top Dawgs lineage teams count — playing 1st on a different team is
+  // their own accomplishment but not part of Top Dawgs Patch Watch.
+  let mvpStampsApplied = 0;
+  for (const [internalId, member] of members) {
+    const rows = extractMvpRows(member.memberTeams);
+    if (rows.length === 0) continue;
+    let memberNumber: string | undefined;
+    for (const [mn, iid] of memberNumberToInternalId) {
+      if (iid === internalId) {
+        memberNumber = mn;
+        break;
+      }
+    }
+    if (!memberNumber) continue;
+    for (const row of rows) {
+      if (row.rank !== 1) continue;
+      if (!oursTeamIds.has(row.teamId)) continue;
+      // Resolve sessionId: prefer the value APA gave us; fall back to the
+      // session-of-this-team lookup we built earlier.
+      const sessionId =
+        row.sessionId ?? teamIdToSessionInfo.get(row.teamId)?.id;
+      if (sessionId === undefined) continue;
+      const agg = aggregations.get(aggKey(sessionId, memberNumber));
+      if (!agg) continue;
+      if (agg.mvp === 1) continue; // dedupe in case the captured payload repeats
+      agg.mvp = 1;
+      agg.points += 1;
+      const car = careers.get(memberNumber);
+      if (car) {
+        car.mvp += 1;
+        car.points += 1;
+      }
+      mvpStampsApplied += 1;
+    }
+  }
+  if (mvpStampsApplied > 0) {
+    console.log(`→ MVP: stamped ${mvpStampsApplied} session-MVPs from member Teams pages`);
+  }
+
   // 7. Build PlayerProfile records (current roster only — past members aren't fetched).
   type RosterPlayer = {
     id: string;
@@ -826,6 +961,7 @@ async function main() {
         eightOnBreaks: agg.eightOnBreaks,
         levelUps: agg.levelUps,
         firstWin: agg.firstWin,
+        mvp: agg.mvp,
       });
     }
 
@@ -877,6 +1013,7 @@ async function main() {
           eightOnBreaks: career.eightOnBreaks,
           levelUps: career.levelUps,
           firstWin: career.firstWin,
+          mvp: career.mvp,
           winPct: career.matchesPlayed
             ? Math.round((career.wins / career.matchesPlayed) * 1000) / 10
             : 0,
@@ -904,6 +1041,7 @@ async function main() {
             eightOnBreaks: 0,
             levelUps: 0,
             firstWin: 0,
+            mvp: 0,
             winPct: mp ? Math.round((wins / mp) * 1000) / 10 : 0,
           };
         })();
@@ -1011,6 +1149,7 @@ async function main() {
         eightOnBreaks: 0,
         levelUps: 0,
         firstWin: 0,
+        mvp: 0,
         matchesPlayed: 0,
         wins: 0,
         skillLevel: undefined,
@@ -1029,6 +1168,7 @@ async function main() {
           row.eightOnBreaks = car.eightOnBreaks;
           row.levelUps = car.levelUps;
           row.firstWin = car.firstWin;
+          row.mvp = car.mvp;
           row.matchesPlayed = car.matchesPlayed;
           row.wins = car.wins;
           row.skillLevel = profile?.currentSkillLevel ?? car.skillLevel;
@@ -1044,6 +1184,7 @@ async function main() {
           row.eightOnBreaks = agg.eightOnBreaks;
           row.levelUps = agg.levelUps;
           row.firstWin = agg.firstWin;
+          row.mvp = agg.mvp;
           row.matchesPlayed = agg.matchesPlayed;
           row.wins = agg.wins;
           row.skillLevel = agg.endingSkillLevel ?? agg.skillLevel;
@@ -1121,6 +1262,7 @@ async function main() {
           eightOnBreaks: agg?.eightOnBreaks,
           levelUps: agg?.levelUps,
           firstWin: agg?.firstWin,
+          mvp: agg?.mvp,
         },
       });
     }

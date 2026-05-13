@@ -177,6 +177,14 @@ export type MemberCacheEntry = {
   aliasSessionStatsDropdown?: Record<string, unknown>;
   getEightBallStats?: Record<string, unknown>;
   getMembershipHistory?: Record<string, unknown>;
+  /**
+   * Every successful GraphQL operation fired while loading the member's
+   * "Teams" tab (`/member/<id>/<aliasId>/teams`). APA renders the MVP
+   * (per-session finishing rank) column on this view; the operation name
+   * isn't documented, so we save them all keyed by name and let the
+   * projector pick whichever payload contains the rank data.
+   */
+  memberTeams?: Record<string, Record<string, unknown>>;
 };
 
 export async function fetchMember(
@@ -225,11 +233,39 @@ export async function fetchMember(
   const eightBallStats = capture.latest("getEightBallStats");
   const membershipHistory = capture.latest("getMembershipHistory");
 
+  // Second stop: the "Teams" tab. APA's URL pattern is
+  //   /member/<memberId>/<aliasId>/teams
+  // The aliasId is whatever we just captured from AliasSessionStats.
+  type AliasIdData = { alias?: { id?: number } };
+  const aliasId = (broadest.data as AliasIdData | undefined)?.alias?.id;
+  let memberTeams: Record<string, Record<string, unknown>> | undefined;
+  if (typeof aliasId === "number") {
+    const teamsUrl = `${HOST}/${slug}/member/${memberInternalId}/${aliasId}/teams`;
+    const teamsStartedAt = Date.now();
+    try {
+      await navigate(page, teamsUrl);
+      await page.waitForTimeout(1500);
+    } catch {
+      // Don't fail member capture if the teams tab errors — older members
+      // may not have the route available.
+    }
+    const newOps = capture.snapshot().filter((op) => op.capturedAt >= teamsStartedAt);
+    if (newOps.length > 0) {
+      memberTeams = {};
+      // Last-write-wins per operation name; we want the freshest payload.
+      for (const op of newOps) {
+        if (!op.operationName || !op.data || op.errors) continue;
+        memberTeams[op.operationName] = op.data;
+      }
+    }
+  }
+
   const entry: MemberCacheEntry = {
     aliasSessionStats: broadest.data!,
     aliasSessionStatsDropdown: dropdown?.data ?? undefined,
     getEightBallStats: eightBallStats?.data ?? undefined,
     getMembershipHistory: membershipHistory?.data ?? undefined,
+    memberTeams,
   };
   await cache.write("members", memberInternalId, entry);
   return entry;

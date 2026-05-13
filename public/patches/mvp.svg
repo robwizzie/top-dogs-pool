@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="MVP patch">
+  <defs>
+    <radialGradient id="felt" cx="50%" cy="46%" r="60%">
+      <stop offset="0%" stop-color="#1b5e3f"/>
+      <stop offset="100%" stop-color="#0a2a20"/>
+    </radialGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e0be6b"/>
+      <stop offset="60%" stop-color="#c9a24a"/>
+      <stop offset="100%" stop-color="#8b6f2c"/>
+    </linearGradient>
+    <pattern id="weave" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="transparent"/>
+      <circle cx="1" cy="1" r="0.8" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="4" cy="4" r="0.8" fill="rgba(255,255,255,0.06)"/>
+    </pattern>
+  </defs>
+  <!-- Embroidered outer border -->
+  <circle cx="300" cy="300" r="280" fill="url(#brass)"/>
+  <circle cx="300" cy="300" r="280" fill="url(#weave)"/>
+  <circle cx="300" cy="300" r="262" fill="#070707"/>
+  <circle cx="300" cy="300" r="252" fill="url(#felt)"/>
+  <circle cx="300" cy="300" r="252" fill="url(#weave)"/>
+  <!-- Inner brass ring -->
+  <circle cx="300" cy="300" r="252" fill="none" stroke="url(#brass)" stroke-width="6"/>
+
+  <!-- APA MVP logo, scaled and centered. Original viewBox is 0 0 278.09 87.91 -->
+  <g transform="translate(57.45 215) scale(1.745)" aria-hidden="true">
+    <path fill="#fff" stroke="#fff" stroke-width="10.07" stroke-miterlimit="10" d="M193.78 5.03h45.57c21.37 0 33.71 10.06 33.71 24.88 0 19.79-17.85 28-40.16 28h-17.27l-5.4 25h-33.95zm26.31 33.9h8.46c6.58 0 10.45-3.43 10.45-8.62 0-3.54-1.76-6.52-8.1-6.52h-7.4z"/>
+    <path fill="#fff" stroke="#fff" stroke-width="10.07" stroke-miterlimit="10" d="M88.85 61.76c2.47-10.84 6.58-27.64 9.63-37.48h-.47c-6.58 15.81-14.21 33.06-25 58.6H46.81c1.17-25.21 1.76-42.46 2.23-59h-.35c-1.64 9.07-3.76 24.77-6.93 38l-4.93 21H6.28l17.5-77.84h48.86c-.36 8.55-1.36 25.69-2.36 41.93h.23c5.28-14.26 13-32.73 16.91-41.91h48.15l-17.5 77.84H84.16z" transform="translate(0 21.07)"/>
+    <path fill="#fff" stroke="#fff" stroke-width="10.07" stroke-miterlimit="10" d="M124.82 82.88L113.19 5.03h34.29l2.23 32.84c.7 9.84.94 16.14.82 22.34h.23c2.47-6 5.28-11.28 10.57-22.22l16.44-32.95h37.51l-47.33 77.84z"/>
+
+    <path fill="#4ca0d8" d="M193.78 5.03h45.57c21.37 0 33.71 10.06 33.71 24.88 0 19.79-17.85 28-40.16 28h-17.27l-5.4 25h-33.95zm26.31 33.9h8.46c6.58 0 10.45-3.43 10.45-8.62 0-3.54-1.76-6.52-8.1-6.52h-7.4z"/>
+    <path fill="#ef3e42" d="M88.85 61.76c2.47-10.84 6.58-27.64 9.63-37.48h-.47c-6.58 15.81-14.21 33.06-25 58.6H46.81c1.17-25.21 1.76-42.46 2.23-59h-.35c-1.64 9.07-3.76 24.77-6.93 38l-4.93 21H6.28l17.5-77.84h48.86c-.36 8.55-1.36 25.69-2.36 41.93h.23c5.28-14.26 13-32.73 16.91-41.91h48.15l-17.5 77.84H84.16z" transform="translate(0 21.07)"/>
+    <path fill="#0060a9" d="M124.82 82.88L113.19 5.03h34.29l2.23 32.84c.7 9.84.94 16.14.82 22.34h.23c2.47-6 5.28-11.28 10.57-22.22l16.44-32.95h37.51l-47.33 77.84z"/>
+  </g>
+
+  <!-- "PATCH WATCH" inner ribbon -->
+  <g aria-hidden="true">
+    <rect x="120" y="430" width="360" height="60" rx="6" fill="#0a2a20" stroke="url(#brass)" stroke-width="3"/>
+    <text x="300" y="471" text-anchor="middle" font-family="Bebas Neue, Oswald, sans-serif" font-size="34" letter-spacing="6" fill="#e0be6b">SESSION MVP</text>
+  </g>
+</svg>

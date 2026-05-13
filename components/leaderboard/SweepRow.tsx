@@ -9,6 +9,7 @@ import { StreakBadge } from "@/components/cards/StreakBadge";
 import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
 import type { LeaderboardRow } from "@/lib/apa/schemas";
 import type { Streak } from "@/lib/streaks";
+import type { PatchInstance, PatchKind } from "@/components/cards/PatchBadge";
 import { cn } from "@/lib/utils";
 
 export function SweepRow({
@@ -17,12 +18,14 @@ export function SweepRow({
   celebrate = false,
   streak,
   outcomes,
+  patchInstances,
 }: {
   row: LeaderboardRow;
   rank: number;
   celebrate?: boolean;
   streak?: Streak | null;
   outcomes?: ("W" | "L")[];
+  patchInstances?: Partial<Record<PatchKind, PatchInstance[]>>;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -104,6 +107,8 @@ export function SweepRow({
           eightOnBreaks={row.eightOnBreaks}
           levelUps={row.levelUps}
           firstWin={row.firstWin}
+          mvp={row.mvp}
+          instances={patchInstances}
           size="sm"
           className="mt-2"
         />
