@@ -6,6 +6,14 @@ const ENDPOINT = DOMAIN ? `https://${DOMAIN}/api/${VERSION}/graphql.json` : "";
 
 export const SHOPIFY_CONFIGURED = Boolean(DOMAIN && TOKEN);
 
+/**
+ * The store hosts merch for two brands; only Top Dawgs products belong on
+ * this site. Anything starting with "TTB" (Traveling Tastebuds) is filtered.
+ */
+function isCatalogProduct<T extends { title: string }>(p: T): boolean {
+  return !/^ttb\b/i.test(p.title.trim());
+}
+
 export type Money = { amount: string; currencyCode: string };
 
 export type ProductImage = {
@@ -240,7 +248,7 @@ export async function getProducts(first = 50): Promise<ProductSummary[]> {
     { first },
     { next: { revalidate: 300, tags: ["shopify-products"] } },
   );
-  return data.products.edges.map((e) => mapSummary(e.node));
+  return data.products.edges.map((e) => mapSummary(e.node)).filter(isCatalogProduct);
 }
 
 export async function getProduct(handle: string): Promise<Product | null> {
@@ -255,19 +263,24 @@ export async function getProduct(handle: string): Promise<Product | null> {
     { handle },
     { next: { revalidate: 300, tags: ["shopify-products", `shopify-product-${handle}`] } },
   );
-  return data.product ? mapDetail(data.product) : null;
+  if (!data.product) return null;
+  const mapped = mapDetail(data.product);
+  return isCatalogProduct(mapped) ? mapped : null;
 }
 
 export async function getAllProductHandles(): Promise<string[]> {
   const query = /* GraphQL */ `
-    query AllHandles { products(first: 250) { edges { node { handle } } } }
+    query AllHandles {
+      products(first: 250) { edges { node { handle title } } }
+    }
   `;
-  const data = await shopifyFetch<{ products: { edges: { node: { handle: string } }[] } }>(
-    query,
-    {},
-    { next: { revalidate: 600 } },
-  );
-  return data.products.edges.map((e) => e.node.handle);
+  const data = await shopifyFetch<{
+    products: { edges: { node: { handle: string; title: string } }[] };
+  }>(query, {}, { next: { revalidate: 600 } });
+  return data.products.edges
+    .map((e) => e.node)
+    .filter(isCatalogProduct)
+    .map((p) => p.handle);
 }
 
 /* ---------- Cart mutations (client-side) ---------- */
