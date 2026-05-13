@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { PoolBall } from "@/components/brand/PoolBall";
+import { PatchTrophyStrip } from "@/components/cards/PatchBadge";
 import { StreakBadge } from "@/components/cards/StreakBadge";
 import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
 import type { LeaderboardRow } from "@/lib/apa/schemas";
@@ -96,23 +97,13 @@ export function SweepRow({
           </Link>
           {streak && <StreakBadge streak={streak} variant="chip" />}
         </div>
-        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--fg-dim)]">
-          {row.sweeps > 0 && (
-            <span>
-              <span className="font-semibold text-[var(--color-pop-bright)]">
-                {row.sweeps}
-              </span>{" "}
-              sweep{row.sweeps === 1 ? "" : "s"}
-            </span>
-          )}
-          {row.miniSweeps > 0 && (
-            <span>
-              <span className="font-semibold text-[var(--color-brass-bright)]">
-                {row.miniSweeps}
-              </span>{" "}
-              mini
-            </span>
-          )}
+        <PatchTrophyStrip
+          sweeps={row.sweeps}
+          miniSweeps={row.miniSweeps}
+          size="sm"
+          className="mt-2"
+        />
+        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--fg-dim)]">
           {row.breakAndRuns > 0 && (
             <span>
               <span className="font-semibold text-[var(--color-felt-bright)]">
