@@ -27,12 +27,14 @@ export async function SeasonBanner() {
           {team.session ? ` · ${team.session} just kicked off.` : "."} Let&apos;s build a new ladder.
         </span>
         {upcoming && (
-          <Link
-            href={`/matches/${upcoming.id}`}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-[var(--color-brass)]/40 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-[var(--color-brass)] hover:bg-[var(--color-brass)]/10"
-          >
-            First up: vs {upcoming.opponent} · {formatDate(upcoming.date)}
-          </Link>
+          <div className="flex w-full justify-center sm:ml-auto sm:w-auto sm:justify-end">
+            <Link
+              href={`/matches/${upcoming.id}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-brass)]/40 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-[var(--color-brass)] hover:bg-[var(--color-brass)]/10"
+            >
+              First up: vs {upcoming.opponent} · {formatDate(upcoming.date)}
+            </Link>
+          </div>
         )}
       </div>
     </div>

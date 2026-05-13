@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
 export type PatchKind = "sweep" | "mini-sweep";
@@ -33,8 +37,9 @@ type Size = keyof typeof SIZES;
 /**
  * Embroidered patch trophy. Renders the patch art with a brass-rimmed
  * quantity bubble in the corner whenever the player has earned more than
- * one. Falls back silently to nothing when count is 0 so callers can sprinkle
- * these in lists without guards.
+ * one. Clicking opens a full-screen lightbox so the embroidery detail is
+ * easy to read. Falls back silently to nothing when count is 0 so callers
+ * can sprinkle these in lists without guards.
  */
 export function PatchBadge({
   kind,
@@ -47,39 +52,157 @@ export function PatchBadge({
   size?: Size;
   className?: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+
   if (count <= 0) return null;
   const patch = PATCHES[kind];
   const dims = SIZES[size];
   const aria = `${count} ${patch.label} patch${count === 1 ? "" : "es"} earned`;
+
+  const trigger = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(true);
+  };
+
   return (
-    <span
-      className={cn("patch-badge", className)}
-      data-kind={kind}
-      data-size={size}
-      title={aria}
-      aria-label={aria}
+    <>
+      <span
+        className={cn("patch-badge", className)}
+        data-kind={kind}
+        data-size={size}
+        role="button"
+        tabIndex={0}
+        title={`${aria} · tap to enlarge`}
+        aria-label={`${aria}. Tap to enlarge.`}
+        onClick={trigger}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") trigger(e);
+        }}
+        style={
+          {
+            width: dims.box,
+            height: dims.box,
+            "--patch-tint": patch.tint,
+            "--patch-tint-rgb": patch.tintRgb,
+          } as React.CSSProperties
+        }
+      >
+        <Image
+          src={patch.src}
+          alt=""
+          width={dims.image}
+          height={dims.image}
+          className="patch-badge-image"
+        />
+        {count > 1 && (
+          <span className="patch-badge-count" aria-hidden>
+            ×{count}
+          </span>
+        )}
+      </span>
+      {mounted &&
+        open &&
+        createPortal(
+          <PatchLightbox
+            kind={kind}
+            count={count}
+            onClose={() => setOpen(false)}
+          />,
+          document.body,
+        )}
+    </>
+  );
+}
+
+function PatchLightbox({
+  kind,
+  count,
+  onClose,
+}: {
+  kind: PatchKind;
+  count: number;
+  onClose: () => void;
+}) {
+  const patch = PATCHES[kind];
+  return (
+    <div
+      className="patch-lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${patch.label} patch · earned ${count}`}
+      onClick={onClose}
       style={
         {
-          width: dims.box,
-          height: dims.box,
           "--patch-tint": patch.tint,
           "--patch-tint-rgb": patch.tintRgb,
         } as React.CSSProperties
       }
     >
-      <Image
-        src={patch.src}
-        alt=""
-        width={dims.image}
-        height={dims.image}
-        className="patch-badge-image"
-      />
-      {count > 1 && (
-        <span className="patch-badge-count" aria-hidden>
-          ×{count}
-        </span>
-      )}
-    </span>
+      <button
+        type="button"
+        className="patch-lightbox-close"
+        onClick={onClose}
+        aria-label="Close"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+        >
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+      <div
+        className="patch-lightbox-content"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="patch-lightbox-frame" data-kind={kind}>
+          <Image
+            src={patch.src}
+            alt={`${patch.label} patch`}
+            width={720}
+            height={720}
+            className="patch-lightbox-image"
+            priority
+          />
+          {count > 1 && (
+            <span className="patch-lightbox-count" aria-hidden>
+              ×{count}
+            </span>
+          )}
+        </div>
+        <p className="patch-lightbox-label">
+          <span className="patch-lightbox-label-kind">{patch.label}</span>
+          <span className="patch-lightbox-label-count">
+            Earned {count} time{count === 1 ? "" : "s"}
+          </span>
+        </p>
+      </div>
+    </div>
   );
 }
 
