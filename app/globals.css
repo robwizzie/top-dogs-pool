@@ -646,6 +646,116 @@ button:hover .hover-roll {
   .ribbon-tile:hover { transform: none; }
 }
 
+/* Patch trophy badge — embroidered "achievement" art for sweeps / mini-sweeps.
+ * Hovers a touch, picks up its tint as a soft halo, and parks a brass-rimmed
+ * `×N` count bubble at the bottom-right when the player has more than one. */
+.patch-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+  transform-origin: 50% 60%;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.3s ease;
+}
+.patch-badge::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--patch-tint-rgb, 224, 190, 107), 0.22),
+    transparent 70%
+  );
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+.patch-badge:hover {
+  transform: translateY(-2px) rotate(-3deg) scale(1.06);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 8px rgba(var(--patch-tint-rgb, 224, 190, 107), 0.4));
+}
+.patch-badge:hover::before {
+  opacity: 1;
+}
+.patch-badge-image {
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+}
+.patch-badge-count {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--patch-tint, var(--color-brass-bright));
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  box-shadow:
+    0 0 0 2px var(--bg-card),
+    0 0 0 3px color-mix(in oklab, var(--patch-tint, var(--color-brass-bright)) 60%, transparent),
+    0 2px 6px -1px rgba(0, 0, 0, 0.5);
+}
+.patch-badge[data-size="xs"] .patch-badge-count {
+  min-width: 16px;
+  height: 16px;
+  font-size: 10px;
+  padding: 0 4px;
+  right: -3px;
+  bottom: -3px;
+}
+.patch-badge[data-size="md"] .patch-badge-count {
+  min-width: 20px;
+  height: 20px;
+  font-size: 12px;
+  padding: 0 6px;
+  right: -5px;
+  bottom: -5px;
+}
+.patch-badge[data-size="lg"] .patch-badge-count {
+  min-width: 24px;
+  height: 24px;
+  font-size: 14px;
+  padding: 0 7px;
+  right: -6px;
+  bottom: -6px;
+}
+
+/* Patch strip — a small horizontal row of badges. Lets each badge breathe
+ * but groups them visually as "the trophies the player has earned." */
+.patch-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.patch-strip[data-size="xs"] { gap: 11px; }
+.patch-strip[data-size="md"] { gap: 18px; }
+.patch-strip[data-size="lg"] { gap: 22px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .patch-badge,
+  .patch-badge:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
 /* Pulsing live dot */
 @keyframes pulse-pop {
   0%, 100% {

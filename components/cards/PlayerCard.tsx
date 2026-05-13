@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Player } from "@/lib/apa/schemas";
 import type { Streak } from "@/lib/streaks";
 import { CueBall, PoolBall } from "@/components/brand/PoolBall";
+import { PatchTrophyStrip } from "@/components/cards/PatchBadge";
 import { StreakBadge } from "@/components/cards/StreakBadge";
 import { cn } from "@/lib/utils";
 
@@ -168,8 +169,6 @@ export function PlayerCard({
               } />
               <Stat label="Win %" value={winPct !== undefined ? `${winPct}%` : "—"} />
               <Stat label="Points" value={stats?.points ?? "—"} accent />
-              <Stat label="Sweeps" value={stats?.sweeps ?? "—"} />
-              <Stat label="Mini" value={stats?.miniSweeps ?? "—"} />
               <Stat label="B&R" value={stats?.breakAndRuns ?? "—"} />
               <Stat label="8 on Break" value={stats?.eightOnBreaks ?? "—"} />
               <Stat label="Streak" value={
@@ -178,6 +177,16 @@ export function PlayerCard({
                   : "—"
               } />
             </div>
+
+            {((stats?.sweeps ?? 0) > 0 || (stats?.miniSweeps ?? 0) > 0) && (
+              <div className="relative flex items-center justify-center">
+                <PatchTrophyStrip
+                  sweeps={stats?.sweeps ?? 0}
+                  miniSweeps={stats?.miniSweeps ?? 0}
+                  size="xs"
+                />
+              </div>
+            )}
 
             <div className="relative flex items-center justify-between text-[11px]">
               {streak ? <StreakBadge streak={streak} /> : <span />}
