@@ -15,45 +15,73 @@ export type PatchKind =
 
 const PATCHES: Record<
   PatchKind,
-  { src: string; label: string; tint: string; tintRgb: string }
+  {
+    src: string;
+    label: string;
+    tint: string;
+    tintRgb: string;
+    /** Leaderboard point value per patch earned. */
+    pointEach: number;
+  }
 > = {
   sweep: {
     src: "/patches/sweep.png",
     label: "Sweep",
     tint: "var(--color-pop-bright)",
     tintRgb: "232, 82, 72",
+    pointEach: 1,
   },
   "mini-sweep": {
     src: "/patches/mini-sweep.png",
     label: "Mini Sweep",
     tint: "var(--color-brass-bright)",
     tintRgb: "224, 190, 107",
+    pointEach: 0.5,
   },
   "break-and-run": {
     src: "/patches/break-and-run.png",
     label: "Break & Run",
     tint: "var(--color-felt-bright)",
     tintRgb: "46, 139, 87",
+    pointEach: 1,
   },
   "8-on-break": {
     src: "/patches/8-on-break.png",
     label: "8 on the Break",
     tint: "var(--color-cream)",
     tintRgb: "236, 225, 196",
+    pointEach: 1,
   },
   "level-up": {
     src: "/patches/level-up.png",
     label: "Level Up",
     tint: "var(--color-tie-bright)",
     tintRgb: "244, 196, 83",
+    pointEach: 1,
   },
   "first-win": {
     src: "/patches/first-win.png",
     label: "First Win",
     tint: "var(--color-six-ball)",
     tintRgb: "31, 110, 61",
+    pointEach: 1,
   },
 };
+
+/** Formats `points` as "1 pt" / "0.5 pt" / "3 pts" without trailing zeros. */
+function formatPoints(points: number): string {
+  const rounded = Math.round(points * 10) / 10;
+  const display = Number.isInteger(rounded) ? rounded.toString() : rounded.toFixed(1);
+  return `${display} ${rounded === 1 ? "pt" : "pts"}`;
+}
+
+export function patchLabel(kind: PatchKind): string {
+  return PATCHES[kind].label;
+}
+
+export function patchPointEach(kind: PatchKind): number {
+  return PATCHES[kind].pointEach;
+}
 
 const SIZES = {
   xs: { box: 36, image: 34 },
@@ -106,7 +134,8 @@ export function PatchBadge({
   if (count <= 0) return null;
   const patch = PATCHES[kind];
   const dims = SIZES[size];
-  const aria = `${count} ${patch.label} patch${count === 1 ? "" : "es"} earned`;
+  const totalPoints = count * patch.pointEach;
+  const aria = `${count} ${patch.label} patch${count === 1 ? "" : "es"} earned · ${formatPoints(totalPoints)}`;
 
   const trigger = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -174,12 +203,15 @@ function PatchLightbox({
   onClose: () => void;
 }) {
   const patch = PATCHES[kind];
+  const totalPoints = count * patch.pointEach;
+  const eachLabel = formatPoints(patch.pointEach);
+  const totalLabel = formatPoints(totalPoints);
   return (
     <div
       className="patch-lightbox"
       role="dialog"
       aria-modal="true"
-      aria-label={`${patch.label} patch · earned ${count}`}
+      aria-label={`${patch.label} patch · earned ${count} · ${totalLabel}`}
       onClick={onClose}
       style={
         {
@@ -227,11 +259,73 @@ function PatchLightbox({
         </div>
         <p className="patch-lightbox-label">
           <span className="patch-lightbox-label-kind">{patch.label}</span>
+          <span className="patch-lightbox-label-worth">{eachLabel} each</span>
           <span className="patch-lightbox-label-count">
-            Earned {count} time{count === 1 ? "" : "s"}
+            Earned {count} time{count === 1 ? "" : "s"} ·{" "}
+            <span className="patch-lightbox-label-total">{totalLabel} total</span>
           </span>
         </p>
       </div>
+    </div>
+  );
+}
+
+/**
+ * A trophy-wall showcase for the player profile page. Each earned patch
+ * sits in its own tile with the patch art, its full label, and the point
+ * total the player has banked from it. Renders nothing when the player has
+ * earned no patches at all in the current scope.
+ */
+export function PatchShowcase({
+  sweeps,
+  miniSweeps,
+  breakAndRuns,
+  eightOnBreaks,
+  levelUps,
+  firstWin,
+  className,
+}: {
+  sweeps: number;
+  miniSweeps: number;
+  breakAndRuns: number;
+  eightOnBreaks: number;
+  levelUps: number;
+  firstWin: number;
+  className?: string;
+}) {
+  const items: { kind: PatchKind; count: number }[] = (
+    [
+      { kind: "sweep", count: sweeps },
+      { kind: "mini-sweep", count: miniSweeps },
+      { kind: "break-and-run", count: breakAndRuns },
+      { kind: "8-on-break", count: eightOnBreaks },
+      { kind: "level-up", count: levelUps },
+      { kind: "first-win", count: firstWin },
+    ] as const
+  )
+    .map((i) => ({ kind: i.kind as PatchKind, count: i.count }))
+    .filter((i) => i.count > 0);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className={cn("patch-showcase", className)}>
+      {items.map((item) => {
+        const patch = PATCHES[item.kind];
+        const total = item.count * patch.pointEach;
+        return (
+          <div key={item.kind} className="patch-showcase-tile" data-kind={item.kind}>
+            <PatchBadge kind={item.kind} count={item.count} size="md" />
+            <div className="patch-showcase-meta">
+              <span className="patch-showcase-label">{patch.label}</span>
+              <span className="patch-showcase-worth">
+                {formatPoints(patch.pointEach)} each
+              </span>
+              <span className="patch-showcase-total">{formatPoints(total)}</span>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
