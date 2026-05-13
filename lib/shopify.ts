@@ -442,3 +442,66 @@ export function formatMoney(money: Money | null | undefined): string {
     return `$${n.toFixed(2)}`;
   }
 }
+
+/* ---------- Size / variant helpers (display only) ---------- */
+
+const SIZE_RANK: Record<string, number> = {
+  XXS: 0, "XX-SMALL": 0,
+  XS: 1, "X-SMALL": 1, "EXTRA SMALL": 1,
+  S: 2, SMALL: 2,
+  M: 3, MEDIUM: 3,
+  L: 4, LARGE: 4,
+  XL: 5, "X-LARGE": 5, "EXTRA LARGE": 5,
+  XXL: 6, "2XL": 6, "XX-LARGE": 6, "2X-LARGE": 6,
+  XXXL: 7, "3XL": 7, "3X-LARGE": 7,
+  "4XL": 8, "XXXXL": 8, "4X-LARGE": 8,
+  "5XL": 9, "5X-LARGE": 9,
+  "6XL": 10, "6X-LARGE": 10,
+};
+
+export function isSizeOption(name: string): boolean {
+  return name.trim().toLowerCase() === "size";
+}
+
+export function sortSizeValues(values: readonly string[]): string[] {
+  return [...values].sort((a, b) => {
+    const ai = SIZE_RANK[a.trim().toUpperCase()] ?? 999;
+    const bi = SIZE_RANK[b.trim().toUpperCase()] ?? 999;
+    if (ai !== bi) return ai - bi;
+    return a.localeCompare(b);
+  });
+}
+
+export function findLargeValue(values: readonly string[]): string | undefined {
+  return values.find((v) => /^(l|large)$/i.test(v.trim()));
+}
+
+/**
+ * Resolve which image the gallery should show for the current selection.
+ * Falls back to a same-color sibling variant when the exactly-selected
+ * variant has no image attached in Shopify.
+ */
+export function findImageUrlForSelection(
+  variants: readonly ProductVariant[],
+  options: readonly ProductOption[],
+  selected: Record<string, string>,
+): string | null {
+  const exact = variants.find((v) =>
+    v.selectedOptions.every((o) => selected[o.name] === o.value),
+  );
+  if (exact?.image) return exact.image.url;
+
+  const nonSize = options.filter((o) => !isSizeOption(o.name));
+  if (nonSize.length === 0) return null;
+
+  const sibling = variants.find(
+    (v) =>
+      v.image &&
+      nonSize.every((opt) =>
+        v.selectedOptions.some(
+          (so) => so.name === opt.name && so.value === selected[opt.name],
+        ),
+      ),
+  );
+  return sibling?.image?.url ?? null;
+}

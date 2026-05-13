@@ -3,18 +3,40 @@
 import { useMemo, useState } from "react";
 import { AddToCart } from "@/components/store/AddToCart";
 import { ProductGallery } from "@/components/store/ProductGallery";
-import type { Product } from "@/lib/shopify";
+import {
+  findImageUrlForSelection,
+  findLargeValue,
+  isSizeOption,
+  type Product,
+  type ProductVariant,
+} from "@/lib/shopify";
 
 export function ProductDisplay({ product }: { product: Product }) {
   const initial = useMemo<Record<string, string>>(() => {
-    const firstAvailable =
-      product.variants.find((v) => v.availableForSale) ?? product.variants[0];
+    const sizeOption = product.options.find((o) => isSizeOption(o.name));
+    const largeValue = sizeOption ? findLargeValue(sizeOption.values) : undefined;
+
+    let chosen: ProductVariant | undefined;
+    if (sizeOption && largeValue) {
+      chosen = product.variants.find(
+        (v) =>
+          v.availableForSale &&
+          v.selectedOptions.some(
+            (o) => o.name === sizeOption.name && o.value === largeValue,
+          ),
+      );
+    }
+    if (!chosen) {
+      chosen =
+        product.variants.find((v) => v.availableForSale) ?? product.variants[0];
+    }
+
     const map: Record<string, string> = {};
-    firstAvailable?.selectedOptions.forEach((o) => {
+    chosen?.selectedOptions.forEach((o) => {
       map[o.name] = o.value;
     });
     return map;
-  }, [product.variants]);
+  }, [product.variants, product.options]);
 
   const [selected, setSelected] = useState<Record<string, string>>(initial);
 
@@ -26,7 +48,10 @@ export function ProductDisplay({ product }: { product: Product }) {
     [product.variants, selected],
   );
 
-  const activeImageUrl = activeVariant?.image?.url ?? null;
+  const activeImageUrl = useMemo(
+    () => findImageUrlForSelection(product.variants, product.options, selected),
+    [product.variants, product.options, selected],
+  );
 
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">

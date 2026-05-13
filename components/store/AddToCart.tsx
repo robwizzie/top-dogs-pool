@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { Check, Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/store/CartProvider";
-import { formatMoney, type Product, type ProductVariant } from "@/lib/shopify";
+import {
+  formatMoney,
+  isSizeOption,
+  sortSizeValues,
+  type Product,
+  type ProductVariant,
+} from "@/lib/shopify";
 import { cn } from "@/lib/utils";
 
 export function AddToCart({
@@ -50,6 +56,9 @@ export function AddToCart({
       {showOptions &&
         product.options.map((option) => {
           if (option.values.length === 1 && option.values[0] === "Default Title") return null;
+          const orderedValues = isSizeOption(option.name)
+            ? sortSizeValues(option.values)
+            : option.values;
           return (
             <div key={option.name} className="flex flex-col gap-2">
               <div className="flex items-baseline justify-between">
@@ -61,7 +70,7 @@ export function AddToCart({
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {option.values.map((value) => {
+                {orderedValues.map((value) => {
                   const isActive = selected[option.name] === value;
                   // Determine availability by checking if any variant with this combo is in stock
                   const hypothetical = { ...selected, [option.name]: value };
