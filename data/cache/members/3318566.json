@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-04T21:57:53.753Z",
+  "fetchedAt": "2026-05-13T18:12:57.356Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -11,6 +11,26 @@
           "__typename": "League"
         },
         "players": [
+          {
+            "id": 92156399,
+            "team": {
+              "id": 13022788,
+              "name": "Poolin' and Boolin'",
+              "number": "06801",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91574117,
             "team": {
@@ -140,6 +160,11 @@
         "id": 3137364,
         "sessions": [
           {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 138,
             "name": "Spring 2026",
             "__typename": "Session"
@@ -171,6 +196,18 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 92156399,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91574117,
             "session": {
@@ -325,7 +362,7 @@
             "matchesPlayed": 37,
             "CLA": 0,
             "defensiveShotAvg": 0.97,
-            "matchCountForLastTwoYrs": 23,
+            "matchCountForLastTwoYrs": 22,
             "lastPlayed": "2025-07-14T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -388,6 +425,632 @@
           "__typename": "Member"
         },
         "__typename": "Alias"
+      }
+    },
+    "memberTeams": {
+      "viewerLeagues": {
+        "viewer": {
+          "id": 3175746,
+          "__typename": "Member",
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ]
+        }
+      },
+      "sidebar": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "DisableCheck": {
+        "feature": false,
+        "league": {
+          "news": [
+            {
+              "id": 54105,
+              "title": "50% Off APA T-Shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 4624,
+              "title": "Follow Us on Social Media",
+              "__typename": "News"
+            }
+          ],
+          "__typename": "League"
+        }
+      },
+      "TournamentBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "registrationWindows": [],
+          "__typename": "Member"
+        }
+      },
+      "MembershipBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ViewerQuery": {
+        "viewer": {
+          "__typename": "Member",
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com"
+        }
+      },
+      "FeatureCheck": {
+        "features": [
+          {
+            "id": 1,
+            "name": "qualifiers",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 2,
+            "name": "search",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 3,
+            "name": "calendarSubscription",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 4,
+            "name": "ShowHomeVisitingTeam",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 5,
+            "name": "NonRatedSkillLevel",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 6,
+            "name": "electronicScoringEnabled",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 7,
+            "name": "EmergencyNotice",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 8,
+            "name": "8bSeniorSkillLevelCheck",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 9,
+            "name": "eRegistration",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 10,
+            "name": "eightAdvancedSkillLevel",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 11,
+            "name": "eRegistrationEventPolicy",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 12,
+            "name": "tbd",
+            "active": false,
+            "__typename": "Feature"
+          }
+        ]
+      },
+      "UseGetViewerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "RaygunUserTracking": {
+        "viewer": {
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com",
+          "__typename": "Member"
+        }
+      },
+      "viewerCountryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "country": {
+            "id": 1,
+            "__typename": "Country"
+          },
+          "__typename": "Member"
+        }
+      },
+      "Header": {
+        "viewer": {
+          "id": 3175746,
+          "initials": "RW",
+          "__typename": "Member"
+        }
+      },
+      "notificationBell": {
+        "viewer": {
+          "id": 3175746,
+          "notificationBellCount": 1,
+          "notifications": [
+            {
+              "id": 296803011,
+              "type": "match",
+              "title": "You have pool league tonight!",
+              "body": "7:30 pm at Wilson's Pub vs Lights Out",
+              "isRead": false,
+              "createdDate": "2026-05-12T18:13:48Z",
+              "typeId": null,
+              "metaData": "{\"id\":50630041,\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 296424953,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": true,
+              "createdDate": "2026-05-10T15:58:47Z",
+              "typeId": null,
+              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "HeaderCartQueryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League",
+              "country": {
+                "id": 1,
+                "__typename": "Country"
+              }
+            }
+          ],
+          "membershipExpires": "2026-12-31T23:59:59Z",
+          "setting": "890",
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ComponentFeatureCheck": {
+        "feature": true
+      },
+      "LiveStream": {
+        "liveStream": {
+          "__typename": "LiveStreamPayload",
+          "feeds": []
+        }
+      },
+      "getMemberStatsHeader": {
+        "member": {
+          "id": 3318566,
+          "firstName": "John",
+          "lastName": "Howarth",
+          "initials": "JH",
+          "aliases": [
+            {
+              "id": 3137364,
+              "displayName": "John Howarth",
+              "memberNumber": "08213663",
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "name": "APA of South Jersey",
+                "isDefault": true,
+                "number": "082",
+                "__typename": "League"
+              },
+              "formats": [
+                "EIGHT",
+                "NINE"
+              ],
+              "stats": [
+                {
+                  "__typename": "EightBallLifetimeStatistics",
+                  "skillLevel": 3,
+                  "CLA": 0
+                },
+                {
+                  "__typename": "NineBallLifetimeStatistics",
+                  "skillLevel": 2,
+                  "CLA": 0
+                }
+              ],
+              "__typename": "Alias"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "TeamStat": {
+        "alias": {
+          "id": 3137364,
+          "pastTeams": [
+            {
+              "id": 90484710,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 0,
+              "session": {
+                "id": 136,
+                "name": "Summer 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 9,
+              "team": {
+                "id": 12773754,
+                "name": "Cue & A",
+                "division": {
+                  "id": 408211,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 89284483,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 5,
+              "session": {
+                "id": 135,
+                "name": "Spring 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 1,
+              "team": {
+                "id": 12623167,
+                "name": "All Pockets Available",
+                "division": {
+                  "id": 395903,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 88901801,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 1,
+              "session": {
+                "id": 134,
+                "name": "Fall 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 8,
+              "team": {
+                "id": 12576431,
+                "name": "All Pockets Available",
+                "division": {
+                  "id": 391925,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 88902590,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 1,
+              "session": {
+                "id": 134,
+                "name": "Fall 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 6,
+              "team": {
+                "id": 12576537,
+                "name": "Head Hunters",
+                "division": {
+                  "id": 391983,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 89152164,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 1,
+              "session": {
+                "id": 134,
+                "name": "Fall 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 2,
+              "team": {
+                "id": 12576602,
+                "name": "Renegades",
+                "division": {
+                  "id": 391932,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 88469943,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 8,
+              "matchesWon": 3,
+              "session": {
+                "id": 133,
+                "name": "Summer 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 9,
+              "team": {
+                "id": 12514555,
+                "name": "All Pockets Available",
+                "division": {
+                  "id": 386469,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 88470786,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 8,
+              "matchesWon": 3,
+              "session": {
+                "id": 133,
+                "name": "Summer 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 7,
+              "team": {
+                "id": 12514667,
+                "name": "Head Hunters",
+                "division": {
+                  "id": 386528,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 87949471,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 5,
+              "session": {
+                "id": 132,
+                "name": "Spring 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 1,
+              "team": {
+                "id": 12439070,
+                "name": "All Pockets Available",
+                "division": {
+                  "id": 377825,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 87789986,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 10,
+              "matchesWon": 7,
+              "session": {
+                "id": 132,
+                "name": "Spring 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
+              "rank": 2,
+              "team": {
+                "id": 12417265,
+                "name": "Head Hunters",
+                "division": {
+                  "id": 377885,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 87455384,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 0,
+              "session": {
+                "id": 130,
+                "name": "Fall 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 1,
+              "rank": 2,
+              "team": {
+                "id": 12311456,
+                "name": "Head Hunters",
+                "division": {
+                  "id": 368575,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            }
+          ],
+          "currentTeams": [
+            {
+              "id": 92156399,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13022788,
+                "name": "Poolin' and Boolin'",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91574117,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 13,
+              "team": {
+                "id": 12938517,
+                "name": "Poolin' and Boolin'",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            }
+          ],
+          "__typename": "Alias"
+        }
       }
     }
   }

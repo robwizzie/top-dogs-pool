@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-04T22:02:08.269Z",
+  "fetchedAt": "2026-05-13T18:16:27.696Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -11,6 +11,86 @@
           "__typename": "League"
         },
         "players": [
+          {
+            "id": 92156421,
+            "team": {
+              "id": 13022791,
+              "name": "8 Balls for Sale",
+              "number": "06804",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92155383,
+            "team": {
+              "id": 13022648,
+              "name": "Double Tap This!",
+              "number": "01601",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92159806,
+            "team": {
+              "id": 13023273,
+              "name": "Duck Around and Find Out",
+              "number": "05706",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92159262,
+            "team": {
+              "id": 13023196,
+              "name": "This One's 4 Bruce!",
+              "number": "05306",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91261562,
             "team": {
@@ -2460,6 +2540,11 @@
         "id": 1326247,
         "sessions": [
           {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 138,
             "name": "Spring 2026",
             "__typename": "Session"
@@ -2826,6 +2911,66 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 92156421,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92155383,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92159806,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92158242,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 92159262,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91261562,
             "session": {
@@ -5028,12 +5173,12 @@
         "EightBallStats": [
           {
             "id": 801326247,
-            "matchesWon": 845,
-            "matchesPlayed": 1446,
+            "matchesWon": 846,
+            "matchesPlayed": 1447,
             "CLA": null,
             "defensiveShotAvg": 1.83,
-            "matchCountForLastTwoYrs": 207,
-            "lastPlayed": "2026-04-23T00:00:00Z",
+            "matchCountForLastTwoYrs": 205,
+            "lastPlayed": "2026-05-05T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -5041,11 +5186,11 @@
           {
             "id": 901326247,
             "matchesWon": 344,
-            "matchesPlayed": 607,
+            "matchesPlayed": 609,
             "CLA": null,
             "defensiveShotAvg": 2.64,
-            "matchCountForLastTwoYrs": 84,
-            "lastPlayed": "2026-04-20T00:00:00Z",
+            "matchCountForLastTwoYrs": 85,
+            "lastPlayed": "2026-05-11T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -5415,6 +5560,848 @@
           "__typename": "Member"
         },
         "__typename": "Alias"
+      }
+    },
+    "memberTeams": {
+      "viewerLeagues": {
+        "viewer": {
+          "id": 3175746,
+          "__typename": "Member",
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ]
+        }
+      },
+      "sidebar": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "DisableCheck": {
+        "feature": false,
+        "league": {
+          "news": [
+            {
+              "id": 54105,
+              "title": "50% Off APA T-Shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 4624,
+              "title": "Follow Us on Social Media",
+              "__typename": "News"
+            }
+          ],
+          "__typename": "League"
+        }
+      },
+      "TournamentBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "registrationWindows": [],
+          "__typename": "Member"
+        }
+      },
+      "MembershipBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ViewerQuery": {
+        "viewer": {
+          "__typename": "Member",
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com"
+        }
+      },
+      "FeatureCheck": {
+        "features": [
+          {
+            "id": 1,
+            "name": "qualifiers",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 2,
+            "name": "search",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 3,
+            "name": "calendarSubscription",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 4,
+            "name": "ShowHomeVisitingTeam",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 5,
+            "name": "NonRatedSkillLevel",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 6,
+            "name": "electronicScoringEnabled",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 7,
+            "name": "EmergencyNotice",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 8,
+            "name": "8bSeniorSkillLevelCheck",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 9,
+            "name": "eRegistration",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 10,
+            "name": "eightAdvancedSkillLevel",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 11,
+            "name": "eRegistrationEventPolicy",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 12,
+            "name": "tbd",
+            "active": false,
+            "__typename": "Feature"
+          }
+        ]
+      },
+      "UseGetViewerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "RaygunUserTracking": {
+        "viewer": {
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com",
+          "__typename": "Member"
+        }
+      },
+      "viewerCountryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "country": {
+            "id": 1,
+            "__typename": "Country"
+          },
+          "__typename": "Member"
+        }
+      },
+      "Header": {
+        "viewer": {
+          "id": 3175746,
+          "initials": "RW",
+          "__typename": "Member"
+        }
+      },
+      "notificationBell": {
+        "viewer": {
+          "id": 3175746,
+          "notificationBellCount": 1,
+          "notifications": [
+            {
+              "id": 296803011,
+              "type": "match",
+              "title": "You have pool league tonight!",
+              "body": "7:30 pm at Wilson's Pub vs Lights Out",
+              "isRead": false,
+              "createdDate": "2026-05-12T18:13:48Z",
+              "typeId": null,
+              "metaData": "{\"id\":50630041,\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 296424953,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": true,
+              "createdDate": "2026-05-10T15:58:47Z",
+              "typeId": null,
+              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "HeaderCartQueryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League",
+              "country": {
+                "id": 1,
+                "__typename": "Country"
+              }
+            }
+          ],
+          "membershipExpires": "2026-12-31T23:59:59Z",
+          "setting": "890",
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ComponentFeatureCheck": {
+        "feature": true
+      },
+      "LiveStream": {
+        "liveStream": {
+          "__typename": "LiveStreamPayload",
+          "feeds": []
+        }
+      },
+      "getMemberStatsHeader": {
+        "member": {
+          "id": 737169,
+          "firstName": "Leo",
+          "lastName": "Fishburn",
+          "initials": "LF",
+          "aliases": [
+            {
+              "id": 1326247,
+              "displayName": "Leo Fishburn",
+              "memberNumber": "08212276",
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "name": "APA of South Jersey",
+                "isDefault": true,
+                "number": "082",
+                "__typename": "League"
+              },
+              "formats": [
+                "EIGHT",
+                "NINE"
+              ],
+              "stats": [
+                {
+                  "__typename": "EightBallLifetimeStatistics",
+                  "skillLevel": 6,
+                  "CLA": null
+                },
+                {
+                  "__typename": "NineBallLifetimeStatistics",
+                  "skillLevel": 7,
+                  "CLA": null
+                }
+              ],
+              "__typename": "Alias"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "TeamStat": {
+        "alias": {
+          "id": 1326247,
+          "pastTeams": [
+            {
+              "id": 91024226,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 4,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 6,
+              "team": {
+                "id": 12857718,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 416962,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90959824,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 10,
+              "matchesWon": 8,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 1,
+              "team": {
+                "id": 12857712,
+                "name": "Double Tap This!",
+                "division": {
+                  "id": 416950,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91023897,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 2,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 7,
+              "team": {
+                "id": 12858311,
+                "name": "Duck Around and Find Out",
+                "division": {
+                  "id": 417009,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90964359,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 3,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 5,
+              "team": {
+                "id": 12858305,
+                "name": "Let's Go Brandon",
+                "division": {
+                  "id": 416979,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 90964373,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 5,
+              "matchesWon": 4,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12858307,
+                "name": "SIXNINE",
+                "division": {
+                  "id": 416986,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 90964115,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 5,
+              "matchesWon": 2,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 8,
+              "team": {
+                "id": 12858274,
+                "name": "This One's 4 Bruce!",
+                "division": {
+                  "id": 417002,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90214020,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 11,
+              "session": {
+                "id": 136,
+                "name": "Summer 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 3,
+              "team": {
+                "id": 12757750,
+                "name": "Baked Goods",
+                "division": {
+                  "id": 408187,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90213989,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 2,
+              "session": {
+                "id": 136,
+                "name": "Summer 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 7,
+              "team": {
+                "id": 12757746,
+                "name": "Double Tap This!",
+                "division": {
+                  "id": 408175,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90218576,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 2,
+              "session": {
+                "id": 136,
+                "name": "Summer 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 2,
+              "team": {
+                "id": 12758345,
+                "name": "Let's Go Brandon",
+                "division": {
+                  "id": 408204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 90218590,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 6,
+              "session": {
+                "id": 136,
+                "name": "Summer 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12758347,
+                "name": "SIXNINE",
+                "division": {
+                  "id": 408211,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            }
+          ],
+          "currentTeams": [
+            {
+              "id": 92156421,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13022791,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92155383,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13022648,
+                "name": "Double Tap This!",
+                "division": {
+                  "id": 431602,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92159806,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13023273,
+                "name": "Duck Around and Find Out",
+                "division": {
+                  "id": 431661,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92158242,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": null,
+              "team": {
+                "id": 13023049,
+                "name": "SIXNINE",
+                "division": {
+                  "id": 431638,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 92159262,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13023196,
+                "name": "This One's 4 Bruce!",
+                "division": {
+                  "id": 431654,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261562,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 4,
+              "team": {
+                "id": 12894671,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91260589,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 5,
+              "matchesWon": 1,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 6,
+              "team": {
+                "id": 12894537,
+                "name": "Double Tap This!",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91264887,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 7,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 2,
+              "team": {
+                "id": 12895148,
+                "name": "Duck Around and Find Out",
+                "division": {
+                  "id": 420263,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91263347,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12894924,
+                "name": "SIXNINE",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91264336,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 1,
+              "team": {
+                "id": 12895067,
+                "name": "This One's 4 Bruce!",
+                "division": {
+                  "id": 420256,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            }
+          ],
+          "__typename": "Alias"
+        }
       }
     }
   }

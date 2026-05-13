@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-11T16:55:19.860Z",
+  "fetchedAt": "2026-05-13T18:10:15.547Z",
   "data": {
     "teamPage": {
       "team": {
@@ -161,6 +161,21 @@
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3174255,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 92387395,
+            "memberNumber": "08214528",
+            "displayName": "Jake McNamee",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 0,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3472740,
               "__typename": "Member"
             }
           }
@@ -1098,7 +1113,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-08-25T00:00:00Z",
+            "startTime": "2026-08-25T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
             "isScored": false,
@@ -1115,7 +1130,13 @@
             "location": null,
             "home": null,
             "away": null,
-            "league": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
             "orderItems": null,
             "division": {
               "id": 431614,
@@ -1132,7 +1153,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-09-01T00:00:00Z",
+            "startTime": "2026-09-01T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
             "isScored": false,
@@ -1149,7 +1170,13 @@
             "location": null,
             "home": null,
             "away": null,
-            "league": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
             "orderItems": null,
             "division": {
               "id": 431614,
