@@ -178,11 +178,22 @@ export function PlayerCard({
               } />
             </div>
 
-            {((stats?.sweeps ?? 0) > 0 || (stats?.miniSweeps ?? 0) > 0) && (
+            {((stats?.sweeps ?? 0) > 0 ||
+              (stats?.miniSweeps ?? 0) > 0 ||
+              (stats?.breakAndRuns ?? 0) > 0 ||
+              (stats?.eightOnBreaks ?? 0) > 0 ||
+              (stats?.levelUps ?? 0) > 0 ||
+              (stats?.firstWin ?? 0) > 0 ||
+              (stats?.mvp ?? 0) > 0) && (
               <div className="relative flex items-center justify-center">
                 <PatchTrophyStrip
                   sweeps={stats?.sweeps ?? 0}
                   miniSweeps={stats?.miniSweeps ?? 0}
+                  breakAndRuns={stats?.breakAndRuns ?? 0}
+                  eightOnBreaks={stats?.eightOnBreaks ?? 0}
+                  levelUps={stats?.levelUps ?? 0}
+                  firstWin={stats?.firstWin ?? 0}
+                  mvp={stats?.mvp ?? 0}
                   size="xs"
                 />
               </div>

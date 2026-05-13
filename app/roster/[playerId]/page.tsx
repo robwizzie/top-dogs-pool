@@ -8,6 +8,7 @@ import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
 import { StreakBadge } from "@/components/cards/StreakBadge";
 import { PointsBreakdown } from "@/components/cards/PointsBreakdown";
+import { PatchShowcase } from "@/components/cards/PatchBadge";
 import { CareerArc } from "@/components/cards/CareerArc";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
@@ -16,6 +17,7 @@ import {
   getCurrentSession,
   getLeaderboard,
   getMatch,
+  getPatchInstances,
   getPlayer,
   getPlayerHistory,
   getSessions,
@@ -92,6 +94,8 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         breakAndRuns: profile?.career.breakAndRuns ?? 0,
         eightOnBreaks: profile?.career.eightOnBreaks ?? 0,
         levelUps: profile?.career.levelUps ?? 0,
+        firstWin: profile?.career.firstWin ?? 0,
+        mvp: profile?.career.mvp ?? 0,
         skillLevel: profile?.currentSkillLevel ?? null,
         pa: undefined as number | undefined,
         ppm: undefined as number | undefined,
@@ -112,6 +116,8 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         breakAndRuns: s?.breakAndRuns ?? 0,
         eightOnBreaks: s?.eightOnBreaks ?? 0,
         levelUps: s?.levelUps ?? 0,
+        firstWin: s?.firstWin ?? 0,
+        mvp: s?.mvp ?? 0,
         skillLevel: s?.skillLevel ?? null,
         pa: s?.pa,
         ppm: s?.ppm,
@@ -126,7 +132,9 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       ms = 0,
       br = 0,
       eob = 0,
-      lvl = 0;
+      lvl = 0,
+      fw = 0,
+      mv = 0;
     for (const s of inScope) {
       mp += s.matchesPlayed ?? 0;
       w += s.wins ?? 0;
@@ -136,6 +144,10 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       br += s.breakAndRuns ?? 0;
       eob += s.eightOnBreaks ?? 0;
       lvl += s.levelUps ?? 0;
+      // firstWin is binary career-wide — max() so a multi-session selection
+      // never inflates a once-in-a-career patch.
+      fw = Math.max(fw, s.firstWin ?? 0);
+      mv += s.mvp ?? 0;
     }
     return {
       label: `${selectedIds.size} sessions combined`,
@@ -149,6 +161,8 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       breakAndRuns: br,
       eightOnBreaks: eob,
       levelUps: lvl,
+      firstWin: fw,
+      mvp: mv,
       skillLevel: inScope[inScope.length - 1]?.skillLevel ?? null,
       pa: undefined as number | undefined,
       ppm: undefined as number | undefined,
@@ -158,6 +172,13 @@ export default async function PlayerPage({ params, searchParams }: Props) {
 
   const matchHistoryRaw = await getPlayerMatchHistory(playerId, selectedIds);
   const matchHistory = matchHistoryRaw.slice(0, 12);
+
+  // Patch instances: resolve once, scoped to whatever sessions the user has
+  // selected. The patch lightbox uses these to render the "Earned in" list.
+  const allPatchInstances = await getPatchInstances(
+    isAllSessions ? "all" : selectedIds,
+  );
+  const playerPatchInstances = allPatchInstances.get(playerId);
 
   const actionImage = profile?.actionImage ?? player.actionImage;
   const profileImage = profile?.profileImage ?? player.profileImage;
@@ -258,6 +279,35 @@ export default async function PlayerPage({ params, searchParams }: Props) {
             <CareerArc outcomes={playerHistory.outcomes} />
           )}
         </div>
+
+        {(display.sweeps > 0 ||
+          display.miniSweeps > 0 ||
+          display.breakAndRuns > 0 ||
+          display.eightOnBreaks > 0 ||
+          display.levelUps > 0 ||
+          display.firstWin > 0 ||
+          display.mvp > 0) && (
+          <section className="mt-12">
+            <div className="mb-4 flex items-baseline justify-between gap-3">
+              <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+                Patches Earned
+              </h2>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--fg-dim)]">
+                Tap a patch for the match list
+              </span>
+            </div>
+            <PatchShowcase
+              sweeps={display.sweeps}
+              miniSweeps={display.miniSweeps}
+              breakAndRuns={display.breakAndRuns}
+              eightOnBreaks={display.eightOnBreaks}
+              levelUps={display.levelUps}
+              firstWin={display.firstWin}
+              mvp={display.mvp}
+              instances={playerPatchInstances}
+            />
+          </section>
+        )}
 
         {profile && profile.sessions.length > 1 && (
           <section className="mt-12">

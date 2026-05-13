@@ -744,9 +744,12 @@ button:hover .hover-roll {
 }
 
 /* Patch strip — a small horizontal row of badges. Lets each badge breathe
- * but groups them visually as "the trophies the player has earned." */
+ * but groups them visually as "the trophies the player has earned." Wraps
+ * onto a second line when the player has earned enough patches to overflow
+ * a narrow viewport. */
 .patch-strip {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 14px;
 }
@@ -862,11 +865,84 @@ button:hover .hover-roll {
   text-transform: uppercase;
   line-height: 1.1;
 }
+.patch-lightbox-label-worth {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--color-brass);
+  text-transform: uppercase;
+}
 .patch-lightbox-label-count {
   font-size: 11px;
   letter-spacing: 0.22em;
   color: var(--fg-dim);
   text-transform: uppercase;
+}
+.patch-lightbox-label-total {
+  color: var(--color-cream);
+  font-weight: 600;
+}
+
+/* "Earned in" match list inside the lightbox. */
+.patch-lightbox-instances {
+  width: min(78vmin, 640px);
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  text-align: left;
+}
+.patch-lightbox-instances-heading {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-brass);
+}
+.patch-lightbox-instances ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+.patch-lightbox-instance-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--fg);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+a.patch-lightbox-instance-link:hover {
+  background: var(--bg-soft);
+  color: var(--color-brass-bright);
+}
+.patch-lightbox-instance-label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.patch-lightbox-instance-score {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--color-brass-bright);
+  tabular-nums: 1;
+}
+.patch-lightbox-instance-sublabel {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -877,6 +953,62 @@ button:hover .hover-roll {
   .patch-lightbox-close:hover {
     transform: none;
   }
+}
+
+/* Patch showcase — trophy-wall layout on the player profile. Each tile
+ * pairs the patch art with its label and point total so visitors can read
+ * the value of every patch the player has earned in the current scope. */
+.patch-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.patch-showcase-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.patch-showcase-tile:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.patch-showcase-tile[data-kind="sweep"]         { --tile-accent: var(--color-pop-bright); }
+.patch-showcase-tile[data-kind="mini-sweep"]    { --tile-accent: var(--color-brass-bright); }
+.patch-showcase-tile[data-kind="break-and-run"] { --tile-accent: var(--color-felt-bright); }
+.patch-showcase-tile[data-kind="8-on-break"]    { --tile-accent: var(--color-cream); }
+.patch-showcase-tile[data-kind="level-up"]      { --tile-accent: var(--color-tie-bright); }
+.patch-showcase-tile[data-kind="first-win"]     { --tile-accent: var(--color-six-ball); }
+.patch-showcase-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.patch-showcase-label {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--color-cream);
+  line-height: 1.05;
+}
+.patch-showcase-worth {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+.patch-showcase-total {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  color: var(--tile-accent, var(--color-brass-bright));
+  line-height: 1;
 }
 
 /* Pulsing live dot */
