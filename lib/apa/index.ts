@@ -365,6 +365,7 @@ export type PatchInstance = {
   label: string;
   score?: string;
   sublabel?: string;
+  opponent?: { name: string; skillLevel: number };
 };
 
 export type PlayerPatchInstances = Partial<
@@ -461,12 +462,18 @@ export async function getPatchInstances(
       const isFirstWin = isWin && !firstWinSeen.has(r.playerId);
       if (isWin) firstWinSeen.add(r.playerId);
 
+      const opponent =
+        r.opponentName && typeof r.opponentSkillLevel === "number"
+          ? { name: r.opponentName, skillLevel: r.opponentSkillLevel }
+          : undefined;
+
       if (matchInScope) {
         const base: PatchInstance = {
           matchId: m.id,
           date: m.date,
           label: `${fmtDate(m.date)} · ${matchLabel(m)}`,
           score: r.score,
+          opponent,
         };
         if (r.sweep) push(r.playerId, "sweep", base);
         else if (r.miniSweep) push(r.playerId, "mini-sweep", base);
@@ -493,6 +500,7 @@ export async function getPatchInstances(
                 date: m.date,
                 label: `${fmtDate(m.date)} · ${matchLabel(m)}`,
                 sublabel: `SL${lvl - 1} → SL${lvl}`,
+                opponent,
               });
             }
           }

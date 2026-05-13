@@ -4,6 +4,7 @@ import { RackSkeleton } from "@/components/ui/RackSkeleton";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import {
   getCurrentSession,
+  getPatchInstances,
   getPlayerStreaks,
   getRoster,
   getSessions,
@@ -37,9 +38,10 @@ export default async function RosterPage({ searchParams }: Props) {
   // Roster is per-session — show the most recent of the selection.
   const primaryId = Math.max(...selectedIds);
 
-  const [roster, streaks] = await Promise.all([
+  const [roster, streaks, patchInstances] = await Promise.all([
     getRoster(primaryId),
     getPlayerStreaks(),
+    getPatchInstances(selectedIds),
   ]);
   const primaryName = sessions.find((s) => s.id === primaryId)?.name;
   const sessionLabel =
@@ -77,6 +79,7 @@ export default async function RosterPage({ searchParams }: Props) {
                 player={p}
                 index={i}
                 streak={streaks.get(p.id) ?? null}
+                patchInstances={patchInstances.get(p.id)}
               />
             ))}
           </div>

@@ -361,6 +361,22 @@ function PatchLightbox({
                         {inst.score}
                       </span>
                     )}
+                    {inst.opponent && (
+                      <span className="patch-lightbox-instance-opponent">
+                        <span className="patch-lightbox-instance-opponent-vs">
+                          vs
+                        </span>
+                        <span className="patch-lightbox-instance-opponent-name">
+                          {inst.opponent.name}
+                        </span>
+                        <span
+                          className="patch-lightbox-instance-opponent-sl"
+                          aria-label={`Skill level ${inst.opponent.skillLevel}`}
+                        >
+                          SL{inst.opponent.skillLevel}
+                        </span>
+                      </span>
+                    )}
                     {inst.sublabel && (
                       <span className="patch-lightbox-instance-sublabel">
                         {inst.sublabel}
@@ -404,6 +420,8 @@ export type PatchInstance = {
   score?: string;
   /** Optional sub-label like "Eight Men Out · SL3 → SL4" for level-ups. */
   sublabel?: string;
+  /** Optional individual opponent the player faced in this match. */
+  opponent?: { name: string; skillLevel: number };
 };
 
 /**
