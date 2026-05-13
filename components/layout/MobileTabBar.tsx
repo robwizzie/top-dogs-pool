@@ -2,19 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Beaker, Calendar, Home, Radio, Trophy, Users } from "lucide-react";
+import { Beaker, Calendar, Home, Radio, ShoppingBag, Trophy, Users } from "lucide-react";
 import { LiveDot } from "@/components/live/LiveCTA";
 import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/", label: "Home", icon: Home },
   { href: "/roster", label: "Roster", icon: Users },
-  { href: "/leaderboard", label: "Patch Watch", icon: Trophy },
-  { href: "/research", label: "Research", icon: Beaker },
+  { href: "/leaderboard", label: "Patches", icon: Trophy },
   { href: "/live", label: "Live", icon: Radio },
+  { href: "/store", label: "Shop", icon: ShoppingBag },
 ];
 
 void Calendar;
+void Beaker;
 
 export function MobileTabBar() {
   const pathname = usePathname();

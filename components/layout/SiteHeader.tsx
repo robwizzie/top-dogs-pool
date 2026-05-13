@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 import { LogoMark } from "@/components/brand/Logo";
 import { LiveDot } from "@/components/live/LiveCTA";
+import { CartButton } from "@/components/store/CartButton";
 import { useIsPoolNightLive } from "@/lib/hooks/useIsPoolNightLive";
 import { NAV_LINKS, TIKTOK_LIVE_URL } from "@/lib/config";
 import { cn } from "@/lib/utils";
@@ -24,7 +25,9 @@ export function SiteHeader() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map((link) => {
-            const active = pathname === link.href;
+            const active =
+              pathname === link.href ||
+              (link.href !== "/" && pathname.startsWith(`${link.href}/`));
             const isLive = link.href === "/live";
             return (
               <Link
@@ -61,6 +64,7 @@ export function SiteHeader() {
               LIVE
             </a>
           )}
+          <CartButton />
           <button
             type="button"
             onClick={() =>

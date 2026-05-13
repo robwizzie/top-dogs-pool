@@ -8,6 +8,8 @@ import { MobileTabBar } from '@/components/layout/MobileTabBar';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SessionScopeMemory } from '@/components/layout/SessionScopeMemory';
 import { CommandPaletteShell } from '@/components/ui/CommandPaletteShell';
+import { CartProvider } from '@/components/store/CartProvider';
+import { CartDrawer } from '@/components/store/CartDrawer';
 import { TEAM_NAME, TEAM_TAGLINE } from '@/lib/config';
 
 const inter = Inter({
@@ -49,17 +51,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang='en' data-theme='dark'>
 			<body className={`${inter.variable} ${bebas.variable}`}>
-				<Suspense fallback={null}>
-					<SessionScopeMemory />
-				</Suspense>
-				<SiteHeader />
-				<SeasonBanner />
-				<main className='pb-20 md:pb-0'>{children}</main>
-				<SiteFooter />
-				<MobileTabBar />
-				<Suspense fallback={null}>
-					<CommandPaletteShell />
-				</Suspense>
+				<CartProvider>
+					<Suspense fallback={null}>
+						<SessionScopeMemory />
+					</Suspense>
+					<SiteHeader />
+					<SeasonBanner />
+					<main className='pb-20 md:pb-0'>{children}</main>
+					<SiteFooter />
+					<MobileTabBar />
+					<CartDrawer />
+					<Suspense fallback={null}>
+						<CommandPaletteShell />
+					</Suspense>
+				</CartProvider>
 			</body>
 		</html>
 	);
