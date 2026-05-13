@@ -135,11 +135,21 @@ async function main() {
   const refreshMembers = async (ids: number[]) => {
     for (const id of ids) {
       const cached = await cache.read<MemberCacheEntry>("members", id);
-      const stale = !cached || olderThan(cached, MEMBER_TTL);
+      // A cached file from before the MVP scraper migration won't carry a
+      // `memberTeams` field — force a re-fetch in that case so we pick up
+      // the Teams-page payload exactly once. After the migration the field
+      // is always at least an empty object, so this check is idempotent.
+      const missingTeamsCapture =
+        cached !== null && cached.data.memberTeams === undefined;
+      const stale =
+        !cached || olderThan(cached, MEMBER_TTL) || missingTeamsCapture;
       if (!stale) {
         stats.membersCached++;
         console.log(`   · member #${id} cached`);
         continue;
+      }
+      if (missingTeamsCapture) {
+        console.log(`   ↻ member #${id} missing memberTeams — re-fetching`);
       }
       try {
         await fetchMember(page, capture, cache, id, SLUG);

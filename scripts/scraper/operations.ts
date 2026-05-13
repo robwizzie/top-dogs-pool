@@ -238,8 +238,12 @@ export async function fetchMember(
   // The aliasId is whatever we just captured from AliasSessionStats.
   type AliasIdData = { alias?: { id?: number } };
   const aliasId = (broadest.data as AliasIdData | undefined)?.alias?.id;
+  // Always initialize to {} once we've attempted the teams page, even if
+  // we captured nothing — its presence is what tells the freshness check
+  // we've already migrated this member to the post-MVP scraper.
   let memberTeams: Record<string, Record<string, unknown>> | undefined;
   if (typeof aliasId === "number") {
+    memberTeams = {};
     const teamsUrl = `${HOST}/${slug}/member/${memberInternalId}/${aliasId}/teams`;
     const teamsStartedAt = Date.now();
     try {
@@ -247,17 +251,21 @@ export async function fetchMember(
       await page.waitForTimeout(1500);
     } catch {
       // Don't fail member capture if the teams tab errors — older members
-      // may not have the route available.
+      // may not have the route available. memberTeams stays {} so we know
+      // we tried.
     }
     const newOps = capture.snapshot().filter((op) => op.capturedAt >= teamsStartedAt);
-    if (newOps.length > 0) {
-      memberTeams = {};
-      // Last-write-wins per operation name; we want the freshest payload.
-      for (const op of newOps) {
-        if (!op.operationName || !op.data || op.errors) continue;
-        memberTeams[op.operationName] = op.data;
-      }
+    // Last-write-wins per operation name; we want the freshest payload.
+    for (const op of newOps) {
+      if (!op.operationName || !op.data || op.errors) continue;
+      memberTeams[op.operationName] = op.data;
     }
+    console.log(
+      `       teams: ${Object.keys(memberTeams).length} op(s) captured` +
+        (Object.keys(memberTeams).length > 0
+          ? ` [${Object.keys(memberTeams).join(", ")}]`
+          : ""),
+    );
   }
 
   const entry: MemberCacheEntry = {

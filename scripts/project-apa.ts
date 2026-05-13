@@ -857,8 +857,28 @@ async function main() {
   // Only Top Dawgs lineage teams count — playing 1st on a different team is
   // their own accomplishment but not part of Top Dawgs Patch Watch.
   let mvpStampsApplied = 0;
+  // Diagnostics: count cache coverage so the user can tell whether the
+  // scraper has captured the Teams page for any of our roster yet.
+  let membersWithTeamsCapture = 0;
+  let membersWithRows = 0;
+  let firstUnparsedSample: string | null = null;
   for (const [internalId, member] of members) {
+    if (member.memberTeams !== undefined) membersWithTeamsCapture += 1;
     const rows = extractMvpRows(member.memberTeams);
+    if (rows.length > 0) membersWithRows += 1;
+    if (
+      rows.length === 0 &&
+      member.memberTeams &&
+      Object.keys(member.memberTeams).length > 0 &&
+      firstUnparsedSample === null
+    ) {
+      // Capture a tiny shape sample of the first member whose Teams payload
+      // we couldn't parse, so it's obvious what field name to adapt to.
+      const sampleKey = Object.keys(member.memberTeams)[0];
+      const sample = member.memberTeams[sampleKey];
+      const snippet = JSON.stringify(sample).slice(0, 400);
+      firstUnparsedSample = `op="${sampleKey}" member=#${internalId} sample=${snippet}…`;
+    }
     if (rows.length === 0) continue;
     let memberNumber: string | undefined;
     for (const [mn, iid] of memberNumberToInternalId) {
@@ -889,8 +909,23 @@ async function main() {
       mvpStampsApplied += 1;
     }
   }
-  if (mvpStampsApplied > 0) {
-    console.log(`→ MVP: stamped ${mvpStampsApplied} session-MVPs from member Teams pages`);
+  console.log(
+    `→ MVP: ${membersWithTeamsCapture}/${members.size} member(s) have Teams capture, ` +
+      `${membersWithRows} had parseable rows, stamped ${mvpStampsApplied} session-MVP(s)`,
+  );
+  if (membersWithTeamsCapture === 0) {
+    console.log(
+      "  ⚠ no member has a memberTeams payload yet. Re-run `npm run scrape` — " +
+        "older cache files predate the MVP feature and will be re-fetched once.",
+    );
+  } else if (mvpStampsApplied === 0 && firstUnparsedSample) {
+    console.log(
+      "  ⚠ teams page captured but no MVP rows extracted. Sample shape:",
+    );
+    console.log("    " + firstUnparsedSample);
+    console.log(
+      "    Update extractMvpRows() in scripts/project-apa.ts to match this shape.",
+    );
   }
 
   // 7. Build PlayerProfile records (current roster only — past members aren't fetched).
