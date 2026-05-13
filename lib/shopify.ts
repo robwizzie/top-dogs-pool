@@ -166,7 +166,7 @@ const PRODUCT_DETAIL_FRAGMENT = /* GraphQL */ `
       minVariantPrice { amount currencyCode }
       maxVariantPrice { amount currencyCode }
     }
-    images(first: 12) {
+    images(first: 50) {
       edges { node { url altText width height } }
     }
     options {
