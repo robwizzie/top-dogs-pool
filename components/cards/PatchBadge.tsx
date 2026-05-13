@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
-export type PatchKind = "sweep" | "mini-sweep";
+export type PatchKind =
+  | "sweep"
+  | "mini-sweep"
+  | "break-and-run"
+  | "8-on-break"
+  | "level-up"
+  | "first-win";
 
 const PATCHES: Record<
   PatchKind,
@@ -22,6 +28,30 @@ const PATCHES: Record<
     label: "Mini Sweep",
     tint: "var(--color-brass-bright)",
     tintRgb: "224, 190, 107",
+  },
+  "break-and-run": {
+    src: "/patches/break-and-run.png",
+    label: "Break & Run",
+    tint: "var(--color-felt-bright)",
+    tintRgb: "46, 139, 87",
+  },
+  "8-on-break": {
+    src: "/patches/8-on-break.png",
+    label: "8 on the Break",
+    tint: "var(--color-cream)",
+    tintRgb: "236, 225, 196",
+  },
+  "level-up": {
+    src: "/patches/level-up.png",
+    label: "Level Up",
+    tint: "var(--color-tie-bright)",
+    tintRgb: "244, 196, 83",
+  },
+  "first-win": {
+    src: "/patches/first-win.png",
+    label: "First Win",
+    tint: "var(--color-six-ball)",
+    tintRgb: "31, 110, 61",
   },
 };
 
@@ -207,26 +237,49 @@ function PatchLightbox({
 }
 
 /**
- * A horizontal display of all patch types a player has earned. Empty if the
- * player has no sweeps or mini-sweeps. Used on the leaderboard row and the
- * player card back.
+ * A horizontal display of every patch a player has earned. Empty if they
+ * have none. Used on the leaderboard row and the player card back.
  */
 export function PatchTrophyStrip({
   sweeps,
   miniSweeps,
+  breakAndRuns,
+  eightOnBreaks,
+  levelUps,
+  firstWin,
   size = "sm",
   className,
 }: {
   sweeps: number;
   miniSweeps: number;
+  breakAndRuns?: number;
+  eightOnBreaks?: number;
+  levelUps?: number;
+  firstWin?: number;
   size?: Size;
   className?: string;
 }) {
-  if (sweeps <= 0 && miniSweeps <= 0) return null;
+  const br = breakAndRuns ?? 0;
+  const ob = eightOnBreaks ?? 0;
+  const lu = levelUps ?? 0;
+  const fw = firstWin ?? 0;
+  if (
+    sweeps <= 0 &&
+    miniSweeps <= 0 &&
+    br <= 0 &&
+    ob <= 0 &&
+    lu <= 0 &&
+    fw <= 0
+  )
+    return null;
   return (
     <div className={cn("patch-strip", className)} data-size={size}>
       <PatchBadge kind="sweep" count={sweeps} size={size} />
       <PatchBadge kind="mini-sweep" count={miniSweeps} size={size} />
+      <PatchBadge kind="break-and-run" count={br} size={size} />
+      <PatchBadge kind="8-on-break" count={ob} size={size} />
+      <PatchBadge kind="level-up" count={lu} size={size} />
+      <PatchBadge kind="first-win" count={fw} size={size} />
     </div>
   );
 }

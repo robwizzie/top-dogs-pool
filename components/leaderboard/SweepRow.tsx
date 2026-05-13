@@ -100,34 +100,14 @@ export function SweepRow({
         <PatchTrophyStrip
           sweeps={row.sweeps}
           miniSweeps={row.miniSweeps}
+          breakAndRuns={row.breakAndRuns}
+          eightOnBreaks={row.eightOnBreaks}
+          levelUps={row.levelUps}
+          firstWin={row.firstWin}
           size="sm"
           className="mt-2"
         />
         <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--fg-dim)]">
-          {row.breakAndRuns > 0 && (
-            <span>
-              <span className="font-semibold text-[var(--color-felt-bright)]">
-                {row.breakAndRuns}
-              </span>{" "}
-              B&amp;R
-            </span>
-          )}
-          {row.eightOnBreaks > 0 && (
-            <span>
-              <span className="font-semibold text-[var(--color-cream)]">
-                {row.eightOnBreaks}
-              </span>{" "}
-              8-on-break
-            </span>
-          )}
-          {row.levelUps > 0 && (
-            <span>
-              <span className="font-semibold text-[var(--color-felt-bright)]">
-                {row.levelUps}
-              </span>{" "}
-              level up{row.levelUps === 1 ? "" : "s"}
-            </span>
-          )}
           <span>
             {row.wins}/{row.matchesPlayed} W
           </span>

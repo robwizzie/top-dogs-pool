@@ -744,9 +744,12 @@ button:hover .hover-roll {
 }
 
 /* Patch strip — a small horizontal row of badges. Lets each badge breathe
- * but groups them visually as "the trophies the player has earned." */
+ * but groups them visually as "the trophies the player has earned." Wraps
+ * onto a second line when the player has earned enough patches to overflow
+ * a narrow viewport. */
 .patch-strip {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 14px;
 }

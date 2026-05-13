@@ -98,6 +98,7 @@ type LeaderboardRow = {
   breakAndRuns: number;
   eightOnBreaks: number;
   levelUps: number;
+  firstWin: number;
   matchesPlayed: number;
   wins: number;
   skillLevel?: number;
@@ -125,6 +126,7 @@ type SessionPlayerRecord = {
   breakAndRuns?: number;
   eightOnBreaks?: number;
   levelUps?: number;
+  firstWin?: number;
 };
 
 type PlayerProfile = {
@@ -374,6 +376,8 @@ type SessionAgg = {
   miniSweeps: number;
   breakAndRuns: number;
   eightOnBreaks: number;
+  /** 1 if the player's first observed career win landed in this session. */
+  firstWin: number;
   // From AliasSessionStats:
   pa?: number;
   ppm?: number;
@@ -559,6 +563,22 @@ async function main() {
     }
   }
 
+  // Pre-compute each player's first observed career win — the earliest match
+  // (chronologically across every Top Dawgs lineage team) where their outcome
+  // was "W". A player without any observed wins gets nothing. Used below to
+  // stamp `firstWin = 1` on exactly the session that contains that match, so
+  // the patch awards 1 leaderboard point in that scope.
+  const firstWinMatchByPlayer = new Map<string, string>();
+  for (const m of sortedMatches) {
+    for (const r of m.results) {
+      if (r.playerId.startsWith("ebp:")) continue;
+      if (firstWinMatchByPlayer.has(r.playerId)) continue;
+      if (r.outcome === "W" && !r.forfeited) {
+        firstWinMatchByPlayer.set(r.playerId, m.id);
+      }
+    }
+  }
+
   // session id → Top Dawgs team for that session. Restricted to ours so a
   // session's "team" is always the Eight Men Out lineage team, never a
   // parallel team some current member also plays on.
@@ -591,7 +611,9 @@ async function main() {
     let miniSweeps = 0;
     let breakAndRuns = 0;
     let eightOnBreaks = 0;
+    let firstWin = 0;
 
+    const firstWinMatchId = firstWinMatchByPlayer.get(playerId);
     for (const { match: m, result: r } of entries) {
       if (!oursTeamIds.has(m.teamId)) continue;
       matchesPlayed += 1;
@@ -600,6 +622,7 @@ async function main() {
       if (r.miniSweep) miniSweeps += 1;
       if (r.breakAndRun) breakAndRuns += 1;
       if (r.eightOnBreak) eightOnBreaks += 1;
+      if (firstWinMatchId && m.id === firstWinMatchId) firstWin = 1;
       points += pointsForResult(r);
 
       const sl = r.skillLevel;
@@ -616,6 +639,7 @@ async function main() {
 
     if (matchesPlayed === 0) continue;
     points += levelUps;
+    points += firstWin;
 
     const teamInfo = sessionTeamFor.get(sessionId) ?? {
       teamId: entries[0].match.teamId,
@@ -637,6 +661,7 @@ async function main() {
       miniSweeps,
       breakAndRuns,
       eightOnBreaks,
+      firstWin,
     };
     aggregations.set(k, agg);
 
@@ -655,6 +680,7 @@ async function main() {
         miniSweeps: 0,
         breakAndRuns: 0,
         eightOnBreaks: 0,
+        firstWin: 0,
         firstSessionId: sessionId,
         latestSessionId: sessionId,
       };
@@ -670,6 +696,9 @@ async function main() {
     car.breakAndRuns += breakAndRuns;
     car.eightOnBreaks += eightOnBreaks;
     car.levelUps += levelUps;
+    // firstWin is binary career-wide — at most one session can be the one
+    // where the patch was earned, so OR-equivalent via max.
+    car.firstWin = Math.max(car.firstWin, firstWin);
     car.points += points;
   }
 
@@ -796,6 +825,7 @@ async function main() {
         breakAndRuns: agg.breakAndRuns,
         eightOnBreaks: agg.eightOnBreaks,
         levelUps: agg.levelUps,
+        firstWin: agg.firstWin,
       });
     }
 
@@ -846,6 +876,7 @@ async function main() {
           breakAndRuns: career.breakAndRuns,
           eightOnBreaks: career.eightOnBreaks,
           levelUps: career.levelUps,
+          firstWin: career.firstWin,
           winPct: career.matchesPlayed
             ? Math.round((career.wins / career.matchesPlayed) * 1000) / 10
             : 0,
@@ -872,6 +903,7 @@ async function main() {
             breakAndRuns: 0,
             eightOnBreaks: 0,
             levelUps: 0,
+            firstWin: 0,
             winPct: mp ? Math.round((wins / mp) * 1000) / 10 : 0,
           };
         })();
@@ -978,6 +1010,7 @@ async function main() {
         breakAndRuns: 0,
         eightOnBreaks: 0,
         levelUps: 0,
+        firstWin: 0,
         matchesPlayed: 0,
         wins: 0,
         skillLevel: undefined,
@@ -995,6 +1028,7 @@ async function main() {
           row.breakAndRuns = car.breakAndRuns;
           row.eightOnBreaks = car.eightOnBreaks;
           row.levelUps = car.levelUps;
+          row.firstWin = car.firstWin;
           row.matchesPlayed = car.matchesPlayed;
           row.wins = car.wins;
           row.skillLevel = profile?.currentSkillLevel ?? car.skillLevel;
@@ -1009,6 +1043,7 @@ async function main() {
           row.breakAndRuns = agg.breakAndRuns;
           row.eightOnBreaks = agg.eightOnBreaks;
           row.levelUps = agg.levelUps;
+          row.firstWin = agg.firstWin;
           row.matchesPlayed = agg.matchesPlayed;
           row.wins = agg.wins;
           row.skillLevel = agg.endingSkillLevel ?? agg.skillLevel;
@@ -1084,6 +1119,8 @@ async function main() {
           miniSweeps: agg?.miniSweeps,
           breakAndRuns: agg?.breakAndRuns,
           eightOnBreaks: agg?.eightOnBreaks,
+          levelUps: agg?.levelUps,
+          firstWin: agg?.firstWin,
         },
       });
     }

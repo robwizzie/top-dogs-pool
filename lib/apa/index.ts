@@ -217,6 +217,8 @@ function toRosterPlayer(profile: PlayerProfile): Player {
       miniSweeps: profile.career.miniSweeps,
       breakAndRuns: profile.career.breakAndRuns,
       eightOnBreaks: profile.career.eightOnBreaks,
+      levelUps: profile.career.levelUps,
+      firstWin: profile.career.firstWin,
     },
   };
 }
@@ -270,6 +272,7 @@ export async function getLeaderboard(
           breakAndRuns: 0,
           eightOnBreaks: 0,
           levelUps: 0,
+          firstWin: 0,
           matchesPlayed: 0,
           wins: 0,
           _seen: true,
@@ -282,6 +285,9 @@ export async function getLeaderboard(
       cur.breakAndRuns += r.breakAndRuns;
       cur.eightOnBreaks += r.eightOnBreaks;
       cur.levelUps += r.levelUps;
+      // firstWin is binary career-wide — at most one of the included sessions
+      // can be the one where the patch was earned.
+      cur.firstWin = Math.max(cur.firstWin, r.firstWin);
       cur.matchesPlayed += r.matchesPlayed;
       cur.wins += r.wins;
       // Latest SL we've seen wins.

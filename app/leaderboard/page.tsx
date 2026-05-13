@@ -43,13 +43,14 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
   const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
   const totalMini = rows.reduce((s, r) => s + r.miniSweeps, 0);
+  const totalFirstWins = rows.reduce((s, r) => s + r.firstWin, 0);
 
   return (
     <>
       <PageHeader
         eyebrow="Patches Earned"
         title="Patch Watch"
-        subtitle={`${headerLabel} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini`}
+        subtitle={`${headerLabel} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini${totalFirstWins > 0 ? ` · ${totalFirstWins} first win${totalFirstWins === 1 ? "" : "s"}` : ""}`}
       />
 
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
@@ -113,11 +114,18 @@ export default async function LeaderboardPage({ searchParams }: Props) {
               · 1 pt each — sank the 8 on the break for an instant win.
             </li>
             <li>
-              <strong className="text-[var(--color-felt-bright)]">
+              <strong className="text-[var(--color-tie-bright)]">
                 Level up
               </strong>{" "}
               · 1 pt each — every skill-level increase observed within the
               session counts.
+            </li>
+            <li>
+              <strong className="text-[var(--color-six-ball)]">
+                First win
+              </strong>{" "}
+              · 1 pt — a brand-new player&apos;s first-ever career win on the
+              Top Dawgs. Awarded once per player, in the session it happens.
             </li>
             <li className="pt-2 italic">
               Pick multiple sessions to combine totals, or hit{" "}
