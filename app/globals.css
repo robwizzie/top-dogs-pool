@@ -965,6 +965,40 @@ a.patch-lightbox-instance-link:hover {
   text-transform: uppercase;
   color: var(--fg-dim);
 }
+.patch-lightbox-instance-opponent {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--fg-soft, var(--fg-dim));
+}
+.patch-lightbox-instance-opponent-vs {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.patch-lightbox-instance-opponent-name {
+  font-weight: 600;
+  color: var(--fg);
+}
+.patch-lightbox-instance-opponent-sl {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--color-brass-bright);
+  background: rgba(var(--patch-tint-rgb), 0.16);
+  border: 1px solid rgba(var(--patch-tint-rgb), 0.45);
+  border-radius: 999px;
+  tabular-nums: 1;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .patch-lightbox,
