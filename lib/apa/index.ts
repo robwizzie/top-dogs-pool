@@ -365,6 +365,7 @@ export type PatchInstance = {
   label: string;
   score?: string;
   sublabel?: string;
+  opponent?: { name: string; skillLevel: number };
 };
 
 export type PlayerPatchInstances = Partial<
