@@ -689,6 +689,21 @@ button:hover .hover-roll {
 .patch-badge:hover::before {
   opacity: 1;
 }
+/* Static (non-clickable) badge — used inside the showcase tile where the
+ * tile itself is the click target. Suppresses the zoom-in cursor and the
+ * jitter-on-hover animation so the tile reads as one unified button. */
+.patch-badge-static {
+  cursor: inherit;
+}
+.patch-badge-static:hover {
+  transform: none;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+}
+.patch-showcase-tile:hover .patch-badge-static {
+  transform: translateY(-1px) rotate(-2deg) scale(1.04);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 8px rgba(var(--patch-tint-rgb, 224, 190, 107), 0.4));
+}
 .patch-badge-image {
   position: relative;
   z-index: 1;
@@ -775,17 +790,21 @@ button:hover .hover-roll {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 4rem 1rem;
+  /* No justify-content — we center smaller content with `margin: auto` on
+   * the child, which collapses to 0 when content is taller than the
+   * viewport so scrolling starts cleanly from the top. */
+  padding: 3rem 1rem 4rem;
   background: color-mix(in oklab, var(--color-ink) 88%, transparent);
   backdrop-filter: blur(8px);
   animation: fade-in 0.2s ease-out forwards;
   overscroll-behavior: contain;
+  overflow-y: auto;
 }
 .patch-lightbox-close {
-  position: absolute;
+  position: fixed;
   top: 1rem;
   right: 1rem;
+  z-index: 1;
   display: grid;
   place-items: center;
   width: 40px;
@@ -809,6 +828,9 @@ button:hover .hover-roll {
   align-items: center;
   gap: 1.25rem;
   max-width: 100%;
+  /* Vertically center the dialog when it fits; collapse to 0 when it
+   * doesn't, so scrollable content begins right under the top padding. */
+  margin: auto 0;
   animation: patch-zoom 0.32s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
   cursor: default;
 }
@@ -823,32 +845,32 @@ button:hover .hover-roll {
 }
 .patch-lightbox-image {
   display: block;
-  width: min(78vmin, 640px);
+  width: min(48vmin, 320px);
   height: auto;
   object-fit: contain;
 }
 .patch-lightbox-count {
   position: absolute;
-  right: -8px;
-  bottom: -8px;
+  right: -6px;
+  bottom: -6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 56px;
-  height: 56px;
-  padding: 0 16px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
   border-radius: 999px;
   background: var(--patch-tint, var(--color-brass-bright));
   color: var(--color-ink);
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
   box-shadow:
-    0 0 0 4px var(--bg),
-    0 0 0 6px color-mix(in oklab, var(--patch-tint, var(--color-brass-bright)) 50%, transparent),
-    0 12px 30px -10px var(--patch-tint, var(--color-brass-bright));
+    0 0 0 3px var(--bg),
+    0 0 0 5px color-mix(in oklab, var(--patch-tint, var(--color-brass-bright)) 50%, transparent),
+    0 10px 24px -8px var(--patch-tint, var(--color-brass-bright));
 }
 .patch-lightbox-label {
   display: flex;
@@ -882,11 +904,12 @@ button:hover .hover-roll {
   font-weight: 600;
 }
 
-/* "Earned in" match list inside the lightbox. */
+/* "Earned in" match list inside the lightbox. Sized wider than the (now
+ * smaller) patch image so the match list reads cleanly underneath. */
 .patch-lightbox-instances {
-  width: min(78vmin, 640px);
+  width: min(86vw, 460px);
   max-width: 100%;
-  margin-top: 8px;
+  margin-top: 4px;
   padding: 14px 16px;
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -907,8 +930,6 @@ button:hover .hover-roll {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: 30vh;
-  overflow-y: auto;
 }
 .patch-lightbox-instance-link {
   display: grid;
@@ -972,11 +993,18 @@ a.patch-lightbox-instance-link:hover {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease,
+    background-color 0.2s ease;
 }
-.patch-showcase-tile:hover {
-  border-color: var(--border-strong);
+.patch-showcase-tile:hover,
+.patch-showcase-tile:focus-visible {
+  border-color: var(--tile-accent, var(--border-strong));
+  background: color-mix(in oklab, var(--bg-card) 86%, var(--tile-accent, var(--color-brass-bright)));
   transform: translateY(-2px);
+}
+.patch-showcase-tile:focus-visible {
+  outline: none;
 }
 .patch-showcase-tile[data-kind="sweep"]         { --tile-accent: var(--color-pop-bright); }
 .patch-showcase-tile[data-kind="mini-sweep"]    { --tile-accent: var(--color-brass-bright); }
@@ -984,6 +1012,7 @@ a.patch-lightbox-instance-link:hover {
 .patch-showcase-tile[data-kind="8-on-break"]    { --tile-accent: var(--color-cream); }
 .patch-showcase-tile[data-kind="level-up"]      { --tile-accent: var(--color-tie-bright); }
 .patch-showcase-tile[data-kind="first-win"]     { --tile-accent: var(--color-six-ball); }
+.patch-showcase-tile[data-kind="mvp"]            { --tile-accent: #4ca0d8; }
 .patch-showcase-meta {
   display: flex;
   flex-direction: column;

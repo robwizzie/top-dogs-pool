@@ -101,25 +101,33 @@ const SIZES = {
 type Size = keyof typeof SIZES;
 
 /**
- * Embroidered patch trophy. Renders the patch art with a brass-rimmed
- * quantity bubble in the corner whenever the player has earned more than
- * one. Clicking opens a full-screen lightbox so the embroidery detail is
- * easy to read. Falls back silently to nothing when count is 0 so callers
- * can sprinkle these in lists without guards.
+ * Wraps children in a clickable region that opens the patch lightbox.
+ * Handles keyboard + escape + body-scroll-lock + portal mount. Reused by
+ * both the standalone badge and the showcase tile so the entire tile is
+ * clickable on the profile page (not just the patch image inside it).
  */
-export function PatchBadge({
+type TriggerElementType = "span" | "div";
+
+function PatchLightboxTrigger({
   kind,
   count,
-  size = "sm",
   instances,
   className,
+  ariaLabel,
+  children,
+  style,
+  as = "span",
+  dataAttrs,
 }: {
   kind: PatchKind;
   count: number;
-  size?: Size;
-  /** Optional list of where this patch was earned. Renders in the lightbox. */
   instances?: PatchInstance[];
   className?: string;
+  ariaLabel: string;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  as?: TriggerElementType;
+  dataAttrs?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -142,54 +150,30 @@ export function PatchBadge({
     };
   }, [open]);
 
-  if (count <= 0) return null;
-  const patch = PATCHES[kind];
-  const dims = SIZES[size];
-  const totalPoints = count * patch.pointEach;
-  const aria = `${count} ${patch.label} patch${count === 1 ? "" : "es"} earned · ${formatPoints(totalPoints)}`;
-
   const trigger = (e: React.SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setOpen(true);
   };
 
+  const Element = as as "span";
   return (
     <>
-      <span
-        className={cn("patch-badge", className)}
-        data-kind={kind}
-        data-size={size}
+      <Element
+        className={className}
         role="button"
         tabIndex={0}
-        title={`${aria} · tap to enlarge`}
-        aria-label={`${aria}. Tap to enlarge.`}
+        title={`${ariaLabel} · tap to enlarge`}
+        aria-label={`${ariaLabel}. Tap to enlarge.`}
         onClick={trigger}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") trigger(e);
         }}
-        style={
-          {
-            width: dims.box,
-            height: dims.box,
-            "--patch-tint": patch.tint,
-            "--patch-tint-rgb": patch.tintRgb,
-          } as React.CSSProperties
-        }
+        style={style}
+        {...(dataAttrs ?? {})}
       >
-        <Image
-          src={patch.src}
-          alt=""
-          width={dims.image}
-          height={dims.image}
-          className="patch-badge-image"
-        />
-        {count > 1 && (
-          <span className="patch-badge-count" aria-hidden>
-            ×{count}
-          </span>
-        )}
-      </span>
+        {children}
+      </Element>
       {mounted &&
         open &&
         createPortal(
@@ -202,6 +186,89 @@ export function PatchBadge({
           document.body,
         )}
     </>
+  );
+}
+
+/**
+ * Embroidered patch trophy. Renders the patch art with a brass-rimmed
+ * quantity bubble in the corner whenever the player has earned more than
+ * one. By default the badge itself is the click target; pass
+ * `interactive={false}` when an ancestor handles the click (e.g. inside
+ * PatchShowcase, where the entire tile is clickable).
+ */
+export function PatchBadge({
+  kind,
+  count,
+  size = "sm",
+  instances,
+  interactive = true,
+  className,
+}: {
+  kind: PatchKind;
+  count: number;
+  size?: Size;
+  /** Optional list of where this patch was earned. Renders in the lightbox. */
+  instances?: PatchInstance[];
+  /** When false, the badge is visual-only and an ancestor must provide the click. */
+  interactive?: boolean;
+  className?: string;
+}) {
+  if (count <= 0) return null;
+  const patch = PATCHES[kind];
+  const dims = SIZES[size];
+  const totalPoints = count * patch.pointEach;
+  const aria = `${count} ${patch.label} patch${count === 1 ? "" : "es"} earned · ${formatPoints(totalPoints)}`;
+
+  const visual = (
+    <>
+      <Image
+        src={patch.src}
+        alt=""
+        width={dims.image}
+        height={dims.image}
+        className="patch-badge-image"
+      />
+      {count > 1 && (
+        <span className="patch-badge-count" aria-hidden>
+          ×{count}
+        </span>
+      )}
+    </>
+  );
+
+  const style = {
+    width: dims.box,
+    height: dims.box,
+    "--patch-tint": patch.tint,
+    "--patch-tint-rgb": patch.tintRgb,
+  } as React.CSSProperties;
+
+  if (!interactive) {
+    return (
+      <span
+        className={cn("patch-badge patch-badge-static", className)}
+        data-kind={kind}
+        data-size={size}
+        aria-label={aria}
+        style={style}
+      >
+        {visual}
+      </span>
+    );
+  }
+
+  return (
+    <PatchLightboxTrigger
+      kind={kind}
+      count={count}
+      instances={instances}
+      className={cn("patch-badge", className)}
+      ariaLabel={aria}
+      style={style}
+      dataAttrs={{ "data-kind": kind, "data-size": size }}
+    >
+      {visual}
+    </PatchLightboxTrigger>
   );
 }
 
@@ -387,13 +454,23 @@ export function PatchShowcase({
       {items.map((item) => {
         const patch = PATCHES[item.kind];
         const total = item.count * patch.pointEach;
+        const ariaLabel = `${item.count} ${patch.label} patch${item.count === 1 ? "" : "es"} · ${formatPoints(total)}`;
         return (
-          <div key={item.kind} className="patch-showcase-tile" data-kind={item.kind}>
+          <PatchLightboxTrigger
+            key={item.kind}
+            kind={item.kind}
+            count={item.count}
+            instances={instances?.[item.kind]}
+            className="patch-showcase-tile"
+            ariaLabel={ariaLabel}
+            as="div"
+            dataAttrs={{ "data-kind": item.kind }}
+          >
             <PatchBadge
               kind={item.kind}
               count={item.count}
               size="md"
-              instances={instances?.[item.kind]}
+              interactive={false}
             />
             <div className="patch-showcase-meta">
               <span className="patch-showcase-label">{patch.label}</span>
@@ -402,7 +479,7 @@ export function PatchShowcase({
               </span>
               <span className="patch-showcase-total">{formatPoints(total)}</span>
             </div>
-          </div>
+          </PatchLightboxTrigger>
         );
       })}
     </div>
