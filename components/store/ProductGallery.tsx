@@ -1,18 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ProductImage } from "@/lib/shopify";
 import { cn } from "@/lib/utils";
 
 export function ProductGallery({
   images,
   title,
+  activeImageUrl,
 }: {
   images: ProductImage[];
   title: string;
+  /** When provided, the gallery jumps to this image. */
+  activeImageUrl?: string | null;
 }) {
   const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (!activeImageUrl) return;
+    const idx = images.findIndex((img) => img.url === activeImageUrl);
+    if (idx >= 0 && idx !== active) setActive(idx);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeImageUrl, images]);
+
   if (images.length === 0) {
     return (
       <div className="surface flex aspect-square items-center justify-center text-[var(--fg-dim)]">

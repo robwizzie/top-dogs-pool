@@ -1,32 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Check, Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/store/CartProvider";
 import { formatMoney, type Product, type ProductVariant } from "@/lib/shopify";
 import { cn } from "@/lib/utils";
 
-export function AddToCart({ product }: { product: Product }) {
+export function AddToCart({
+  product,
+  selected,
+  onSelectedChange,
+  activeVariant,
+}: {
+  product: Product;
+  selected: Record<string, string>;
+  onSelectedChange: (next: Record<string, string>) => void;
+  activeVariant: ProductVariant | undefined;
+}) {
   const variants = product.variants;
-  const initial = useMemo<Record<string, string>>(() => {
-    const firstAvailable = variants.find((v) => v.availableForSale) ?? variants[0];
-    const map: Record<string, string> = {};
-    firstAvailable?.selectedOptions.forEach((o) => {
-      map[o.name] = o.value;
-    });
-    return map;
-  }, [variants]);
-
-  const [selected, setSelected] = useState<Record<string, string>>(initial);
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
   const { addItem, isLoading } = useCart();
-
-  const activeVariant = useMemo<ProductVariant | undefined>(() => {
-    return variants.find((v) =>
-      v.selectedOptions.every((o) => selected[o.name] === o.value),
-    );
-  }, [variants, selected]);
 
   const canBuy = Boolean(activeVariant?.availableForSale);
   const showOptions = product.options.some(
@@ -79,7 +73,7 @@ export function AddToCart({ product }: { product: Product }) {
                     <button
                       key={value}
                       type="button"
-                      onClick={() => setSelected(hypothetical)}
+                      onClick={() => onSelectedChange(hypothetical)}
                       className={cn(
                         "rounded-full border px-4 py-2 text-sm font-medium tracking-wide transition-colors",
                         isActive
