@@ -1,17 +1,17 @@
 {
-  "fetchedAt": "2026-05-15T13:38:17.260Z",
+  "fetchedAt": "2026-05-15T13:40:30.250Z",
   "data": {
     "teamPage": {
       "team": {
-        "id": 13022793,
-        "name": "Eight Men Out",
-        "number": "06806",
+        "id": 13022744,
+        "name": "Dark Side of the Cue",
+        "number": "06402",
         "isTied": null,
         "standing": null,
         "division": {
-          "id": 431614,
-          "name": "Gl-68",
-          "number": "068",
+          "id": 431610,
+          "name": "At-64",
+          "number": "064",
           "timeOfPlay": "1900-01-01T19:30:00Z",
           "nightOfPlay": "Tuesday",
           "format": "8-Ball Open",
@@ -21,11 +21,11 @@
           "__typename": "Division"
         },
         "location": {
-          "id": 90042,
-          "name": "Wilson's Pub",
+          "id": 39380,
+          "name": "Sharky's Sports Bar",
           "address": {
-            "id": 40206,
-            "name": "Wilson's Pub",
+            "id": 41645,
+            "name": "Sharky's Sports Bar",
             "__typename": "Address"
           },
           "__typename": "HostLocation"
@@ -45,24 +45,39 @@
     },
     "teamRoster": {
       "team": {
-        "id": 13022793,
-        "name": "Eight Men Out",
-        "number": "06806",
+        "id": 13022744,
+        "name": "Dark Side of the Cue",
+        "number": "06402",
         "league": {
           "id": 890,
           "slug": "southjersey",
           "__typename": "League"
         },
         "division": {
-          "id": 431614,
+          "id": 431610,
           "type": "EIGHT",
           "__typename": "Division"
         },
         "roster": [
           {
-            "id": 92156439,
-            "memberNumber": "08203835",
-            "displayName": "Meghan Johnson",
+            "id": 92156077,
+            "memberNumber": "08203879",
+            "displayName": "Kyle Jones",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3179355,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 92156080,
+            "memberNumber": "08213639",
+            "displayName": "Shanel Fredericks",
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -70,29 +85,14 @@
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3168757,
+              "id": 3310004,
               "__typename": "Member"
             }
           },
           {
-            "id": 92156442,
-            "memberNumber": "08211481",
-            "displayName": "Aaron Bickford",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3253364,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 92156438,
-            "memberNumber": "08203833",
-            "displayName": "Peter Johnson V",
+            "id": 92156078,
+            "memberNumber": "08208587",
+            "displayName": "Joel ($90) Galan",
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -100,74 +100,59 @@
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3168689,
+              "id": 3248434,
               "__typename": "Member"
             }
           },
           {
-            "id": 92156441,
-            "memberNumber": "08203907",
-            "displayName": "Robert Wiscount",
+            "id": 92156079,
+            "memberNumber": "08213389",
+            "displayName": "David Gsell",
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
             "ppm": 0,
-            "skillLevel": 3,
+            "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3175746,
+              "id": 3140453,
               "__typename": "Member"
             }
           },
           {
-            "id": 92156440,
-            "memberNumber": "08203852",
-            "displayName": "Anand Patel",
+            "id": 92156082,
+            "memberNumber": "08214151",
+            "displayName": "Angelo “Low” Torrie",
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
             "ppm": 0,
-            "skillLevel": 4,
+            "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3175408,
+              "id": 3412475,
               "__typename": "Member"
             }
           },
           {
-            "id": 92156435,
-            "memberNumber": "08215468",
-            "displayName": "Patrick Daley",
+            "id": 92385099,
+            "memberNumber": "08229459",
+            "displayName": "Joal Tallant",
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
             "ppm": 0,
-            "skillLevel": 7,
+            "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 737682,
+              "id": 1212083,
               "__typename": "Member"
             }
           },
           {
-            "id": 92365797,
-            "memberNumber": "08203845",
-            "displayName": "Greg Carpenter",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 3,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3174255,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 92387395,
-            "memberNumber": "08214528",
-            "displayName": "Jake McNamee",
+            "id": 92385945,
+            "memberNumber": "08214579",
+            "displayName": "Art Schrager",
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -175,7 +160,7 @@
             "skillLevel": 0,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3472740,
+              "id": 3472891,
               "__typename": "Member"
             }
           }
@@ -185,12 +170,12 @@
     },
     "teamSchedule": {
       "team": {
-        "id": 13022793,
+        "id": 13022744,
         "sessionBonusPoints": null,
         "sessionPoints": null,
         "sessionTotalPoints": 0,
         "division": {
-          "id": 431614,
+          "id": 431610,
           "isTournament": false,
           "__typename": "Division"
         },
@@ -198,13 +183,13 @@
           {
             "week": 1,
             "type": "EIGHT",
-            "id": 50630041,
+            "id": 50630455,
             "isBye": false,
             "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-05-12T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
@@ -217,27 +202,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022792,
-              "name": "Lights Out",
-              "number": "06805",
+              "id": 13022736,
+              "name": "One Ball Short",
+              "number": "06401",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -247,9 +232,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -259,13 +244,13 @@
           {
             "week": 2,
             "type": "EIGHT",
-            "id": 50630046,
+            "id": 50630462,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-05-19T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -278,26 +263,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13051645,
-              "name": "The Railhouse",
-              "number": "06803",
+              "id": 13022742,
+              "name": "Who's Next?",
+              "number": "06407",
               "isMine": false,
               "__typename": "Team"
             },
@@ -308,9 +293,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -320,13 +305,13 @@
           {
             "week": 3,
             "type": "EIGHT",
-            "id": 50630049,
+            "id": 50630466,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-05-26T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -339,27 +324,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 39749,
-              "name": "Gloucester VFW Post 3620",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 73672,
-                "name": "Gloucester VFW Post 3620",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022788,
-              "name": "Poolin' and Boolin'",
-              "number": "06801",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022745,
+              "name": "Break Ups",
+              "number": "06406",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -369,9 +354,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -381,13 +366,13 @@
           {
             "week": 4,
             "type": "EIGHT",
-            "id": 50630054,
-            "isBye": true,
+            "id": 50630470,
+            "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-06-02T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -400,26 +385,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39635,
+              "name": "American Legion-post 252",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41397,
+                "name": "American Legion-post 252",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022741,
+              "name": "Breaking-Balls",
+              "number": "06404",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022797,
-              "name": "Bye",
-              "number": "06810",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
@@ -430,9 +415,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -442,13 +427,13 @@
           {
             "week": 5,
             "type": "EIGHT",
-            "id": 50630059,
+            "id": 50630473,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-06-09T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -461,27 +446,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 88174,
-              "name": "National Park Pub & Grill",
+              "id": 39635,
+              "name": "American Legion-post 252",
               "address": {
-                "id": 72204,
-                "name": "National Park Pub & Grill",
+                "id": 41397,
+                "name": "American Legion-post 252",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022794,
-              "name": "Keep It Simple Stupid",
-              "number": "06807",
+              "id": 13022738,
+              "name": "Cue The Chaos",
+              "number": "06403",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -491,9 +476,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -503,13 +488,13 @@
           {
             "week": 6,
             "type": "EIGHT",
-            "id": 50630064,
+            "id": 50630476,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-06-16T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -522,27 +507,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 81473,
-              "name": "The Office",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 32203,
-                "name": "The Office",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022796,
-              "name": "The Office",
-              "number": "06809",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022743,
+              "name": "Rusty Cues",
+              "number": "06408",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -552,9 +537,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -564,13 +549,13 @@
           {
             "week": 7,
             "type": "EIGHT",
-            "id": 50630072,
+            "id": 50630480,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-06-23T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -583,26 +568,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39635,
+              "name": "American Legion-post 252",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41397,
+                "name": "American Legion-post 252",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022740,
+              "name": "May the Force Be With You",
+              "number": "06405",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022789,
-              "name": "Break 8 Away",
-              "number": "06802",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
@@ -613,9 +598,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -625,13 +610,13 @@
           {
             "week": 8,
             "type": "EIGHT",
-            "id": 50630078,
+            "id": 50630483,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-06-30T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -644,26 +629,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022791,
-              "name": "8 Balls for Sale",
-              "number": "06804",
+              "id": 13022736,
+              "name": "One Ball Short",
+              "number": "06401",
               "isMine": false,
               "__typename": "Team"
             },
@@ -674,9 +659,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -686,13 +671,13 @@
           {
             "week": 9,
             "type": "EIGHT",
-            "id": 50630080,
+            "id": 50630490,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-07-07T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -705,27 +690,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
+              "id": 106363,
+              "name": "Alisha's 5 Star Dive Bar",
               "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
+                "id": 83925,
+                "name": "Alisha's 5 Star Dive Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022790,
-              "name": "Nailed It!!",
-              "number": "06808",
+              "id": 13022742,
+              "name": "Who's Next?",
+              "number": "06407",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -735,9 +720,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -747,13 +732,13 @@
           {
             "week": 10,
             "type": "EIGHT",
-            "id": 50630086,
+            "id": 50630494,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-07-14T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -766,26 +751,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39670,
+              "name": "V.F.W. Franklinville 2071",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41372,
+                "name": "V.F.W. Franklinville 2071",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022745,
+              "name": "Break Ups",
+              "number": "06406",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022792,
-              "name": "Lights Out",
-              "number": "06805",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
@@ -796,9 +781,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -808,13 +793,13 @@
           {
             "week": 11,
             "type": "EIGHT",
-            "id": 50630091,
+            "id": 50630498,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-07-21T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -827,27 +812,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 39172,
-              "name": "The RailHouse",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 73686,
-                "name": "The RailHouse",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13051645,
-              "name": "The Railhouse",
-              "number": "06803",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022741,
+              "name": "Breaking-Balls",
+              "number": "06404",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -857,9 +842,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -869,13 +854,13 @@
           {
             "week": 12,
             "type": "EIGHT",
-            "id": 50630094,
+            "id": 50630501,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-07-28T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -888,26 +873,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022788,
-              "name": "Poolin' and Boolin'",
-              "number": "06801",
+              "id": 13022738,
+              "name": "Cue The Chaos",
+              "number": "06403",
               "isMine": false,
               "__typename": "Team"
             },
@@ -918,9 +903,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -930,13 +915,13 @@
           {
             "week": 13,
             "type": "EIGHT",
-            "id": 50630099,
-            "isBye": true,
+            "id": 50630504,
+            "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-08-04T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -949,23 +934,27 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 87357,
-              "name": "No Match This Week",
-              "address": null,
+              "id": 106363,
+              "name": "Alisha's 5 Star Dive Bar",
+              "address": {
+                "id": 83925,
+                "name": "Alisha's 5 Star Dive Bar",
+                "__typename": "Address"
+              },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022797,
-              "name": "Bye",
-              "number": "06810",
+              "id": 13022743,
+              "name": "Rusty Cues",
+              "number": "06408",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "league": {
@@ -975,9 +964,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -987,13 +976,13 @@
           {
             "week": 14,
             "type": "EIGHT",
-            "id": 50630104,
+            "id": 50630508,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-08-11T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -1006,26 +995,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022794,
-              "name": "Keep It Simple Stupid",
-              "number": "06807",
+              "id": 13022740,
+              "name": "May the Force Be With You",
+              "number": "06405",
               "isMine": false,
               "__typename": "Team"
             },
@@ -1036,9 +1025,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1048,13 +1037,13 @@
           {
             "week": 15,
             "type": "EIGHT",
-            "id": 50630109,
+            "id": 50630511,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
             "startTime": "2026-08-18T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
+            "isMine": false,
+            "isPaid": null,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -1067,26 +1056,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
+              "id": 39380,
+              "name": "Sharky's Sports Bar",
               "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
+                "id": 41645,
+                "name": "Sharky's Sports Bar",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
-              "isMine": true,
+              "id": 13022736,
+              "name": "One Ball Short",
+              "number": "06401",
+              "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13022796,
-              "name": "The Office",
-              "number": "06809",
+              "id": 13022744,
+              "name": "Dark Side of the Cue",
+              "number": "06402",
               "isMine": false,
               "__typename": "Team"
             },
@@ -1097,9 +1086,9 @@
               "isElectronicPaymentsEnabled": false,
               "__typename": "League"
             },
-            "orderItems": [],
+            "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1139,7 +1128,7 @@
             },
             "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1179,7 +1168,7 @@
             },
             "orderItems": null,
             "division": {
-              "id": 431614,
+              "id": 431610,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
