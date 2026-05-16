@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
+  // Emit a self-contained server bundle (.next/standalone) for the Docker image.
+  output: "standalone",
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com" },
