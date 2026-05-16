@@ -10,7 +10,7 @@ import {
 } from "@/lib/config";
 import { formatDate, formatTime, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = {
   title: "Live",

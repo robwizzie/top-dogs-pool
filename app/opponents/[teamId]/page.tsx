@@ -12,7 +12,7 @@ import { loadSnapshot } from "@/lib/apa/client";
 import { cn, formatDate } from "@/lib/utils";
 import type { Match, Player } from "@/lib/apa/schemas";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ teamId: string }>;

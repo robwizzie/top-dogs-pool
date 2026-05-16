@@ -25,7 +25,7 @@ import {
 import { getClipsForPlayer } from "@/lib/youtube/client";
 import { formatDate } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ playerId: string }>;
