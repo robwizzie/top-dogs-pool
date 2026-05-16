@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/ui/Section";
 import { getAnyPlayerProfile, getCurrentSession } from "@/lib/apa";
 import { cn } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ id: string }>;

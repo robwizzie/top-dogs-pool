@@ -60,7 +60,7 @@ function RankDelta({ delta }: { delta: number }) {
   );
 }
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata = {
   title: "Standings",

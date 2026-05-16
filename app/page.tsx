@@ -23,7 +23,7 @@ import {
 import { matchMvp, matchRecap } from "@/lib/recap";
 import { formatDate, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const [team, roster, leaderboard, standings, lastUpdated, snap] =

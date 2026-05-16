@@ -15,7 +15,7 @@ import {
   scopeLabel,
 } from "@/lib/session-scope";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata = {
   title: "Roster",
