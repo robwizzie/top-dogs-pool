@@ -20,15 +20,38 @@ export const APA_REVALIDATE_SECONDS = 60 * 60;
 /** ISR revalidation for YouTube — 30m */
 export const YOUTUBE_REVALIDATE_SECONDS = 30 * 60;
 
-export const NAV_LINKS = [
-  { href: "/", label: "Home", ball: 1 },
-  { href: "/roster", label: "Roster", ball: 2 },
-  { href: "/schedule", label: "Schedule", ball: 3 },
-  { href: "/standings", label: "Standings", ball: 4 },
-  { href: "/leaderboard", label: "Patch Watch", ball: 5 },
-  { href: "/research", label: "Research", ball: 6 },
-  { href: "/shots", label: "Shots", ball: 10 },
-  { href: "/clips", label: "Clips", ball: 7 },
-  { href: "/live", label: "Live", ball: 8 },
-  { href: "/store", label: "Shop", ball: 9 },
+export type NavItem = { href: string; label: string };
+export type NavGroup = { label: string; items: readonly NavItem[] };
+export type NavEntry = NavItem | NavGroup;
+
+export const NAV_GROUPS: readonly NavEntry[] = [
+  { href: "/", label: "Home" },
+  {
+    label: "Season",
+    items: [
+      { href: "/roster", label: "Roster" },
+      { href: "/schedule", label: "Schedule" },
+      { href: "/standings", label: "Standings" },
+      { href: "/leaderboard", label: "Patch Watch" },
+      { href: "/research", label: "Research" },
+    ],
+  },
+  {
+    label: "Training",
+    items: [
+      { href: "/shots", label: "Shots" },
+      { href: "/clips", label: "Clips" },
+    ],
+  },
+  { href: "/live", label: "Live" },
+  { href: "/store", label: "Shop" },
 ] as const;
+
+export function isNavGroup(entry: NavEntry): entry is NavGroup {
+  return "items" in entry;
+}
+
+/** Flat list of every nav destination — used by the command palette and mobile menu. */
+export const NAV_LINKS: readonly NavItem[] = NAV_GROUPS.flatMap((entry) =>
+  isNavGroup(entry) ? [...entry.items] : [entry],
+);

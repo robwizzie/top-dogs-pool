@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, AlertTriangle, Lightbulb, Target } from "lucide-react";
 import { PoolTable } from "@/components/shots/PoolTable";
-import { KINISTER_SHOTS, getShot } from "@/lib/kinister/shots";
+import { ShotVideoBlock } from "@/components/shots/ShotVideo";
+import { DrilledToggle } from "@/components/shots/DrilledToggle";
+import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
 import { cn } from "@/lib/utils";
 
 type Params = { id: string };
@@ -68,14 +70,17 @@ export default async function ShotDetailPage({
                 {shot.name}
               </h1>
             </div>
-            <span
-              className={cn(
-                "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider",
-                DIFFICULTY_STYLES[shot.difficulty],
-              )}
-            >
-              {shot.difficulty}
-            </span>
+            <div className="flex flex-wrap items-center gap-3">
+              <span
+                className={cn(
+                  "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider",
+                  DIFFICULTY_STYLES[shot.difficulty],
+                )}
+              >
+                {shot.difficulty}
+              </span>
+              <DrilledToggle shotId={shot.id} />
+            </div>
           </div>
         </div>
       </header>
@@ -84,6 +89,8 @@ export default async function ShotDetailPage({
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
           <div className="space-y-6">
             <PoolTable shot={shot} interactive />
+
+            <ShotVideoBlock video={videoFor(shot)} />
 
             <div className="surface p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
