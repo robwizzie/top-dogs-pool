@@ -40,6 +40,8 @@ export type KinisterShot = {
   cueBallPath: DiamondCoord[];
   /** Optional object-ball waypoints (e.g. banks). If omitted, OB rolls to targetPocket. */
   objectBallPath?: DiamondCoord[];
+  /** Additional balls on the table for context (multi-ball drills). Rendered statically — they don't move with the animation. */
+  otherBalls?: DiamondCoord[];
   /** One-sentence setup blurb. */
   description: string;
   technique: string;
@@ -915,15 +917,22 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Run 6",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 1.5, y: 2 },
-    objectBall: { x: 1, y: 0.5 },
+    cueBall: { x: 1.5, y: 1.8 },
+    objectBall: { x: 0.4, y: 0.6 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0.5, y: 1.5 },
-      { x: 2, y: 2 },
+      { x: 0.5, y: 1 },
+      { x: 1.8, y: 1.6 },
+    ],
+    otherBalls: [
+      { x: 0.4, y: 1.5 },
+      { x: 0.4, y: 2.2 },
+      { x: 1.3, y: 0.5 },
+      { x: 1.9, y: 0.4 },
+      { x: 2.6, y: 0.4 },
     ],
     description:
-      "Place six object balls clustered near the corner pocket. Run them one at a time, with the cue ball cycling through small position moves between each shot. The whole drill stays in the head end of the table.",
+      "Six object balls clustered around the corner pocket and the head end of the right rail. Run them one at a time, with the cue ball cycling through small position moves between each shot. The whole drill stays in the head end of the table.",
     technique:
       "Soft touch, minimal english. Each shot is short and the cue ball moves only a diamond or two between balls.",
     commonMistakes: [

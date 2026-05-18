@@ -274,6 +274,31 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
             />
           )}
 
+          {/* Other balls on the table (static — multi-ball drill context) */}
+          {shot.otherBalls?.map((b, i) => {
+            const p = toSvg(b);
+            return (
+              <g key={`other-${i}`}>
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={BALL_R}
+                  fill="url(#ob-grad)"
+                  stroke="rgba(0,0,0,0.35)"
+                  strokeWidth={0.8}
+                  opacity={0.75}
+                />
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={BALL_R * 0.45}
+                  fill="#fff"
+                  opacity={0.75}
+                />
+              </g>
+            );
+          })}
+
           {/* Object ball */}
           <g>
             <circle
