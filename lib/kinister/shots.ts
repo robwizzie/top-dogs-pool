@@ -573,139 +573,153 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       "Reading natural rebound angles without relying on english.",
   },
   {
-    id: "thin-side-cut",
+    id: "pats-favorite",
     number: 15,
-    name: "Thin Side-Pocket Cut",
-    shortName: "Thin Side",
-    series: "60 Minute Workout · Vol. 1",
+    name: "Pat's Favorite",
+    shortName: "Pat's Favorite",
+    series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 2, y: 0.5 },
-    objectBall: { x: 4, y: 1.7 },
-    targetPocket: "ML",
-    cueBallPath: [{ x: 5.5, y: 3.5 }],
+    cueBall: { x: 3, y: 0.3 },
+    objectBall: { x: 1.5, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 2.5 },
+      { x: 3, y: 4 },
+      { x: 4, y: 3.3 },
+    ],
     description:
-      "Object ball near the side pocket with significant angle; cue ball up-table on the opposite side. Thin cut into the side.",
+      "Pat's go-to shape shot. Cut the OB into the corner from the rail line and send the cue ball off the short rail and the far long rail to land near the side pocket on the opposite side of the table.",
     technique:
-      "Half-ball or thinner cut; speed control critical (sides are easy to scratch on).",
+      "Running english, medium pace. Two rails wrap the CB around to the far side pocket area.",
+    commonMistakes: [
+      "Wrong english → second rail rebound dies short",
+      "Too much pace → CB grabs a third rail and overshoots",
+    ],
+    tips: [
+      "Pick the far side-pocket landing zone before stroking",
+      "Running english is the constant — pace dictates landing distance",
+    ],
+    teaches:
+      "Two-rail wrap shape — the bread-and-butter position route Pat uses for the next ball.",
+  },
+  {
+    id: "two-rails-top-middle",
+    number: 16,
+    name: "Two Rails — Middle of Top Table",
+    shortName: "2 Rails (Top)",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 5, y: 2 },
+    objectBall: { x: 2, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 2, y: 4 },
+      { x: 0.3, y: 2.5 },
+      { x: 1.5, y: 2 },
+    ],
+    description:
+      "Cut the OB into the corner and bring the cue ball back two rails — far long rail, then short rail — to land in the middle of the top (head) end of the table.",
+    technique:
+      "Stun with running english, medium pace. The two-rail loop drops the CB into the upper-middle zone for the next shot.",
+    commonMistakes: [
+      "Pace wrong → CB lands at the wrong end of the head area",
+      "English wrong → second rebound shoots into a corner",
+    ],
+    tips: [
+      "Picture the head-end landing zone as a small carpet — aim to land on it",
+      "Running english keeps both rebounds open",
+    ],
+    teaches:
+      "Two-rail control landing specifically in the head end of the table.",
+  },
+  {
+    id: "speed-control-no-rails",
+    number: 17,
+    name: "Speed Control — No Long Rails",
+    shortName: "Speed Control",
+    series: "Top Dogs Workout",
+    difficulty: "Foundational",
+    cueBall: { x: 2, y: 1.5 },
+    objectBall: { x: 0.5, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 6, y: 0.6 }],
+    description:
+      "Tight cut into the corner; cue ball rolls down-table parallel to the long rail and stops without ever touching a long rail. Pure speed control drill.",
+    technique:
+      "Soft follow, dead center. Don't use the long rail — the only variable that matters is pace.",
+    commonMistakes: [
+      "Touching the long rail — disqualifies the rep",
+      "Hitting too hard and reaching the foot rail",
+      "Adding unintended english that drifts CB into a rail",
+    ],
+    tips: [
+      "Pick the exact resting spot down-table before stroking",
+      "Same stroke, every rep — only pace changes",
+    ],
+    teaches:
+      "Pure speed calibration without rail help. Exposes any english creep in your stroke.",
+  },
+  {
+    id: "three-rail-draw",
+    number: 18,
+    name: "Three-Rail Draw",
+    shortName: "3 Rail Draw",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 2, y: 2 },
+    objectBall: { x: 1, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 3.5 },
+      { x: 3, y: 4 },
+      { x: 5, y: 0 },
+      { x: 6, y: 0.5 },
+    ],
+    description:
+      "Pocket the OB in the corner with draw and send the cue ball three rails — short, far long, near long — ending down by the foot end of the right rail.",
+    technique:
+      "Low draw plus running english, firm pace. The draw spin drives the multi-rail path.",
+    commonMistakes: [
+      "Not enough draw → CB stops at one or two rails",
+      "Wrong english angle → CB pattern collapses",
+      "Cue elevation → curve",
+    ],
+    tips: [
+      "Pick the third-rail target diamond first, then work backward",
+      "Draw and english are both required — calibrate each axis alone first",
+    ],
+    teaches:
+      "Three-rail draw shape — sustained pattern across the full table.",
+  },
+  {
+    id: "side-pocket-cut-to-top",
+    number: 19,
+    name: "Side Pocket Cut — CB to Top",
+    shortName: "Side to Top",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 4, y: 2.5 },
+    objectBall: { x: 4, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 4.2, y: 0 },
+      { x: 1.5, y: 2 },
+    ],
+    description:
+      "Straight-in cut to the side pocket. After contact the cue ball nips the near long rail and floats diagonally back to the upper middle of the table.",
+    technique:
+      "Stun with a touch of follow; medium pace. The tangent walks the CB into a clean rail-and-out for upper-middle shape.",
     commonMistakes: [
       "Scratching in the opposite side pocket",
-      "Over-cutting due to perspective on the side",
+      "Too hard → CB picks up extra rails",
+      "Adding english that throws the OB off line into the side",
     ],
     tips: [
-      "Pick a precise contact point — side pockets are unforgiving",
-      "A touch of outside english can widen the angle if needed",
-    ],
-    teaches: "Thin side-pocket cuts and scratch awareness.",
-  },
-  {
-    id: "force-follow",
-    number: 16,
-    name: "Force-Follow Shot",
-    shortName: "Force-Follow",
-    series: "Shotmakers Workout · Vol. 18",
-    difficulty: "Advanced",
-    cueBall: { x: 6, y: 1 },
-    objectBall: { x: 4, y: 1.5 },
-    targetPocket: "TL",
-    cueBallPath: [
-      { x: 2, y: 3.5 },
-      { x: 4, y: 2.5 },
-    ],
-    description:
-      "Cut shot where the cue ball must continue strongly forward — overcoming the tangent — to reach position after multiple rails.",
-    technique:
-      "Max top, firm-to-hard pace, full follow-through. The topspin overrides the natural tangent line.",
-    commonMistakes: [
-      "Confusing it with stun-follow",
-      "Decelerating and losing the force aspect",
-    ],
-    tips: [
-      "Commit to the stroke speed",
-      "Top tip plus acceleration — both are required",
+      "Pick the precise contact point — side pockets are unforgiving",
+      "Soft, smooth stroke; let the tangent line do the work",
     ],
     teaches:
-      "When and how to override the tangent line through pure topspin and pace.",
-  },
-  {
-    id: "wagon-wheel",
-    number: 17,
-    name: "Wagon Wheel Position",
-    shortName: "Wagon Wheel",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
-    description:
-      "OB on the foot spot; CB at center. Six target zones around the table for the cue-ball landing. Cycle through follow, draw, stun — with and without english — to hit each zone.",
-    technique:
-      "Vary spin and speed to land the cue ball in each numbered target.",
-    commonMistakes: [
-      "Mixing axes (spin and follow) inconsistently",
-      "Inconsistent speed across reps",
-    ],
-    tips: [
-      "Do all six zones in order, every session",
-      "Score yourself out of 6 — track progress",
-    ],
-    teaches:
-      "Full vocabulary of cue-ball control off a single shot. The 'one shot, every position' principle.",
-  },
-  {
-    id: "back-up-draw",
-    number: 18,
-    name: "Back-Up Draw Position",
-    shortName: "Back-Up Draw",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Advanced",
-    cueBall: { x: 5, y: 2 },
-    objectBall: { x: 6.5, y: 1 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 2, y: 2 }],
-    description:
-      "Slight cut to the corner; cue ball must draw back across the table to land near the head rail for next-ball shape.",
-    technique:
-      "Smooth draw, no english needed, pace dictates distance.",
-    commonMistakes: [
-      "Not enough acceleration → CB stops mid-table",
-      "Accidental english → CB curves off line",
-    ],
-    tips: [
-      "Pause at the back of the stroke",
-      "Imagine a 'target carpet' on the head end and land there",
-    ],
-    teaches:
-      "Distance draw position — the 'go nowhere or go far' decision.",
-  },
-  {
-    id: "one-rail-across",
-    number: 19,
-    name: "One-Rail Position",
-    shortName: "One-Rail",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
-    cueBall: { x: 3, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [
-      { x: 7, y: 0 },
-      { x: 5, y: 2.5 },
-    ],
-    description:
-      "Near-straight shot where the cue ball uses a single rail to land in a specific zone on the opposite side.",
-    technique:
-      "Stun-follow with a touch of english to widen or shorten the rebound.",
-    commonMistakes: [
-      "Misjudging rebound by ignoring english",
-      "Double-railing from too much pace",
-    ],
-    tips: [
-      "Use the mirror principle — angle in equals angle out",
-      "Outside english extends, inside shortens",
-    ],
-    teaches:
-      "Single-rail planning plus english tuning.",
+      "Side-pocket cut paired with single-rail tangent shape into the upper middle.",
   },
   {
     id: "two-rail-kick",
