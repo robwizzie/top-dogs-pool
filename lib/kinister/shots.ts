@@ -92,10 +92,7 @@ const KINISTER_VIDEOS = {
 } as const satisfies Record<string, ShotVideo>;
 
 /** Per-shot override: use a specific video instead of the series default. */
-const SHOT_VIDEO_OVERRIDES: Record<string, keyof typeof KINISTER_VIDEOS> = {
-  "force-follow": "shotmakersB",
-  combination: "shotmakersC",
-};
+const SHOT_VIDEO_OVERRIDES: Record<string, keyof typeof KINISTER_VIDEOS> = {};
 
 /** Per-shot start-time overrides (seconds). Fill in as we timestamp them. */
 const SHOT_START_SECONDS: Record<string, number> = {};
@@ -139,734 +136,821 @@ export function watchUrl(video: ShotVideo): string {
 
 export const KINISTER_SHOTS: KinisterShot[] = [
   {
-    id: "replace-shot",
+    id: "basic-stop-shot",
     number: 1,
-    name: "The Replace Shot",
-    shortName: "Replace",
-    series: "60 Minute Workout · Vol. 1",
+    name: "Basic Stop Shot",
+    shortName: "Stop Shot",
+    series: "Top Dogs Workout",
     difficulty: "Foundational",
-    cueBall: { x: 6, y: 0.25 },
-    objectBall: { x: 2, y: 0.25 },
+    cueBall: { x: 4, y: 0.3 },
+    objectBall: { x: 1.5, y: 0.3 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 2, y: 0.25 }],
+    cueBallPath: [{ x: 1.5, y: 0.3 }],
     description:
-      "Cue ball and object ball sit on the same long rail, each about a half-ball off the cushion, at opposite second diamonds. Pocket the OB in the far corner and roll the cue ball forward so it stops exactly where the OB started.",
+      "Cue ball and object ball on the same long rail, OB sitting just below the corner pocket. Pocket the OB and freeze the cue ball where the OB started — CB takes the place of OBJ.",
     technique:
-      "Soft-to-medium follow, dead center on the horizontal, slightly above center vertically. This is not a stop shot — the cue ball must roll forward and replace.",
+      "Dead-center hit, medium pace. No follow, no draw — the cue ball must stop on contact.",
     commonMistakes: [
-      "Hitting too hard and rolling past the replacement spot",
-      "Drifting off the rail line from unintended side spin",
-      "Treating it like a stop shot instead of a follow",
+      "Hitting above center → CB rolls forward past the OB spot",
+      "Decelerating into the ball → unintended draw",
+      "Adding english that walks the CB off the rail line",
     ],
     tips: [
-      "Pick the exact replacement spot as your target before you stroke",
-      "Stroke straight through — any side spin shows immediately on a path that hugs the cushion",
+      "Pick the OB's spot as your CB resting target before you stroke",
+      "Match speed to distance — just enough to send the OB to the pocket cleanly",
     ],
     teaches:
-      "Perfectly straight cueing, controlled forward roll, and speed touch. Kinister called it the most important shot in pool because it exposes every stroke flaw.",
+      "Pure center-ball contact and stop-shot speed control. The bedrock of every position play.",
   },
   {
-    id: "diagonal-draw",
+    id: "pocket-speed-diagonal",
     number: 2,
-    name: "Diagonal Draw",
-    shortName: "Diagonal Draw",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
-    cueBall: { x: 6, y: 1 },
-    objectBall: { x: 2, y: 1 },
-    targetPocket: "TL",
-    cueBallPath: [{ x: 6, y: 1 }],
+    name: "Pocket Speed Diagonal",
+    shortName: "Pocket Speed",
+    series: "Top Dogs Workout",
+    difficulty: "Foundational",
+    cueBall: { x: 6, y: 1.8 },
+    objectBall: { x: 2, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 1.5, y: 0.5 }],
     description:
-      "OB sits up near the head corner; CB sits near the diagonally opposite foot corner. Shoot the OB the length of the table into the head corner and draw the cue ball all the way back to the starting CB area.",
+      "Diagonal shot from the lower half of the table up through center to the far corner. Pocket the OB at pocket speed — slow enough that even a partially blocked pocket (a chapstick on the edge) still accepts the ball.",
     technique:
-      "Strong low draw, level cue, full follow-through. A square hit on the object ball is critical at this distance.",
+      "Straight through center, soft pace. The slower you hit it, the larger the pocket plays.",
     commonMistakes: [
-      "Jacking the butt up and miscueing",
-      "Throwing the OB off line with unintended english",
-      "Not enough draw — the cue ball stalls mid-table",
+      "Hitting too hard — pocket shrinks and the OB rattles",
+      "Steering the cue off the contact line",
+    ],
+    tips: [
+      "Practice with a chapstick blocking part of the pocket edge to train accuracy",
+      "Pocket speed is the goal — minimum speed that still rolls the OB in",
+    ],
+    teaches:
+      "Pocket speed and target precision — slower speeds expose any aim error.",
+  },
+  {
+    id: "power-draw-full-length",
+    number: 2.5,
+    name: "Power Draw — Full Length",
+    shortName: "Power Draw",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 7, y: 3.5 },
+    objectBall: { x: 3, y: 1 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 7, y: 3.5 }],
+    description:
+      "Cue ball near the corner pocket on the foot end; OB sits diagonally up-table. Pocket the OB in the far corner and draw the cue ball the full length of the table back to where it started.",
+    technique:
+      "Low draw, level cue, firm accelerating stroke. A square, full hit on the OB is critical at this distance.",
+    commonMistakes: [
+      "Jacking the butt up → miscue or curve",
+      "Decelerating → draw dies before the cue ball makes it back",
+      "Unintended english → OB drifts off line",
     ],
     tips: [
       "Keep the cue as level as possible and accelerate smoothly",
-      "Aim for the OB first — don't try to 'help' the draw with body english",
+      "Aim the OB first — don't try to body-english the draw",
     ],
     teaches:
-      "Long draw under pressure. A true stroke check on a 9-foot table.",
+      "Long-distance draw under control — a true stroke check.",
   },
   {
-    id: "mighty-x",
+    id: "inside-english-return",
     number: 3,
-    name: "The Mighty X",
-    shortName: "Mighty X",
-    series: "Vol. 12 · The Mighty X",
-    difficulty: "Foundational",
-    cueBall: { x: 6, y: 1 },
-    objectBall: { x: 2, y: 3 },
-    targetPocket: "TL",
-    cueBallPath: [{ x: 4, y: 2 }],
-    description:
-      "Place CB and OB on the long diagonal — OB near one corner, CB near the diagonally opposite corner. Shoot straight in. Variants include stop, replace, follow, or draw back to the center spot.",
-    technique:
-      "Identical pre-shot routine every rep. One practice stroke (or none). Focus on the tip's arrival point at the cue ball, not the OB.",
-    commonMistakes: [
-      "Excessive practice strokes that erode commitment",
-      "Body movement during the stroke",
-      "Inconsistent address each rep",
-    ],
-    tips: [
-      "Use the same pre-shot routine every time",
-      "Lock vision center on the contact point before pulling the trigger",
-    ],
-    teaches:
-      "The 'address' — body alignment, vision center, level cue, straight stroke. Kinister's signature stance and stroke trainer.",
-  },
-  {
-    id: "long-stop-shot",
-    number: 4,
-    name: "Long Straight-In Stop Shot",
-    shortName: "Long Stop",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Foundational",
-    cueBall: { x: 2, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
-    description:
-      "Cue ball on the head spot, object ball on the foot spot, shot down into a foot-corner pocket. The cue ball must freeze at the moment of contact.",
-    technique:
-      "Center-ball, medium-firm speed, perfect contact point. Cue ball stops dead on impact.",
-    commonMistakes: [
-      "Hitting too soft — the cue ball rolls forward",
-      "Unintended draw — the cue ball pulls back",
-      "Adding body english on a long shot",
-    ],
-    tips: [
-      "Pace = enough to send the OB to the pocket plus half a table",
-      "Watch the tip strike point, not the OB after the stroke",
-    ],
-    teaches:
-      "Center-ball contact and speed calibration over distance — the bedrock of all position play.",
-  },
-  {
-    id: "spot-shot",
-    number: 5,
-    name: "Spot Shot",
-    shortName: "Spot Shot",
-    series: "60 Minute Workout · Vol. 1",
+    name: "Inside English — Return to Center",
+    shortName: "Inside English",
+    series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 2, y: 0.5 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BL",
-    cueBallPath: [{ x: 4, y: 2 }],
-    description:
-      "Classic spot shot: object ball on the foot spot, cue ball just behind the head string near one side rail. Cut the OB to the opposite far corner.",
-    technique:
-      "Half-ball hit; can be played as a stun (90° tangent), with running english, or as a stop-shot variant.",
-    commonMistakes: [
-      "Over-cutting from poor sighting at distance",
-      "Scratching in the side or opposite corner",
-      "Adding english that throws the object ball",
-    ],
-    tips: [
-      "Lock in the contact point first, then aim the cue ball to that point",
-      "Choose a tangent line that avoids scratches",
-    ],
-    teaches:
-      "Cut-shot fundamentals at distance plus safe-zone cue-ball control. A universal pool benchmark.",
-  },
-  {
-    id: "stun-side-cut",
-    number: 6,
-    name: "Stun Side-Pocket Cut",
-    shortName: "Stun Cut",
-    series: "Shotmakers Workout · Vol. 18",
-    difficulty: "Intermediate",
-    cueBall: { x: 5, y: 1 },
-    objectBall: { x: 4.2, y: 1.5 },
-    targetPocket: "ML",
-    cueBallPath: [{ x: 6.5, y: 3 }],
-    description:
-      "Object ball just off the side pocket; cue ball cuts it in so the tangent line carries the cue ball cleanly across the table.",
-    technique:
-      "Stun — just above center to neutralize natural roll. Cue ball must depart along the 90° tangent.",
-    commonMistakes: [
-      "Letting the cue ball roll, which kills the tangent path",
-      "Aiming the OB to the pocket without planning the cue-ball tangent",
-    ],
-    tips: [
-      "Visualize the tangent line before the stroke",
-      "Calibrate the exact tip height that kills roll at that distance",
-    ],
-    teaches:
-      "Tangent-line discipline and stun cueing — the gateway to safe position play.",
-  },
-  {
-    id: "stun-follow",
-    number: 7,
-    name: "Stun-Follow",
-    shortName: "Stun-Follow",
-    series: "Shotmakers Workout · Vol. 18",
-    difficulty: "Advanced",
-    cueBall: { x: 4, y: 1 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [
-      { x: 5, y: 3 },
-      { x: 6.5, y: 3.5 },
-    ],
-    description:
-      "Cut shot to the corner where the cue ball goes along the tangent first, then curls forward to get position.",
-    technique:
-      "Slightly above center with a firm stroke — enough topspin to re-engage after the tangent leg.",
-    commonMistakes: [
-      "Hitting too high → full follow, no tangent",
-      "Hitting center → pure stun, no forward bend",
-    ],
-    tips: [
-      "Practice the narrow tip-height window between center and follow",
-      "Harder pace lengthens the tangent leg before the forward curl",
-    ],
-    teaches:
-      "Refined cue-ball control for routes that pure follow or pure stun can't reach.",
-  },
-  {
-    id: "stun-draw",
-    number: 8,
-    name: "Stun-Draw",
-    shortName: "Stun-Draw",
-    series: "Shotmakers Workout · Vol. 18",
-    difficulty: "Advanced",
-    cueBall: { x: 4, y: 1 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [
-      { x: 5, y: 3 },
-      { x: 3.5, y: 2.5 },
-    ],
-    description:
-      "Same shape as stun-follow, but the cue ball travels the tangent first, then bends backward.",
-    technique:
-      "Slightly below center, firm stroke. Just enough draw that it kicks in after the tangent leg.",
-    commonMistakes: [
-      "Going too low → full draw immediately, no tangent leg",
-      "Decelerating → no draw at all",
-    ],
-    tips: [
-      "Accelerate through the ball",
-      "Pace and tip height together control how far the cue ball travels before bending",
-    ],
-    teaches:
-      "Three-dimensional cue-ball shape — tangent for distance, draw for the bend back.",
-  },
-  {
-    id: "long-follow",
-    number: 9,
-    name: "Long Follow Shot",
-    shortName: "Long Follow",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
-    cueBall: { x: 6, y: 2 },
-    objectBall: { x: 2, y: 2 },
+    cueBall: { x: 3, y: 0.3 },
+    objectBall: { x: 1, y: 0.3 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 1, y: 1 }],
-    description:
-      "Long straight-in (or near-straight) shot up table where the cue ball must follow forward a controlled distance after pocketing.",
-    technique:
-      "High follow, smooth medium pace; cue ball picks up natural topspin.",
-    commonMistakes: [
-      "Stabbing the cue — loses forward roll",
-      "Over-hitting and scratching the head rail",
-    ],
-    tips: [
-      "Long, fluid follow-through",
-      "About 1.5 tips above center for controlled follow distance",
-    ],
-    teaches: "Speed control with topspin over distance.",
-  },
-  {
-    id: "long-draw",
-    number: 10,
-    name: "Long Draw Shot",
-    shortName: "Long Draw",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Advanced",
-    cueBall: { x: 6, y: 2 },
-    objectBall: { x: 2, y: 2 },
-    targetPocket: "TR",
-    cueBallPath: [{ x: 7, y: 2.5 }],
-    description:
-      "Same alignment as the long follow — but the cue ball draws back a controlled distance after contact.",
-    technique:
-      "Low draw, level cue, smooth acceleration. Pace dictates draw distance.",
-    commonMistakes: ["Jabbing → miscue", "Lifting the butt → curve and skid"],
-    tips: [
-      "Keep the cue as level as possible",
-      "About 1.5 tips below center and let the stroke do the work",
-    ],
-    teaches:
-      "Distance draw under control — the litmus test of stroke quality.",
-  },
-  {
-    id: "around-the-table-follow",
-    number: 11,
-    name: "Around the Table — Follow",
-    shortName: "Around (Follow)",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Advanced",
-    cueBall: { x: 6, y: 1.5 },
-    objectBall: { x: 6.5, y: 0.5 },
-    targetPocket: "BR",
     cueBallPath: [
-      { x: 8, y: 2 },
-      { x: 6, y: 4 },
-      { x: 2, y: 3 },
+      { x: 0, y: 2 },
       { x: 4, y: 2 },
     ],
     description:
-      "Cut the OB into the corner, then send the cue ball around three rails for position on a hypothetical next ball at center table.",
+      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs off the short rail and returns to the center of the table for shape.",
     technique:
-      "Follow with a touch of running english; firm-medium pace.",
+      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across to center.",
     commonMistakes: [
-      "Wrong english kills the rebound angle",
-      "Miscueing on the rail-jaw cut",
+      "Too much english — CB throws the OB off the rail",
+      "Wrong english — outside spin shortens the rebound and CB stays near the rail",
+      "Hitting too hard and over-running center",
     ],
     tips: [
-      "Pick the second-rail target diamond first, then work backward to the contact point",
-      "Running english extends the path; reverse shortens it",
+      "Inside english on a rail-line cut holds the OB and widens the CB rebound",
+      "Visualize the CB's rebound point on the short rail before stroking",
     ],
     teaches:
-      "Multi-rail position planning and english effects on rebound angles.",
+      "Using inside english to recover position back to the center of the table.",
   },
   {
-    id: "around-the-table-draw",
-    number: 12,
-    name: "Around the Table — Draw",
-    shortName: "Around (Draw)",
-    series: "60 Minute Workout · Vol. 1",
+    id: "three-rail-middle",
+    number: 4,
+    name: "Three Rails to Middle",
+    shortName: "3 Rails",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 0.3 },
+    objectBall: { x: 1.5, y: 0.3 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 2.5 },
+      { x: 3, y: 4 },
+      { x: 7, y: 2.5 },
+      { x: 4, y: 3 },
+    ],
+    description:
+      "Same rail-line setup as the stop shot, but send the cue ball three rails — short rail, far long rail, foot rail — and land it in the middle of the table.",
+    technique:
+      "Above-center with running english, firm pace. The english keeps the rebound angles open across all three rails.",
+    commonMistakes: [
+      "Not enough pace — CB dies before the third rail",
+      "Wrong english kills one of the rebound angles",
+      "Too thick a hit pulls the OB off line",
+    ],
+    tips: [
+      "Pick the first-rail target diamond first, then work backward to the contact point",
+      "Running english extends each rebound — calibrate it before adding pace",
+    ],
+    teaches:
+      "Multi-rail position planning and how english stacks across three rails.",
+  },
+  {
+    id: "two-rail-middle",
+    number: 5,
+    name: "Two Rails to Middle",
+    shortName: "2 Rails",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 2, y: 2.5 },
+    objectBall: { x: 1, y: 1 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 0.3 },
+      { x: 2.2, y: 0 },
+      { x: 4, y: 1.8 },
+    ],
+    description:
+      "Pocket the OB in the corner and take two rails — short rail then long rail — back to the middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
+    technique:
+      "Stun-follow with a touch of running english. Medium pace — enough to reach center after two rails without rolling past.",
+    commonMistakes: [
+      "Too much pace → CB grabs a third rail and drifts onto a scratch line",
+      "Wrong english kills the second rebound and CB dies on the rail",
+      "Landing on a line to the opposite corner or a side pocket",
+    ],
+    tips: [
+      "Pick your final resting spot first, then work the second-rail target backward",
+      "Stay off the scratch lines — center of table beats a pretty path that leaves you on a sell",
+    ],
+    teaches:
+      "Two-rail position control with scratch-aware landing zones.",
+  },
+  {
+    id: "draw-to-center",
+    number: 6,
+    name: "Draw to Center",
+    shortName: "Draw Center",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 4, y: 1.8 },
+    objectBall: { x: 2, y: 0.8 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 4, y: 1.8 }],
+    description:
+      "Cut the OB into the corner and draw the cue ball back to the center of the table — CB ends up exactly where it started.",
+    technique:
+      "One-third tip low, smooth stroke. Don't use too much low — just enough draw to bring the cue ball back to where it started.",
+    commonMistakes: [
+      "Too much low — CB pulls past center and lands on a scratch line",
+      "Jacking the cue up → curve and miscue",
+      "Decelerating at the ball → no draw at all",
+    ],
+    tips: [
+      "Calibrate exactly the one-third-tip mark on your cue",
+      "Pace matters as much as tip height — accelerate smoothly through",
+    ],
+    teaches:
+      "Controlled draw distance — not maximum draw, but precise distance to a target.",
+  },
+  {
+    id: "soft-english-across",
+    number: 7,
+    name: "Soft English Across",
+    shortName: "Soft English",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 4, y: 1.5 },
+    objectBall: { x: 1, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 1, y: 3.5 }],
+    description:
+      "Variation of the draw-to-center shot. Cut the OB into the corner and float the cue ball straight across the table to the opposite long rail using just a whisper of english.",
+    technique:
+      "Very little english — no more than one-eighth of a tip. Soft stun pace; the english widens the tangent line just enough to send the CB cleanly across.",
+    commonMistakes: [
+      "Too much english — CB throws the OB or swerves off line",
+      "Confusing this with the draw shot — this is a stun/float, not a draw",
+    ],
+    tips: [
+      "Calibrate the 1/8-tip mark — most players use far too much spin here",
+      "Soft, smooth stroke; the english does the work",
+    ],
+    teaches:
+      "Minimal-english finesse — when a fraction of a tip is the right answer.",
+  },
+  {
+    id: "two-rail-no-third",
+    number: 8,
+    name: "Two Rails — No Third",
+    shortName: "2 Rails (No 3rd)",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 2 },
+    objectBall: { x: 1, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 1.5 },
+      { x: 1, y: 4 },
+      { x: 1, y: 0.8 },
+    ],
+    description:
+      "Pocket the OB in the corner; cue ball comes off the short rail, then the far long rail, and dies before it can pick up a third rail. Lands back near where the OB was.",
+    technique:
+      "Soft stun with a touch of inside english. Pace is the key — just enough to complete two rails without grabbing a third.",
+    commonMistakes: [
+      "Too much pace → CB picks up the third rail and lands wherever",
+      "Wrong english changes both rebound angles",
+    ],
+    tips: [
+      "Speed control matters more than english here — calibrate pace first",
+      "Picture the dying point on the cloth before you stroke",
+    ],
+    teaches:
+      "Speed control for stopping the cue ball on a specific rail count.",
+  },
+  {
+    id: "four-rail-zig-zag",
+    number: 9,
+    name: "Four Rails — Zig-Zag",
+    shortName: "4 Rails",
+    series: "Top Dogs Workout",
     difficulty: "Advanced",
     cueBall: { x: 2, y: 1.5 },
     objectBall: { x: 1, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 4, y: 0 },
-      { x: 7, y: 2 },
-      { x: 5, y: 4 },
+      { x: 0, y: 2 },
+      { x: 1.2, y: 4 },
+      { x: 0, y: 2.5 },
+      { x: 1.5, y: 0 },
+      { x: 0.8, y: 1.5 },
+    ],
+    description:
+      "Same setup as the two-rail version but with much more pace and english. CB zig-zags between the head rail and the two long rails for at least four rails. A fifth rail is fine.",
+    technique:
+      "Running english, firm pace. The english keeps the rebound angles open across every rail so the CB keeps traveling instead of dying.",
+    commonMistakes: [
+      "Not enough pace → CB stops at two or three rails",
+      "Wrong english angle → CB exits the zig-zag pattern early",
+    ],
+    tips: [
+      "Calibrate the english and pace together — both required for the chain",
+      "If the fifth rail comes, that's fine — the goal is at least four",
+    ],
+    teaches:
+      "Sustained zig-zag rebounds — feeling the english and pace required to keep the CB alive across many rails.",
+  },
+  {
+    id: "half-table-draw",
+    number: 10,
+    name: "Half-Table Draw",
+    shortName: "Half Draw",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 4, y: 1.5 },
+    objectBall: { x: 1.5, y: 0.8 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 4, y: 1.5 }],
+    description:
+      "Mid-distance draw shot. Pocket the OB in the corner and draw the cue ball back exactly half a table to its starting position.",
+    technique:
+      "Low draw, level cue, smooth pace. Less power than the full-length version — calibrated for half-table distance.",
+    commonMistakes: [
+      "Too much pace → CB blows past the start spot",
+      "Decelerating → draw dies short",
+      "Cue elevation → curve",
+    ],
+    tips: [
+      "Pick your exact resting target before the stroke",
+      "Pace dictates draw distance — keep tip height consistent",
+    ],
+    teaches:
+      "Calibrated draw distance — not maximum, not minimum, a specific target.",
+  },
+  {
+    id: "side-pocket-six-pack",
+    number: 11,
+    name: "Six Balls into the Side",
+    shortName: "Side 6-Pack",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 4, y: 2 },
+    objectBall: { x: 4, y: 0.5 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0, y: 1.5 },
+      { x: 3, y: 4 },
+      { x: 7, y: 4 },
+      { x: 8, y: 2.5 },
       { x: 4, y: 2 },
     ],
     description:
-      "Mirror of the follow version. Cut the OB into the head corner, then draw the cue ball three rails for position.",
+      "Run six object balls one at a time into the side pocket. After each ball, the cue ball must return to the center of the table for the next setup.",
     technique:
-      "Low draw plus running english, level cue, firm pace.",
+      "Smooth cut into the side; cue ball takes a multi-rail loop and dies in the center each rep.",
     commonMistakes: [
-      "Insufficient draw → only one or two rails",
-      "Cue elevation causing curve",
+      "Over-hitting → CB blows past center on the return",
+      "Wrong english → loop pattern collapses early",
+      "Treating each ball differently — the goal is repeatability",
     ],
     tips: [
-      "Calibrate english separately from draw — practice each axis alone first",
-      "Aim for a specific second-rail diamond as your target",
+      "Find a pace and english combo that consistently returns to center, then repeat it",
+      "Score the drill — out of six — and track progress across sessions",
     ],
     teaches:
-      "Reverse-direction multi-rail shape via draw plus english.",
+      "Repeatable side-pocket pocketing with consistent CB position. The drill that builds break-and-run discipline.",
   },
   {
-    id: "rail-cut",
+    id: "right-english-to-center",
+    number: 12,
+    name: "Right English to Center",
+    shortName: "Right English",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 3, y: 1.8 },
+    objectBall: { x: 1, y: 1.2 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 4, y: 2 }],
+    description:
+      "Cut the OB into the corner using a half-tip of right english, then bring the cue ball back to the middle of the table.",
+    technique:
+      "Half cuetip of right english, smooth medium pace. The english widens the rebound just enough to swing back to center.",
+    commonMistakes: [
+      "Too much english → CB swings past center or throws the OB",
+      "No english → CB stays near the rail line instead of returning",
+    ],
+    tips: [
+      "Calibrate exactly the half-tip mark on your tip — it's the right english amount for most position shots like this",
+      "Pace matters as much as english — they tune the rebound angle together",
+    ],
+    teaches:
+      "Using a precise english amount (½ tip) to dial the cue ball into center of table.",
+  },
+  {
+    id: "three-rail-deflection",
     number: 13,
-    name: "Rail Cut Shot",
-    shortName: "Rail Cut",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
+    name: "Three Rails — High Left English",
+    shortName: "3 Rails (Deflection)",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
     cueBall: { x: 3, y: 2 },
-    objectBall: { x: 5.5, y: 0.2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 4, y: 3 }],
+    objectBall: { x: 1.5, y: 1.5 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 2.5 },
+      { x: 3, y: 4 },
+      { x: 0, y: 0.5 },
+      { x: 4, y: 2 },
+    ],
     description:
-      "Object ball frozen (or nearly) to the long rail; cue ball sits out in the table. Cut the OB down the rail into the corner.",
+      "Three rails back to the center of the table with high-left english. Use this shot to dial in how much cue deflection (squirt) you get on your stick.",
     technique:
-      "Aim to hit OB and rail simultaneously; stun stroke; cue ball exits perpendicular.",
+      "High left english, firm-medium pace. The combination of follow plus side spin and pace together cause deflection — aim slightly to compensate.",
     commonMistakes: [
-      "Aiming too thin → OB jaws",
-      "Aiming too full → throw into the rail and out",
-      "Inside english throwing the OB off the rail",
+      "Aiming at the contact point without compensating for deflection",
+      "Letting english slip during the stroke → inconsistent rebound",
     ],
     tips: [
-      "Aim the contact point at the inside edge of the OB's rail contact",
-      "Outside english helps hold the OB on the rail",
+      "Test the deflection on your cue first — every shaft squirts differently",
+      "High english plus running side keeps the CB alive across all three rails",
     ],
     teaches:
-      "Frozen-rail geometry and how english throws or holds the OB on the cushion.",
+      "Cue deflection awareness and how high+side english combine across multiple rails.",
   },
   {
-    id: "thin-side-cut",
+    id: "natural-angle-to-center",
     number: 14,
-    name: "Thin Side-Pocket Cut",
-    shortName: "Thin Side",
-    series: "60 Minute Workout · Vol. 1",
+    name: "Natural Angle to Center",
+    shortName: "Natural Center",
+    series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 2, y: 0.5 },
-    objectBall: { x: 4, y: 1.7 },
-    targetPocket: "ML",
-    cueBallPath: [{ x: 5.5, y: 3.5 }],
+    cueBall: { x: 3, y: 0.5 },
+    objectBall: { x: 1, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 3 },
+      { x: 4, y: 2.2 },
+    ],
     description:
-      "Object ball near the side pocket with significant angle; cue ball up-table on the opposite side. Thin cut into the side.",
+      "Rail-line cut into the corner; cue ball takes the natural angle off the short rail and lands in the center of the table.",
     technique:
-      "Half-ball or thinner cut; speed control critical (sides are easy to scratch on).",
+      "Center-ball or a touch of follow, medium pace. No forced english — let the natural mirror rebound do the work.",
+    commonMistakes: [
+      "Adding english that distorts the natural rebound",
+      "Too much pace → CB sails past center",
+    ],
+    tips: [
+      "Trust the mirror principle — angle in equals angle out at this pace",
+      "Soft, smooth stroke; the table does the work",
+    ],
+    teaches:
+      "Reading natural rebound angles without relying on english.",
+  },
+  {
+    id: "pats-favorite",
+    number: 15,
+    name: "Pat's Favorite",
+    shortName: "Pat's Favorite",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 3, y: 0.3 },
+    objectBall: { x: 1.5, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 2.5 },
+      { x: 3, y: 4 },
+      { x: 4, y: 3.3 },
+    ],
+    description:
+      "Pat's go-to shape shot. Cut the OB into the corner from the rail line and send the cue ball off the short rail and the far long rail to land near the side pocket on the opposite side of the table.",
+    technique:
+      "Running english, medium pace. Two rails wrap the CB around to the far side pocket area.",
+    commonMistakes: [
+      "Wrong english → second rail rebound dies short",
+      "Too much pace → CB grabs a third rail and overshoots",
+    ],
+    tips: [
+      "Pick the far side-pocket landing zone before stroking",
+      "Running english is the constant — pace dictates landing distance",
+    ],
+    teaches:
+      "Two-rail wrap shape — the bread-and-butter position route Pat uses for the next ball.",
+  },
+  {
+    id: "two-rails-top-middle",
+    number: 16,
+    name: "Two Rails — Middle of Top Table",
+    shortName: "2 Rails (Top)",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 5, y: 2 },
+    objectBall: { x: 2, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 2, y: 4 },
+      { x: 0.3, y: 2.5 },
+      { x: 1.5, y: 2 },
+    ],
+    description:
+      "Cut the OB into the corner and bring the cue ball back two rails — far long rail, then short rail — to land in the middle of the top (head) end of the table.",
+    technique:
+      "Stun with running english, medium pace. The two-rail loop drops the CB into the upper-middle zone for the next shot.",
+    commonMistakes: [
+      "Pace wrong → CB lands at the wrong end of the head area",
+      "English wrong → second rebound shoots into a corner",
+    ],
+    tips: [
+      "Picture the head-end landing zone as a small carpet — aim to land on it",
+      "Running english keeps both rebounds open",
+    ],
+    teaches:
+      "Two-rail control landing specifically in the head end of the table.",
+  },
+  {
+    id: "speed-control-no-rails",
+    number: 17,
+    name: "Speed Control — No Long Rails",
+    shortName: "Speed Control",
+    series: "Top Dogs Workout",
+    difficulty: "Foundational",
+    cueBall: { x: 2, y: 1.5 },
+    objectBall: { x: 0.5, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 6, y: 0.6 }],
+    description:
+      "Tight cut into the corner; cue ball rolls down-table parallel to the long rail and stops without ever touching a long rail. Pure speed control drill.",
+    technique:
+      "Soft follow, dead center. Don't use the long rail — the only variable that matters is pace.",
+    commonMistakes: [
+      "Touching the long rail — disqualifies the rep",
+      "Hitting too hard and reaching the foot rail",
+      "Adding unintended english that drifts CB into a rail",
+    ],
+    tips: [
+      "Pick the exact resting spot down-table before stroking",
+      "Same stroke, every rep — only pace changes",
+    ],
+    teaches:
+      "Pure speed calibration without rail help. Exposes any english creep in your stroke.",
+  },
+  {
+    id: "three-rail-draw",
+    number: 18,
+    name: "Three-Rail Draw",
+    shortName: "3 Rail Draw",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 2, y: 2 },
+    objectBall: { x: 1, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0, y: 3.5 },
+      { x: 3, y: 4 },
+      { x: 5, y: 0 },
+      { x: 6, y: 0.5 },
+    ],
+    description:
+      "Pocket the OB in the corner with draw and send the cue ball three rails — short, far long, near long — ending down by the foot end of the right rail.",
+    technique:
+      "Low draw plus running english, firm pace. The draw spin drives the multi-rail path.",
+    commonMistakes: [
+      "Not enough draw → CB stops at one or two rails",
+      "Wrong english angle → CB pattern collapses",
+      "Cue elevation → curve",
+    ],
+    tips: [
+      "Pick the third-rail target diamond first, then work backward",
+      "Draw and english are both required — calibrate each axis alone first",
+    ],
+    teaches:
+      "Three-rail draw shape — sustained pattern across the full table.",
+  },
+  {
+    id: "side-pocket-cut-to-top",
+    number: 19,
+    name: "Side Pocket Cut — CB to Top",
+    shortName: "Side to Top",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 4, y: 2.5 },
+    objectBall: { x: 4, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 4.2, y: 0 },
+      { x: 1.5, y: 2 },
+    ],
+    description:
+      "Straight-in cut to the side pocket. After contact the cue ball nips the near long rail and floats diagonally back to the upper middle of the table.",
+    technique:
+      "Stun with a touch of follow; medium pace. The tangent walks the CB into a clean rail-and-out for upper-middle shape.",
     commonMistakes: [
       "Scratching in the opposite side pocket",
-      "Over-cutting due to perspective on the side",
+      "Too hard → CB picks up extra rails",
+      "Adding english that throws the OB off line into the side",
     ],
     tips: [
-      "Pick a precise contact point — side pockets are unforgiving",
-      "A touch of outside english can widen the angle if needed",
-    ],
-    teaches: "Thin side-pocket cuts and scratch awareness.",
-  },
-  {
-    id: "force-follow",
-    number: 15,
-    name: "Force-Follow Shot",
-    shortName: "Force-Follow",
-    series: "Shotmakers Workout · Vol. 18",
-    difficulty: "Advanced",
-    cueBall: { x: 6, y: 1 },
-    objectBall: { x: 4, y: 1.5 },
-    targetPocket: "TL",
-    cueBallPath: [
-      { x: 2, y: 3.5 },
-      { x: 4, y: 2.5 },
-    ],
-    description:
-      "Cut shot where the cue ball must continue strongly forward — overcoming the tangent — to reach position after multiple rails.",
-    technique:
-      "Max top, firm-to-hard pace, full follow-through. The topspin overrides the natural tangent line.",
-    commonMistakes: [
-      "Confusing it with stun-follow",
-      "Decelerating and losing the force aspect",
-    ],
-    tips: [
-      "Commit to the stroke speed",
-      "Top tip plus acceleration — both are required",
+      "Pick the precise contact point — side pockets are unforgiving",
+      "Soft, smooth stroke; let the tangent line do the work",
     ],
     teaches:
-      "When and how to override the tangent line through pure topspin and pace.",
+      "Side-pocket cut paired with single-rail tangent shape into the upper middle.",
   },
   {
-    id: "wagon-wheel",
-    number: 16,
-    name: "Wagon Wheel Position",
-    shortName: "Wagon Wheel",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
-    description:
-      "OB on the foot spot; CB at center. Six target zones around the table for the cue-ball landing. Cycle through follow, draw, stun — with and without english — to hit each zone.",
-    technique:
-      "Vary spin and speed to land the cue ball in each numbered target.",
-    commonMistakes: [
-      "Mixing axes (spin and follow) inconsistently",
-      "Inconsistent speed across reps",
-    ],
-    tips: [
-      "Do all six zones in order, every session",
-      "Score yourself out of 6 — track progress",
-    ],
-    teaches:
-      "Full vocabulary of cue-ball control off a single shot. The 'one shot, every position' principle.",
-  },
-  {
-    id: "back-up-draw",
-    number: 17,
-    name: "Back-Up Draw Position",
-    shortName: "Back-Up Draw",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Advanced",
-    cueBall: { x: 5, y: 2 },
-    objectBall: { x: 6.5, y: 1 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 2, y: 2 }],
-    description:
-      "Slight cut to the corner; cue ball must draw back across the table to land near the head rail for next-ball shape.",
-    technique:
-      "Smooth draw, no english needed, pace dictates distance.",
-    commonMistakes: [
-      "Not enough acceleration → CB stops mid-table",
-      "Accidental english → CB curves off line",
-    ],
-    tips: [
-      "Pause at the back of the stroke",
-      "Imagine a 'target carpet' on the head end and land there",
-    ],
-    teaches:
-      "Distance draw position — the 'go nowhere or go far' decision.",
-  },
-  {
-    id: "one-rail-across",
-    number: 18,
-    name: "One-Rail Position",
-    shortName: "One-Rail",
-    series: "60 Minute Workout · Vol. 1",
-    difficulty: "Intermediate",
-    cueBall: { x: 3, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [
-      { x: 7, y: 0 },
-      { x: 5, y: 2.5 },
-    ],
-    description:
-      "Near-straight shot where the cue ball uses a single rail to land in a specific zone on the opposite side.",
-    technique:
-      "Stun-follow with a touch of english to widen or shorten the rebound.",
-    commonMistakes: [
-      "Misjudging rebound by ignoring english",
-      "Double-railing from too much pace",
-    ],
-    tips: [
-      "Use the mirror principle — angle in equals angle out",
-      "Outside english extends, inside shortens",
-    ],
-    teaches:
-      "Single-rail planning plus english tuning.",
-  },
-  {
-    id: "two-rail-kick",
-    number: 19,
-    name: "Two-Rail Kick",
-    shortName: "Two-Rail Kick",
-    series: "Run Out 9-Ball · Vol. 3",
-    difficulty: "Advanced",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 3.5 },
-    targetPocket: null,
-    cueBallPath: [
-      { x: 6.5, y: 4 },
-      { x: 8, y: 2.5 },
-      { x: 6, y: 3.5 },
-    ],
-    description:
-      "Object ball hidden behind a blocker (implied). Cue ball must travel two rails to make legal contact with the OB.",
-    technique:
-      "Diamond-system kick; standardize on running english at medium pace and choose a target diamond off the second rail.",
-    commonMistakes: [
-      "Wrong english assumption",
-      "Speed wrong — the angle changes with pace",
-    ],
-    tips: [
-      "Use a kick system (Kinister demonstrates one on tape)",
-      "Standardize on running english at medium pace as a baseline",
-    ],
-    teaches:
-      "Systematic kicking — the difference between hoping and aiming.",
-  },
-  {
-    id: "cross-side-bank",
+    id: "three-rail-high-english",
     number: 20,
-    name: "Cross-Side Bank",
-    shortName: "Cross-Side Bank",
-    series: "Bank Shot Workout",
-    difficulty: "Intermediate",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 5, y: 3 },
-    targetPocket: "ML",
-    objectBallPath: [
-      { x: 5.5, y: 0 },
-      { x: 4, y: 4 },
+    name: "Three Rails — ¾ High English",
+    shortName: "3 Rails (High)",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 1.5, y: 2 },
+    objectBall: { x: 0.5, y: 0.6 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0.3, y: 0.5 },
+      { x: 6, y: 4 },
+      { x: 7.5, y: 3.3 },
     ],
-    cueBallPath: [{ x: 5, y: 3 }],
     description:
-      "Cross-table single-rail bank into the opposite side pocket.",
+      "Pocket the OB in the corner from the head end, then send the cue ball three rails diagonally across the table to land near the opposite corner.",
     technique:
-      "Stun, dead-center; no english unless needed to compensate for cut-induced throw.",
+      "Three-quarters tip of high (top) english, firm pace. The combined topspin and running side keep all three rebounds open.",
     commonMistakes: [
-      "Cut-bank throw making the OB land short",
-      "Excess english changing OB rebound",
+      "Not enough english → CB dies on the second rail",
+      "Too much pace → CB grabs a fourth rail",
     ],
     tips: [
-      "Mirror system for straight-in banks",
-      "Aim slightly thicker than mirror to compensate for cut-induced throw",
-    ],
-    teaches: "Bank geometry plus cut-induced angle change.",
-  },
-  {
-    id: "controlled-break",
-    number: 21,
-    name: "Controlled Break",
-    shortName: "Controlled Break",
-    series: "Secret 9-Ball Knowledge · Vol. 3",
-    difficulty: "Foundational",
-    cueBall: { x: 2, y: 1 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: null,
-    cueBallPath: [{ x: 4.5, y: 2 }],
-    description:
-      "Standard 9-ball rack on the foot spot. Cue ball behind the head string, slightly off-center. Pocket a ball and leave the cue near center.",
-    technique:
-      "Square, full hit on the 1; controlled speed (not max). CB control beats raw power.",
-    commonMistakes: [
-      "Hitting too hard → loss of cue-ball control",
-      "Off-center hit → cue ball flies around the table",
-    ],
-    tips: [
-      "Aim for a controlled break — fewer rails, more accuracy",
-      "Keep the cue level; ride the cue ball to a stop near center",
+      "Calibrate the ¾-tip mark on your tip",
+      "Pace and english together — they tune the path",
     ],
     teaches:
-      "Repeatable break — pocket a ball plus leave the cue ball in playable position.",
+      "High english with pace for a long three-rail diagonal pattern.",
   },
   {
-    id: "jump-shot",
-    number: 22,
-    name: "Jump Shot Drill",
-    shortName: "Jump Shot",
-    series: "Jump Workout",
+    id: "outside-english-draw",
+    number: 21,
+    name: "Outside English + Draw",
+    shortName: "Outside Draw",
+    series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
+    cueBall: { x: 3, y: 2 },
+    objectBall: { x: 1, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 4, y: 4 },
+      { x: 3.5, y: 3.3 },
+    ],
     description:
-      "Blocker placed halfway between cue ball and object ball. Cue ball must jump cleanly over it to reach the OB.",
+      "Cut the OB into the corner with right (outside) english and draw. CB pulls back diagonally across the table, kisses the far long rail, and lands just off it.",
     technique:
-      "Cue elevated 45° or more, short stroke, hit down through the cue ball just above center.",
+      "Right english plus low draw. Outside english widens the cut and combines with the draw to swing the CB across.",
+    commonMistakes: [
+      "Inside english instead of outside — OB throws into the rail",
+      "Decelerating into the ball → no draw",
+    ],
+    tips: [
+      "Outside english helps hold the OB on its pocket line",
+      "Pace and draw together control where the CB lands",
+    ],
+    teaches:
+      "Outside-english draw — combining cut-friendly side spin with controlled draw distance.",
+  },
+  {
+    id: "two-rail-out-of-corner",
+    number: 22,
+    name: "Two Rails Out of the Corner",
+    shortName: "2 Rails Out",
+    series: "Top Dogs Workout",
+    difficulty: "Intermediate",
+    cueBall: { x: 5, y: 2.3 },
+    objectBall: { x: 4, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0.5, y: 2 },
+      { x: 2.5, y: 4 },
+      { x: 4, y: 2 },
+    ],
+    description:
+      "Pocket the OB in the side and send the cue ball two rails — short rail then far long rail — back to the center of the table.",
+    technique:
+      "Low-left english (a little draw with left spin), medium pace. Just enough draw to start the back-and-around path.",
+    commonMistakes: [
+      "Too much draw → CB takes a sharper exit and misses the corner-out path",
+      "No left english → CB doesn't kick wide off the short rail",
+    ],
+    tips: [
+      "Low and left, but neither one big — small amounts of each",
+      "Visualize the corner-out wrap before stroking",
+    ],
+    teaches:
+      "Coming out of a side-pocket cut with a controlled two-rail return.",
+  },
+  {
+    id: "around-the-table-side-pocket",
+    number: 23,
+    name: "Around the Table — Side Pocket",
+    shortName: "Around (Side)",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 2 },
+    objectBall: { x: 3, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0, y: 2 },
+      { x: 3, y: 4 },
+      { x: 6, y: 0.3 },
+      { x: 6, y: 1 },
+    ],
+    description:
+      "Pocket the OB in the side and wrap the cue ball around three rails — short rail, far long rail, near long rail — to land down by the foot end of the right rail.",
+    technique:
+      "Running english with follow, firm pace. The wrap pattern only holds if the english carries through every rebound.",
+    commonMistakes: [
+      "Pace dies on the second rail — third rebound never happens",
+      "Wrong english angle → pattern collapses early",
+    ],
+    tips: [
+      "Pick the third-rail target diamond first",
+      "Running english is the constant — pace dictates distance",
+    ],
+    teaches:
+      "Multi-rail wrap pattern coming out of a side-pocket cut.",
+  },
+  {
+    id: "long-diagonal-scratch-aware",
+    number: 24,
+    name: "Long Diagonal — Watch the Scratch",
+    shortName: "Scratch Aware",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 1.8 },
+    objectBall: { x: 3, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0, y: 2.5 },
+      { x: 6, y: 4 },
+      { x: 5, y: 0.3 },
+      { x: 5.5, y: 1.5 },
+    ],
+    description:
+      "Same setup as the around-the-table side-pocket shot, but the long diagonal path opens up scratch lines into multiple pockets. The drill is reading and avoiding them.",
+    technique:
+      "Running english, firm pace. The challenge is the path crosses scratch lines — read the rebound chain before stroking.",
+    commonMistakes: [
+      "Scratching in the opposite corner",
+      "Scratching in the far side pocket on the second rebound",
+    ],
+    tips: [
+      "Trace the full path on the cloth before stroking — every rebound point matters",
+      "If a scratch line is unavoidable, change pace to die before reaching it",
+    ],
+    teaches:
+      "Scratch-line awareness in multi-rail position routes.",
+  },
+  {
+    id: "jump-shot-cloth-warning",
+    number: 25,
+    name: "Jump Shot — Tears Up Cloth",
+    shortName: "Jump Shot",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 5, y: 0.4 },
+    objectBall: { x: 1.5, y: 0.4 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 1.5, y: 0.4 }],
+    description:
+      "Jump-shot setup with the OB on the rail line near the corner. The technique works, but it tears up the cloth — only use it when there's no other option. Better to find a kick, a curve, or a different angle whenever possible.",
+    technique:
+      "Cue elevated 45° or more, short stroke, hit down through the cue ball just above center. Legal jump — never scoop.",
     commonMistakes: [
       "Scooping (illegal)",
-      "Hitting too softly to clear the blocker",
+      "Repeatedly jumping in practice → ruins cloth and rails",
       "Hitting the blocker first",
     ],
     tips: [
-      "Use a jump cue or shorter break cue",
-      "Hit hard and quick — let the cue ball rebound up off the cloth",
-    ],
-    teaches: "Legal jumping mechanics.",
-  },
-  {
-    id: "combination",
-    number: 23,
-    name: "Combination Drill",
-    shortName: "Combo",
-    series: "Shotmakers Workout · Vol. 18",
-    difficulty: "Intermediate",
-    cueBall: { x: 3, y: 2 },
-    objectBall: { x: 5, y: 2 },
-    targetPocket: "BR",
-    objectBallPath: [{ x: 6, y: 1.5 }],
-    cueBallPath: [{ x: 5, y: 2 }],
-    description:
-      "Two object balls. The first must transfer the kiss into the second, which goes to the pocket.",
-    technique:
-      "Ghost-ball aiming on the second-to-first contact line; firm but not hard.",
-    commonMistakes: [
-      "Aiming the cue ball instead of the first OB's path",
-      "Throwing the OB off line with english",
-    ],
-    tips: [
-      "Find the first OB's contact point on the second; then aim the cue ball to put OB1 there",
-      "Avoid english unless needed for cue-ball position",
-    ],
-    teaches: "Aiming through chains of contact.",
-  },
-  {
-    id: "safety-hook",
-    number: 24,
-    name: "Safety / Hook Drill",
-    shortName: "Safety",
-    series: "The Middle Game · Vol. 36",
-    difficulty: "Advanced",
-    cueBall: { x: 2, y: 2 },
-    objectBall: { x: 5, y: 2 },
-    targetPocket: null,
-    objectBallPath: [
-      { x: 8, y: 2 },
-      { x: 6, y: 2 },
-    ],
-    cueBallPath: [{ x: 3, y: 3.2 }],
-    description:
-      "Pure safety. Tap the OB just enough to send it to a rail and roll the cue ball behind a blocker for the snooker.",
-    technique:
-      "Very soft stroke, often with a touch of english to position the cue ball precisely.",
-    commonMistakes: [
-      "Over-hitting → OB returns to open position",
-      "Failing the rail-contact requirement",
-    ],
-    tips: [
-      "Picture the cue ball's final resting spot first; the OB hit is secondary",
-      "On two-way shots, leave the OB ugly for the opponent too",
+      "Reserve jumps for real game situations — practice them sparingly",
+      "Look for an alternative route first; jump is the last resort",
     ],
     teaches:
-      "Defensive play — the half of pool most players ignore.",
+      "Legal jump mechanics and when not to use them. Cloth lasts longer when you respect it.",
   },
   {
-    id: "one-handed",
-    number: 25,
-    name: "One-Handed Drill",
-    shortName: "One-Handed",
-    series: "Advanced Fundamentals",
-    difficulty: "Advanced",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
-    description:
-      "Straight-in shot, shot one-handed (no bridge). Cue held in the dominant hand only.",
-    technique:
-      "Compact, smooth stroke; rely on grip alignment.",
-    commonMistakes: ["Death grip", "Steering the cue with the wrist"],
-    tips: ["Loose grip", "Trust the alignment — don't try to steer"],
-    teaches:
-      "Pure stroke isolation — exposes any bridge-hand crutch.",
-  },
-  {
-    id: "tight-pocket",
+    id: "run-six-balls",
     number: 26,
-    name: "Tight-Pocket Pocketing",
-    shortName: "Tight Pocket",
-    series: "Tight Pocket Workout",
-    difficulty: "Intermediate",
-    cueBall: { x: 2, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
+    name: "Run Six Balls",
+    shortName: "Run 6",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 1.5, y: 2 },
+    objectBall: { x: 1, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [
+      { x: 0.5, y: 1.5 },
+      { x: 2, y: 2 },
+    ],
     description:
-      "Practice on a table with extra-tight pockets (or use coins to narrow the openings). Long straight-in.",
+      "Place six object balls clustered near the corner pocket. Run them one at a time, with the cue ball cycling through small position moves between each shot. The whole drill stays in the head end of the table.",
     technique:
-      "Center-pocket aim; firm enough that the OB doesn't jaw; cue ball stops or controlled follow.",
+      "Soft touch, minimal english. Each shot is short and the cue ball moves only a diamond or two between balls.",
     commonMistakes: [
-      "Aiming at the pocket center instead of the OB contact point",
-      "Soft hit → OB jaws",
+      "Over-hitting → CB runs out of the work area",
+      "Treating each ball differently — the goal is repeatable shape",
     ],
     tips: [
-      "Center-pocket aim is a result of perfect contact, not the goal itself",
-      "Once it goes center on a tight pocket, it'll always go on a normal table",
+      "Plan the next two balls, not just the current one",
+      "Score yourself out of six — track progress across sessions",
     ],
     teaches:
-      "Pocketing precision with no margin for error.",
+      "Tight-area position play and disciplined low-energy stroke patterns.",
   },
   {
-    id: "ladder-drill",
+    id: "dead-level-draw",
     number: 27,
-    name: "The Ladder Drill",
-    shortName: "Ladder",
-    series: "Kinister Drill Cycle",
-    difficulty: "Foundational",
-    cueBall: { x: 2, y: 2 },
-    objectBall: { x: 3, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 3, y: 2 }],
+    name: "Dead Level Draw — No Rail",
+    shortName: "Level Draw",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 5.5, y: 0.4 },
+    objectBall: { x: 2, y: 0.4 },
+    targetPocket: "TR",
+    cueBallPath: [{ x: 5.5, y: 0.6 }],
     description:
-      "Place the OB one diamond in front of the cue ball. Pocket it stop-shot style. Move the OB back one diamond. Repeat until the OB is on the foot spot or beyond.",
+      "Rail-line cut into the corner. Draw the cue ball back along the same line and stop it before it touches a rail — perfectly level cue, perfectly controlled draw.",
     technique:
-      "Pure stop shot every time; only the distance changes.",
+      "Dead level cue, low draw, smooth pace. The drill exposes any unintended english that walks the CB into the cushion.",
     commonMistakes: [
-      "Speed creep — hitting harder as distance grows",
-      "Inconsistent tip strike when nervous near the end of the ladder",
+      "Cue elevation → CB curves into the rail",
+      "Unintended side spin → CB drifts and hits the long rail",
+      "Too much pace → CB sails past start without stopping",
     ],
     tips: [
-      "Recalibrate stop-shot speed for every distance",
-      "If you miss, restart from rung 1",
+      "Check your bridge height — anything but level introduces curve at draw distances",
+      "Stay smooth and let pace dictate distance",
     ],
     teaches:
-      "Stop-shot speed calibration across all distances. The ultimate stroke-honesty drill.",
+      "Cue-level discipline. The single biggest fix for inconsistent draw at distance.",
   },
 ];
 
