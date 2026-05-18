@@ -249,28 +249,28 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Inside English",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3, y: 0.3 },
-    objectBall: { x: 1, y: 0.3 },
+    cueBall: { x: 3, y: 0.25 },
+    objectBall: { x: 1, y: 0.25 },
     targetPocket: "TR",
     cueBallPath: [
       { x: 0, y: 2 },
-      { x: 4, y: 2 },
+      { x: 2.8, y: 2.3 },
     ],
     description:
-      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs off the short rail and returns to the center of the table for shape.",
+      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs straight up the rail, mirrors off the short rail, and floats back across to land in the open middle of the head end of the table.",
     technique:
-      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across to center.",
+      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across into the open zone near the head spot.",
     commonMistakes: [
       "Too much english — CB throws the OB off the rail",
       "Wrong english — outside spin shortens the rebound and CB stays near the rail",
-      "Hitting too hard and over-running center",
+      "Hitting too hard and over-running the landing zone",
     ],
     tips: [
       "Inside english on a rail-line cut holds the OB and widens the CB rebound",
       "Visualize the CB's rebound point on the short rail before stroking",
     ],
     teaches:
-      "Using inside english to recover position back to the center of the table.",
+      "Using inside english to recover position into the middle of the head end after a rail-line shot.",
   },
   {
     id: "three-rail-middle",
@@ -279,30 +279,29 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rails",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 3, y: 0.3 },
-    objectBall: { x: 1.5, y: 0.3 },
+    cueBall: { x: 4, y: 3.5 },
+    objectBall: { x: 1.5, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
       { x: 0, y: 2.5 },
-      { x: 3, y: 4 },
-      { x: 7, y: 2.5 },
-      { x: 4, y: 3 },
+      { x: 2.5, y: 4 },
+      { x: 4, y: 3.5 },
     ],
     description:
-      "Same rail-line setup as the stop shot, but send the cue ball three rails — short rail, far long rail, foot rail — and land it in the middle of the table.",
+      "Cue ball starts in the middle of the table near the left side pocket. Cut the OB into the far corner and send the cue ball three rails — short rail, far long rail, back across — to land right where it started, ready for the next ball.",
     technique:
-      "Above-center with running english, firm pace. The english keeps the rebound angles open across all three rails.",
+      "Above-center with running english, firm pace. The english keeps each rebound angle open so the cue ball wraps cleanly back to the side-pocket area.",
     commonMistakes: [
-      "Not enough pace — CB dies before the third rail",
+      "Not enough pace — CB dies before completing the wrap",
       "Wrong english kills one of the rebound angles",
-      "Too thick a hit pulls the OB off line",
+      "Too thick a hit pulls the OB off the corner line",
     ],
     tips: [
       "Pick the first-rail target diamond first, then work backward to the contact point",
       "Running english extends each rebound — calibrate it before adding pace",
     ],
     teaches:
-      "Multi-rail position planning and how english stacks across three rails.",
+      "Multi-rail position planning — sending the CB the long way around and landing it back where you started.",
   },
   {
     id: "two-rail-middle",
@@ -311,18 +310,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "2 Rails",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 2, y: 2.5 },
-    objectBall: { x: 1, y: 1 },
+    cueBall: { x: 1.2, y: 3 },
+    objectBall: { x: 0.4, y: 1.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.3 },
-      { x: 2.2, y: 0 },
-      { x: 4, y: 1.8 },
+      { x: 0, y: 2 },
+      { x: 2.5, y: 0 },
+      { x: 3, y: 2.2 },
     ],
     description:
-      "Pocket the OB in the corner and take two rails — short rail then long rail — back to the middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
+      "OB sits on the head rail between TR and the head spot; CB starts back near the head-rail/left-rail corner area. Cut the OB into the corner and take two rails — head rail, then the near long rail — to land in the open upper-middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
     technique:
-      "Stun-follow with a touch of running english. Medium pace — enough to reach center after two rails without rolling past.",
+      "Stun-follow with a touch of running english. Medium pace — enough to reach the upper-middle landing zone without rolling past it onto a scratch line.",
     commonMistakes: [
       "Too much pace → CB grabs a third rail and drifts onto a scratch line",
       "Wrong english kills the second rebound and CB dies on the rail",
@@ -330,7 +329,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     ],
     tips: [
       "Pick your final resting spot first, then work the second-rail target backward",
-      "Stay off the scratch lines — center of table beats a pretty path that leaves you on a sell",
+      "Stay off the scratch lines — open middle beats a pretty path that leaves you on a sell",
     ],
     teaches:
       "Two-rail position control with scratch-aware landing zones.",
@@ -342,16 +341,16 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Draw Center",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 4, y: 1.8 },
-    objectBall: { x: 2, y: 0.8 },
+    cueBall: { x: 3.5, y: 2.1 },
+    objectBall: { x: 2, y: 0.4 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 4, y: 1.8 }],
+    cueBallPath: [{ x: 3.5, y: 2.1 }],
     description:
-      "Cut the OB into the corner and draw the cue ball back to the center of the table — CB ends up exactly where it started.",
+      "OB sits on the right rail a couple of diamonds below the TR corner; CB starts in the open middle of the table, just above the side-pocket line. Cut the OB into the corner and draw the cue ball straight back along the same line to land right where it started.",
     technique:
       "One-third tip low, smooth stroke. Don't use too much low — just enough draw to bring the cue ball back to where it started.",
     commonMistakes: [
-      "Too much low — CB pulls past center and lands on a scratch line",
+      "Too much low — CB pulls past the start spot and lands on a scratch line",
       "Jacking the cue up → curve and miscue",
       "Decelerating at the ball → no draw at all",
     ],
