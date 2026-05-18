@@ -329,16 +329,16 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Draw Center",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 4, y: 1.8 },
-    objectBall: { x: 2, y: 0.8 },
+    cueBall: { x: 3.5, y: 2.1 },
+    objectBall: { x: 2, y: 0.4 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 4, y: 1.8 }],
+    cueBallPath: [{ x: 3.5, y: 2.1 }],
     description:
-      "Cut the OB into the corner and draw the cue ball back to the center of the table — CB ends up exactly where it started.",
+      "OB sits on the right rail a couple of diamonds below the TR corner; CB starts in the open middle of the table, just above the side-pocket line. Cut the OB into the corner and draw the cue ball straight back along the same line to land right where it started.",
     technique:
       "One-third tip low, smooth stroke. Don't use too much low — just enough draw to bring the cue ball back to where it started.",
     commonMistakes: [
-      "Too much low — CB pulls past center and lands on a scratch line",
+      "Too much low — CB pulls past the start spot and lands on a scratch line",
       "Jacking the cue up → curve and miscue",
       "Decelerating at the ball → no draw at all",
     ],
