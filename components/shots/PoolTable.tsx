@@ -18,6 +18,8 @@ import {
   SVG_W,
   UNIT,
   contactPoint,
+  easeOutCubic,
+  pathLength,
   toSvg,
   walkPath,
 } from "@/lib/kinister/geometry";
@@ -32,25 +34,53 @@ type Props = {
   className?: string;
 };
 
-/** Phase 1 of the animation: cue ball travels from start to OB contact. */
-const APPROACH_FRACTION = 0.32;
-const TOTAL_MS = 2200;
+/**
+ * Pool-ball "speed" in diamond units per second at 100% power. Tuned for a
+ * realistic-feeling animation — every shot uses the same constant so the
+ * pace of a stop shot vs. a 4-rail zig-zag scales naturally with the path
+ * length instead of being clamped to the same wall-clock duration.
+ */
+const BASE_DIAMONDS_PER_SEC = 3.8;
+/** Don't let any single animation drop below this — keeps short shots watchable. */
+const MIN_ANIM_MS = 650;
+/** Fallback approach fraction for sequence shots (per-step). */
+const SEQUENCE_APPROACH_FRACTION = 0.32;
+/** Per-step duration for multi-ball sequences. */
+const SEQUENCE_STEP_MS = 1500;
 
 export function PoolTable({ shot, interactive = false, preview = false, className }: Props) {
   const [progress, setProgress] = useState(0); // 0..1
   const [playing, setPlaying] = useState(false);
+  const [power, setPower] = useState(1); // 0..1, scales how far CB travels post-contact
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const startFromRef = useRef(0);
 
   const sequence = shot.sequence;
   const stepCount = sequence?.length ?? 1;
-  const totalMs = TOTAL_MS * stepCount;
 
   const contact = useMemo(
     () => contactPoint(shot.cueBall, shot.objectBall),
     [shot.cueBall, shot.objectBall],
   );
+
+  // Length-based timing so every shot uses the same diamonds-per-second speed.
+  const approachLen = useMemo(
+    () => pathLength([shot.cueBall, contact]),
+    [shot.cueBall, contact],
+  );
+  const fullCaromLen = useMemo(
+    () => pathLength([contact, ...shot.cueBallPath]),
+    [contact, shot.cueBallPath],
+  );
+  const effectiveCaromLen = fullCaromLen * power;
+  const totalLen = approachLen + effectiveCaromLen;
+  const singleShotMs = Math.max(
+    MIN_ANIM_MS,
+    (totalLen / BASE_DIAMONDS_PER_SEC) * 1000,
+  );
+  const totalMs = sequence ? SEQUENCE_STEP_MS * stepCount : singleShotMs;
+  const approachFraction = totalLen > 0 ? approachLen / totalLen : 0.3;
 
   // Static (or final) positions for the diagram lines.
   const obFinalPath: DiamondCoord[] =
@@ -113,28 +143,39 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     const stepContact = contactPoint(prevCue, step.ball);
     const stepOBPath: DiamondCoord[] = [POCKETS[step.pocket]];
 
-    if (localProgress < APPROACH_FRACTION) {
-      const t = localProgress / APPROACH_FRACTION;
+    if (localProgress < SEQUENCE_APPROACH_FRACTION) {
+      const t = localProgress / SEQUENCE_APPROACH_FRACTION;
       cuePos = walkPath(prevCue, [stepContact], t);
       obPos = step.ball;
     } else {
-      const t = (localProgress - APPROACH_FRACTION) / (1 - APPROACH_FRACTION);
-      cuePos = walkPath(stepContact, [step.cueAfter], t);
-      obPos = walkPath(step.ball, stepOBPath, t);
+      const raw =
+        (localProgress - SEQUENCE_APPROACH_FRACTION) /
+        (1 - SEQUENCE_APPROACH_FRACTION);
+      const eased = easeOutCubic(raw);
+      cuePos = walkPath(stepContact, [step.cueAfter], eased);
+      obPos = walkPath(step.ball, stepOBPath, eased);
     }
   } else if (progress <= 0) {
     cuePos = shot.cueBall;
     obPos = shot.objectBall;
-  } else if (progress < APPROACH_FRACTION) {
-    const t = progress / APPROACH_FRACTION;
+  } else if (progress < approachFraction) {
+    const t = progress / approachFraction;
     cuePos = walkPath(shot.cueBall, [contact], t);
     obPos = shot.objectBall;
   } else {
-    const t = (progress - APPROACH_FRACTION) / (1 - APPROACH_FRACTION);
-    cuePos = walkPath(contact, shot.cueBallPath, t);
+    const raw = (progress - approachFraction) / (1 - approachFraction);
+    // Decelerate smoothly to rest — friction in real life
+    const eased = easeOutCubic(raw);
+    // Power scales how far along the natural path the cue ball actually
+    // travels. 100% power → reaches the final waypoint; 50% power → stops
+    // halfway along the path.
+    const cueT = power * eased;
+    cuePos = walkPath(contact, shot.cueBallPath, cueT);
+    // Object ball decelerates too but isn't affected by power scaling — a
+    // softer hit still pockets the OB, just slower.
     obPos =
       obFinalPath.length > 0
-        ? walkPath(shot.objectBall, obFinalPath, t)
+        ? walkPath(shot.objectBall, obFinalPath, eased)
         : shot.objectBall;
   }
 
@@ -451,6 +492,31 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
 
       {shot.english && !preview && (
         <EnglishIndicator english={shot.english} />
+      )}
+
+      {interactive && !preview && !sequence && (
+        <div className="flex items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-pop-bright)]">
+            Power
+          </span>
+          <input
+            type="range"
+            min={20}
+            max={100}
+            step={5}
+            value={Math.round(power * 100)}
+            onChange={(e) => {
+              setPlaying(false);
+              setProgress(0);
+              setPower(Number(e.target.value) / 100);
+            }}
+            className="flex-1 accent-[var(--color-pop-bright)]"
+            aria-label="Power"
+          />
+          <span className="w-12 text-right font-mono text-sm font-semibold text-[var(--fg)]">
+            {Math.round(power * 100)}%
+          </span>
+        </div>
       )}
 
       {interactive && !preview && (

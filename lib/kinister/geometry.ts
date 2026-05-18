@@ -47,6 +47,28 @@ export function lerpPoint(
 }
 
 /**
+ * Total length of a polyline through `points`, in diamond units.
+ */
+export function pathLength(points: DiamondCoord[]): number {
+  let len = 0;
+  for (let i = 1; i < points.length; i++) {
+    const dx = points[i].x - points[i - 1].x;
+    const dy = points[i].y - points[i - 1].y;
+    len += Math.hypot(dx, dy);
+  }
+  return len;
+}
+
+/**
+ * Cubic ease-out. Starts fast, decelerates smoothly to rest — matches how
+ * a pool ball decelerates from friction once it leaves the cue tip.
+ */
+export function easeOutCubic(t: number): number {
+  const c = Math.max(0, Math.min(1, t));
+  return 1 - Math.pow(1 - c, 3);
+}
+
+/**
  * Walk a polyline (start → waypoints) by a fractional progress in [0, 1],
  * weighted by segment length so motion is at constant speed.
  */
