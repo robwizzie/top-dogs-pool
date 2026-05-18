@@ -195,6 +195,7 @@ function projectMatchScores(
   match: MatchCacheEntry,
   ourSide: SideKey,
   ebpToMemberNumber: Map<number, string>,
+  ebpIdToSkillLevel: Map<number, number>,
   format: "8-ball" | "9-ball" | "masters" | "doubles" | "unknown",
 ): MatchResult[] {
   type Score = {
@@ -229,6 +230,21 @@ function projectMatchScores(
   }
 
   const out: MatchResult[] = [];
+  // Resolve a player's effective SL for this match. APA records SL 0 (or
+  // omits it) when the player was unrated at the time of the match — even
+  // if they've since been rated. Substitute the live team-roster SL when
+  // the recorded match value is 0/undefined so downstream calculations
+  // (mini-sweep eligibility, level-ups, leaderboards) use the right value.
+  const resolveSL = (
+    matchSL: number | undefined,
+    ebpId: number | undefined,
+  ): number | undefined => {
+    if (typeof matchSL === "number" && matchSL > 0) return matchSL;
+    const rosterSL =
+      ebpId !== undefined ? ebpIdToSkillLevel.get(ebpId) : undefined;
+    return rosterSL ?? matchSL;
+  };
+
   for (const s of our?.scores ?? []) {
     const ebpId = s.player?.id;
     const memberNumber = ebpId ? ebpToMemberNumber.get(ebpId) : undefined;
@@ -237,6 +253,8 @@ function projectMatchScores(
       typeof s.matchPositionNumber === "number"
         ? oppByPosition.get(s.matchPositionNumber)
         : undefined;
+    const ourSL = resolveSL(s.skillLevel, ebpId);
+    const oppSL = resolveSL(opponent?.skillLevel, opponent?.player?.id);
     const opponentName = opponent?.player?.displayName ?? "Opponent";
     const outcome: "W" | "L" = s.winLoss === "W" ? "W" : "L";
     const ourScore = s.eightBallWins ?? s.nineBallPoints ?? 0;
@@ -254,7 +272,7 @@ function projectMatchScores(
     if (outcome === "W") {
       // "Sweep" = opponent scored 0 (full shutout).
       // "Mini-sweep" = opponent didn't reach the hill (their wins-to-win minus 1).
-      const oppHill = hillThreshold(opponent?.skillLevel, s.skillLevel, format);
+      const oppHill = hillThreshold(oppSL, ourSL, format);
       if (oppScore === 0) {
         sweep = true;
       } else if (oppScore < oppHill) {
@@ -266,8 +284,8 @@ function projectMatchScores(
       playerId: memberNumber ?? `ebp:${ebpId ?? "?"}`,
       playerName,
       opponentName,
-      skillLevel: s.skillLevel,
-      opponentSkillLevel: opponent?.skillLevel,
+      skillLevel: ourSL,
+      opponentSkillLevel: oppSL,
       outcome,
       score,
       sweep,
@@ -288,6 +306,7 @@ function projectScheduleMatches(
   team: TeamCacheEntry,
   matches: Map<number, MatchCacheEntry>,
   ebpToMemberNumber: Map<number, string>,
+  ebpIdToSkillLevel: Map<number, number>,
   sessionInfo: { id?: number; name?: string } | undefined,
   format: "8-ball" | "9-ball" | "masters" | "doubles" | "unknown",
 ): Match[] {
@@ -337,7 +356,13 @@ function projectScheduleMatches(
     let results: MatchResult[] = [];
     const cached = matches.get(m.id);
     if (cached) {
-      results = projectMatchScores(cached, ourSide, ebpToMemberNumber, format);
+      results = projectMatchScores(
+        cached,
+        ourSide,
+        ebpToMemberNumber,
+        ebpIdToSkillLevel,
+        format,
+      );
     }
 
     out.push({
@@ -623,7 +648,14 @@ async function main() {
     const tm = pickTeamMeta(team);
     const session = tm?.session ?? undefined;
     const fmt = detectFormat(tm?.divisionFormat);
-    for (const m of projectScheduleMatches(team, matchCache, ebpToMemberNumber, session, fmt)) {
+    for (const m of projectScheduleMatches(
+      team,
+      matchCache,
+      ebpToMemberNumber,
+      ebpIdToSkillLevel,
+      session,
+      fmt,
+    )) {
       matchesById.set(m.id, m);
     }
   }
@@ -1758,6 +1790,7 @@ async function main() {
           teamCacheEntry,
           matchCache,
           ebpToMemberNumber,
+          ebpIdToSkillLevel,
           meta_.session,
           detectFormat(meta_.divisionFormat),
         );

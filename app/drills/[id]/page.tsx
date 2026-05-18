@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, AlertTriangle, ExternalLink, Lightbulb, Target } from "lucide-react";
 import { DrillTable } from "@/components/shots/DrillTable";
 import { DrillScoreTracker } from "@/components/shots/DrillScoreTracker";
+import { BowliardsTracker } from "@/components/shots/BowliardsTracker";
 import { DRILLS, getDrill } from "@/lib/kinister/drills";
 import { cn } from "@/lib/utils";
 
@@ -167,9 +168,21 @@ export default async function DrillDetailPage({
           </div>
 
           <aside className="space-y-6">
-            {drill.scoring && (
-              <DrillScoreTracker drillId={drill.id} scoring={drill.scoring} />
-            )}
+            {drill.scoring &&
+              (drill.scoring.kind === "bowling" ? (
+                <section className="surface overflow-hidden">
+                  <header className="flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--color-felt-deep)]/30 px-5 py-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
+                      Live Scorecard
+                    </p>
+                  </header>
+                  <div className="p-5">
+                    <BowliardsTracker />
+                  </div>
+                </section>
+              ) : (
+                <DrillScoreTracker drillId={drill.id} scoring={drill.scoring} />
+              ))}
 
             {drill.commonMistakes && drill.commonMistakes.length > 0 && (
               <div className="surface overflow-hidden">

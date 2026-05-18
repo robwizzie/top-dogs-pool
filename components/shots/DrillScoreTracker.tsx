@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus, Trash2, Trophy, X } from "lucide-react";
+import { Minus, Plus, Trash2, Trophy, X } from "lucide-react";
 import type { DrillScoring } from "@/lib/kinister/drills";
 import { useDrillScores, type ScoreEntry } from "@/lib/kinister/useDrillScores";
 import { cn } from "@/lib/utils";
@@ -11,9 +11,9 @@ type Props = {
   scoring: DrillScoring;
 };
 
-type PlayerInput = { name: string; score: string };
+type PlayerInput = { name: string; score: number };
 
-const DEFAULT_PLAYERS: PlayerInput[] = [{ name: "", score: "" }];
+const DEFAULT_PLAYERS: PlayerInput[] = [{ name: "", score: 0 }];
 
 export function DrillScoreTracker({ drillId, scoring }: Props) {
   const { entries, add, remove, clearDrill } = useDrillScores(drillId);
@@ -46,12 +46,20 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
     setOpen(false);
   }
 
+  function adjustScore(idx: number, delta: number) {
+    const next = [...players];
+    const max = scoring.max ?? Infinity;
+    const nextScore = Math.max(0, Math.min(max, (next[idx]?.score ?? 0) + delta));
+    next[idx] = { ...next[idx], score: nextScore };
+    setPlayers(next);
+  }
+
   function submit(e: React.FormEvent) {
     e.preventDefault();
     const cleaned = players
       .map((p) => ({
         name: p.name.trim() || "You",
-        score: Number(p.score),
+        score: p.score,
       }))
       .filter((p) => Number.isFinite(p.score) && p.score >= 0);
     if (cleaned.length === 0) return;
@@ -120,9 +128,16 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
               </button>
             </div>
 
+            <p className="text-[11px] text-[var(--fg-dim)]">
+              Tap +/− to update each player&apos;s score as you drill. Save
+              the attempt when you&apos;re done.
+            </p>
             <ul className="space-y-2">
               {players.map((p, i) => (
-                <li key={i} className="flex gap-2">
+                <li
+                  key={i}
+                  className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-2"
+                >
                   <input
                     type="text"
                     value={p.name}
@@ -132,23 +147,40 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                       setPlayers(next);
                     }}
                     placeholder={players.length === 1 ? "You" : `Player ${i + 1}`}
-                    className="min-w-0 flex-1 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)]/60 focus:outline-none"
+                    className="min-w-0 flex-1 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-2 py-1.5 text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)]/60 focus:outline-none"
                   />
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    value={p.score}
-                    onChange={(e) => {
-                      const next = [...players];
-                      next[i] = { ...next[i], score: e.target.value };
-                      setPlayers(next);
-                    }}
-                    placeholder={scoring.unit ?? "score"}
-                    min={0}
-                    max={scoring.max}
-                    className="w-24 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)]/60 focus:outline-none"
-                    required
-                  />
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => adjustScore(i, -1)}
+                      disabled={p.score <= 0}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] hover:text-[var(--fg)] disabled:opacity-30"
+                      aria-label="Decrement score"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="inline-flex min-w-[3.5rem] items-baseline justify-center gap-1 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-base">
+                      <span className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--color-brass-bright)]">
+                        {p.score}
+                      </span>
+                      {scoring.max && (
+                        <span className="text-[10px] text-[var(--fg-dim)]">
+                          /{scoring.max}
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => adjustScore(i, 1)}
+                      disabled={
+                        scoring.max !== undefined && p.score >= scoring.max
+                      }
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/15 text-[var(--color-brass-bright)] hover:bg-[var(--color-brass)]/25 disabled:opacity-30"
+                      aria-label="Increment score"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
                   {players.length > 1 && (
                     <button
                       type="button"
@@ -156,7 +188,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                         const next = players.filter((_, idx) => idx !== i);
                         setPlayers(next.length === 0 ? DEFAULT_PLAYERS : next);
                       }}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
                       aria-label="Remove player"
                     >
                       <X size={14} />
@@ -170,7 +202,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
               <button
                 type="button"
                 onClick={() =>
-                  setPlayers([...players, { name: "", score: "" }])
+                  setPlayers([...players, { name: "", score: 0 }])
                 }
                 disabled={players.length >= 8}
                 className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg)] px-3 text-[11px] font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:opacity-40"
