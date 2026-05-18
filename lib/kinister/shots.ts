@@ -424,18 +424,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "4 Rails",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 2, y: 1.5 },
-    objectBall: { x: 1, y: 0.5 },
+    cueBall: { x: 1.5, y: 2.3 },
+    objectBall: { x: 0.6, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 2 },
-      { x: 1.2, y: 4 },
-      { x: 0, y: 2.5 },
-      { x: 1.5, y: 0 },
-      { x: 0.8, y: 1.5 },
+      { x: 0.6, y: 4 },
+      { x: 1.0, y: 0 },
+      { x: 1.4, y: 4 },
+      { x: 1.7, y: 0 },
+      { x: 1.4, y: 0.6 },
     ],
     description:
-      "Same setup as the two-rail version but with much more pace and english. CB zig-zags between the head rail and the two long rails for at least four rails. A fifth rail is fine.",
+      "Same setup as the two-rail version but with much more pace and english. CB zig-zags back and forth between the two long rails for at least four rails, drifting slightly down-table each pass. A fifth rail is fine.",
     technique:
       "Running english, firm pace. The english keeps the rebound angles open across every rail so the CB keeps traveling instead of dying.",
     commonMistakes: [
