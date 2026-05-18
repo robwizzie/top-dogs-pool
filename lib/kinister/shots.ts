@@ -298,18 +298,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "2 Rails",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 2, y: 2.5 },
-    objectBall: { x: 1, y: 1 },
+    cueBall: { x: 1.2, y: 3 },
+    objectBall: { x: 0.4, y: 1.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.3 },
-      { x: 2.2, y: 0 },
-      { x: 4, y: 1.8 },
+      { x: 0, y: 2 },
+      { x: 2.5, y: 0 },
+      { x: 3, y: 2.2 },
     ],
     description:
-      "Pocket the OB in the corner and take two rails — short rail then long rail — back to the middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
+      "OB sits on the head rail between TR and the head spot; CB starts back near the head-rail/left-rail corner area. Cut the OB into the corner and take two rails — head rail, then the near long rail — to land in the open upper-middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
     technique:
-      "Stun-follow with a touch of running english. Medium pace — enough to reach center after two rails without rolling past.",
+      "Stun-follow with a touch of running english. Medium pace — enough to reach the upper-middle landing zone without rolling past it onto a scratch line.",
     commonMistakes: [
       "Too much pace → CB grabs a third rail and drifts onto a scratch line",
       "Wrong english kills the second rebound and CB dies on the rail",
@@ -317,7 +317,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     ],
     tips: [
       "Pick your final resting spot first, then work the second-rail target backward",
-      "Stay off the scratch lines — center of table beats a pretty path that leaves you on a sell",
+      "Stay off the scratch lines — open middle beats a pretty path that leaves you on a sell",
     ],
     teaches:
       "Two-rail position control with scratch-aware landing zones.",
