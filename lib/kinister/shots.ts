@@ -602,24 +602,24 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Pat's Favorite",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3, y: 0.3 },
-    objectBall: { x: 1.5, y: 0.5 },
+    cueBall: { x: 2.3, y: 1.2 },
+    objectBall: { x: 1, y: 0.9 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 2.5 },
-      { x: 3, y: 4 },
-      { x: 4, y: 3.3 },
+      { x: 0, y: 0.7 },
+      { x: 1, y: 4 },
+      { x: 2.7, y: 2.5 },
     ],
     description:
-      "Pat's go-to shape shot. Cut the OB into the corner from the rail line and send the cue ball off the short rail and the far long rail to land near the side pocket on the opposite side of the table.",
+      "Pat's go-to shape shot. Pocket the OB in the corner from a near-straight angle and send the cue ball off the short rail near the pocket and the far long rail to land in the middle of the upper half of the table.",
     technique:
-      "Running english, medium pace. Two rails wrap the CB around to the far side pocket area.",
+      "Running english, medium pace. Two rails wrap the CB across to the middle of the table for shape on the next ball.",
     commonMistakes: [
       "Wrong english → second rail rebound dies short",
       "Too much pace → CB grabs a third rail and overshoots",
     ],
     tips: [
-      "Pick the far side-pocket landing zone before stroking",
+      "Pick the middle-of-table landing zone before stroking",
       "Running english is the constant — pace dictates landing distance",
     ],
     teaches:
