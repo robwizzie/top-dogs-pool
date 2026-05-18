@@ -35,23 +35,26 @@ type Props = {
 };
 
 /**
- * Pool-ball "speed" in diamond units per second at 100% power. Tuned for a
- * realistic-feeling animation — every shot uses the same constant so the
- * pace of a stop shot vs. a 4-rail zig-zag scales naturally with the path
- * length instead of being clamped to the same wall-clock duration.
+ * Pool-ball "speed" in diamond units per second at the DEFAULT_POWER setting.
+ * Every shot uses the same constant so a stop shot reads as snappy and a
+ * 4-rail zig-zag takes proportionally longer at the same power level.
  */
-const BASE_DIAMONDS_PER_SEC = 3.8;
+const BASE_DIAMONDS_PER_SEC = 3.5;
 /** Don't let any single animation drop below this — keeps short shots watchable. */
-const MIN_ANIM_MS = 650;
+const MIN_ANIM_MS = 600;
+/** Cap so very low power doesn't crawl forever. */
+const MAX_ANIM_MS = 6000;
 /** Fallback approach fraction for sequence shots (per-step). */
 const SEQUENCE_APPROACH_FRACTION = 0.32;
 /** Per-step duration for multi-ball sequences. */
 const SEQUENCE_STEP_MS = 1500;
+/** 50% is the "natural" pace; lower = softer/slower, higher = harder/faster. */
+const DEFAULT_POWER = 0.5;
 
 export function PoolTable({ shot, interactive = false, preview = false, className }: Props) {
   const [progress, setProgress] = useState(0); // 0..1
   const [playing, setPlaying] = useState(false);
-  const [power, setPower] = useState(1); // 0..1, scales how far CB travels post-contact
+  const [power, setPower] = useState(DEFAULT_POWER);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const startFromRef = useRef(0);
@@ -65,19 +68,24 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
   );
 
   // Length-based timing so every shot uses the same diamonds-per-second speed.
+  // The cue ball ALWAYS travels the full path — power only changes how fast.
   const approachLen = useMemo(
     () => pathLength([shot.cueBall, contact]),
     [shot.cueBall, contact],
   );
-  const fullCaromLen = useMemo(
+  const caromLen = useMemo(
     () => pathLength([contact, ...shot.cueBallPath]),
     [contact, shot.cueBallPath],
   );
-  const effectiveCaromLen = fullCaromLen * power;
-  const totalLen = approachLen + effectiveCaromLen;
+  const totalLen = approachLen + caromLen;
+  // Power scales speed: DEFAULT_POWER = 1× base speed. Higher power = faster
+  // animation; lower power = slower. The ball still completes the whole shot.
+  const speedMultiplier = power / DEFAULT_POWER;
+  const effectiveSpeed = BASE_DIAMONDS_PER_SEC * speedMultiplier;
+  const computedMs = (totalLen / effectiveSpeed) * 1000;
   const singleShotMs = Math.max(
     MIN_ANIM_MS,
-    (totalLen / BASE_DIAMONDS_PER_SEC) * 1000,
+    Math.min(MAX_ANIM_MS, computedMs),
   );
   const totalMs = sequence ? SEQUENCE_STEP_MS * stepCount : singleShotMs;
   const approachFraction = totalLen > 0 ? approachLen / totalLen : 0.3;
@@ -164,15 +172,12 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     obPos = shot.objectBall;
   } else {
     const raw = (progress - approachFraction) / (1 - approachFraction);
-    // Decelerate smoothly to rest — friction in real life
+    // Decelerate smoothly to rest — friction in real life. Power only
+    // affects how fast the animation plays (above), not where the balls
+    // end up. The cue ball always travels the full authored path so the
+    // shot remains correct at any power.
     const eased = easeOutCubic(raw);
-    // Power scales how far along the natural path the cue ball actually
-    // travels. 100% power → reaches the final waypoint; 50% power → stops
-    // halfway along the path.
-    const cueT = power * eased;
-    cuePos = walkPath(contact, shot.cueBallPath, cueT);
-    // Object ball decelerates too but isn't affected by power scaling — a
-    // softer hit still pockets the OB, just slower.
+    cuePos = walkPath(contact, shot.cueBallPath, eased);
     obPos =
       obFinalPath.length > 0
         ? walkPath(shot.objectBall, obFinalPath, eased)
