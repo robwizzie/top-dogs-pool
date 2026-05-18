@@ -267,30 +267,29 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rails",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 3, y: 0.3 },
-    objectBall: { x: 1.5, y: 0.3 },
+    cueBall: { x: 4, y: 3.5 },
+    objectBall: { x: 1.5, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
       { x: 0, y: 2.5 },
-      { x: 3, y: 4 },
-      { x: 7, y: 2.5 },
-      { x: 4, y: 3 },
+      { x: 2.5, y: 4 },
+      { x: 4, y: 3.5 },
     ],
     description:
-      "Same rail-line setup as the stop shot, but send the cue ball three rails — short rail, far long rail, foot rail — and land it in the middle of the table.",
+      "Cue ball starts in the middle of the table near the left side pocket. Cut the OB into the far corner and send the cue ball three rails — short rail, far long rail, back across — to land right where it started, ready for the next ball.",
     technique:
-      "Above-center with running english, firm pace. The english keeps the rebound angles open across all three rails.",
+      "Above-center with running english, firm pace. The english keeps each rebound angle open so the cue ball wraps cleanly back to the side-pocket area.",
     commonMistakes: [
-      "Not enough pace — CB dies before the third rail",
+      "Not enough pace — CB dies before completing the wrap",
       "Wrong english kills one of the rebound angles",
-      "Too thick a hit pulls the OB off line",
+      "Too thick a hit pulls the OB off the corner line",
     ],
     tips: [
       "Pick the first-rail target diamond first, then work backward to the contact point",
       "Running english extends each rebound — calibrate it before adding pace",
     ],
     teaches:
-      "Multi-rail position planning and how english stacks across three rails.",
+      "Multi-rail position planning — sending the CB the long way around and landing it back where you started.",
   },
   {
     id: "two-rail-middle",
