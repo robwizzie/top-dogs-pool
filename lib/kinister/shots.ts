@@ -237,28 +237,28 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Inside English",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3, y: 0.3 },
-    objectBall: { x: 1, y: 0.3 },
+    cueBall: { x: 3, y: 0.25 },
+    objectBall: { x: 1, y: 0.25 },
     targetPocket: "TR",
     cueBallPath: [
       { x: 0, y: 2 },
-      { x: 4, y: 2 },
+      { x: 2.8, y: 2.3 },
     ],
     description:
-      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs off the short rail and returns to the center of the table for shape.",
+      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs straight up the rail, mirrors off the short rail, and floats back across to land in the open middle of the head end of the table.",
     technique:
-      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across to center.",
+      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across into the open zone near the head spot.",
     commonMistakes: [
       "Too much english — CB throws the OB off the rail",
       "Wrong english — outside spin shortens the rebound and CB stays near the rail",
-      "Hitting too hard and over-running center",
+      "Hitting too hard and over-running the landing zone",
     ],
     tips: [
       "Inside english on a rail-line cut holds the OB and widens the CB rebound",
       "Visualize the CB's rebound point on the short rail before stroking",
     ],
     teaches:
-      "Using inside english to recover position back to the center of the table.",
+      "Using inside english to recover position into the middle of the head end after a rail-line shot.",
   },
   {
     id: "three-rail-middle",
