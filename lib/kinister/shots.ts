@@ -92,10 +92,7 @@ const KINISTER_VIDEOS = {
 } as const satisfies Record<string, ShotVideo>;
 
 /** Per-shot override: use a specific video instead of the series default. */
-const SHOT_VIDEO_OVERRIDES: Record<string, keyof typeof KINISTER_VIDEOS> = {
-  "force-follow": "shotmakersB",
-  combination: "shotmakersC",
-};
+const SHOT_VIDEO_OVERRIDES: Record<string, keyof typeof KINISTER_VIDEOS> = {};
 
 /** Per-shot start-time overrides (seconds). Fill in as we timestamp them. */
 const SHOT_START_SECONDS: Record<string, number> = {};
@@ -722,141 +719,155 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       "Side-pocket cut paired with single-rail tangent shape into the upper middle.",
   },
   {
-    id: "two-rail-kick",
+    id: "three-rail-high-english",
     number: 20,
-    name: "Two-Rail Kick",
-    shortName: "Two-Rail Kick",
-    series: "Run Out 9-Ball · Vol. 3",
+    name: "Three Rails — ¾ High English",
+    shortName: "3 Rails (High)",
+    series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 3.5 },
-    targetPocket: null,
+    cueBall: { x: 1.5, y: 2 },
+    objectBall: { x: 0.5, y: 0.6 },
+    targetPocket: "TR",
     cueBallPath: [
-      { x: 6.5, y: 4 },
-      { x: 8, y: 2.5 },
-      { x: 6, y: 3.5 },
+      { x: 0.3, y: 0.5 },
+      { x: 6, y: 4 },
+      { x: 7.5, y: 3.3 },
     ],
     description:
-      "Object ball hidden behind a blocker (implied). Cue ball must travel two rails to make legal contact with the OB.",
+      "Pocket the OB in the corner from the head end, then send the cue ball three rails diagonally across the table to land near the opposite corner.",
     technique:
-      "Diamond-system kick; standardize on running english at medium pace and choose a target diamond off the second rail.",
+      "Three-quarters tip of high (top) english, firm pace. The combined topspin and running side keep all three rebounds open.",
     commonMistakes: [
-      "Wrong english assumption",
-      "Speed wrong — the angle changes with pace",
+      "Not enough english → CB dies on the second rail",
+      "Too much pace → CB grabs a fourth rail",
     ],
     tips: [
-      "Use a kick system (Kinister demonstrates one on tape)",
-      "Standardize on running english at medium pace as a baseline",
+      "Calibrate the ¾-tip mark on your tip",
+      "Pace and english together — they tune the path",
     ],
     teaches:
-      "Systematic kicking — the difference between hoping and aiming.",
+      "High english with pace for a long three-rail diagonal pattern.",
   },
   {
-    id: "cross-side-bank",
+    id: "outside-english-draw",
     number: 21,
-    name: "Cross-Side Bank",
-    shortName: "Cross-Side Bank",
-    series: "Bank Shot Workout",
-    difficulty: "Intermediate",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 5, y: 3 },
-    targetPocket: "ML",
-    objectBallPath: [
-      { x: 5.5, y: 0 },
+    name: "Outside English + Draw",
+    shortName: "Outside Draw",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 2 },
+    objectBall: { x: 1, y: 0.5 },
+    targetPocket: "TR",
+    cueBallPath: [
       { x: 4, y: 4 },
+      { x: 3.5, y: 3.3 },
     ],
-    cueBallPath: [{ x: 5, y: 3 }],
     description:
-      "Cross-table single-rail bank into the opposite side pocket.",
+      "Cut the OB into the corner with right (outside) english and draw. CB pulls back diagonally across the table, kisses the far long rail, and lands just off it.",
     technique:
-      "Stun, dead-center; no english unless needed to compensate for cut-induced throw.",
+      "Right english plus low draw. Outside english widens the cut and combines with the draw to swing the CB across.",
     commonMistakes: [
-      "Cut-bank throw making the OB land short",
-      "Excess english changing OB rebound",
+      "Inside english instead of outside — OB throws into the rail",
+      "Decelerating into the ball → no draw",
     ],
     tips: [
-      "Mirror system for straight-in banks",
-      "Aim slightly thicker than mirror to compensate for cut-induced throw",
-    ],
-    teaches: "Bank geometry plus cut-induced angle change.",
-  },
-  {
-    id: "controlled-break",
-    number: 22,
-    name: "Controlled Break",
-    shortName: "Controlled Break",
-    series: "Secret 9-Ball Knowledge · Vol. 3",
-    difficulty: "Foundational",
-    cueBall: { x: 2, y: 1 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: null,
-    cueBallPath: [{ x: 4.5, y: 2 }],
-    description:
-      "Standard 9-ball rack on the foot spot. Cue ball behind the head string, slightly off-center. Pocket a ball and leave the cue near center.",
-    technique:
-      "Square, full hit on the 1; controlled speed (not max). CB control beats raw power.",
-    commonMistakes: [
-      "Hitting too hard → loss of cue-ball control",
-      "Off-center hit → cue ball flies around the table",
-    ],
-    tips: [
-      "Aim for a controlled break — fewer rails, more accuracy",
-      "Keep the cue level; ride the cue ball to a stop near center",
+      "Outside english helps hold the OB on its pocket line",
+      "Pace and draw together control where the CB lands",
     ],
     teaches:
-      "Repeatable break — pocket a ball plus leave the cue ball in playable position.",
+      "Outside-english draw — combining cut-friendly side spin with controlled draw distance.",
   },
   {
-    id: "jump-shot",
-    number: 23,
-    name: "Jump Shot Drill",
-    shortName: "Jump Shot",
-    series: "Jump Workout",
-    difficulty: "Advanced",
-    cueBall: { x: 4, y: 2 },
-    objectBall: { x: 6, y: 2 },
-    targetPocket: "BR",
-    cueBallPath: [{ x: 6, y: 2 }],
-    description:
-      "Blocker placed halfway between cue ball and object ball. Cue ball must jump cleanly over it to reach the OB.",
-    technique:
-      "Cue elevated 45° or more, short stroke, hit down through the cue ball just above center.",
-    commonMistakes: [
-      "Scooping (illegal)",
-      "Hitting too softly to clear the blocker",
-      "Hitting the blocker first",
-    ],
-    tips: [
-      "Use a jump cue or shorter break cue",
-      "Hit hard and quick — let the cue ball rebound up off the cloth",
-    ],
-    teaches: "Legal jumping mechanics.",
-  },
-  {
-    id: "combination",
-    number: 24,
-    name: "Combination Drill",
-    shortName: "Combo",
-    series: "Shotmakers Workout · Vol. 18",
+    id: "two-rail-out-of-corner",
+    number: 22,
+    name: "Two Rails Out of the Corner",
+    shortName: "2 Rails Out",
+    series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3, y: 2 },
-    objectBall: { x: 5, y: 2 },
-    targetPocket: "BR",
-    objectBallPath: [{ x: 6, y: 1.5 }],
-    cueBallPath: [{ x: 5, y: 2 }],
+    cueBall: { x: 5, y: 2.3 },
+    objectBall: { x: 4, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0.5, y: 2 },
+      { x: 2.5, y: 4 },
+      { x: 4, y: 2 },
+    ],
     description:
-      "Two object balls. The first must transfer the kiss into the second, which goes to the pocket.",
+      "Pocket the OB in the side and send the cue ball two rails — short rail then far long rail — back to the center of the table.",
     technique:
-      "Ghost-ball aiming on the second-to-first contact line; firm but not hard.",
+      "Low-left english (a little draw with left spin), medium pace. Just enough draw to start the back-and-around path.",
     commonMistakes: [
-      "Aiming the cue ball instead of the first OB's path",
-      "Throwing the OB off line with english",
+      "Too much draw → CB takes a sharper exit and misses the corner-out path",
+      "No left english → CB doesn't kick wide off the short rail",
     ],
     tips: [
-      "Find the first OB's contact point on the second; then aim the cue ball to put OB1 there",
-      "Avoid english unless needed for cue-ball position",
+      "Low and left, but neither one big — small amounts of each",
+      "Visualize the corner-out wrap before stroking",
     ],
-    teaches: "Aiming through chains of contact.",
+    teaches:
+      "Coming out of a side-pocket cut with a controlled two-rail return.",
+  },
+  {
+    id: "around-the-table-side-pocket",
+    number: 23,
+    name: "Around the Table — Side Pocket",
+    shortName: "Around (Side)",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 2 },
+    objectBall: { x: 3, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0, y: 2 },
+      { x: 3, y: 4 },
+      { x: 6, y: 0.3 },
+      { x: 6, y: 1 },
+    ],
+    description:
+      "Pocket the OB in the side and wrap the cue ball around three rails — short rail, far long rail, near long rail — to land down by the foot end of the right rail.",
+    technique:
+      "Running english with follow, firm pace. The wrap pattern only holds if the english carries through every rebound.",
+    commonMistakes: [
+      "Pace dies on the second rail — third rebound never happens",
+      "Wrong english angle → pattern collapses early",
+    ],
+    tips: [
+      "Pick the third-rail target diamond first",
+      "Running english is the constant — pace dictates distance",
+    ],
+    teaches:
+      "Multi-rail wrap pattern coming out of a side-pocket cut.",
+  },
+  {
+    id: "long-diagonal-scratch-aware",
+    number: 24,
+    name: "Long Diagonal — Watch the Scratch",
+    shortName: "Scratch Aware",
+    series: "Top Dogs Workout",
+    difficulty: "Advanced",
+    cueBall: { x: 3, y: 1.8 },
+    objectBall: { x: 3, y: 0.4 },
+    targetPocket: "MR",
+    cueBallPath: [
+      { x: 0, y: 2.5 },
+      { x: 6, y: 4 },
+      { x: 5, y: 0.3 },
+      { x: 5.5, y: 1.5 },
+    ],
+    description:
+      "Same setup as the around-the-table side-pocket shot, but the long diagonal path opens up scratch lines into multiple pockets. The drill is reading and avoiding them.",
+    technique:
+      "Running english, firm pace. The challenge is the path crosses scratch lines — read the rebound chain before stroking.",
+    commonMistakes: [
+      "Scratching in the opposite corner",
+      "Scratching in the far side pocket on the second rebound",
+    ],
+    tips: [
+      "Trace the full path on the cloth before stroking — every rebound point matters",
+      "If a scratch line is unavoidable, change pace to die before reaching it",
+    ],
+    teaches:
+      "Scratch-line awareness in multi-rail position routes.",
   },
   {
     id: "safety-hook",
