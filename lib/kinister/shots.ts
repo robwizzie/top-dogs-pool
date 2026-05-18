@@ -293,18 +293,17 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rails",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 3, y: 2.7 },
-    objectBall: { x: 1.5, y: 1.5 },
+    cueBall: { x: 3, y: 2.3 },
+    objectBall: { x: 2, y: 1.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.7 },
+      { x: 0, y: 0.9 },
       { x: 1.7, y: 4 },
-      { x: 0, y: 3.3 },
-      { x: 3, y: 2.7 },
+      { x: 3, y: 2.3 },
     ],
     english: { x: -0.5, y: 0.6 },
     description:
-      "Cue ball starts in the middle of the table just inside the side-pocket line. Cut the OB into the far corner and send the cue ball three rails — short rail, far long rail, short rail again — to land right where it started, ready for the next ball.",
+      "Cue ball starts in the middle of the table, just left of the center vertical line. Cut the OB into the far corner and wrap the cue ball off the short rail near the pocket and the far long rail back to the middle of the table where it started — ready for the next ball.",
     technique:
       "Above-center with running english, firm pace. The english keeps each rebound angle open so the cue ball wraps cleanly back to the side-pocket area.",
     commonMistakes: [
@@ -386,13 +385,16 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Soft English",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 4, y: 1.5 },
-    objectBall: { x: 1, y: 0.5 },
+    cueBall: { x: 3, y: 1.7 },
+    objectBall: { x: 0.7, y: 0.4 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 1, y: 3.5 }],
+    cueBallPath: [
+      { x: 0.9, y: 4 },
+      { x: 1.1, y: 3.7 },
+    ],
     english: { x: 0.15, y: 0 },
     description:
-      "Variation of the draw-to-center shot. Cut the OB into the corner and float the cue ball straight across the table to the opposite long rail using just a whisper of english.",
+      "Variation of the draw-to-center shot. Cut the OB into the corner and float the cue ball straight across the table off the opposite long rail using just a whisper of english — CB nicks the far long rail and dies right next to it.",
     technique:
       "Very little english — no more than one-eighth of a tip. Soft stun pace; the english widens the tangent line just enough to send the CB cleanly across.",
     commonMistakes: [
