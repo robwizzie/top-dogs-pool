@@ -2,14 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { Menu, Search, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { LogoMark } from "@/components/brand/Logo";
 import { LiveDot } from "@/components/live/LiveCTA";
 import { CartButton } from "@/components/store/CartButton";
 import { useIsPoolNightLive } from "@/lib/hooks/useIsPoolNightLive";
-import { NAV_LINKS, TIKTOK_LIVE_URL } from "@/lib/config";
+import {
+  NAV_GROUPS,
+  NAV_LINKS,
+  TIKTOK_LIVE_URL,
+  isNavGroup,
+  type NavGroup as NavGroupT,
+  type NavItem,
+} from "@/lib/config";
 import { cn } from "@/lib/utils";
+
+function isActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -24,32 +36,21 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((link) => {
-            const active =
-              pathname === link.href ||
-              (link.href !== "/" && pathname.startsWith(`${link.href}/`));
-            const isLive = link.href === "/live";
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "relative rounded-full px-4 py-2 text-sm font-medium tracking-wide transition-colors",
-                  active
-                    ? "text-[var(--color-brass-bright)]"
-                    : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
-                )}
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  {link.label}
-                  {isLive && <LiveDot />}
-                </span>
-                {active && (
-                  <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-[var(--color-brass)] to-transparent" />
-                )}
-              </Link>
-            );
-          })}
+          {NAV_GROUPS.map((entry) =>
+            isNavGroup(entry) ? (
+              <NavGroupMenu
+                key={entry.label}
+                group={entry}
+                pathname={pathname}
+              />
+            ) : (
+              <NavLeafLink
+                key={entry.href}
+                item={entry}
+                pathname={pathname}
+              />
+            ),
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -112,5 +113,146 @@ export function SiteHeader() {
         </div>
       )}
     </header>
+  );
+}
+
+function NavLeafLink({
+  item,
+  pathname,
+}: {
+  item: NavItem;
+  pathname: string;
+}) {
+  const active = isActive(pathname, item.href);
+  const isLive = item.href === "/live";
+  return (
+    <Link
+      href={item.href}
+      className={cn(
+        "relative rounded-full px-4 py-2 text-sm font-medium tracking-wide transition-colors",
+        active
+          ? "text-[var(--color-brass-bright)]"
+          : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
+      )}
+    >
+      <span className="inline-flex items-center gap-1.5">
+        {item.label}
+        {isLive && <LiveDot />}
+      </span>
+      {active && (
+        <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-[var(--color-brass)] to-transparent" />
+      )}
+    </Link>
+  );
+}
+
+function NavGroupMenu({
+  group,
+  pathname,
+}: {
+  group: NavGroupT;
+  pathname: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<number | null>(null);
+
+  const childActive = group.items.some((item) => isActive(pathname, item.href));
+
+  // Close on route change.
+  useEffect(() => setOpen(false), [pathname]);
+
+  // Close on outside click + escape.
+  useEffect(() => {
+    if (!open) return;
+    function onPointer(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  function openNow() {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    setOpen(true);
+  }
+  function scheduleClose() {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpen(false), 120);
+  }
+
+  return (
+    <div
+      ref={wrapRef}
+      className="relative"
+      onMouseEnter={openNow}
+      onMouseLeave={scheduleClose}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className={cn(
+          "relative inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium tracking-wide transition-colors",
+          childActive
+            ? "text-[var(--color-brass-bright)]"
+            : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
+        )}
+      >
+        {group.label}
+        <ChevronDown
+          size={14}
+          className={cn(
+            "transition-transform duration-150",
+            open && "rotate-180",
+          )}
+        />
+        {childActive && (
+          <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-[var(--color-brass)] to-transparent" />
+        )}
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2"
+        >
+          <div className="min-w-[11rem] rounded-xl border border-[var(--border-strong)] bg-[var(--bg-card)] p-1 shadow-[var(--shadow-felt)]">
+            {group.items.map((item) => {
+              const active = isActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "block rounded-lg px-3 py-2 text-sm font-medium tracking-wide transition-colors",
+                    active
+                      ? "bg-[color-mix(in_oklab,var(--color-felt)_45%,transparent)] text-[var(--color-brass-bright)]"
+                      : "text-[var(--fg)] hover:bg-[var(--bg-soft)] hover:text-[var(--color-brass-bright)]",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

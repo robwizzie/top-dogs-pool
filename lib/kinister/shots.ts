@@ -48,6 +48,95 @@ export type KinisterShot = {
   teaches: string;
 };
 
+/**
+ * Source video for a shot. `videoId` (YouTube) enables both deep-link and
+ * embedded player. `url` is for shots whose source video is not on a public
+ * YouTube channel — link out to Bert's streaming library instead.
+ */
+export type ShotVideo = {
+  videoId?: string;
+  url?: string;
+  /** Optional start time in seconds (jumps to this shot within the video). */
+  startSeconds?: number;
+  /** Human-readable source label, e.g. "60 Minute Workout · YouTube". */
+  label: string;
+};
+
+const KINISTER_VIDEOS = {
+  sixtyMin: { videoId: "G6zBTXwTHGs", label: "60 Minute Workout · YouTube" },
+  mightyX: { videoId: "VinL0GpyNk4", label: "The Mighty X · YouTube" },
+  shotmakersA: {
+    videoId: "De99jCUBO-k",
+    label: "Shotmakers Workout · Part A",
+  },
+  shotmakersB: {
+    videoId: "pRYfD9weMGs",
+    label: "Shotmakers Workout · Part B",
+  },
+  shotmakersC: {
+    videoId: "Gcg0pDeVc7I",
+    label: "Shotmakers Workout · Part C",
+  },
+  secret9Ball: {
+    videoId: "zswtpo41m3w",
+    label: "Secret 9-Ball Knowledge",
+  },
+  middleGame: {
+    videoId: "42_-zDA2vHU",
+    label: "The Middle Game",
+  },
+  bertSite: {
+    url: "https://bertkinister.com/services/",
+    label: "Bert Kinister · Streaming Library",
+  },
+} as const satisfies Record<string, ShotVideo>;
+
+/** Per-shot override: use a specific video instead of the series default. */
+const SHOT_VIDEO_OVERRIDES: Record<string, keyof typeof KINISTER_VIDEOS> = {
+  "force-follow": "shotmakersB",
+  combination: "shotmakersC",
+};
+
+/** Per-shot start-time overrides (seconds). Fill in as we timestamp them. */
+const SHOT_START_SECONDS: Record<string, number> = {};
+
+/**
+ * Resolve the source video for a shot. Looks up an override first, then
+ * falls back to a series-based default. Layered so we can fine-tune
+ * specific shots (and add timestamps) without touching every record.
+ */
+export function videoFor(shot: KinisterShot): ShotVideo {
+  const override = SHOT_VIDEO_OVERRIDES[shot.id];
+  const base: ShotVideo = override
+    ? KINISTER_VIDEOS[override]
+    : seriesDefault(shot.series);
+  const startSeconds = SHOT_START_SECONDS[shot.id];
+  return startSeconds !== undefined ? { ...base, startSeconds } : base;
+}
+
+function seriesDefault(series: string): ShotVideo {
+  const s = series.toLowerCase();
+  if (s.includes("60 minute")) return KINISTER_VIDEOS.sixtyMin;
+  if (s.includes("mighty x")) return KINISTER_VIDEOS.mightyX;
+  if (s.includes("shotmakers")) return KINISTER_VIDEOS.shotmakersA;
+  if (s.includes("secret 9-ball") || s.includes("run out 9-ball")) {
+    return KINISTER_VIDEOS.secret9Ball;
+  }
+  if (s.includes("middle game")) return KINISTER_VIDEOS.middleGame;
+  return KINISTER_VIDEOS.bertSite;
+}
+
+/** Builds the watch link, including ?t= if a startSeconds was provided. */
+export function watchUrl(video: ShotVideo): string {
+  if (video.videoId) {
+    const base = `https://www.youtube.com/watch?v=${video.videoId}`;
+    return video.startSeconds
+      ? `${base}&t=${Math.floor(video.startSeconds)}s`
+      : base;
+  }
+  return video.url ?? "https://bertkinister.com/";
+}
+
 export const KINISTER_SHOTS: KinisterShot[] = [
   {
     id: "replace-shot",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import type { KinisterShot } from "@/lib/kinister/shots";
 import { PoolTable } from "./PoolTable";
 import { cn } from "@/lib/utils";
@@ -13,12 +13,30 @@ const DIFFICULTY_STYLES: Record<KinisterShot["difficulty"], string> = {
     "border-[var(--color-pop)]/40 text-[var(--color-pop-bright)] bg-[var(--color-pop)]/10",
 };
 
-export function ShotCard({ shot }: { shot: KinisterShot }) {
+export function ShotCard({
+  shot,
+  drilled = false,
+}: {
+  shot: KinisterShot;
+  drilled?: boolean;
+}) {
   return (
     <Link
       href={`/shots/${shot.id}`}
-      className="group surface surface-hover relative flex flex-col gap-3 overflow-hidden p-4 transition-all hover:-translate-y-0.5"
+      className={cn(
+        "group surface surface-hover relative flex flex-col gap-3 overflow-hidden p-4 transition-all hover:-translate-y-0.5",
+        drilled && "border-[var(--color-felt-bright)]/45",
+      )}
     >
+      {drilled && (
+        <span
+          className="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full border border-[var(--color-felt-bright)]/45 bg-[var(--color-felt-deep)]/80 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--color-felt-bright)] backdrop-blur"
+          title="Marked as drilled"
+        >
+          <CheckCircle2 size={11} />
+          Drilled
+        </span>
+      )}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
