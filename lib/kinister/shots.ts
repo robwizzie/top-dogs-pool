@@ -25,6 +25,17 @@ export const POCKETS: Record<PocketId, DiamondCoord> = {
 
 export type Difficulty = "Foundational" | "Intermediate" | "Advanced";
 
+/**
+ * One step of a multi-ball drill (e.g. run-six-balls). Each step pockets a
+ * single ball and lands the cue ball in `cueAfter` for the next step.
+ */
+export type DrillStep = {
+  ball: DiamondCoord;
+  pocket: PocketId;
+  /** Where the cue ball rests after pocketing this ball. */
+  cueAfter: DiamondCoord;
+};
+
 export type KinisterShot = {
   id: string;
   number: number;
@@ -42,6 +53,8 @@ export type KinisterShot = {
   objectBallPath?: DiamondCoord[];
   /** Additional balls on the table for context (multi-ball drills). Rendered statically — they don't move with the animation. */
   otherBalls?: DiamondCoord[];
+  /** Ordered pocketing sequence for multi-ball drills. When present, the diagram numbers each ball and draws the full run-out. */
+  sequence?: DrillStep[];
   /** One-sentence setup blurb. */
   description: string;
   technique: string;
@@ -920,19 +933,41 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBall: { x: 1.5, y: 1.8 },
     objectBall: { x: 0.4, y: 0.6 },
     targetPocket: "TR",
-    cueBallPath: [
-      { x: 0.5, y: 1 },
-      { x: 1.8, y: 1.6 },
-    ],
-    otherBalls: [
-      { x: 0.4, y: 1.5 },
-      { x: 0.4, y: 2.2 },
-      { x: 1.3, y: 0.5 },
-      { x: 1.9, y: 0.4 },
-      { x: 2.6, y: 0.4 },
+    cueBallPath: [{ x: 0.8, y: 1.2 }],
+    sequence: [
+      {
+        ball: { x: 0.4, y: 0.6 },
+        pocket: "TR",
+        cueAfter: { x: 0.8, y: 1.2 },
+      },
+      {
+        ball: { x: 0.4, y: 1.5 },
+        pocket: "TR",
+        cueAfter: { x: 0.9, y: 2 },
+      },
+      {
+        ball: { x: 0.4, y: 2.2 },
+        pocket: "TR",
+        cueAfter: { x: 1.4, y: 1.4 },
+      },
+      {
+        ball: { x: 1.3, y: 0.5 },
+        pocket: "TR",
+        cueAfter: { x: 1.7, y: 0.9 },
+      },
+      {
+        ball: { x: 1.9, y: 0.4 },
+        pocket: "TR",
+        cueAfter: { x: 2.3, y: 0.8 },
+      },
+      {
+        ball: { x: 2.6, y: 0.4 },
+        pocket: "TR",
+        cueAfter: { x: 2.6, y: 1.4 },
+      },
     ],
     description:
-      "Six object balls clustered around the corner pocket and the head end of the right rail. Run them one at a time, with the cue ball cycling through small position moves between each shot. The whole drill stays in the head end of the table.",
+      "Six object balls clustered around the corner pocket and the head end of the right rail. Run them one at a time in the order shown, with the cue ball cycling through small position moves between each shot. The whole drill stays in the head end of the table.",
     technique:
       "Soft touch, minimal english. Each shot is short and the cue ball moves only a diamond or two between balls.",
     commonMistakes: [
