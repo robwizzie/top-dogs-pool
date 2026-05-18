@@ -97,8 +97,20 @@ const SHOT_VIDEO_OVERRIDES: Record<string, keyof typeof KINISTER_VIDEOS> = {
   combination: "shotmakersC",
 };
 
-/** Per-shot start-time overrides (seconds). Fill in as we timestamp them. */
-const SHOT_START_SECONDS: Record<string, number> = {};
+/**
+ * Per-shot YouTube start times (seconds). The embed and "Watch on YouTube"
+ * link both jump to this mark.
+ *
+ * To add one: watch the source video, note the moment the shot is set up
+ * (or first demonstrated), and add `"<shot-id>": <seconds>` below. IDs
+ * match `KinisterShot.id` (e.g. "replace-shot", "mighty-x"). Convert
+ * mm:ss → seconds (e.g. 1:23 → 83).
+ */
+const SHOT_START_SECONDS: Record<string, number> = {
+  // "replace-shot": 32,
+  // "diagonal-draw": 195,
+  // ...
+};
 
 /**
  * Resolve the source video for a shot. Looks up an override first, then
