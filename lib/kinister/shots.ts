@@ -394,13 +394,13 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "2 Rails (No 3rd)",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 3, y: 2 },
-    objectBall: { x: 1, y: 0.6 },
+    cueBall: { x: 2.4, y: 2.3 },
+    objectBall: { x: 0.6, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 1.5 },
-      { x: 1, y: 4 },
-      { x: 1, y: 0.8 },
+      { x: 0, y: 1.6 },
+      { x: 0.55, y: 4 },
+      { x: 0.85, y: 0.7 },
     ],
     description:
       "Pocket the OB in the corner; cue ball comes off the short rail, then the far long rail, and dies before it can pick up a third rail. Lands back near where the OB was.",
