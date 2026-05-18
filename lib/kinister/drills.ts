@@ -21,6 +21,12 @@ export type DrillScoring = {
   unit?: string;
   /** Higher score is better (default) vs lower score is better. */
   goal?: "high" | "low";
+  /**
+   * Tracker variant:
+   *   - "single" (default) → log final per-attempt score
+   *   - "bowling" → 10-frame bowling-style live scorecard (Bowliards)
+   */
+  kind?: "single" | "bowling";
 };
 
 export type Drill = {
@@ -271,9 +277,10 @@ export const DRILLS: Drill[] = [
     ],
     scoring: {
       label: "Game score",
-      max: 200,
+      max: 300,
       unit: "points",
       goal: "high",
+      kind: "bowling",
     },
   },
 ];
