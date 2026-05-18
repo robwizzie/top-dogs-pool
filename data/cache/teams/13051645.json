@@ -1,13 +1,13 @@
 {
-  "fetchedAt": "2026-05-11T16:41:36.387Z",
+  "fetchedAt": "2026-05-18T15:11:03.622Z",
   "data": {
     "teamPage": {
       "team": {
         "id": 13051645,
         "name": "The Railhouse",
         "number": "06803",
-        "isTied": null,
-        "standing": null,
+        "isTied": false,
+        "standing": 1,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -63,10 +63,10 @@
             "id": 92369008,
             "memberNumber": "08209244",
             "displayName": "Paul Thomas III",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -79,7 +79,7 @@
             "memberNumber": "08211739",
             "displayName": "Michael Hamilton",
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
@@ -108,10 +108,10 @@
             "id": 92369011,
             "memberNumber": "08214155",
             "displayName": "Keziah Law",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -123,10 +123,10 @@
             "id": 92369012,
             "memberNumber": "08206836",
             "displayName": "Kurt Kreidler",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -138,11 +138,11 @@
             "id": 92382360,
             "memberNumber": "08214567",
             "displayName": "Anthony Carter",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3466803,
@@ -156,9 +156,9 @@
     "teamSchedule": {
       "team": {
         "id": 13051645,
-        "sessionBonusPoints": null,
-        "sessionPoints": null,
-        "sessionTotalPoints": 0,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 14,
+        "sessionTotalPoints": 14,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -170,17 +170,34 @@
             "type": "EIGHT",
             "id": 50630040,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-05-12T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -232,7 +249,7 @@
             "id": 50630046,
             "isBye": false,
             "status": "UNPLAYED",
-            "scoresheet": null,
+            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/50630046/3175746/3",
             "startTime": "2026-05-19T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
@@ -1083,7 +1100,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-08-25T00:00:00Z",
+            "startTime": "2026-08-25T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
             "isScored": false,
@@ -1100,7 +1117,13 @@
             "location": null,
             "home": null,
             "away": null,
-            "league": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
             "orderItems": null,
             "division": {
               "id": 431614,
@@ -1117,7 +1140,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-09-01T00:00:00Z",
+            "startTime": "2026-09-01T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
             "isScored": false,
@@ -1134,7 +1157,13 @@
             "location": null,
             "home": null,
             "away": null,
-            "league": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
             "orderItems": null,
             "division": {
               "id": 431614,

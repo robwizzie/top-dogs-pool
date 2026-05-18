@@ -1,13 +1,13 @@
 {
-  "fetchedAt": "2026-05-11T16:42:09.183Z",
+  "fetchedAt": "2026-05-18T15:11:58.270Z",
   "data": {
     "teamPage": {
       "team": {
         "id": 13022789,
         "name": "Break 8 Away",
         "number": "06802",
-        "isTied": null,
-        "standing": null,
+        "isTied": false,
+        "standing": 4,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -64,7 +64,7 @@
             "memberNumber": "08208777",
             "displayName": "Johnny Fontanez",
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
@@ -78,10 +78,10 @@
             "id": 92156404,
             "memberNumber": "08230234",
             "displayName": "Andrew Duong",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -94,9 +94,9 @@
             "memberNumber": "08208665",
             "displayName": "Eric Gdanski",
             "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -109,7 +109,7 @@
             "memberNumber": "08239182",
             "displayName": "Francisco Castillo",
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 5,
@@ -153,10 +153,10 @@
             "id": 92156405,
             "memberNumber": "08207688",
             "displayName": "Kyle Wilkins",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -186,9 +186,9 @@
     "teamSchedule": {
       "team": {
         "id": 13022789,
-        "sessionBonusPoints": null,
-        "sessionPoints": null,
-        "sessionTotalPoints": 0,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 11,
+        "sessionTotalPoints": 11,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -200,17 +200,34 @@
             "type": "EIGHT",
             "id": 50630039,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-05-12T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -1117,7 +1134,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-08-25T00:00:00Z",
+            "startTime": "2026-08-25T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
             "isScored": false,
@@ -1134,7 +1151,13 @@
             "location": null,
             "home": null,
             "away": null,
-            "league": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
             "orderItems": null,
             "division": {
               "id": 431614,
@@ -1151,7 +1174,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-09-01T00:00:00Z",
+            "startTime": "2026-09-01T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
             "isScored": false,
@@ -1168,7 +1191,13 @@
             "location": null,
             "home": null,
             "away": null,
-            "league": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
             "orderItems": null,
             "division": {
               "id": 431614,
