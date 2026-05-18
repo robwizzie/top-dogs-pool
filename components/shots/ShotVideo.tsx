@@ -13,9 +13,10 @@ import { cn } from "@/lib/utils";
  * external link to Bert's streaming library.
  */
 export function ShotVideoBlock({ video }: { video: ShotVideo }) {
-  const [open, setOpen] = useState(false);
-  const url = watchUrl(video);
   const hasEmbed = Boolean(video.videoId);
+  // Player is open by default when we have a YouTube ID; users can collapse it.
+  const [open, setOpen] = useState(hasEmbed);
+  const url = watchUrl(video);
 
   if (!hasEmbed) {
     return (
