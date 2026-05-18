@@ -976,12 +976,23 @@ async function main() {
     for (const [k, agg] of aggregations) {
       const [, pid] = k.split("::");
       if (pid !== memberNumber) continue;
+      // For the CURRENT session, prefer the team roster's live skill level —
+      // it's the authoritative current rating from APA. The match-derived
+      // skill level can lag (e.g. a player rated 3 today but played their
+      // only match while still listed as SL 0 will have endingSkillLevel=0).
+      // For past sessions, use the historical match-derived value so the
+      // session record correctly reflects what they were rated at the time.
+      const isCurrent =
+        currentSessionId !== null && agg.sessionId === currentSessionId;
+      const displaySL = isCurrent
+        ? memberMeta.currentSL ?? agg.endingSkillLevel ?? agg.skillLevel
+        : agg.endingSkillLevel ?? agg.skillLevel;
       sessionsMap.set(agg.sessionId, {
         sessionId: agg.sessionId,
         sessionName: agg.sessionName,
         teamId: agg.teamId,
         teamName: agg.teamName,
-        skillLevel: agg.endingSkillLevel ?? agg.skillLevel,
+        skillLevel: displaySL,
         startingSkillLevel: agg.startingSkillLevel,
         endingSkillLevel: agg.endingSkillLevel,
         matchesPlayed: agg.matchesPlayed,
@@ -1222,7 +1233,14 @@ async function main() {
           row.mvp = agg.mvp;
           row.matchesPlayed = agg.matchesPlayed;
           row.wins = agg.wins;
-          row.skillLevel = agg.endingSkillLevel ?? agg.skillLevel;
+          // For the current session leaderboard, prefer the team-roster live
+          // SL over match-derived (which can lag for newly-rated players).
+          row.skillLevel =
+            filter === currentSessionId
+              ? profile?.currentSkillLevel ??
+                agg.endingSkillLevel ??
+                agg.skillLevel
+              : agg.endingSkillLevel ?? agg.skillLevel;
           row._participated = true;
         }
       }
