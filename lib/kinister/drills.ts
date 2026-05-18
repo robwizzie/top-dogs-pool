@@ -8,6 +8,21 @@
 
 import type { DiamondCoord, Difficulty } from "./shots";
 
+/**
+ * Scoring rules for a drill. When present, the drill detail page renders a
+ * tracker that lets one or more players log attempts.
+ */
+export type DrillScoring = {
+  /** What a single rep scores — "Balls run", "Rung reached", "Points", etc. */
+  label: string;
+  /** Optional max value (e.g. 6 for Run Six Balls). Used for visual scale. */
+  max?: number;
+  /** Unit shown next to numbers, e.g. "balls", "rungs", "points". */
+  unit?: string;
+  /** Higher score is better (default) vs lower score is better. */
+  goal?: "high" | "low";
+};
+
 export type Drill = {
   id: string;
   name: string;
@@ -19,6 +34,10 @@ export type Drill = {
   setup: string[];
   /** What the drill teaches and how to score yourself. */
   goals: string[];
+  /** Technique notes shown on the detail page. */
+  technique?: string;
+  /** Common pitfalls. */
+  commonMistakes?: string[];
   /** Optional CB starting position for the diagram. */
   cueBall?: DiamondCoord;
   /** Optional OB positions for the diagram. */
@@ -28,6 +47,8 @@ export type Drill = {
   /** Optional external reference link. */
   externalUrl?: string;
   externalLabel?: string;
+  /** Optional scoring metadata (enables the score tracker on the detail page). */
+  scoring?: DrillScoring;
 };
 
 export const DRILLS: Drill[] = [
@@ -49,6 +70,13 @@ export const DRILLS: Drill[] = [
       "Pure center-ball contact at every rung — any unintended draw or follow shows immediately",
       "Score yourself on the highest rung reached without a miss",
     ],
+    technique:
+      "Dead-center hit, smooth medium pace, no follow or draw. Same tip strike every rep — only the distance changes.",
+    commonMistakes: [
+      "Speed creep — hitting harder as distance grows",
+      "Inconsistent tip strike when nervous near the end of the ladder",
+      "Unintended english that walks the CB off line",
+    ],
     cueBall: { x: 2, y: 2 },
     objectBalls: [{ x: 3, y: 2 }],
     ghostBalls: [
@@ -57,6 +85,12 @@ export const DRILLS: Drill[] = [
       { x: 6, y: 2 },
       { x: 7, y: 2 },
     ],
+    scoring: {
+      label: "Highest rung",
+      max: 7,
+      unit: "rungs",
+      goal: "high",
+    },
   },
   {
     id: "wagon-wheel",
@@ -76,6 +110,12 @@ export const DRILLS: Drill[] = [
       "Score yourself out of 6 — track progress across sessions",
       "Identify which zones you struggle with and build sub-drills around them",
     ],
+    technique:
+      "Vary spin and speed to land the cue ball in each numbered zone. Same shot, six different cue-ball results.",
+    commonMistakes: [
+      "Mixing axes (spin and follow) inconsistently",
+      "Inconsistent speed across reps",
+    ],
     cueBall: { x: 4, y: 2 },
     objectBalls: [{ x: 6, y: 2 }],
     ghostBalls: [
@@ -86,6 +126,12 @@ export const DRILLS: Drill[] = [
       { x: 4, y: 3.5 },
       { x: 7.5, y: 3.5 },
     ],
+    scoring: {
+      label: "Zones hit",
+      max: 6,
+      unit: "zones",
+      goal: "high",
+    },
   },
   {
     id: "mighty-x",
@@ -104,10 +150,22 @@ export const DRILLS: Drill[] = [
       "Cycle stop / replace / follow / draw on the same shape",
       "Find and eliminate inconsistencies in your address",
     ],
+    technique:
+      "Identical pre-shot routine every rep. Focus on the tip's arrival point at the cue ball, not the OB.",
+    commonMistakes: [
+      "Excessive practice strokes that erode commitment",
+      "Body movement during the stroke",
+      "Inconsistent address each rep",
+    ],
     cueBall: { x: 6, y: 1 },
     objectBalls: [{ x: 2, y: 3 }],
     externalUrl: "https://www.youtube.com/watch?v=VinL0GpyNk4",
     externalLabel: "Watch Bert Kinister — The Mighty X",
+    scoring: {
+      label: "Made in a row",
+      unit: "reps",
+      goal: "high",
+    },
   },
   {
     id: "line-up-drill",
@@ -127,6 +185,13 @@ export const DRILLS: Drill[] = [
       "Build cluster-reading and pocket-selection instincts",
       "Practice transitioning between offense and break-out shots",
     ],
+    technique:
+      "Soft, controlled break to spread the line. After that, plan two balls ahead — pocket selection and traffic management matter more than power.",
+    commonMistakes: [
+      "Breaking too hard and losing cue-ball control",
+      "Ignoring clusters until they become problems",
+      "Locking onto one pocket instead of using both ends of the table",
+    ],
     cueBall: { x: 2, y: 2 },
     objectBalls: [
       { x: 4.2, y: 2 },
@@ -141,6 +206,12 @@ export const DRILLS: Drill[] = [
       { x: 6.9, y: 2 },
       { x: 7.2, y: 2 },
     ],
+    scoring: {
+      label: "High run",
+      max: 15,
+      unit: "balls",
+      goal: "high",
+    },
   },
   {
     id: "nine-ball-ghost",
@@ -160,6 +231,18 @@ export const DRILLS: Drill[] = [
       "Track win rate against the Ghost across sessions",
       "Identify the shot you miss most often and drill it separately",
     ],
+    technique:
+      "Take the right shot, not the hardest one. Patterns over power. The Ghost never gives you a second chance.",
+    commonMistakes: [
+      "Forcing low-percentage shots when a safety would win",
+      "Bad ball-in-hand placement after the break",
+    ],
+    scoring: {
+      label: "Racks won",
+      max: 10,
+      unit: "racks",
+      goal: "high",
+    },
   },
   {
     id: "bowliards",
@@ -180,6 +263,18 @@ export const DRILLS: Drill[] = [
       "Compete against your previous best",
       "Builds running discipline and break-and-run frequency",
     ],
+    technique:
+      "Treat each frame independently. Don't chase strikes — protect spares. Consistent running matters more than one big frame.",
+    commonMistakes: [
+      "Going for the strike on every frame and burning through the rack",
+      "Forgetting to count bonus innings on strikes and spares",
+    ],
+    scoring: {
+      label: "Game score",
+      max: 200,
+      unit: "points",
+      goal: "high",
+    },
   },
 ];
 

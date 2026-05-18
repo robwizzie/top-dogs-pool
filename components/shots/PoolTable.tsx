@@ -39,6 +39,10 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
   const startedAtRef = useRef<number | null>(null);
   const startFromRef = useRef(0);
 
+  const sequence = shot.sequence;
+  const stepCount = sequence?.length ?? 1;
+  const totalMs = TOTAL_MS * stepCount;
+
   const contact = useMemo(
     () => contactPoint(shot.cueBall, shot.objectBall),
     [shot.cueBall, shot.objectBall],
@@ -64,7 +68,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     const tick = (now: number) => {
       if (startedAtRef.current === null) startedAtRef.current = now;
       const elapsed = now - startedAtRef.current;
-      const p = Math.min(1, startFromRef.current + elapsed / TOTAL_MS);
+      const p = Math.min(1, startFromRef.current + elapsed / totalMs);
       setProgress(p);
       if (p >= 1) {
         setPlaying(false);
@@ -82,12 +86,39 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing]);
+  }, [playing, totalMs]);
 
   // Derive live positions from `progress`.
   let cuePos: DiamondCoord;
   let obPos: DiamondCoord;
-  if (progress <= 0) {
+  // For sequence shots: how many balls have been pocketed already, and the
+  // current active step's ball + ob animation position.
+  let pocketedCount = 0;
+  let activeStepIdx = 0;
+
+  if (sequence && sequence.length > 0) {
+    const stepProgress = progress * sequence.length;
+    activeStepIdx = Math.min(sequence.length - 1, Math.floor(stepProgress));
+    const localProgress = stepProgress - activeStepIdx;
+    pocketedCount = progress >= 1 ? sequence.length : activeStepIdx;
+    const prevCue =
+      activeStepIdx === 0
+        ? shot.cueBall
+        : sequence[activeStepIdx - 1].cueAfter;
+    const step = sequence[activeStepIdx];
+    const stepContact = contactPoint(prevCue, step.ball);
+    const stepOBPath: DiamondCoord[] = [POCKETS[step.pocket]];
+
+    if (localProgress < APPROACH_FRACTION) {
+      const t = localProgress / APPROACH_FRACTION;
+      cuePos = walkPath(prevCue, [stepContact], t);
+      obPos = step.ball;
+    } else {
+      const t = (localProgress - APPROACH_FRACTION) / (1 - APPROACH_FRACTION);
+      cuePos = walkPath(stepContact, [step.cueAfter], t);
+      obPos = walkPath(step.ball, stepOBPath, t);
+    }
+  } else if (progress <= 0) {
     cuePos = shot.cueBall;
     obPos = shot.objectBall;
   } else if (progress < APPROACH_FRACTION) {
@@ -236,81 +267,158 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
             );
           })}
 
-          {/* OB path (dashed brass) */}
-          {obFinalPath.length > 0 && (
-            <PathLine
-              start={shot.objectBall}
-              waypoints={obFinalPath}
-              stroke="rgba(224,190,107,0.7)"
-              strokeWidth={2}
-              dash="6 6"
-            />
+          {sequence && sequence.length > 0 ? (
+            <>
+              {/* Per-step OB → pocket lines (dashed brass) */}
+              {sequence.map((step, i) => (
+                <PathLine
+                  key={`seq-ob-${i}`}
+                  start={step.ball}
+                  waypoints={[POCKETS[step.pocket]]}
+                  stroke="rgba(224,190,107,0.55)"
+                  strokeWidth={1.6}
+                  dash="6 6"
+                />
+              ))}
+              {/* Continuous CB path through every step (solid cream dotted) */}
+              <PathLine
+                start={shot.cueBall}
+                waypoints={(() => {
+                  const pts: DiamondCoord[] = [];
+                  let prev = shot.cueBall;
+                  for (const step of sequence) {
+                    pts.push(contactPoint(prev, step.ball));
+                    pts.push(step.cueAfter);
+                    prev = step.cueAfter;
+                  }
+                  return pts;
+                })()}
+                stroke="rgba(236,225,196,0.55)"
+                strokeWidth={1.6}
+                dash="2 5"
+              />
+            </>
+          ) : (
+            <>
+              {/* OB path (dashed brass) */}
+              {obFinalPath.length > 0 && (
+                <PathLine
+                  start={shot.objectBall}
+                  waypoints={obFinalPath}
+                  stroke="rgba(224,190,107,0.7)"
+                  strokeWidth={2}
+                  dash="6 6"
+                />
+              )}
+
+              {/* CB path (solid cream) */}
+              <PathLine
+                start={shot.cueBall}
+                waypoints={[contact, ...shot.cueBallPath]}
+                stroke="rgba(236,225,196,0.75)"
+                strokeWidth={2}
+                dash="2 5"
+              />
+
+              {/* Direction arrows */}
+              {obFinalPath.length > 0 && (
+                <Arrow
+                  from={obFinalPath[obFinalPath.length - 2] ?? shot.objectBall}
+                  to={obFinalPath[obFinalPath.length - 1]}
+                  fill="rgba(224,190,107,0.85)"
+                />
+              )}
+              {shot.cueBallPath.length > 0 && (
+                <Arrow
+                  from={
+                    shot.cueBallPath[shot.cueBallPath.length - 2] ?? contact
+                  }
+                  to={shot.cueBallPath[shot.cueBallPath.length - 1]}
+                  fill="rgba(236,225,196,0.9)"
+                />
+              )}
+            </>
           )}
 
-          {/* CB path (solid cream) */}
-          <PathLine
-            start={shot.cueBall}
-            waypoints={[contact, ...shot.cueBallPath]}
-            stroke="rgba(236,225,196,0.75)"
-            strokeWidth={2}
-            dash="2 5"
-          />
+          {/* Other balls on the table (static — multi-ball drill context, non-sequence shots only) */}
+          {!sequence &&
+            shot.otherBalls?.map((b, i) => {
+              const p = toSvg(b);
+              return (
+                <g key={`other-${i}`}>
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={BALL_R}
+                    fill="url(#ob-grad)"
+                    stroke="rgba(0,0,0,0.35)"
+                    strokeWidth={0.8}
+                    opacity={0.75}
+                  />
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={BALL_R * 0.45}
+                    fill="#fff"
+                    opacity={0.75}
+                  />
+                </g>
+              );
+            })}
 
-          {/* Direction arrows */}
-          {obFinalPath.length > 0 && (
-            <Arrow
-              from={obFinalPath[obFinalPath.length - 2] ?? shot.objectBall}
-              to={obFinalPath[obFinalPath.length - 1]}
-              fill="rgba(224,190,107,0.85)"
-            />
-          )}
-          {shot.cueBallPath.length > 0 && (
-            <Arrow
-              from={
-                shot.cueBallPath[shot.cueBallPath.length - 2] ?? contact
-              }
-              to={shot.cueBallPath[shot.cueBallPath.length - 1]}
-              fill="rgba(236,225,196,0.9)"
-            />
-          )}
-
-          {/* Other balls on the table (static — multi-ball drill context) */}
-          {shot.otherBalls?.map((b, i) => {
-            const p = toSvg(b);
+          {/* Sequence balls: numbered, future balls visible, pocketed balls hidden */}
+          {sequence?.map((step, i) => {
+            if (i < pocketedCount) return null; // already pocketed
+            const isActive = i === activeStepIdx && progress > 0 && progress < 1;
+            const pos = isActive ? obPos : step.ball;
+            const p = toSvg(pos);
+            const isUpcoming = i > activeStepIdx || progress <= 0;
             return (
-              <g key={`other-${i}`}>
+              <g key={`seq-ball-${i}`}>
                 <circle
                   cx={p.x}
                   cy={p.y}
                   r={BALL_R}
                   fill="url(#ob-grad)"
-                  stroke="rgba(0,0,0,0.35)"
+                  stroke="rgba(0,0,0,0.4)"
                   strokeWidth={0.8}
-                  opacity={0.75}
+                  opacity={isUpcoming && i !== activeStepIdx ? 0.85 : 1}
                 />
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={BALL_R * 0.45}
-                  fill="#fff"
-                  opacity={0.75}
+                  r={BALL_R * 0.6}
+                  fill="rgba(255,255,255,0.92)"
                 />
+                <text
+                  x={p.x}
+                  y={p.y + 3}
+                  textAnchor="middle"
+                  fontSize={12}
+                  fontWeight={700}
+                  fill="#1a0f06"
+                  pointerEvents="none"
+                >
+                  {i + 1}
+                </text>
               </g>
             );
           })}
 
-          {/* Object ball */}
-          <g>
-            <circle
-              cx={ob.x}
-              cy={ob.y}
-              r={BALL_R}
-              fill="url(#ob-grad)"
-              stroke="rgba(0,0,0,0.35)"
-              strokeWidth={0.8}
-            />
-            <circle cx={ob.x} cy={ob.y} r={BALL_R * 0.45} fill="#fff" />
-          </g>
+          {/* Object ball (single-shot only) */}
+          {!sequence && (
+            <g>
+              <circle
+                cx={ob.x}
+                cy={ob.y}
+                r={BALL_R}
+                fill="url(#ob-grad)"
+                stroke="rgba(0,0,0,0.35)"
+                strokeWidth={0.8}
+              />
+              <circle cx={ob.x} cy={ob.y} r={BALL_R * 0.45} fill="#fff" />
+            </g>
+          )}
 
           {/* Cue ball */}
           <circle
@@ -323,7 +431,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
           />
 
           {/* Target pocket pulse */}
-          {shot.targetPocket && (
+          {shot.targetPocket && !sequence && (
             <circle
               cx={toSvg(POCKETS[shot.targetPocket]).x}
               cy={toSvg(POCKETS[shot.targetPocket]).y}
