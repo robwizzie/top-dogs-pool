@@ -1,6 +1,8 @@
 import { PageHeader } from "@/components/ui/Section";
 import { ShotsGallery } from "@/components/shots/ShotsGallery";
+import { DrillCard } from "@/components/shots/DrillCard";
 import { KINISTER_SHOTS } from "@/lib/kinister/shots";
+import { DRILLS } from "@/lib/kinister/drills";
 
 export const metadata = {
   title: "Shots — The Kinister Workout",
@@ -18,6 +20,28 @@ export default function ShotsPage() {
       />
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <ShotsGallery shots={[...KINISTER_SHOTS]} />
+
+        <section className="mt-16 space-y-6">
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+              Practice Drills
+            </p>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--fg)]">
+              Routines & Drills
+            </h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-[var(--fg-dim)]">
+              Multi-ball routines and progression drills that go beyond a
+              single shot. Use them to score yourself across a session and
+              track measurable improvement over time.
+            </p>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {DRILLS.map((drill) => (
+              <DrillCard key={drill.id} drill={drill} />
+            ))}
+          </div>
+        </section>
 
         <p className="mt-10 max-w-3xl text-xs leading-relaxed text-[var(--fg-dim)]">
           Heads up: Kinister deliberately never published diagrams for the
