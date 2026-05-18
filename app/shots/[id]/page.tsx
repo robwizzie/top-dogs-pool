@@ -140,7 +140,7 @@ export default async function ShotDetailPage({
                     key={i}
                     className="flex gap-3 px-5 py-3 text-sm leading-relaxed text-[var(--fg)]"
                   >
-                    <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-pop-bright)]" />
+                    <span className="mt-[0.55em] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-pop-bright)]" />
                     {m}
                   </li>
                 ))}
@@ -163,7 +163,7 @@ export default async function ShotDetailPage({
                     key={i}
                     className="flex gap-3 px-5 py-3 text-sm leading-relaxed text-[var(--fg)]"
                   >
-                    <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-brass-bright)]" />
+                    <span className="mt-[0.55em] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-brass-bright)]" />
                     {t}
                   </li>
                 ))}
