@@ -14,6 +14,13 @@
 export type DiamondCoord = { x: number; y: number };
 export type PocketId = "TL" | "TR" | "BL" | "BR" | "ML" | "MR";
 
+/**
+ * Where to strike the cue ball to apply the english/spin the shot needs.
+ * `x` is horizontal: -1 = full left english, 0 = center, +1 = full right.
+ * `y` is vertical: -1 = full draw (low), 0 = center, +1 = full follow (high).
+ */
+export type EnglishHit = { x: number; y: number };
+
 export const POCKETS: Record<PocketId, DiamondCoord> = {
   TR: { x: 0, y: 0 },
   TL: { x: 0, y: 4 },
@@ -49,6 +56,8 @@ export type KinisterShot = {
   targetPocket: PocketId | null;
   /** Cue-ball waypoints AFTER contact (final element = resting position). */
   cueBallPath: DiamondCoord[];
+  /** Where to strike the cue ball to make this shot work (english/spin). */
+  english?: EnglishHit;
   /** Optional object-ball waypoints (e.g. banks). If omitted, OB rolls to targetPocket. */
   objectBallPath?: DiamondCoord[];
   /** Additional balls on the table for context (multi-ball drills). Rendered statically — they don't move with the animation. */
@@ -173,6 +182,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1.5, y: 0.3 },
     targetPocket: "TR",
     cueBallPath: [{ x: 1.5, y: 0.3 }],
+    english: { x: 0, y: 0 },
     description:
       "Cue ball and object ball on the same long rail, OB sitting just below the corner pocket. Pocket the OB and freeze the cue ball where the OB started — CB takes the place of OBJ.",
     technique:
@@ -200,6 +210,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 2, y: 0.6 },
     targetPocket: "TR",
     cueBallPath: [{ x: 1.5, y: 0.5 }],
+    english: { x: 0, y: 0 },
     description:
       "Diagonal shot from the lower half of the table up through center to the far corner. Pocket the OB at pocket speed — slow enough that even a partially blocked pocket (a chapstick on the edge) still accepts the ball.",
     technique:
@@ -226,6 +237,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 3, y: 1 },
     targetPocket: "TR",
     cueBallPath: [{ x: 7, y: 3.5 }],
+    english: { x: 0, y: -0.9 },
     description:
       "Cue ball near the corner pocket on the foot end; OB sits diagonally up-table. Pocket the OB in the far corner and draw the cue ball the full length of the table back to where it started.",
     technique:
@@ -249,15 +261,17 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Inside English",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3, y: 0.25 },
-    objectBall: { x: 1, y: 0.25 },
+    cueBall: { x: 2.5, y: 0.4 },
+    objectBall: { x: 1, y: 0.4 },
     targetPocket: "TR",
     cueBallPath: [
       { x: 0, y: 2 },
-      { x: 2.8, y: 2.3 },
+      { x: 2, y: 4 },
+      { x: 2.8, y: 2.5 },
     ],
+    english: { x: -0.6, y: 0 },
     description:
-      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs straight up the rail, mirrors off the short rail, and floats back across to land in the open middle of the head end of the table.",
+      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs up the rail to the short rail, kicks across to the far long rail, and floats back to land in the middle of the head end of the table.",
     technique:
       "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across into the open zone near the head spot.",
     commonMistakes: [
@@ -279,16 +293,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rails",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 4, y: 3.5 },
-    objectBall: { x: 1.5, y: 0.5 },
+    cueBall: { x: 3, y: 2.7 },
+    objectBall: { x: 1.5, y: 1.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 2.5 },
-      { x: 2.5, y: 4 },
-      { x: 4, y: 3.5 },
+      { x: 0, y: 0.7 },
+      { x: 1.7, y: 4 },
+      { x: 0, y: 3.3 },
+      { x: 3, y: 2.7 },
     ],
+    english: { x: -0.5, y: 0.6 },
     description:
-      "Cue ball starts in the middle of the table near the left side pocket. Cut the OB into the far corner and send the cue ball three rails — short rail, far long rail, back across — to land right where it started, ready for the next ball.",
+      "Cue ball starts in the middle of the table just inside the side-pocket line. Cut the OB into the far corner and send the cue ball three rails — short rail, far long rail, short rail again — to land right where it started, ready for the next ball.",
     technique:
       "Above-center with running english, firm pace. The english keeps each rebound angle open so the cue ball wraps cleanly back to the side-pocket area.",
     commonMistakes: [
@@ -318,6 +334,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 2.5, y: 0 },
       { x: 3, y: 2.2 },
     ],
+    english: { x: -0.3, y: 0.4 },
     description:
       "OB sits on the head rail between TR and the head spot; CB starts back near the head-rail/left-rail corner area. Cut the OB into the corner and take two rails — head rail, then the near long rail — to land in the open upper-middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
     technique:
@@ -345,6 +362,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 2, y: 0.4 },
     targetPocket: "TR",
     cueBallPath: [{ x: 3.5, y: 2.1 }],
+    english: { x: 0, y: -0.35 },
     description:
       "OB sits on the right rail a couple of diamonds below the TR corner; CB starts in the open middle of the table, just above the side-pocket line. Cut the OB into the corner and draw the cue ball straight back along the same line to land right where it started.",
     technique:
@@ -372,6 +390,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [{ x: 1, y: 3.5 }],
+    english: { x: 0.15, y: 0 },
     description:
       "Variation of the draw-to-center shot. Cut the OB into the corner and float the cue ball straight across the table to the opposite long rail using just a whisper of english.",
     technique:
@@ -402,6 +421,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 0.55, y: 4 },
       { x: 0.85, y: 0.7 },
     ],
+    english: { x: -0.3, y: 0 },
     description:
       "Pocket the OB in the corner; cue ball comes off the short rail, then the far long rail, and dies before it can pick up a third rail. Lands back near where the OB was.",
     technique:
@@ -434,6 +454,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 1.7, y: 0 },
       { x: 1.4, y: 0.6 },
     ],
+    english: { x: -0.7, y: 0 },
     description:
       "Same setup as the two-rail version but with much more pace and english. CB zig-zags back and forth between the two long rails for at least four rails, drifting slightly down-table each pass. A fifth rail is fine.",
     technique:
@@ -460,6 +481,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1.5, y: 0.8 },
     targetPocket: "TR",
     cueBallPath: [{ x: 4, y: 1.5 }],
+    english: { x: 0, y: -0.7 },
     description:
       "Mid-distance draw shot. Pocket the OB in the corner and draw the cue ball back exactly half a table to its starting position.",
     technique:
@@ -493,6 +515,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 8, y: 2.5 },
       { x: 4, y: 2 },
     ],
+    english: { x: -0.2, y: 0.2 },
     description:
       "Run six object balls one at a time into the side pocket. After each ball, the cue ball must return to the center of the table for the next setup.",
     technique:
@@ -520,6 +543,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1, y: 1.2 },
     targetPocket: "TR",
     cueBallPath: [{ x: 4, y: 2 }],
+    english: { x: 0.5, y: 0 },
     description:
       "Cut the OB into the corner using a half-tip of right english, then bring the cue ball back to the middle of the table.",
     technique:
@@ -551,6 +575,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 0, y: 1.9 },
       { x: 3, y: 2 },
     ],
+    english: { x: -0.7, y: 0.7 },
     description:
       "Three rails back to the center of the table with high-left english. Use this shot to dial in how much cue deflection (squirt) you get on your stick.",
     technique:
@@ -580,6 +605,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 0, y: 3 },
       { x: 4, y: 2.2 },
     ],
+    english: { x: 0, y: 0.2 },
     description:
       "Rail-line cut into the corner; cue ball takes the natural angle off the short rail and lands in the center of the table.",
     technique:
@@ -610,6 +636,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 1, y: 4 },
       { x: 2.7, y: 2.5 },
     ],
+    english: { x: -0.5, y: 0.2 },
     description:
       "Pat's go-to shape shot. Pocket the OB in the corner from a near-straight angle and send the cue ball off the short rail near the pocket and the far long rail to land in the middle of the upper half of the table.",
     technique:
@@ -640,6 +667,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 0.3, y: 2.5 },
       { x: 1.5, y: 2 },
     ],
+    english: { x: 0.4, y: 0 },
     description:
       "Cut the OB into the corner and bring the cue ball back two rails — far long rail, then short rail — to land in the middle of the top (head) end of the table.",
     technique:
@@ -666,6 +694,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 0.5, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [{ x: 6, y: 0.6 }],
+    english: { x: 0, y: 0.4 },
     description:
       "Tight cut into the corner; cue ball rolls down-table parallel to the long rail and stops without ever touching a long rail. Pure speed control drill.",
     technique:
@@ -698,6 +727,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 5, y: 0 },
       { x: 6, y: 0.5 },
     ],
+    english: { x: -0.5, y: -0.7 },
     description:
       "Pocket the OB in the corner with draw and send the cue ball three rails — short, far long, near long — ending down by the foot end of the right rail.",
     technique:
@@ -728,6 +758,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 4.2, y: 0 },
       { x: 1.5, y: 2 },
     ],
+    english: { x: 0, y: 0.3 },
     description:
       "Straight-in cut to the side pocket. After contact the cue ball nips the near long rail and floats diagonally back to the upper middle of the table.",
     technique:
@@ -759,6 +790,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 6, y: 4 },
       { x: 7.5, y: 3.3 },
     ],
+    english: { x: 0.3, y: 0.75 },
     description:
       "Pocket the OB in the corner from the head end, then send the cue ball three rails diagonally across the table to land near the opposite corner.",
     technique:
@@ -788,6 +820,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 4, y: 4 },
       { x: 3.5, y: 3.3 },
     ],
+    english: { x: 0.6, y: -0.7 },
     description:
       "Cut the OB into the corner with right (outside) english and draw. CB pulls back diagonally across the table, kisses the far long rail, and lands just off it.",
     technique:
@@ -818,6 +851,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 2.5, y: 4 },
       { x: 4, y: 2 },
     ],
+    english: { x: -0.5, y: -0.4 },
     description:
       "Pocket the OB in the side and send the cue ball two rails — short rail then far long rail — back to the center of the table.",
     technique:
@@ -849,6 +883,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 6, y: 0.3 },
       { x: 6, y: 1 },
     ],
+    english: { x: -0.5, y: 0.5 },
     description:
       "Pocket the OB in the side and wrap the cue ball around three rails — short rail, far long rail, near long rail — to land down by the foot end of the right rail.",
     technique:
@@ -880,6 +915,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 5, y: 0.3 },
       { x: 5.5, y: 1.5 },
     ],
+    english: { x: -0.5, y: 0 },
     description:
       "Same setup as the around-the-table side-pocket shot, but the long diagonal path opens up scratch lines into multiple pockets. The drill is reading and avoiding them.",
     technique:
@@ -906,6 +942,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1.5, y: 0.4 },
     targetPocket: "TR",
     cueBallPath: [{ x: 1.5, y: 0.4 }],
+    english: { x: 0, y: 0.2 },
     description:
       "Jump-shot setup with the OB on the rail line near the corner. The technique works, but it tears up the cloth — only use it when there's no other option. Better to find a kick, a curve, or a different angle whenever possible.",
     technique:
@@ -933,6 +970,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 0.4, y: 0.6 },
     targetPocket: "TR",
     cueBallPath: [{ x: 0.8, y: 1.2 }],
+    english: { x: 0, y: 0 },
     sequence: [
       {
         ball: { x: 0.4, y: 0.6 },
@@ -991,6 +1029,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 2, y: 0.4 },
     targetPocket: "TR",
     cueBallPath: [{ x: 5.5, y: 0.6 }],
+    english: { x: 0, y: -0.7 },
     description:
       "Rail-line cut into the corner. Draw the cue ball back along the same line and stop it before it touches a rail — perfectly level cue, perfectly controlled draw.",
     technique:

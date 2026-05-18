@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
-import type { DiamondCoord, KinisterShot } from "@/lib/kinister/shots";
+import type {
+  DiamondCoord,
+  EnglishHit,
+  KinisterShot,
+} from "@/lib/kinister/shots";
 import { POCKETS } from "@/lib/kinister/shots";
 import {
   BALL_R,
@@ -445,6 +449,10 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
         </svg>
       </div>
 
+      {shot.english && !preview && (
+        <EnglishIndicator english={shot.english} />
+      )}
+
       {interactive && !preview && (
         <div className="flex items-center gap-2">
           <button
@@ -550,5 +558,98 @@ function Arrow({
       points={`${tipX},${tipY} ${p1x},${p1y} ${p2x},${p2y}`}
       fill={fill}
     />
+  );
+}
+
+function englishLabel(e: EnglishHit): string {
+  const v =
+    e.y > 0.55 ? "High" : e.y > 0.15 ? "Above center" :
+    e.y < -0.55 ? "Low" : e.y < -0.15 ? "Below center" :
+    "";
+  const h =
+    e.x > 0.55 ? "right" : e.x > 0.15 ? "slight right" :
+    e.x < -0.55 ? "left" : e.x < -0.15 ? "slight left" :
+    "";
+  if (!v && !h) return "Dead center";
+  if (!h) return `${v} (center)`;
+  if (!v) return `${h.charAt(0).toUpperCase()}${h.slice(1)} english`;
+  return `${v} ${h}`;
+}
+
+function EnglishIndicator({ english }: { english: EnglishHit }) {
+  const SIZE = 88;
+  const R = 32;
+  const cx = SIZE / 2;
+  const cy = SIZE / 2;
+  // Keep the hit dot inside the cue ball — max excursion 70% of the radius
+  // so a small ring of white shows around the contact point.
+  const HIT_REACH = R * 0.7;
+  // SVG y-axis is flipped: positive english.y (follow/high) → smaller SVG y.
+  const dotX = cx + english.x * HIT_REACH;
+  const dotY = cy - english.y * HIT_REACH;
+
+  return (
+    <div className="flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3">
+      <svg
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        width={SIZE}
+        height={SIZE}
+        className="shrink-0"
+        role="img"
+        aria-label={`Hit the cue ball at ${englishLabel(english)}`}
+      >
+        <defs>
+          <radialGradient id="english-cb" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#cfc7b0" />
+          </radialGradient>
+        </defs>
+        <circle
+          cx={cx}
+          cy={cy}
+          r={R}
+          fill="url(#english-cb)"
+          stroke="rgba(0,0,0,0.45)"
+          strokeWidth={1.2}
+        />
+        <line
+          x1={cx - R}
+          y1={cy}
+          x2={cx + R}
+          y2={cy}
+          stroke="rgba(0,0,0,0.18)"
+          strokeWidth={0.6}
+          strokeDasharray="2 2"
+        />
+        <line
+          x1={cx}
+          y1={cy - R}
+          x2={cx}
+          y2={cy + R}
+          stroke="rgba(0,0,0,0.18)"
+          strokeWidth={0.6}
+          strokeDasharray="2 2"
+        />
+        <circle
+          cx={dotX}
+          cy={dotY}
+          r={5.5}
+          fill="#e85248"
+          stroke="rgba(0,0,0,0.45)"
+          strokeWidth={1}
+        />
+      </svg>
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
+          Hit the cue ball here
+        </p>
+        <p className="mt-1 text-sm font-semibold text-[var(--fg)]">
+          {englishLabel(english)}
+        </p>
+        <p className="mt-0.5 text-[11px] leading-tight text-[var(--fg-dim)]">
+          Red dot shows where your tip should contact the cue ball.
+        </p>
+      </div>
+    </div>
   );
 }
