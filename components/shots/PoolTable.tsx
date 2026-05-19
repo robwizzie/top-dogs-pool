@@ -18,7 +18,6 @@ import {
   SVG_W,
   UNIT,
   contactPoint,
-  easeOutCubic,
   pathLength,
   toSvg,
   walkPath,
@@ -35,26 +34,25 @@ type Props = {
 };
 
 /**
- * Pool-ball "speed" in diamond units per second at the DEFAULT_POWER setting.
- * Every shot uses the same constant so a stop shot reads as snappy and a
- * 4-rail zig-zag takes proportionally longer at the same power level.
+ * Pool-ball speed in diamond units per second. Every ball — cue ball and
+ * object ball, before and after contact — moves at this same constant
+ * speed, so motion stays smooth across the moment of contact (no sudden
+ * speed-up or slow-down) and every shot in the catalog plays at a
+ * consistent pace.
  */
-const BASE_DIAMONDS_PER_SEC = 3.5;
+const BASE_DIAMONDS_PER_SEC = 3.2;
 /** Don't let any single animation drop below this — keeps short shots watchable. */
-const MIN_ANIM_MS = 600;
-/** Cap so very low power doesn't crawl forever. */
+const MIN_ANIM_MS = 700;
+/** Cap so very long multi-rail shots don't drag on indefinitely. */
 const MAX_ANIM_MS = 6000;
 /** Fallback approach fraction for sequence shots (per-step). */
 const SEQUENCE_APPROACH_FRACTION = 0.32;
 /** Per-step duration for multi-ball sequences. */
 const SEQUENCE_STEP_MS = 1500;
-/** 50% is the "natural" pace; lower = softer/slower, higher = harder/faster. */
-const DEFAULT_POWER = 0.5;
 
 export function PoolTable({ shot, interactive = false, preview = false, className }: Props) {
   const [progress, setProgress] = useState(0); // 0..1
   const [playing, setPlaying] = useState(false);
-  const [power, setPower] = useState(DEFAULT_POWER);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const startFromRef = useRef(0);
@@ -96,13 +94,11 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     [shot.objectBall, obFinalPath],
   );
 
-  // Power scales speed: DEFAULT_POWER = 1× base speed. Higher power = faster
-  // animation; lower power = slower. The ball always completes the shot.
-  const speedMultiplier = power / DEFAULT_POWER;
-  const effectiveSpeed = BASE_DIAMONDS_PER_SEC * speedMultiplier;
-  const approachMs = (approachLen / effectiveSpeed) * 1000;
-  const cueCaromMs = (cueCaromLen / effectiveSpeed) * 1000;
-  const obCaromMs = (obCaromLen / effectiveSpeed) * 1000;
+  // All segments at the same physical speed → constant pace through contact
+  // and identical pacing across every shot in the catalog.
+  const approachMs = (approachLen / BASE_DIAMONDS_PER_SEC) * 1000;
+  const cueCaromMs = (cueCaromLen / BASE_DIAMONDS_PER_SEC) * 1000;
+  const obCaromMs = (obCaromLen / BASE_DIAMONDS_PER_SEC) * 1000;
   // Animation lasts as long as the slower ball needs to finish.
   const naturalTotalMs = approachMs + Math.max(cueCaromMs, obCaromMs);
   const computedMs = Math.max(
@@ -180,12 +176,11 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
       cuePos = walkPath(prevCue, [stepContact], t);
       obPos = step.ball;
     } else {
-      const raw =
+      const t =
         (localProgress - SEQUENCE_APPROACH_FRACTION) /
         (1 - SEQUENCE_APPROACH_FRACTION);
-      const eased = easeOutCubic(raw);
-      cuePos = walkPath(stepContact, [step.cueAfter], eased);
-      obPos = walkPath(step.ball, stepOBPath, eased);
+      cuePos = walkPath(stepContact, [step.cueAfter], t);
+      obPos = walkPath(step.ball, stepOBPath, t);
     }
   } else if (progress <= 0) {
     cuePos = shot.cueBall;
@@ -195,21 +190,23 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     cuePos = walkPath(shot.cueBall, [contact], t);
     obPos = shot.objectBall;
   } else {
-    // Both balls leave contact at the same speed. The OB usually has the
-    // shorter path so it pockets well before the CB stops bouncing.
+    // Both balls leave contact at the same physical speed (= the same speed
+    // the CB was moving on its approach), so motion is smooth across the
+    // moment of contact. The OB usually has the shorter path so it pockets
+    // well before the CB stops bouncing.
     const elapsedCarom = progress - approachFraction;
-    const cueRaw =
+    const cueT =
       cueCaromFraction > 0
         ? Math.min(1, elapsedCarom / cueCaromFraction)
         : 1;
-    const obRaw =
+    const obT =
       obCaromFraction > 0
         ? Math.min(1, elapsedCarom / obCaromFraction)
         : 1;
-    cuePos = walkPath(contact, shot.cueBallPath, easeOutCubic(cueRaw));
+    cuePos = walkPath(contact, shot.cueBallPath, cueT);
     obPos =
       obFinalPath.length > 0
-        ? walkPath(shot.objectBall, obFinalPath, easeOutCubic(obRaw))
+        ? walkPath(shot.objectBall, obFinalPath, obT)
         : shot.objectBall;
   }
 
@@ -526,31 +523,6 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
 
       {shot.english && !preview && (
         <EnglishIndicator english={shot.english} />
-      )}
-
-      {interactive && !preview && !sequence && (
-        <div className="flex items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-pop-bright)]">
-            Power
-          </span>
-          <input
-            type="range"
-            min={20}
-            max={100}
-            step={5}
-            value={Math.round(power * 100)}
-            onChange={(e) => {
-              setPlaying(false);
-              setProgress(0);
-              setPower(Number(e.target.value) / 100);
-            }}
-            className="flex-1 accent-[var(--color-pop-bright)]"
-            aria-label="Power"
-          />
-          <span className="w-12 text-right font-mono text-sm font-semibold text-[var(--fg)]">
-            {Math.round(power * 100)}%
-          </span>
-        </div>
       )}
 
       {interactive && !preview && (
