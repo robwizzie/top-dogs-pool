@@ -6,6 +6,8 @@ import { PoolBall } from "@/components/brand/PoolBall";
 import { LiveCTA } from "@/components/live/LiveCTA";
 import { Sparkline } from "@/components/leaderboard/Sparkline";
 import { MomentumStrip } from "@/components/home/MomentumStrip";
+import { TrainingTodayCard } from "@/components/home/TrainingTodayCard";
+import { KINISTER_SHOTS } from "@/lib/kinister/shots";
 import {
   getLastUpdated,
   getLeaderboard,
@@ -280,6 +282,11 @@ export default async function HomePage() {
           </Link>
         </Section>
       )}
+
+      {/* Training corner — surface practice streak + due drill. */}
+      <Section eyebrow="Training" title="Today's drill">
+        <TrainingTodayCard shots={[...KINISTER_SHOTS]} />
+      </Section>
 
       {/* Ladder — top 5 with sparkline trajectories. */}
       {topFive.length > 0 && (

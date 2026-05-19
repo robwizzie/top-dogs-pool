@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import {
+  daysSinceLastAttempt,
+  useAllShotStats,
+} from "@/lib/kinister/useShotStats";
 import {
   ArrowLeft,
   ArrowRight,
@@ -120,6 +125,56 @@ function BuilderView({
   const [difficulty, setDifficulty] = useState<Difficulty | "all">("all");
   const [query, setQuery] = useState("");
   const [catalogOpen, setCatalogOpen] = useState(true);
+
+  // Read URL params for deep-linking:
+  //   /dawg-drill?preset=today  → due-for-practice + untried shots
+  //   /dawg-drill?shots=id1,id2 → explicit shot list (each at default reps)
+  const searchParams = useSearchParams();
+  const allStats = useAllShotStats();
+  const presetParam = searchParams?.get("preset");
+  const shotsParam = searchParams?.get("shots");
+  // Only honor the URL pre-fill once per mount so users can clear the drill
+  // afterward without it snapping back.
+  const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (prefilled) return;
+    if (presetParam === "today") {
+      const due: string[] = [];
+      const untried: string[] = [];
+      for (const shot of shots) {
+        const s = allStats[shot.id];
+        if (!s || s.totalAttempts === 0) {
+          untried.push(shot.id);
+        } else {
+          const days = daysSinceLastAttempt(s);
+          if (days !== null && days >= 3) due.push(shot.id);
+        }
+      }
+      // Prefer the most-due shots; pad with up to 3 untried ones so the
+      // player always has something to work on.
+      const picks = [...due, ...untried.slice(0, 3)].slice(0, 8);
+      if (picks.length > 0) {
+        const next: Record<string, number> = {};
+        for (const id of picks) next[id] = defaultReps;
+        setReps(next);
+        setPrefilled(true);
+      }
+    } else if (shotsParam) {
+      const ids = shotsParam
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const next: Record<string, number> = {};
+      for (const id of ids) {
+        if (shots.some((s) => s.id === id)) next[id] = defaultReps;
+      }
+      if (Object.keys(next).length > 0) {
+        setReps(next);
+        setPrefilled(true);
+      }
+    }
+  }, [presetParam, shotsParam, shots, allStats, defaultReps, prefilled]);
 
   // Selected shots, in catalog order (stable ordering through edits).
   const selected = useMemo(
