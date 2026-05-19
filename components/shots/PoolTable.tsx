@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Pause, Play, RotateCcw } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
+  RotateCcw,
+} from "lucide-react";
 import type {
   DiamondCoord,
   EnglishHit,
@@ -18,6 +24,7 @@ import {
   SVG_W,
   UNIT,
   contactPoint,
+  ghostBall,
   pathLength,
   toSvg,
   walkPath,
@@ -53,6 +60,7 @@ const SEQUENCE_STEP_MS = 1500;
 export function PoolTable({ shot, interactive = false, preview = false, className }: Props) {
   const [progress, setProgress] = useState(0); // 0..1
   const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1); // 1×, 0.5× (slow-mo), 0.25×
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const startFromRef = useRef(0);
@@ -115,6 +123,52 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
   const obCaromFraction =
     naturalTotalMs > 0 ? obCaromMs / naturalTotalMs : 0;
 
+  // Step-through "keyframes": progress values at the start, the contact, each
+  // rail bounce / waypoint along the cue ball path, and the rest. Lets the
+  // user jump to each important moment with the Step buttons.
+  const keyframes = useMemo(() => {
+    if (sequence) return [0, 1];
+    const frames: number[] = [0];
+    if (approachFraction > 0) frames.push(approachFraction);
+    if (cueCaromLen > 0 && cueCaromFraction > 0) {
+      let cum = 0;
+      const points = [contact, ...shot.cueBallPath];
+      for (let i = 1; i < points.length; i++) {
+        cum += Math.hypot(
+          points[i].x - points[i - 1].x,
+          points[i].y - points[i - 1].y,
+        );
+        frames.push(approachFraction + (cum / cueCaromLen) * cueCaromFraction);
+      }
+    }
+    frames.push(1);
+    // Dedupe + sort
+    return Array.from(new Set(frames.map((f) => Math.min(1, Math.max(0, f)))))
+      .sort((a, b) => a - b);
+  }, [
+    sequence,
+    approachFraction,
+    cueCaromFraction,
+    cueCaromLen,
+    contact,
+    shot.cueBallPath,
+  ]);
+
+  const stepNext = () => {
+    setPlaying(false);
+    const next = keyframes.find((k) => k > progress + 0.001);
+    setProgress(next ?? 1);
+  };
+  const stepPrev = () => {
+    setPlaying(false);
+    let prev = 0;
+    for (const k of keyframes) {
+      if (k < progress - 0.001) prev = k;
+      else break;
+    }
+    setProgress(prev);
+  };
+
   // Stop the animation if the shot changes.
   useEffect(() => {
     setProgress(0);
@@ -129,7 +183,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
 
     const tick = (now: number) => {
       if (startedAtRef.current === null) startedAtRef.current = now;
-      const elapsed = now - startedAtRef.current;
+      const elapsed = (now - startedAtRef.current) * speed;
       const p = Math.min(1, startFromRef.current + elapsed / totalMs);
       setProgress(p);
       if (p >= 1) {
@@ -148,7 +202,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, totalMs]);
+  }, [playing, totalMs, speed]);
 
   // Derive live positions from `progress`.
   let cuePos: DiamondCoord;
@@ -387,6 +441,19 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
                 />
               )}
 
+              {/* Ghost-ball aim line (CB-start → ghost ball at contact) and
+                  ghost ball outline. Only show before animation begins so it
+                  doesn't fight with the moving cue ball. */}
+              {shot.targetPocket && progress <= 0 && (
+                <GhostBallAim
+                  cueBall={shot.cueBall}
+                  ghost={ghostBall(
+                    shot.objectBall,
+                    POCKETS[shot.targetPocket],
+                  )}
+                />
+              )}
+
               {/* CB path (solid cream) */}
               <PathLine
                 start={shot.cueBall}
@@ -526,7 +593,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
       )}
 
       {interactive && !preview && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setPlaying((p) => !p)}
@@ -536,6 +603,30 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
             {playing ? <Pause size={14} /> : <Play size={14} />}
             {playing ? "Pause" : progress >= 1 ? "Replay" : "Play shot"}
           </button>
+          {!sequence && (
+            <>
+              <button
+                type="button"
+                onClick={stepPrev}
+                disabled={progress <= 0}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label="Step to previous rail"
+                title="Step back to previous rail"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={stepNext}
+                disabled={progress >= 1}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label="Step to next rail"
+                title="Step forward to next rail"
+              >
+                <ChevronRight size={14} />
+              </button>
+            </>
+          )}
           <button
             type="button"
             onClick={() => {
@@ -547,6 +638,29 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
           >
             <RotateCcw size={14} />
           </button>
+          {/* Playback speed toggle */}
+          <div
+            className="inline-flex h-9 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold"
+            role="group"
+            aria-label="Playback speed"
+          >
+            {[1, 0.5, 0.25].map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSpeed(s)}
+                className={cn(
+                  "px-3 transition-colors",
+                  speed === s
+                    ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
+                    : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
+                )}
+                aria-pressed={speed === s}
+              >
+                {s === 1 ? "1×" : s === 0.5 ? "½×" : "¼×"}
+              </button>
+            ))}
+          </div>
           <input
             type="range"
             min={0}
@@ -556,7 +670,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
               setPlaying(false);
               setProgress(Number(e.target.value) / 1000);
             }}
-            className="flex-1 accent-[var(--color-brass-bright)]"
+            className="ml-2 min-w-[8rem] flex-1 accent-[var(--color-brass-bright)]"
             aria-label="Shot progress"
           />
         </div>
@@ -630,6 +744,51 @@ function Arrow({
       points={`${tipX},${tipY} ${p1x},${p1y} ${p2x},${p2y}`}
       fill={fill}
     />
+  );
+}
+
+/**
+ * Render the ghost-ball aim aid: a faint cue-ball outline at the ghost-ball
+ * position (where the cue ball must be at impact to send the OB to the
+ * pocket), plus a thin dotted line from the cue ball's starting position
+ * through the ghost ball — the player's aim line.
+ */
+function GhostBallAim({
+  cueBall,
+  ghost,
+}: {
+  cueBall: DiamondCoord;
+  ghost: DiamondCoord;
+}) {
+  const cb = toSvg(cueBall);
+  const g = toSvg(ghost);
+  return (
+    <g>
+      <line
+        x1={cb.x}
+        y1={cb.y}
+        x2={g.x}
+        y2={g.y}
+        stroke="rgba(255,255,255,0.32)"
+        strokeWidth={1}
+        strokeDasharray="3 5"
+      />
+      <circle
+        cx={g.x}
+        cy={g.y}
+        r={BALL_R}
+        fill="none"
+        stroke="rgba(255,255,255,0.55)"
+        strokeWidth={1.2}
+        strokeDasharray="2 3"
+      />
+      <circle
+        cx={g.x}
+        cy={g.y}
+        r={1.8}
+        fill="rgba(255,255,255,0.65)"
+      />
+    </g>
   );
 }
 

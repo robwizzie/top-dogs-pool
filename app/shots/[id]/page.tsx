@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, AlertTriangle, Lightbulb, Target } from "lucide-react";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  Lightbulb,
+  MapPin,
+  Smartphone,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import { PoolTable } from "@/components/shots/PoolTable";
 import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
+import { AttemptTracker } from "@/components/shots/AttemptTracker";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
+import { describePosition, pocketLabel } from "@/lib/kinister/setup";
+import { englishSimilarity } from "@/lib/kinister/english";
 import { cn } from "@/lib/utils";
 
 type Params = { id: string };
@@ -50,6 +61,26 @@ export default async function ShotDetailPage({
   const next =
     index < KINISTER_SHOTS.length - 1 ? KINISTER_SHOTS[index + 1] : null;
 
+  // Top 3 related shots: same series, scored by english similarity (if both
+  // shots have english data) and proximity in the catalog.
+  const related = KINISTER_SHOTS.filter((s) => s.id !== shot.id)
+    .map((s) => {
+      let score = 0;
+      if (s.series === shot.series) score += 1.5;
+      if (s.difficulty === shot.difficulty) score += 0.8;
+      if (shot.english && s.english) {
+        score += englishSimilarity(shot.english, s.english) * 1.2;
+      }
+      // Lightly prefer shots that come after this one in the catalog —
+      // they're often the natural next step in a series.
+      const catalogDistance = Math.abs(s.number - shot.number);
+      score += Math.max(0, 0.6 - catalogDistance * 0.08);
+      return { shot: s, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((entry) => entry.shot);
+
   return (
     <>
       <header className="border-b border-[var(--border)] bg-[var(--bg-soft)]">
@@ -79,6 +110,14 @@ export default async function ShotDetailPage({
               >
                 {shot.difficulty}
               </span>
+              <Link
+                href={`/shots/${shot.id}/practice`}
+                className="inline-flex h-8 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)] hover:text-[var(--color-ink)]"
+                title="Open a stripped-down view designed for putting your phone on the rail"
+              >
+                <Smartphone size={13} />
+                Rail view
+              </Link>
               <DrilledToggle shotId={shot.id} />
             </div>
           </div>
@@ -91,6 +130,62 @@ export default async function ShotDetailPage({
             <PoolTable shot={shot} interactive />
 
             <ShotVideoBlock video={videoFor(shot)} />
+
+            {!shot.sequence && (
+              <div className="surface p-5">
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-[var(--color-brass-bright)]" />
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+                    Rack the Shot
+                  </p>
+                </div>
+                <ul className="mt-3 divide-y divide-[var(--border)] text-sm">
+                  <li className="flex items-start gap-3 py-2">
+                    <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-black/40 bg-[#ece1c4]" />
+                    <div className="flex-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                        Cue ball
+                      </p>
+                      <p className="leading-relaxed text-[var(--fg)]">
+                        {describePosition(shot.cueBall)}
+                      </p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3 py-2">
+                    <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-black/40 bg-[#e0a82e]" />
+                    <div className="flex-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                        Object ball
+                      </p>
+                      <p className="leading-relaxed text-[var(--fg)]">
+                        {describePosition(shot.objectBall)}
+                      </p>
+                    </div>
+                  </li>
+                  {shot.targetPocket && (
+                    <li className="flex items-start gap-3 py-2">
+                      <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-dashed border-[rgba(232,82,72,0.7)]" />
+                      <div className="flex-1">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                          Target pocket
+                        </p>
+                        <p className="leading-relaxed text-[var(--fg)]">
+                          {pocketLabel(shot.targetPocket)}
+                        </p>
+                      </div>
+                    </li>
+                  )}
+                </ul>
+                <p className="mt-3 text-xs leading-relaxed text-[var(--fg-dim)]">
+                  The faint outlined ball on the diagram is the{" "}
+                  <span className="font-semibold text-[var(--fg)]">
+                    ghost ball
+                  </span>{" "}
+                  — aim your cue ball straight at it and the object ball goes
+                  in the pocket.
+                </p>
+              </div>
+            )}
 
             <div className="surface p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
@@ -121,9 +216,42 @@ export default async function ShotDetailPage({
                 {shot.teaches}
               </p>
             </div>
+
+            {related.length > 0 && (
+              <div className="surface p-5">
+                <div className="flex items-center gap-2">
+                  <Sparkles
+                    size={16}
+                    className="text-[var(--color-brass-bright)]"
+                  />
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+                    Try these next
+                  </p>
+                </div>
+                <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {related.map((r) => (
+                    <li key={r.id}>
+                      <Link
+                        href={`/shots/${r.id}`}
+                        className="surface-hover flex flex-col gap-1 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3 text-left transition-colors hover:border-[var(--border-strong)]"
+                      >
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                          Shot {String(r.number).padStart(2, "0")} · {r.difficulty}
+                        </span>
+                        <span className="font-[family-name:var(--font-display)] text-lg leading-tight tracking-wide text-[var(--fg)]">
+                          {r.name}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <aside className="space-y-6">
+            <AttemptTracker shotId={shot.id} />
+
             <div className="surface overflow-hidden">
               <div className="flex items-center gap-2 border-b border-[var(--border)] bg-[var(--color-pop)]/10 px-5 py-3">
                 <AlertTriangle
@@ -200,6 +328,10 @@ export default async function ShotDetailPage({
                 <div className="flex items-center gap-2">
                   <span className="inline-block h-3 w-3 rounded-full border border-dashed border-[rgba(232,82,72,0.7)]" />
                   Target pocket
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-3 w-3 rounded-full border border-dashed border-white/55" />
+                  Ghost ball (aim point)
                 </div>
               </div>
             </div>
