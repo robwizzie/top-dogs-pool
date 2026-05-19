@@ -362,6 +362,12 @@ export default async function ShotDetailPage({
                   Ghost ball (aim point)
                 </div>
               </div>
+              <Link
+                href="/glossary"
+                className="mt-4 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-brass-bright)] transition-colors hover:text-[var(--color-brass)]"
+              >
+                Look up a term →
+              </Link>
             </div>
           </aside>
         </div>
