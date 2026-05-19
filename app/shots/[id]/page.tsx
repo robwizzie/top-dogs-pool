@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, AlertTriangle, Lightbulb, MapPin, Target } from "lucide-react";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  Lightbulb,
+  MapPin,
+  Smartphone,
+  Target,
+} from "lucide-react";
 import { PoolTable } from "@/components/shots/PoolTable";
 import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
@@ -80,6 +87,14 @@ export default async function ShotDetailPage({
               >
                 {shot.difficulty}
               </span>
+              <Link
+                href={`/shots/${shot.id}/practice`}
+                className="inline-flex h-8 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)] hover:text-[var(--color-ink)]"
+                title="Open a stripped-down view designed for putting your phone on the rail"
+              >
+                <Smartphone size={13} />
+                Rail view
+              </Link>
               <DrilledToggle shotId={shot.id} />
             </div>
           </div>
