@@ -36,33 +36,20 @@ export async function generateMetadata({
   const { id } = await params;
   const shot = getShot(id);
   if (!shot) return { title: "Shot — Top Dogs Pool" };
+  const title = `${shot.name} — Kinister Shot ${String(shot.number).padStart(2, "0")}`;
   return {
-    title: `${shot.name} — Top Dogs Pool`,
+    title,
     description: shot.description,
     openGraph: {
-      title: `${shot.name} — Top Dogs Pool`,
+      title,
       description: shot.description,
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${shot.name} — Top Dogs Pool`,
+      title,
       description: shot.description,
     },
-  };
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}) {
-  const { id } = await params;
-  const shot = getShot(id);
-  if (!shot) return { title: "Shot not found" };
-  return {
-    title: `${shot.name} — Kinister Shot ${String(shot.number).padStart(2, "0")}`,
-    description: shot.description,
   };
 }
 
