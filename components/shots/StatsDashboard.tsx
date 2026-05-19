@@ -17,6 +17,7 @@ import {
   computeAchievements,
   currentDailyStreak,
 } from "@/lib/kinister/achievements";
+import { DataIO } from "./DataIO";
 import { cn } from "@/lib/utils";
 
 export function StatsDashboard({ shots }: { shots: KinisterShot[] }) {
@@ -229,6 +230,10 @@ export function StatsDashboard({ shots }: { shots: KinisterShot[] }) {
             </section>
           </>
         )}
+
+        {/* Backup / restore is always available, even with no reps yet,
+            so the user can carry data forward from another browser. */}
+        <DataIO />
       </div>
     </>
   );
