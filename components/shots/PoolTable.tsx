@@ -169,6 +169,38 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     setProgress(prev);
   };
 
+  // Keyboard shortcuts when the diagram is interactive on a focused page:
+  //   Space → play/pause
+  //   ← / → → step keyframe prev / next
+  // Skip when the user is typing in an editable field.
+  useEffect(() => {
+    if (!interactive || preview) return;
+    function onKey(e: KeyboardEvent) {
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      const editing =
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (t && (t as HTMLElement).isContentEditable);
+      if (editing) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        setPlaying((p) => !p);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        stepNext();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        stepPrev();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interactive, preview, progress, keyframes]);
+
   // Stop the animation if the shot changes.
   useEffect(() => {
     setProgress(0);

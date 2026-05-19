@@ -16,6 +16,7 @@ import { AttemptTracker } from "@/components/shots/AttemptTracker";
 import { ShotNotes } from "@/components/shots/ShotNotes";
 import { MistakeDiagram } from "@/components/shots/MistakeDiagram";
 import { ShareControls } from "@/components/shots/ShareControls";
+import { GlossaryText } from "@/components/shots/GlossaryText";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
 import { POCKETS } from "@/lib/kinister/shots";
 import { cutAngle, describePosition, pocketLabel } from "@/lib/kinister/setup";
@@ -234,7 +235,7 @@ export default async function ShotDetailPage({
                 The Setup
               </p>
               <p className="mt-2 leading-relaxed text-[var(--fg)]">
-                {shot.description}
+                <GlossaryText text={shot.description} />
               </p>
             </div>
 
@@ -246,7 +247,7 @@ export default async function ShotDetailPage({
                 </p>
               </div>
               <p className="mt-2 leading-relaxed text-[var(--fg)]">
-                {shot.technique}
+                <GlossaryText text={shot.technique} />
               </p>
             </div>
 
@@ -255,7 +256,7 @@ export default async function ShotDetailPage({
                 What it teaches
               </p>
               <p className="mt-2 leading-relaxed text-[var(--fg-dim)]">
-                {shot.teaches}
+                <GlossaryText text={shot.teaches} />
               </p>
             </div>
 
@@ -313,7 +314,7 @@ export default async function ShotDetailPage({
                     className="flex gap-3 px-5 py-3 text-sm leading-relaxed text-[var(--fg)]"
                   >
                     <span className="mt-[0.55em] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-pop-bright)]" />
-                    {m}
+                    <GlossaryText text={m} />
                   </li>
                 ))}
               </ul>
@@ -353,7 +354,7 @@ export default async function ShotDetailPage({
                     className="flex gap-3 px-5 py-3 text-sm leading-relaxed text-[var(--fg)]"
                   >
                     <span className="mt-[0.55em] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-brass-bright)]" />
-                    {t}
+                    <GlossaryText text={t} />
                   </li>
                 ))}
               </ul>

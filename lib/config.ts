@@ -40,6 +40,9 @@ export const NAV_GROUPS: readonly NavEntry[] = [
     label: "Training",
     items: [
       { href: "/shots", label: "Shots" },
+      { href: "/dawg-drill", label: "Dawg Drill" },
+      { href: "/stats", label: "Practice Stats" },
+      { href: "/glossary", label: "Glossary" },
       { href: "/clips", label: "Clips" },
     ],
   },

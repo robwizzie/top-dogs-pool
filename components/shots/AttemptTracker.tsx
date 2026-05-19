@@ -1,12 +1,59 @@
 "use client";
 
+import { useEffect } from "react";
 import { CornerDownLeft, Plus, Target, X } from "lucide-react";
 import { useShotStats } from "@/lib/kinister/useShotStats";
+import { showToast } from "@/components/ui/Toaster";
 import { cn } from "@/lib/utils";
 
 export function AttemptTracker({ shotId }: { shotId: string }) {
-  const { stats, todaySession, logMake, logMiss, undo, reset } =
-    useShotStats(shotId);
+  const {
+    stats,
+    todaySession,
+    logMake: rawLogMake,
+    logMiss: rawLogMiss,
+    undo,
+    reset,
+  } = useShotStats(shotId);
+
+  // Wrap log handlers so the player gets a subtle confirmation toast for
+  // every rep — reassurance the tap landed.
+  const logMake = () => {
+    rawLogMake();
+    showToast({ message: "Make logged", kind: "success" });
+  };
+  const logMiss = () => {
+    rawLogMiss();
+    showToast({ message: "Miss logged", kind: "info" });
+  };
+
+  // Keyboard shortcuts: M = make, X = miss. Phone-on-rail use case: a
+  // bluetooth keyboard / remote shutter triggers reps without taking
+  // hands off the cue.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      const editing =
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (t && (t as HTMLElement).isContentEditable);
+      if (editing) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const key = e.key.toLowerCase();
+      if (key === "m") {
+        e.preventDefault();
+        logMake();
+      } else if (key === "x") {
+        e.preventDefault();
+        logMiss();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shotId]);
 
   const allTimePct =
     stats.totalAttempts > 0

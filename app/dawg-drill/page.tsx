@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { KINISTER_SHOTS } from "@/lib/kinister/shots";
 import { DawgDrillRunner } from "@/components/shots/DawgDrillRunner";
 
@@ -10,7 +11,9 @@ export const metadata = {
 export default function DawgDrillPage() {
   return (
     <main className="min-h-dvh bg-[var(--bg)]">
-      <DawgDrillRunner shots={KINISTER_SHOTS} />
+      <Suspense fallback={null}>
+        <DawgDrillRunner shots={KINISTER_SHOTS} />
+      </Suspense>
     </main>
   );
 }

@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import {
+  daysSinceLastAttempt,
+  useAllShotStats,
+} from "@/lib/kinister/useShotStats";
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,6 +25,7 @@ import type { Difficulty, KinisterShot } from "@/lib/kinister/shots";
 import { PoolTable } from "./PoolTable";
 import { AttemptTracker } from "./AttemptTracker";
 import { describePosition, pocketLabel } from "@/lib/kinister/setup";
+import { showToast } from "@/components/ui/Toaster";
 import { cn } from "@/lib/utils";
 
 type Preset = {
@@ -90,27 +96,116 @@ function shuffle<T>(arr: T[]): T[] {
 type SessionItem = { shot: KinisterShot; reps: number };
 type SessionState = { items: SessionItem[]; index: number };
 
+const SESSION_STORAGE_KEY = "topdogs:dawg-drill-session";
+
+/** Serialized form on disk — just IDs + reps + index. */
+type SerializedSession = {
+  items: { shotId: string; reps: number }[];
+  index: number;
+};
+
+function persistSession(session: SessionState | null) {
+  if (typeof window === "undefined") return;
+  if (!session) {
+    window.localStorage.removeItem(SESSION_STORAGE_KEY);
+    return;
+  }
+  const ser: SerializedSession = {
+    items: session.items.map((i) => ({ shotId: i.shot.id, reps: i.reps })),
+    index: session.index,
+  };
+  window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(ser));
+}
+
+function readPersistedSession(shots: KinisterShot[]): SessionState | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed: SerializedSession = JSON.parse(raw);
+    if (!Array.isArray(parsed.items)) return null;
+    const items: SessionItem[] = [];
+    for (const entry of parsed.items) {
+      const shot = shots.find((s) => s.id === entry.shotId);
+      if (shot) items.push({ shot, reps: entry.reps });
+    }
+    if (items.length === 0) return null;
+    const index = Math.max(0, Math.min(items.length - 1, parsed.index ?? 0));
+    return { items, index };
+  } catch {
+    return null;
+  }
+}
+
 export function DawgDrillRunner({ shots }: { shots: KinisterShot[] }) {
   const [session, setSession] = useState<SessionState | null>(null);
+  const [resumeCandidate, setResumeCandidate] = useState<SessionState | null>(
+    null,
+  );
+
+  // On mount, check for an in-progress drill to offer to resume. We don't
+  // auto-resume — show a banner so the player can choose.
+  useEffect(() => {
+    const persisted = readPersistedSession(shots);
+    if (persisted) setResumeCandidate(persisted);
+  }, [shots]);
+
+  // Mirror the active session to localStorage so a refresh / accidental
+  // close doesn't lose progress.
+  useEffect(() => {
+    persistSession(session);
+  }, [session]);
+
+  function start(next: SessionState) {
+    setResumeCandidate(null);
+    setSession(next);
+  }
+
+  function endSession() {
+    setSession(null);
+    persistSession(null);
+  }
 
   if (session) {
     return (
       <SessionView
         session={session}
         onAdvance={(i) => setSession({ ...session, index: i })}
-        onFinish={() => setSession(null)}
+        onFinish={endSession}
       />
     );
   }
-  return <BuilderView shots={shots} onStart={(s) => setSession(s)} />;
+  return (
+    <BuilderView
+      shots={shots}
+      onStart={start}
+      resumeCandidate={resumeCandidate}
+      onResume={() => {
+        if (resumeCandidate) {
+          setSession(resumeCandidate);
+          setResumeCandidate(null);
+        }
+      }}
+      onDiscardResume={() => {
+        setResumeCandidate(null);
+        persistSession(null);
+      }}
+    />
+  );
 }
 
 function BuilderView({
   shots,
   onStart,
+  resumeCandidate,
+  onResume,
+  onDiscardResume,
 }: {
   shots: KinisterShot[];
   onStart: (s: SessionState) => void;
+  resumeCandidate: SessionState | null;
+  onResume: () => void;
+  onDiscardResume: () => void;
 }) {
   // Map of shotId → rep count. Reps of 0 (or absent) = not in the drill.
   const [reps, setReps] = useState<Record<string, number>>({});
@@ -120,6 +215,56 @@ function BuilderView({
   const [difficulty, setDifficulty] = useState<Difficulty | "all">("all");
   const [query, setQuery] = useState("");
   const [catalogOpen, setCatalogOpen] = useState(true);
+
+  // Read URL params for deep-linking:
+  //   /dawg-drill?preset=today  → due-for-practice + untried shots
+  //   /dawg-drill?shots=id1,id2 → explicit shot list (each at default reps)
+  const searchParams = useSearchParams();
+  const allStats = useAllShotStats();
+  const presetParam = searchParams?.get("preset");
+  const shotsParam = searchParams?.get("shots");
+  // Only honor the URL pre-fill once per mount so users can clear the drill
+  // afterward without it snapping back.
+  const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (prefilled) return;
+    if (presetParam === "today") {
+      const due: string[] = [];
+      const untried: string[] = [];
+      for (const shot of shots) {
+        const s = allStats[shot.id];
+        if (!s || s.totalAttempts === 0) {
+          untried.push(shot.id);
+        } else {
+          const days = daysSinceLastAttempt(s);
+          if (days !== null && days >= 3) due.push(shot.id);
+        }
+      }
+      // Prefer the most-due shots; pad with up to 3 untried ones so the
+      // player always has something to work on.
+      const picks = [...due, ...untried.slice(0, 3)].slice(0, 8);
+      if (picks.length > 0) {
+        const next: Record<string, number> = {};
+        for (const id of picks) next[id] = defaultReps;
+        setReps(next);
+        setPrefilled(true);
+      }
+    } else if (shotsParam) {
+      const ids = shotsParam
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const next: Record<string, number> = {};
+      for (const id of ids) {
+        if (shots.some((s) => s.id === id)) next[id] = defaultReps;
+      }
+      if (Object.keys(next).length > 0) {
+        setReps(next);
+        setPrefilled(true);
+      }
+    }
+  }, [presetParam, shotsParam, shots, allStats, defaultReps, prefilled]);
 
   // Selected shots, in catalog order (stable ordering through edits).
   const selected = useMemo(
@@ -203,6 +348,41 @@ function BuilderView({
       </header>
 
       <div className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+        {resumeCandidate && (
+          <div className="surface flex flex-col gap-3 border-[var(--color-brass)]/55 bg-[var(--color-brass)]/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass-bright)]">
+                Resume your drill?
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--fg)]">
+                You had {resumeCandidate.items.length} shots queued up — on
+                shot{" "}
+                <span className="font-semibold">
+                  {resumeCandidate.index + 1}
+                </span>{" "}
+                of {resumeCandidate.items.length}. Pick up where you left
+                off?
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={onResume}
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
+              >
+                Resume
+              </button>
+              <button
+                type="button"
+                onClick={onDiscardResume}
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+              >
+                Discard
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Quick presets + default reps */}
         <section className="surface p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
@@ -709,6 +889,17 @@ function Complete({
   session: SessionState;
 }) {
   const totalReps = session.items.reduce((sum, i) => sum + i.reps, 0);
+
+  // Single celebratory toast on first mount of the complete screen.
+  useEffect(() => {
+    showToast({
+      message: "Dawg Drill complete",
+      detail: `${session.items.length} shots · ${totalReps} reps`,
+      kind: "success",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 px-4 py-20 text-center">
       <CheckCircle2 size={64} className="text-[var(--color-felt-bright)]" />
