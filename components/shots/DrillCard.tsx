@@ -45,6 +45,7 @@ export function DrillCard({ drill }: { drill: Drill }) {
           cueBall={drill.cueBall}
           objectBalls={drill.objectBalls}
           ghostBalls={drill.ghostBalls}
+          numberedGhosts={drill.numberedGhosts}
         />
       ) : (
         <div className="flex h-32 items-center justify-center rounded-2xl border border-dashed border-[var(--border)] bg-[var(--bg-card)] px-4 text-center text-xs text-[var(--fg-dim)]">

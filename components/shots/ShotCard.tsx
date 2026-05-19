@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import type { KinisterShot } from "@/lib/kinister/shots";
 import { PoolTable } from "./PoolTable";
+import { PracticeStatusBadge } from "./PracticeStatusBadge";
 import { cn } from "@/lib/utils";
 
 const DIFFICULTY_STYLES: Record<KinisterShot["difficulty"], string> = {
@@ -63,6 +64,7 @@ export function ShotCard({
         >
           {shot.difficulty}
         </span>
+        <PracticeStatusBadge shotId={shot.id} />
         <span className="text-[11px] text-[var(--fg-dim)]">{shot.series}</span>
       </div>
     </Link>

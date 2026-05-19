@@ -107,6 +107,7 @@ export default async function DrillDetailPage({
                 cueBall={drill.cueBall}
                 objectBalls={drill.objectBalls}
                 ghostBalls={drill.ghostBalls}
+                numberedGhosts={drill.numberedGhosts}
               />
             )}
 

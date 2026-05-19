@@ -66,6 +66,40 @@ export function pocketCoord(id: PocketId): DiamondCoord {
   return POCKETS[id];
 }
 
+/**
+ * Cut-angle description for a shot. Returns the geometric angle between the
+ * CB→OB line and the OB→pocket line (in degrees), plus the colloquial
+ * pool-room name for that angle ("half-ball", "¾-ball", etc.).
+ */
+export function cutAngle(
+  cue: DiamondCoord,
+  ob: DiamondCoord,
+  pocket: DiamondCoord,
+): { degrees: number; label: string } {
+  const ax = ob.x - cue.x;
+  const ay = ob.y - cue.y;
+  const bx = pocket.x - ob.x;
+  const by = pocket.y - ob.y;
+  const am = Math.hypot(ax, ay);
+  const bm = Math.hypot(bx, by);
+  if (am < 1e-6 || bm < 1e-6) return { degrees: 0, label: "Straight" };
+  const cos = Math.max(-1, Math.min(1, (ax * bx + ay * by) / (am * bm)));
+  const degrees = (Math.acos(cos) * 180) / Math.PI;
+  return { degrees, label: cutLabel(degrees) };
+}
+
+function cutLabel(degrees: number): string {
+  if (degrees < 5) return "Straight (full ball)";
+  if (degrees < 15) return "⅞-ball cut";
+  if (degrees < 25) return "¾-ball cut";
+  if (degrees < 35) return "⅝-ball cut";
+  if (degrees < 45) return "Half-ball cut";
+  if (degrees < 55) return "⅜-ball cut";
+  if (degrees < 65) return "¼-ball cut";
+  if (degrees < 80) return "Thin cut";
+  return "Very thin cut";
+}
+
 function formatDiamonds(d: number): string {
   const rounded = Math.round(d * 2) / 2; // snap to half-diamonds
   if (rounded <= 0.25) return "tucked against the corner";

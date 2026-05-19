@@ -13,8 +13,12 @@ import { PoolTable } from "@/components/shots/PoolTable";
 import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
 import { AttemptTracker } from "@/components/shots/AttemptTracker";
+import { ShotNotes } from "@/components/shots/ShotNotes";
+import { MistakeDiagram } from "@/components/shots/MistakeDiagram";
+import { ShareControls } from "@/components/shots/ShareControls";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
-import { describePosition, pocketLabel } from "@/lib/kinister/setup";
+import { POCKETS } from "@/lib/kinister/shots";
+import { cutAngle, describePosition, pocketLabel } from "@/lib/kinister/setup";
 import { englishSimilarity } from "@/lib/kinister/english";
 import { cn } from "@/lib/utils";
 
@@ -31,10 +35,21 @@ export async function generateMetadata({
 }) {
   const { id } = await params;
   const shot = getShot(id);
-  if (!shot) return { title: "Shot not found" };
+  if (!shot) return { title: "Shot — Top Dogs Pool" };
+  const title = `${shot.name} — Kinister Shot ${String(shot.number).padStart(2, "0")}`;
   return {
-    title: `${shot.name} — Kinister Shot ${String(shot.number).padStart(2, "0")}`,
+    title,
     description: shot.description,
+    openGraph: {
+      title,
+      description: shot.description,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: shot.description,
+    },
   };
 }
 
@@ -121,6 +136,9 @@ export default async function ShotDetailPage({
               <DrilledToggle shotId={shot.id} />
             </div>
           </div>
+          <div className="mt-4">
+            <ShareControls shot={shot} />
+          </div>
         </div>
       </header>
 
@@ -175,6 +193,30 @@ export default async function ShotDetailPage({
                       </div>
                     </li>
                   )}
+                  {shot.targetPocket &&
+                    (() => {
+                      const cut = cutAngle(
+                        shot.cueBall,
+                        shot.objectBall,
+                        POCKETS[shot.targetPocket],
+                      );
+                      return (
+                        <li className="flex items-start gap-3 py-2">
+                          <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)]/30" />
+                          <div className="flex-1">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                              Cut angle
+                            </p>
+                            <p className="leading-relaxed text-[var(--fg)]">
+                              {cut.label}
+                              <span className="ml-2 text-xs text-[var(--fg-dim)]">
+                                ({cut.degrees.toFixed(0)}° off the pocket line)
+                              </span>
+                            </p>
+                          </div>
+                        </li>
+                      );
+                    })()}
                 </ul>
                 <p className="mt-3 text-xs leading-relaxed text-[var(--fg-dim)]">
                   The faint outlined ball on the diagram is the{" "}
@@ -252,6 +294,8 @@ export default async function ShotDetailPage({
           <aside className="space-y-6">
             <AttemptTracker shotId={shot.id} />
 
+            <ShotNotes shotId={shot.id} />
+
             <div className="surface overflow-hidden">
               <div className="flex items-center gap-2 border-b border-[var(--border)] bg-[var(--color-pop)]/10 px-5 py-3">
                 <AlertTriangle
@@ -273,6 +317,23 @@ export default async function ShotDetailPage({
                   </li>
                 ))}
               </ul>
+              {shot.mistakeDiagrams && shot.mistakeDiagrams.length > 0 && (
+                <div className="border-t border-[var(--border)] p-4">
+                  <div className="grid gap-4">
+                    {shot.mistakeDiagrams.map((md, i) => (
+                      <figure key={i} className="space-y-2">
+                        <MistakeDiagram shot={shot} mistake={md} />
+                        <figcaption className="space-y-0.5 text-xs leading-relaxed">
+                          <p className="font-semibold text-[var(--color-pop-bright)]">
+                            {md.mistake}
+                          </p>
+                          <p className="text-[var(--fg-dim)]">{md.outcome}</p>
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="surface overflow-hidden">
@@ -334,6 +395,12 @@ export default async function ShotDetailPage({
                   Ghost ball (aim point)
                 </div>
               </div>
+              <Link
+                href="/glossary"
+                className="mt-4 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-brass-bright)] transition-colors hover:text-[var(--color-brass)]"
+              >
+                Look up a term →
+              </Link>
             </div>
           </aside>
         </div>
