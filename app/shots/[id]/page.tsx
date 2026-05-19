@@ -15,6 +15,7 @@ import { DrilledToggle } from "@/components/shots/DrilledToggle";
 import { AttemptTracker } from "@/components/shots/AttemptTracker";
 import { ShotNotes } from "@/components/shots/ShotNotes";
 import { MistakeDiagram } from "@/components/shots/MistakeDiagram";
+import { ShareControls } from "@/components/shots/ShareControls";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
 import { POCKETS } from "@/lib/kinister/shots";
 import { cutAngle, describePosition, pocketLabel } from "@/lib/kinister/setup";
@@ -25,6 +26,30 @@ type Params = { id: string };
 
 export function generateStaticParams(): Params[] {
   return KINISTER_SHOTS.map((s) => ({ id: s.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { id } = await params;
+  const shot = getShot(id);
+  if (!shot) return { title: "Shot — Top Dogs Pool" };
+  return {
+    title: `${shot.name} — Top Dogs Pool`,
+    description: shot.description,
+    openGraph: {
+      title: `${shot.name} — Top Dogs Pool`,
+      description: shot.description,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${shot.name} — Top Dogs Pool`,
+      description: shot.description,
+    },
+  };
 }
 
 export async function generateMetadata({
@@ -123,6 +148,9 @@ export default async function ShotDetailPage({
               </Link>
               <DrilledToggle shotId={shot.id} />
             </div>
+          </div>
+          <div className="mt-4">
+            <ShareControls shot={shot} />
           </div>
         </div>
       </header>
