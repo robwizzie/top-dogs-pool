@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { ArrowRight, Dog, Flame, Sparkles } from "lucide-react";
+import { ArrowRight, Dice5, Dog, Flame, Sparkles } from "lucide-react";
 import type { KinisterShot } from "@/lib/kinister/shots";
 import {
   daysSinceLastAttempt,
@@ -79,13 +79,24 @@ export function TrainingTodayCard({ shots }: { shots: KinisterShot[] }) {
         </p>
       )}
 
-      <Link
-        href="/dawg-drill?preset=today"
-        className="mt-1 inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
-      >
-        Build today&apos;s drill
-        <ArrowRight size={14} />
-      </Link>
+      <div className="mt-1 flex flex-wrap items-center gap-2">
+        <Link
+          href="/dawg-drill?preset=today"
+          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
+        >
+          Build today&apos;s drill
+          <ArrowRight size={14} />
+        </Link>
+        <Link
+          href="/shots/random"
+          prefetch={false}
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
+          title="Open a random shot from the catalog"
+        >
+          <Dice5 size={14} />
+          Surprise me
+        </Link>
+      </div>
       <Link
         href="/stats"
         className="text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass-bright)]"
