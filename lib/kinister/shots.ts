@@ -58,6 +58,20 @@ export type KinisterShot = {
   cueBallPath: DiamondCoord[];
   /** Where to strike the cue ball to make this shot work (english/spin). */
   english?: EnglishHit;
+  /**
+   * Optional "what goes wrong" mini-diagrams. Each entry pairs a verbal
+   * description of the mistake with an alternate cue-ball path that
+   * illustrates the bad outcome. Rendered alongside Common Mistakes on
+   * the shot detail page.
+   */
+  mistakeDiagrams?: Array<{
+    /** Headline: the player's error. */
+    mistake: string;
+    /** What happens to the cue ball as a result. */
+    outcome: string;
+    /** Alternate post-contact cue-ball path. Same coord system as cueBallPath. */
+    cueBallPath: DiamondCoord[];
+  }>;
   /** Optional object-ball waypoints (e.g. banks). If omitted, OB rolls to targetPocket. */
   objectBallPath?: DiamondCoord[];
   /** Additional balls on the table for context (multi-ball drills). Rendered statically — they don't move with the animation. */
@@ -183,6 +197,20 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     targetPocket: "TR",
     cueBallPath: [{ x: 1.5, y: 0.3 }],
     english: { x: 0, y: 0 },
+    mistakeDiagrams: [
+      {
+        mistake: "Hitting above center",
+        outcome:
+          "Cue ball follows the OB forward and tucks against the head rail instead of stopping on the OB's spot.",
+        cueBallPath: [{ x: 0.4, y: 0.3 }],
+      },
+      {
+        mistake: "Decelerating into the ball",
+        outcome:
+          "Unintended draw pulls the cue ball back toward your starting position.",
+        cueBallPath: [{ x: 3, y: 0.3 }],
+      },
+    ],
     description:
       "Cue ball and object ball on the same long rail, OB sitting just below the corner pocket. Pocket the OB and freeze the cue ball where the OB started — CB takes the place of OBJ.",
     technique:
@@ -424,6 +452,19 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 0.85, y: 0.7 },
     ],
     english: { x: -0.3, y: 0 },
+    mistakeDiagrams: [
+      {
+        mistake: "Too much pace",
+        outcome:
+          "Cue ball doesn't die after the far rail — it picks up a third rail and ends wherever, often on a scratch line.",
+        cueBallPath: [
+          { x: 0, y: 1.6 },
+          { x: 0.55, y: 4 },
+          { x: 2.8, y: 0 },
+          { x: 3.2, y: 1.8 },
+        ],
+      },
+    ],
     description:
       "Pocket the OB in the corner; cue ball comes off the short rail, then the far long rail, and dies before it can pick up a third rail. Lands back near where the OB was.",
     technique:
@@ -457,6 +498,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       { x: 1.4, y: 0.6 },
     ],
     english: { x: -0.7, y: 0 },
+    mistakeDiagrams: [
+      {
+        mistake: "Not enough pace",
+        outcome:
+          "Cue ball stops after two or three rails instead of completing the four-rail zig-zag.",
+        cueBallPath: [
+          { x: 0.6, y: 4 },
+          { x: 1.1, y: 0 },
+          { x: 1.4, y: 1.8 },
+        ],
+      },
+    ],
     description:
       "Same setup as the two-rail version but with much more pace and english. CB zig-zags back and forth between the two long rails for at least four rails, drifting slightly down-table each pass. A fifth rail is fine.",
     technique:

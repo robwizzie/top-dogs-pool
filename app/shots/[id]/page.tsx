@@ -14,6 +14,7 @@ import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
 import { AttemptTracker } from "@/components/shots/AttemptTracker";
 import { ShotNotes } from "@/components/shots/ShotNotes";
+import { MistakeDiagram } from "@/components/shots/MistakeDiagram";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
 import { POCKETS } from "@/lib/kinister/shots";
 import { cutAngle, describePosition, pocketLabel } from "@/lib/kinister/setup";
@@ -301,6 +302,23 @@ export default async function ShotDetailPage({
                   </li>
                 ))}
               </ul>
+              {shot.mistakeDiagrams && shot.mistakeDiagrams.length > 0 && (
+                <div className="border-t border-[var(--border)] p-4">
+                  <div className="grid gap-4">
+                    {shot.mistakeDiagrams.map((md, i) => (
+                      <figure key={i} className="space-y-2">
+                        <MistakeDiagram shot={shot} mistake={md} />
+                        <figcaption className="space-y-0.5 text-xs leading-relaxed">
+                          <p className="font-semibold text-[var(--color-pop-bright)]">
+                            {md.mistake}
+                          </p>
+                          <p className="text-[var(--fg-dim)]">{md.outcome}</p>
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="surface overflow-hidden">
