@@ -129,9 +129,10 @@ function SetupView({
             </h1>
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--fg-dim)]">
-            Pick a set, pick how many reps you'll take per shot, then walk
-            through the catalog one shot at a time. Use the Made / Missed
-            buttons in the tracker as you shoot — your make rate is saved.
+            Pick a set, pick how many reps you&apos;ll take per shot, then
+            walk through the catalog one shot at a time. Use the Made /
+            Missed buttons in the tracker as you shoot — your make rate is
+            saved.
           </p>
         </div>
       </header>
