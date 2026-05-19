@@ -112,3 +112,26 @@ export function contactPoint(
     y: ob.y + (dy / dist) * offset,
   };
 }
+
+/**
+ * Ghost-ball position for aiming. Returns the spot where the cue ball would
+ * sit at the moment of impact so the object ball is driven straight toward
+ * `target` (the pocket). Centers align: target → OB → ghost ball.
+ *
+ * This is the standard "ghost ball" pool aiming aid — aim the cue ball
+ * center at the ghost ball center and the OB goes where you want.
+ */
+export function ghostBall(
+  ob: DiamondCoord,
+  target: DiamondCoord,
+): DiamondCoord {
+  const dx = ob.x - target.x;
+  const dy = ob.y - target.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist === 0) return ob;
+  const offset = (2 * BALL_R) / UNIT;
+  return {
+    x: ob.x + (dx / dist) * offset,
+    y: ob.y + (dy / dist) * offset,
+  };
+}

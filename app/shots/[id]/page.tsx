@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, AlertTriangle, Lightbulb, Target } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Lightbulb, MapPin, Target } from "lucide-react";
 import { PoolTable } from "@/components/shots/PoolTable";
 import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
+import { describePosition, pocketLabel } from "@/lib/kinister/setup";
 import { cn } from "@/lib/utils";
 
 type Params = { id: string };
@@ -91,6 +92,62 @@ export default async function ShotDetailPage({
             <PoolTable shot={shot} interactive />
 
             <ShotVideoBlock video={videoFor(shot)} />
+
+            {!shot.sequence && (
+              <div className="surface p-5">
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-[var(--color-brass-bright)]" />
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+                    Rack the Shot
+                  </p>
+                </div>
+                <ul className="mt-3 divide-y divide-[var(--border)] text-sm">
+                  <li className="flex items-start gap-3 py-2">
+                    <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-black/40 bg-[#ece1c4]" />
+                    <div className="flex-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                        Cue ball
+                      </p>
+                      <p className="leading-relaxed text-[var(--fg)]">
+                        {describePosition(shot.cueBall)}
+                      </p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3 py-2">
+                    <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-black/40 bg-[#e0a82e]" />
+                    <div className="flex-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                        Object ball
+                      </p>
+                      <p className="leading-relaxed text-[var(--fg)]">
+                        {describePosition(shot.objectBall)}
+                      </p>
+                    </div>
+                  </li>
+                  {shot.targetPocket && (
+                    <li className="flex items-start gap-3 py-2">
+                      <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-dashed border-[rgba(232,82,72,0.7)]" />
+                      <div className="flex-1">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                          Target pocket
+                        </p>
+                        <p className="leading-relaxed text-[var(--fg)]">
+                          {pocketLabel(shot.targetPocket)}
+                        </p>
+                      </div>
+                    </li>
+                  )}
+                </ul>
+                <p className="mt-3 text-xs leading-relaxed text-[var(--fg-dim)]">
+                  The faint outlined ball on the diagram is the{" "}
+                  <span className="font-semibold text-[var(--fg)]">
+                    ghost ball
+                  </span>{" "}
+                  — aim your cue ball straight at it and the object ball goes
+                  in the pocket.
+                </p>
+              </div>
+            )}
 
             <div className="surface p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
@@ -200,6 +257,10 @@ export default async function ShotDetailPage({
                 <div className="flex items-center gap-2">
                   <span className="inline-block h-3 w-3 rounded-full border border-dashed border-[rgba(232,82,72,0.7)]" />
                   Target pocket
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-3 w-3 rounded-full border border-dashed border-white/55" />
+                  Ghost ball (aim point)
                 </div>
               </div>
             </div>

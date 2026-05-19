@@ -18,6 +18,7 @@ import {
   SVG_W,
   UNIT,
   contactPoint,
+  ghostBall,
   pathLength,
   toSvg,
   walkPath,
@@ -387,6 +388,19 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
                 />
               )}
 
+              {/* Ghost-ball aim line (CB-start → ghost ball at contact) and
+                  ghost ball outline. Only show before animation begins so it
+                  doesn't fight with the moving cue ball. */}
+              {shot.targetPocket && progress <= 0 && (
+                <GhostBallAim
+                  cueBall={shot.cueBall}
+                  ghost={ghostBall(
+                    shot.objectBall,
+                    POCKETS[shot.targetPocket],
+                  )}
+                />
+              )}
+
               {/* CB path (solid cream) */}
               <PathLine
                 start={shot.cueBall}
@@ -630,6 +644,51 @@ function Arrow({
       points={`${tipX},${tipY} ${p1x},${p1y} ${p2x},${p2y}`}
       fill={fill}
     />
+  );
+}
+
+/**
+ * Render the ghost-ball aim aid: a faint cue-ball outline at the ghost-ball
+ * position (where the cue ball must be at impact to send the OB to the
+ * pocket), plus a thin dotted line from the cue ball's starting position
+ * through the ghost ball — the player's aim line.
+ */
+function GhostBallAim({
+  cueBall,
+  ghost,
+}: {
+  cueBall: DiamondCoord;
+  ghost: DiamondCoord;
+}) {
+  const cb = toSvg(cueBall);
+  const g = toSvg(ghost);
+  return (
+    <g>
+      <line
+        x1={cb.x}
+        y1={cb.y}
+        x2={g.x}
+        y2={g.y}
+        stroke="rgba(255,255,255,0.32)"
+        strokeWidth={1}
+        strokeDasharray="3 5"
+      />
+      <circle
+        cx={g.x}
+        cy={g.y}
+        r={BALL_R}
+        fill="none"
+        stroke="rgba(255,255,255,0.55)"
+        strokeWidth={1.2}
+        strokeDasharray="2 3"
+      />
+      <circle
+        cx={g.x}
+        cy={g.y}
+        r={1.8}
+        fill="rgba(255,255,255,0.65)"
+      />
+    </g>
   );
 }
 
