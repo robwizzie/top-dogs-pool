@@ -60,15 +60,6 @@ export function pathLength(points: DiamondCoord[]): number {
 }
 
 /**
- * Cubic ease-out. Starts fast, decelerates smoothly to rest — matches how
- * a pool ball decelerates from friction once it leaves the cue tip.
- */
-export function easeOutCubic(t: number): number {
-  const c = Math.max(0, Math.min(1, t));
-  return 1 - Math.pow(1 - c, 3);
-}
-
-/**
  * Walk a polyline (start → waypoints) by a fractional progress in [0, 1],
  * weighted by segment length so motion is at constant speed.
  */
