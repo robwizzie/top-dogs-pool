@@ -19,6 +19,7 @@ import {
 import type { Difficulty, KinisterShot } from "@/lib/kinister/shots";
 import { PoolTable } from "./PoolTable";
 import { AttemptTracker } from "./AttemptTracker";
+import { ShotThumbnail } from "./ShotThumbnail";
 import { describePosition, pocketLabel } from "@/lib/kinister/setup";
 import { cn } from "@/lib/utils";
 
@@ -153,16 +154,15 @@ function BuilderView({
     });
   }
 
-  function addPreset(p: Preset) {
+  function applyPreset(p: Preset) {
+    // Replace, don't merge: tapping a preset always starts a fresh drill
+    // with exactly that preset's shots at the default rep count.
     const picks = p.pick(shots);
-    setReps((prev) => {
-      const next = { ...prev };
-      for (const s of picks) {
-        // Only set if not already in the drill — don't stomp custom counts.
-        if (!next[s.id]) next[s.id] = defaultReps;
-      }
-      return next;
-    });
+    const next: Record<string, number> = {};
+    for (const s of picks) {
+      next[s.id] = defaultReps;
+    }
+    setReps(next);
   }
 
   function clearAll() {
@@ -210,19 +210,20 @@ function BuilderView({
             Quick fill
           </p>
           <p className="mt-1 text-xs text-[var(--fg-dim)]">
-            Tap a preset to add those shots to your drill at the default rep
-            count below. You can fine-tune any of them after.
+            Tap a preset to start fresh with those shots at the default rep
+            count below. Replaces whatever you already have — fine-tune
+            from there.
           </p>
           <ul className="mt-3 flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <li key={p.id}>
                 <button
                   type="button"
-                  onClick={() => addPreset(p)}
+                  onClick={() => applyPreset(p)}
                   className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:border-[var(--color-brass)]/60 hover:text-[var(--color-brass-bright)]"
                   title={p.description}
                 >
-                  <Plus size={12} />
+                  <PawPrint size={12} />
                   {p.label}
                 </button>
               </li>
@@ -424,6 +425,9 @@ function SelectedRow({
 }) {
   return (
     <li className="flex items-center gap-3 py-3">
+      <div className="w-28 shrink-0 overflow-hidden rounded-md border border-[var(--border)] sm:w-32">
+        <ShotThumbnail shot={shot} className="block h-auto w-full" />
+      </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-[var(--fg)]">
           <span className="text-[var(--fg-dim)]">
@@ -460,29 +464,41 @@ function CatalogRow({
   defaultReps: number;
   onChange: (n: number) => void;
 }) {
-  const inPack = reps > 0;
+  const inDrill = reps > 0;
   return (
     <li className="flex items-center gap-3 py-2">
-      <span
+      <div
         className={cn(
-          "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-          DIFFICULTY_STYLES[shot.difficulty],
+          "w-24 shrink-0 overflow-hidden rounded-md border transition-colors sm:w-28",
+          inDrill
+            ? "border-[var(--color-brass)]/55"
+            : "border-[var(--border)]",
         )}
       >
-        {shot.difficulty.slice(0, 4)}
-      </span>
+        <ShotThumbnail shot={shot} className="block h-auto w-full" />
+      </div>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold text-[var(--fg)]">
-          <span className="text-[var(--fg-dim)]">
-            {String(shot.number).padStart(2, "0")} ·{" "}
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+              DIFFICULTY_STYLES[shot.difficulty],
+            )}
+          >
+            {shot.difficulty.slice(0, 4)}
           </span>
-          {shot.name}
-        </p>
-        <p className="truncate text-[11px] text-[var(--fg-dim)]">
+          <p className="truncate text-sm font-semibold text-[var(--fg)]">
+            <span className="text-[var(--fg-dim)]">
+              {String(shot.number).padStart(2, "0")} ·{" "}
+            </span>
+            {shot.name}
+          </p>
+        </div>
+        <p className="mt-1 truncate text-[11px] text-[var(--fg-dim)]">
           {shot.shortName}
         </p>
       </div>
-      {inPack ? (
+      {inDrill ? (
         <RepStepper value={reps} onChange={onChange} />
       ) : (
         <button
