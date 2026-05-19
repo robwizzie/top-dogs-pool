@@ -12,6 +12,7 @@ import {
 import { PoolTable } from "@/components/shots/PoolTable";
 import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
+import { AttemptTracker } from "@/components/shots/AttemptTracker";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
 import { describePosition, pocketLabel } from "@/lib/kinister/setup";
 import { englishSimilarity } from "@/lib/kinister/english";
@@ -249,6 +250,8 @@ export default async function ShotDetailPage({
           </div>
 
           <aside className="space-y-6">
+            <AttemptTracker shotId={shot.id} />
+
             <div className="surface overflow-hidden">
               <div className="flex items-center gap-2 border-b border-[var(--border)] bg-[var(--color-pop)]/10 px-5 py-3">
                 <AlertTriangle
