@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CheckCircle2, RotateCcw } from "lucide-react";
+import { CheckCircle2, RotateCcw, Search } from "lucide-react";
 import type { Difficulty, KinisterShot } from "@/lib/kinister/shots";
 import { useDrilled } from "@/lib/kinister/useDrilled";
 import { ShotCard } from "./ShotCard";
 import { cn } from "@/lib/utils";
+import { englishCategory, type EnglishCategory } from "@/lib/kinister/english";
 
 const DIFFICULTIES: Difficulty[] = [
   "Foundational",
@@ -22,6 +23,14 @@ const DIFFICULTY_STYLES: Record<Difficulty, string> = {
     "data-[active=true]:bg-[var(--color-pop)]/15 data-[active=true]:text-[var(--color-pop-bright)] data-[active=true]:border-[var(--color-pop)]/50",
 };
 
+const ENGLISH_CATEGORIES: { id: EnglishCategory; label: string }[] = [
+  { id: "center", label: "Center" },
+  { id: "follow", label: "Follow / high" },
+  { id: "draw", label: "Draw / low" },
+  { id: "left", label: "Left" },
+  { id: "right", label: "Right" },
+];
+
 type DrilledFilter = "all" | "drilled" | "open";
 
 export function ShotsGallery({ shots }: { shots: KinisterShot[] }) {
@@ -33,24 +42,47 @@ export function ShotsGallery({ shots }: { shots: KinisterShot[] }) {
   const [difficulty, setDifficulty] = useState<Difficulty | "all">("all");
   const [series, setSeries] = useState<string>("all");
   const [drilledFilter, setDrilledFilter] = useState<DrilledFilter>("all");
+  const [englishFilter, setEnglishFilter] = useState<EnglishCategory | "all">(
+    "all",
+  );
+  const [query, setQuery] = useState("");
   const { has, count, clearAll } = useDrilled();
 
-  const filtered = useMemo(
-    () =>
-      shots.filter((s) => {
-        if (difficulty !== "all" && s.difficulty !== difficulty) return false;
-        if (series !== "all" && s.series !== series) return false;
-        const isDrilled = has(s.id);
-        if (drilledFilter === "drilled" && !isDrilled) return false;
-        if (drilledFilter === "open" && isDrilled) return false;
-        return true;
-      }),
-    [shots, difficulty, series, drilledFilter, has],
-  );
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return shots.filter((s) => {
+      if (difficulty !== "all" && s.difficulty !== difficulty) return false;
+      if (series !== "all" && s.series !== series) return false;
+      const isDrilled = has(s.id);
+      if (drilledFilter === "drilled" && !isDrilled) return false;
+      if (drilledFilter === "open" && isDrilled) return false;
+      if (englishFilter !== "all") {
+        const cats = s.english ? englishCategory(s.english) : ["center"];
+        if (!cats.includes(englishFilter)) return false;
+      }
+      if (q) {
+        const hay = [
+          s.name,
+          s.shortName,
+          s.description,
+          s.technique,
+          s.teaches,
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [shots, difficulty, series, drilledFilter, englishFilter, query, has]);
 
   const total = shots.length;
   const filtersDirty =
-    difficulty !== "all" || series !== "all" || drilledFilter !== "all";
+    difficulty !== "all" ||
+    series !== "all" ||
+    drilledFilter !== "all" ||
+    englishFilter !== "all" ||
+    query.trim() !== "";
 
   return (
     <div className="space-y-6">
@@ -87,7 +119,46 @@ export function ShotsGallery({ shots }: { shots: KinisterShot[] }) {
         )}
       </div>
 
+      <div className="surface flex items-center gap-3 px-4 py-2.5">
+        <Search size={14} className="shrink-0 text-[var(--fg-dim)]" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by name, technique, or what it teaches…"
+          className="min-w-0 flex-1 bg-transparent text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:outline-none"
+          aria-label="Search shots"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            className="text-xs font-semibold text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
       <div className="flex flex-wrap items-start gap-4">
+        <FilterRow label="English">
+          <Chip
+            active={englishFilter === "all"}
+            onClick={() => setEnglishFilter("all")}
+          >
+            All
+          </Chip>
+          {ENGLISH_CATEGORIES.map((c) => (
+            <Chip
+              key={c.id}
+              active={englishFilter === c.id}
+              onClick={() => setEnglishFilter(c.id)}
+            >
+              {c.label}
+            </Chip>
+          ))}
+        </FilterRow>
+
         <FilterRow label="Difficulty">
           <Chip
             active={difficulty === "all"}
