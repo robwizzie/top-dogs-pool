@@ -20,6 +20,42 @@ export type ShotStats = {
   sessions: ShotSession[];
 };
 
+/**
+ * Read every shot's stats at once (snapshot). Stays in sync via storage
+ * events. Useful for dashboard-style aggregate views.
+ */
+export function useAllShotStats(): Record<string, ShotStats> {
+  const [all, setAll] = useState<Record<string, ShotStats>>({});
+  useEffect(() => {
+    setAll(readAll());
+    function onChange() {
+      setAll(readAll());
+    }
+    window.addEventListener(CHANGE_EVENT, onChange);
+    window.addEventListener("storage", onChange);
+    return () => {
+      window.removeEventListener(CHANGE_EVENT, onChange);
+      window.removeEventListener("storage", onChange);
+    };
+  }, []);
+  return all;
+}
+
+/**
+ * Days since the player last logged an attempt on this shot. Returns null
+ * if they've never attempted it.
+ */
+export function daysSinceLastAttempt(stats: ShotStats): number | null {
+  if (stats.sessions.length === 0) return null;
+  const newest = stats.sessions[0]; // we unshift newest first
+  const [y, m, d] = newest.date.split("-").map(Number);
+  const then = new Date(y, (m ?? 1) - 1, d ?? 1);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffMs = today.getTime() - then.getTime();
+  return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+}
+
 type AllStats = Record<string, ShotStats>;
 
 const EMPTY: ShotStats = { totalAttempts: 0, totalMakes: 0, sessions: [] };

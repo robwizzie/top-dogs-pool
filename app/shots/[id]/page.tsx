@@ -13,8 +13,10 @@ import { PoolTable } from "@/components/shots/PoolTable";
 import { ShotVideoBlock } from "@/components/shots/ShotVideo";
 import { DrilledToggle } from "@/components/shots/DrilledToggle";
 import { AttemptTracker } from "@/components/shots/AttemptTracker";
+import { ShotNotes } from "@/components/shots/ShotNotes";
 import { KINISTER_SHOTS, getShot, videoFor } from "@/lib/kinister/shots";
-import { describePosition, pocketLabel } from "@/lib/kinister/setup";
+import { POCKETS } from "@/lib/kinister/shots";
+import { cutAngle, describePosition, pocketLabel } from "@/lib/kinister/setup";
 import { englishSimilarity } from "@/lib/kinister/english";
 import { cn } from "@/lib/utils";
 
@@ -175,6 +177,30 @@ export default async function ShotDetailPage({
                       </div>
                     </li>
                   )}
+                  {shot.targetPocket &&
+                    (() => {
+                      const cut = cutAngle(
+                        shot.cueBall,
+                        shot.objectBall,
+                        POCKETS[shot.targetPocket],
+                      );
+                      return (
+                        <li className="flex items-start gap-3 py-2">
+                          <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)]/30" />
+                          <div className="flex-1">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                              Cut angle
+                            </p>
+                            <p className="leading-relaxed text-[var(--fg)]">
+                              {cut.label}
+                              <span className="ml-2 text-xs text-[var(--fg-dim)]">
+                                ({cut.degrees.toFixed(0)}° off the pocket line)
+                              </span>
+                            </p>
+                          </div>
+                        </li>
+                      );
+                    })()}
                 </ul>
                 <p className="mt-3 text-xs leading-relaxed text-[var(--fg-dim)]">
                   The faint outlined ball on the diagram is the{" "}
@@ -251,6 +277,8 @@ export default async function ShotDetailPage({
 
           <aside className="space-y-6">
             <AttemptTracker shotId={shot.id} />
+
+            <ShotNotes shotId={shot.id} />
 
             <div className="surface overflow-hidden">
               <div className="flex items-center gap-2 border-b border-[var(--border)] bg-[var(--color-pop)]/10 px-5 py-3">
