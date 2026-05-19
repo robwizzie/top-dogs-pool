@@ -23,7 +23,7 @@ export default function ShotsPage() {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6 grid gap-3 sm:grid-cols-2">
           <Link
-            href="/pack-run"
+            href="/dawg-drill"
             className="surface surface-hover flex items-center justify-between gap-4 px-5 py-4"
           >
             <div className="flex items-center gap-3">
@@ -33,11 +33,11 @@ export default function ShotsPage() {
               />
               <div>
                 <p className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--fg)]">
-                  Take the pack out
+                  Start a Dawg Drill
                 </p>
                 <p className="text-xs leading-relaxed text-[var(--fg-dim)]">
-                  Build a custom Pack Run — any shots you want, however
-                  many reps you want of each.
+                  Build a custom drill — pick any shots and set how many
+                  reps you want of each.
                 </p>
               </div>
             </div>

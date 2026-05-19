@@ -90,7 +90,7 @@ function shuffle<T>(arr: T[]): T[] {
 type SessionItem = { shot: KinisterShot; reps: number };
 type SessionState = { items: SessionItem[]; index: number };
 
-export function PackRunner({ shots }: { shots: KinisterShot[] }) {
+export function DawgDrillRunner({ shots }: { shots: KinisterShot[] }) {
   const [session, setSession] = useState<SessionState | null>(null);
 
   if (session) {
@@ -112,7 +112,7 @@ function BuilderView({
   shots: KinisterShot[];
   onStart: (s: SessionState) => void;
 }) {
-  // Map of shotId → rep count. Reps of 0 (or absent) = not in the pack.
+  // Map of shotId → rep count. Reps of 0 (or absent) = not in the drill.
   const [reps, setReps] = useState<Record<string, number>>({});
   // What rep count to apply when adding a new shot or applying a preset.
   const [defaultReps, setDefaultReps] = useState<number>(5);
@@ -158,7 +158,7 @@ function BuilderView({
     setReps((prev) => {
       const next = { ...prev };
       for (const s of picks) {
-        // Only set if not already in the pack — don't stomp custom counts.
+        // Only set if not already in the drill — don't stomp custom counts.
         if (!next[s.id]) next[s.id] = defaultReps;
       }
       return next;
@@ -192,13 +192,13 @@ function BuilderView({
               className="text-[var(--color-brass-bright)]"
             />
             <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wide sm:text-5xl">
-              Build a Pack Run
+              Build a Dawg Drill
             </h1>
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--fg-dim)]">
             Pick the shots you want to drill and how many reps you&apos;ll
-            take of each. Tap a preset to fill the pack quickly, or build it
-            from scratch — every shot in the catalog is fair game.
+            take of each. Tap a preset to fill the drill quickly, or build
+            it from scratch — every shot in the catalog is fair game.
           </p>
         </div>
       </header>
@@ -210,7 +210,7 @@ function BuilderView({
             Quick fill
           </p>
           <p className="mt-1 text-xs text-[var(--fg-dim)]">
-            Tap a preset to add those shots to your pack at the default rep
+            Tap a preset to add those shots to your drill at the default rep
             count below. You can fine-tune any of them after.
           </p>
           <ul className="mt-3 flex flex-wrap gap-2">
@@ -235,7 +235,7 @@ function BuilderView({
                   className="inline-flex items-center gap-1 rounded-full border border-[var(--color-pop)]/40 bg-[var(--color-pop)]/5 px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-pop-bright)] transition-colors hover:bg-[var(--color-pop)]/15"
                 >
                   <X size={12} />
-                  Clear pack
+                  Clear drill
                 </button>
               </li>
             )}
@@ -269,7 +269,7 @@ function BuilderView({
           </div>
         </section>
 
-        {/* Your pack — selected shots */}
+        {/* Your drill — selected shots */}
         <section className="surface p-5">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ function BuilderView({
                 className="text-[var(--color-brass-bright)]"
               />
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-                Your pack
+                Your drill
               </p>
             </div>
             <p className="text-xs text-[var(--fg-dim)]">
@@ -295,7 +295,7 @@ function BuilderView({
 
           {selected.length === 0 ? (
             <p className="mt-4 text-sm text-[var(--fg-dim)]">
-              No shots in the pack yet. Use a quick preset above or pick
+              No shots in the drill yet. Use a quick preset above or pick
               shots from the catalog below to get started.
             </p>
           ) : (
@@ -317,7 +317,7 @@ function BuilderView({
             onClick={start}
             className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-5 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Take the pack out
+            Start the Dawg Drill
             <ArrowRight size={14} />
           </button>
         </section>
@@ -335,7 +335,7 @@ function BuilderView({
                 Pick more shots
               </p>
               <p className="mt-0.5 text-xs text-[var(--fg-dim)]">
-                The whole catalog — tap Add to drop one into your pack.
+                The whole catalog — tap Add to drop one into your drill.
               </p>
             </div>
             {catalogOpen ? (
@@ -440,8 +440,8 @@ function SelectedRow({
         type="button"
         onClick={() => onChange(0)}
         className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:border-[var(--color-pop)]/40 hover:text-[var(--color-pop-bright)]"
-        aria-label={`Remove ${shot.name} from pack`}
-        title="Remove from pack"
+        aria-label={`Remove ${shot.name} from drill`}
+        title="Remove from drill"
       >
         <X size={13} />
       </button>
@@ -489,7 +489,7 @@ function CatalogRow({
           type="button"
           onClick={() => onChange(defaultReps)}
           className="inline-flex h-8 items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)]/60 hover:bg-[var(--color-brass)]/10"
-          aria-label={`Add ${shot.name} to pack`}
+          aria-label={`Add ${shot.name} to drill`}
         >
           <Plus size={12} />
           Add
@@ -568,7 +568,7 @@ function SessionView({
               className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-pop-bright)]"
             >
               <X size={14} />
-              End the run
+              End the drill
             </button>
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
               {session.index + 1} / {total} · {reps} reps
@@ -645,7 +645,7 @@ function SessionView({
                 onClick={() => onAdvance(session.index + 1)}
                 className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
               >
-                {isLast ? "Finish the run" : "Next shot"}
+                {isLast ? "Finish the drill" : "Next shot"}
                 <ArrowRight size={14} />
               </button>
             </div>
@@ -663,7 +663,7 @@ function SessionView({
               className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
             >
               <Shuffle size={12} />
-              Jump to a random shot in the pack
+              Jump to a random shot in the drill
             </button>
           </aside>
         </div>
@@ -684,7 +684,7 @@ function Complete({
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 px-4 py-20 text-center">
       <CheckCircle2 size={64} className="text-[var(--color-felt-bright)]" />
       <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wide">
-        Pack run complete
+        Dawg Drill complete
       </h1>
       <p className="text-[var(--fg-dim)]">
         {session.items.length} shots · {totalReps} reps. Open any of them in
@@ -696,7 +696,7 @@ function Complete({
           onClick={onFinish}
           className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-5 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
         >
-          Build another pack
+          Build another drill
         </button>
         <Link
           href="/stats"
