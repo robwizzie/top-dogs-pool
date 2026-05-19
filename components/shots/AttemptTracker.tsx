@@ -2,11 +2,29 @@
 
 import { CornerDownLeft, Plus, Target, X } from "lucide-react";
 import { useShotStats } from "@/lib/kinister/useShotStats";
+import { showToast } from "@/components/ui/Toaster";
 import { cn } from "@/lib/utils";
 
 export function AttemptTracker({ shotId }: { shotId: string }) {
-  const { stats, todaySession, logMake, logMiss, undo, reset } =
-    useShotStats(shotId);
+  const {
+    stats,
+    todaySession,
+    logMake: rawLogMake,
+    logMiss: rawLogMiss,
+    undo,
+    reset,
+  } = useShotStats(shotId);
+
+  // Wrap log handlers so the player gets a subtle confirmation toast for
+  // every rep — reassurance the tap landed.
+  const logMake = () => {
+    rawLogMake();
+    showToast({ message: "Make logged", kind: "success" });
+  };
+  const logMiss = () => {
+    rawLogMiss();
+    showToast({ message: "Miss logged", kind: "info" });
+  };
 
   const allTimePct =
     stats.totalAttempts > 0

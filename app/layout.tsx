@@ -8,6 +8,7 @@ import { MobileTabBar } from '@/components/layout/MobileTabBar';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SessionScopeMemory } from '@/components/layout/SessionScopeMemory';
 import { CommandPaletteShell } from '@/components/ui/CommandPaletteShell';
+import { Toaster } from '@/components/ui/Toaster';
 import { CartProvider } from '@/components/store/CartProvider';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { TEAM_NAME, TEAM_TAGLINE } from '@/lib/config';
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<Suspense fallback={null}>
 						<CommandPaletteShell />
 					</Suspense>
+					<Toaster />
 				</CartProvider>
 			</body>
 		</html>
