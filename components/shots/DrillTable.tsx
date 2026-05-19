@@ -18,6 +18,12 @@ type Props = {
   cueBall?: DiamondCoord;
   objectBalls?: DiamondCoord[];
   ghostBalls?: DiamondCoord[];
+  /**
+   * When true, draw "1, 2, 3…" numbers inside each ghost ball. Useful for
+   * drills where the ghost positions are an ordered progression (ladder
+   * rungs, wagon-wheel landing zones).
+   */
+  numberedGhosts?: boolean;
   className?: string;
 };
 
@@ -26,6 +32,7 @@ export function DrillTable({
   cueBall,
   objectBalls = [],
   ghostBalls = [],
+  numberedGhosts = false,
   className,
 }: Props) {
   return (
@@ -143,20 +150,35 @@ export function DrillTable({
             );
           })}
 
-          {/* Ghost progression balls — faded outline only */}
+          {/* Ghost progression balls — faded outline (+ optional ordinal) */}
           {ghostBalls.map((g, i) => {
             const p = toSvg(g);
+            const ordinal = i + 1;
             return (
-              <circle
-                key={`ghost-${i}`}
-                cx={p.x}
-                cy={p.y}
-                r={BALL_R}
-                fill="none"
-                stroke="rgba(224,168,46,0.45)"
-                strokeWidth={1.5}
-                strokeDasharray="3 3"
-              />
+              <g key={`ghost-${i}`}>
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={BALL_R}
+                  fill="none"
+                  stroke="rgba(224,168,46,0.45)"
+                  strokeWidth={1.5}
+                  strokeDasharray="3 3"
+                />
+                {numberedGhosts && (
+                  <text
+                    x={p.x}
+                    y={p.y + 4}
+                    textAnchor="middle"
+                    fontSize={11}
+                    fontWeight={700}
+                    fill="rgba(224,168,46,0.85)"
+                    pointerEvents="none"
+                  >
+                    {ordinal}
+                  </text>
+                )}
+              </g>
             );
           })}
 

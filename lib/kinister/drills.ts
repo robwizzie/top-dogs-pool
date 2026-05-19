@@ -50,6 +50,8 @@ export type Drill = {
   objectBalls?: DiamondCoord[];
   /** Optional faded "progression" balls (e.g., ladder rungs). */
   ghostBalls?: DiamondCoord[];
+  /** When true, render numbers (1, 2, …) inside each ghost ball. */
+  numberedGhosts?: boolean;
   /** Optional external reference link. */
   externalUrl?: string;
   externalLabel?: string;
@@ -91,6 +93,7 @@ export const DRILLS: Drill[] = [
       { x: 6, y: 2 },
       { x: 7, y: 2 },
     ],
+    numberedGhosts: true,
     scoring: {
       label: "Highest rung",
       max: 7,
@@ -132,6 +135,7 @@ export const DRILLS: Drill[] = [
       { x: 4, y: 3.5 },
       { x: 7.5, y: 3.5 },
     ],
+    numberedGhosts: true,
     scoring: {
       label: "Zones hit",
       max: 6,
