@@ -67,33 +67,57 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     [shot.cueBall, shot.objectBall],
   );
 
+  // Static (or final) positions for the diagram lines.
+  const obFinalPath: DiamondCoord[] = useMemo(
+    () =>
+      shot.objectBallPath ??
+      (shot.targetPocket ? [POCKETS[shot.targetPocket]] : []),
+    [shot.objectBallPath, shot.targetPocket],
+  );
+
   // Length-based timing so every shot uses the same diamonds-per-second speed.
-  // The cue ball ALWAYS travels the full path — power only changes how fast.
+  // Power only changes how fast the balls move — both CB and OB always
+  // complete their full paths. Crucially, the cue ball and object ball travel
+  // at the SAME physical speed (just like real pool), so the OB reaches its
+  // pocket well before the CB stops bouncing when the carom path is long.
   const approachLen = useMemo(
     () => pathLength([shot.cueBall, contact]),
     [shot.cueBall, contact],
   );
-  const caromLen = useMemo(
+  const cueCaromLen = useMemo(
     () => pathLength([contact, ...shot.cueBallPath]),
     [contact, shot.cueBallPath],
   );
-  const totalLen = approachLen + caromLen;
+  const obCaromLen = useMemo(
+    () =>
+      obFinalPath.length > 0
+        ? pathLength([shot.objectBall, ...obFinalPath])
+        : 0,
+    [shot.objectBall, obFinalPath],
+  );
+
   // Power scales speed: DEFAULT_POWER = 1× base speed. Higher power = faster
-  // animation; lower power = slower. The ball still completes the whole shot.
+  // animation; lower power = slower. The ball always completes the shot.
   const speedMultiplier = power / DEFAULT_POWER;
   const effectiveSpeed = BASE_DIAMONDS_PER_SEC * speedMultiplier;
-  const computedMs = (totalLen / effectiveSpeed) * 1000;
-  const singleShotMs = Math.max(
+  const approachMs = (approachLen / effectiveSpeed) * 1000;
+  const cueCaromMs = (cueCaromLen / effectiveSpeed) * 1000;
+  const obCaromMs = (obCaromLen / effectiveSpeed) * 1000;
+  // Animation lasts as long as the slower ball needs to finish.
+  const naturalTotalMs = approachMs + Math.max(cueCaromMs, obCaromMs);
+  const computedMs = Math.max(
     MIN_ANIM_MS,
-    Math.min(MAX_ANIM_MS, computedMs),
+    Math.min(MAX_ANIM_MS, naturalTotalMs),
   );
-  const totalMs = sequence ? SEQUENCE_STEP_MS * stepCount : singleShotMs;
-  const approachFraction = totalLen > 0 ? approachLen / totalLen : 0.3;
-
-  // Static (or final) positions for the diagram lines.
-  const obFinalPath: DiamondCoord[] =
-    shot.objectBallPath ??
-    (shot.targetPocket ? [POCKETS[shot.targetPocket]] : []);
+  const totalMs = sequence ? SEQUENCE_STEP_MS * stepCount : computedMs;
+  // Fractions of total time: when the cap kicks in, each phase scales
+  // proportionally so the SAME relative speeds are preserved between CB & OB.
+  const approachFraction =
+    naturalTotalMs > 0 ? approachMs / naturalTotalMs : 0.3;
+  const cueCaromFraction =
+    naturalTotalMs > 0 ? cueCaromMs / naturalTotalMs : 1 - approachFraction;
+  const obCaromFraction =
+    naturalTotalMs > 0 ? obCaromMs / naturalTotalMs : 0;
 
   // Stop the animation if the shot changes.
   useEffect(() => {
@@ -171,16 +195,21 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
     cuePos = walkPath(shot.cueBall, [contact], t);
     obPos = shot.objectBall;
   } else {
-    const raw = (progress - approachFraction) / (1 - approachFraction);
-    // Decelerate smoothly to rest — friction in real life. Power only
-    // affects how fast the animation plays (above), not where the balls
-    // end up. The cue ball always travels the full authored path so the
-    // shot remains correct at any power.
-    const eased = easeOutCubic(raw);
-    cuePos = walkPath(contact, shot.cueBallPath, eased);
+    // Both balls leave contact at the same speed. The OB usually has the
+    // shorter path so it pockets well before the CB stops bouncing.
+    const elapsedCarom = progress - approachFraction;
+    const cueRaw =
+      cueCaromFraction > 0
+        ? Math.min(1, elapsedCarom / cueCaromFraction)
+        : 1;
+    const obRaw =
+      obCaromFraction > 0
+        ? Math.min(1, elapsedCarom / obCaromFraction)
+        : 1;
+    cuePos = walkPath(contact, shot.cueBallPath, easeOutCubic(cueRaw));
     obPos =
       obFinalPath.length > 0
-        ? walkPath(shot.objectBall, obFinalPath, eased)
+        ? walkPath(shot.objectBall, obFinalPath, easeOutCubic(obRaw))
         : shot.objectBall;
   }
 
