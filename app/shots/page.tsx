@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Dumbbell, LineChart } from "lucide-react";
+import { Dog, LineChart } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
 import { ShotsGallery } from "@/components/shots/ShotsGallery";
 import { DrillCard } from "@/components/shots/DrillCard";
@@ -23,21 +23,21 @@ export default function ShotsPage() {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6 grid gap-3 sm:grid-cols-2">
           <Link
-            href="/workout"
+            href="/pack-run"
             className="surface surface-hover flex items-center justify-between gap-4 px-5 py-4"
           >
             <div className="flex items-center gap-3">
-              <Dumbbell
+              <Dog
                 size={22}
                 className="text-[var(--color-brass-bright)]"
               />
               <div>
                 <p className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--fg)]">
-                  Start a workout session
+                  Take the pack out
                 </p>
                 <p className="text-xs leading-relaxed text-[var(--fg-dim)]">
-                  Cycle through a preset set of shots and log makes as you
-                  shoot.
+                  Build a custom Pack Run — any shots you want, however
+                  many reps you want of each.
                 </p>
               </div>
             </div>
