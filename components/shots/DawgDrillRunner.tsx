@@ -19,7 +19,6 @@ import {
 import type { Difficulty, KinisterShot } from "@/lib/kinister/shots";
 import { PoolTable } from "./PoolTable";
 import { AttemptTracker } from "./AttemptTracker";
-import { ShotThumbnail } from "./ShotThumbnail";
 import { describePosition, pocketLabel } from "@/lib/kinister/setup";
 import { cn } from "@/lib/utils";
 
@@ -389,23 +388,23 @@ function BuilderView({
                 ))}
               </div>
 
-              <ul className="divide-y divide-[var(--border)]">
-                {filteredCatalog.length === 0 ? (
-                  <li className="py-6 text-center text-sm text-[var(--fg-dim)]">
-                    No shots match those filters.
-                  </li>
-                ) : (
-                  filteredCatalog.map((s) => (
-                    <CatalogRow
+              {filteredCatalog.length === 0 ? (
+                <p className="py-6 text-center text-sm text-[var(--fg-dim)]">
+                  No shots match those filters.
+                </p>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {filteredCatalog.map((s) => (
+                    <CatalogCard
                       key={s.id}
                       shot={s}
                       reps={reps[s.id] ?? 0}
                       defaultReps={defaultReps}
                       onChange={(n) => setRepsFor(s.id, n)}
                     />
-                  ))
-                )}
-              </ul>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </section>
@@ -424,9 +423,9 @@ function SelectedRow({
   onChange: (n: number) => void;
 }) {
   return (
-    <li className="flex items-center gap-3 py-3">
-      <div className="w-28 shrink-0 overflow-hidden rounded-md border border-[var(--border)] sm:w-32">
-        <ShotThumbnail shot={shot} className="block h-auto w-full" />
+    <li className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
+      <div className="w-full overflow-hidden rounded-xl border border-[var(--color-brass)]/40 sm:w-64">
+        <PoolTable shot={shot} preview />
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-[var(--fg)]">
@@ -435,25 +434,27 @@ function SelectedRow({
           </span>
           {shot.name}
         </p>
-        <p className="text-[11px] text-[var(--fg-dim)]">
+        <p className="mt-0.5 text-[11px] text-[var(--fg-dim)]">
           {shot.difficulty} · {shot.series}
         </p>
       </div>
-      <RepStepper value={reps} onChange={onChange} />
-      <button
-        type="button"
-        onClick={() => onChange(0)}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:border-[var(--color-pop)]/40 hover:text-[var(--color-pop-bright)]"
-        aria-label={`Remove ${shot.name} from drill`}
-        title="Remove from drill"
-      >
-        <X size={13} />
-      </button>
+      <div className="flex items-center gap-2 sm:shrink-0">
+        <RepStepper value={reps} onChange={onChange} />
+        <button
+          type="button"
+          onClick={() => onChange(0)}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:border-[var(--color-pop)]/40 hover:text-[var(--color-pop-bright)]"
+          aria-label={`Remove ${shot.name} from drill`}
+          title="Remove from drill"
+        >
+          <X size={13} />
+        </button>
+      </div>
     </li>
   );
 }
 
-function CatalogRow({
+function CatalogCard({
   shot,
   reps,
   defaultReps,
@@ -466,65 +467,72 @@ function CatalogRow({
 }) {
   const inDrill = reps > 0;
   return (
-    <li className="flex items-center gap-3 py-2">
+    <article
+      className={cn(
+        "surface flex flex-col gap-3 overflow-hidden p-3 transition-colors",
+        inDrill && "border-[var(--color-brass)]/55",
+      )}
+    >
       <div
         className={cn(
-          "w-24 shrink-0 overflow-hidden rounded-md border transition-colors sm:w-28",
+          "overflow-hidden rounded-xl border",
           inDrill
-            ? "border-[var(--color-brass)]/55"
+            ? "border-[var(--color-brass)]/45"
             : "border-[var(--border)]",
         )}
       >
-        <ShotThumbnail shot={shot} className="block h-auto w-full" />
+        <PoolTable shot={shot} preview />
       </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-              DIFFICULTY_STYLES[shot.difficulty],
-            )}
-          >
-            {shot.difficulty.slice(0, 4)}
-          </span>
-          <p className="truncate text-sm font-semibold text-[var(--fg)]">
-            <span className="text-[var(--fg-dim)]">
-              {String(shot.number).padStart(2, "0")} ·{" "}
-            </span>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
+            Shot {String(shot.number).padStart(2, "0")}
+          </p>
+          <p className="mt-0.5 truncate text-sm font-semibold text-[var(--fg)]">
             {shot.name}
           </p>
         </div>
-        <p className="mt-1 truncate text-[11px] text-[var(--fg-dim)]">
-          {shot.shortName}
-        </p>
+        <span
+          className={cn(
+            "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+            DIFFICULTY_STYLES[shot.difficulty],
+          )}
+        >
+          {shot.difficulty.slice(0, 4)}
+        </span>
       </div>
       {inDrill ? (
-        <RepStepper value={reps} onChange={onChange} />
+        <RepStepper value={reps} onChange={onChange} fullWidth />
       ) : (
         <button
           type="button"
           onClick={() => onChange(defaultReps)}
-          className="inline-flex h-8 items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)]/60 hover:bg-[var(--color-brass)]/10"
+          className="inline-flex h-9 items-center justify-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)]/60 hover:bg-[var(--color-brass)]/10"
           aria-label={`Add ${shot.name} to drill`}
         >
           <Plus size={12} />
-          Add
+          Add to drill
         </button>
       )}
-    </li>
+    </article>
   );
 }
 
 function RepStepper({
   value,
   onChange,
+  fullWidth = false,
 }: {
   value: number;
   onChange: (n: number) => void;
+  fullWidth?: boolean;
 }) {
   return (
     <div
-      className="inline-flex h-8 items-stretch overflow-hidden rounded-full border border-[var(--color-brass)]/55 bg-[var(--color-brass)]/10"
+      className={cn(
+        "inline-flex h-9 items-stretch overflow-hidden rounded-full border border-[var(--color-brass)]/55 bg-[var(--color-brass)]/10",
+        fullWidth && "w-full",
+      )}
       role="group"
       aria-label="Reps for this shot"
     >
@@ -532,22 +540,27 @@ function RepStepper({
         type="button"
         onClick={() => onChange(value - 1)}
         disabled={value <= 0}
-        className="flex w-7 items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex w-9 items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="Fewer reps"
       >
-        <Minus size={12} />
+        <Minus size={13} />
       </button>
-      <span className="flex min-w-[2.5rem] items-center justify-center text-xs font-mono font-semibold text-[var(--color-brass-bright)]">
+      <span
+        className={cn(
+          "flex items-center justify-center text-sm font-mono font-semibold text-[var(--color-brass-bright)]",
+          fullWidth ? "flex-1" : "min-w-[2.75rem]",
+        )}
+      >
         {value}×
       </span>
       <button
         type="button"
         onClick={() => onChange(value + 1)}
         disabled={value >= 99}
-        className="flex w-7 items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex w-9 items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="More reps"
       >
-        <Plus size={12} />
+        <Plus size={13} />
       </button>
     </div>
   );
