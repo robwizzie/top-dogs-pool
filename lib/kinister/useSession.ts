@@ -153,6 +153,29 @@ export function logSessionAttempt(shotId: string, made: boolean): void {
   writeSessions(sessions);
 }
 
+/**
+ * Flip the most-recent attempt for a shot from `was` to `isNow` without
+ * changing the attempt count. Mirrors useShotStats.correctLast for the
+ * active session record.
+ */
+export function correctSessionAttempt(
+  shotId: string,
+  was: boolean,
+  isNow: boolean,
+): void {
+  if (was === isNow) return;
+  const id = readActiveId();
+  if (!id) return;
+  const sessions = readSessions();
+  const s = sessions[id];
+  if (!s) return;
+  const entry = s.shots.find((e) => e.shotId === shotId);
+  if (!entry || entry.attempts === 0) return;
+  const delta = (isNow ? 1 : 0) - (was ? 1 : 0);
+  entry.makes = Math.max(0, Math.min(entry.attempts, entry.makes + delta));
+  writeSessions(sessions);
+}
+
 /** Attach an AI critique to the shot's session entry. */
 export function logSessionCritique(
   shotId: string,

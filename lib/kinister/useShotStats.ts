@@ -181,6 +181,40 @@ export function useShotStats(shotId: string) {
     writeAll({ ...current, [shotId]: updated });
   }, [shotId, today]);
 
+  /**
+   * Flip the last logged attempt from `was` to `isNow` without changing
+   * the attempt count. Used by the AR auto-tracker's one-tap override.
+   *
+   * Callers pass `was` because the hook can't reliably distinguish
+   * make-vs-miss from aggregate counts; the caller logged the entry so it
+   * knows what to swap.
+   */
+  const correctLast = useCallback(
+    (was: boolean, isNow: boolean) => {
+      if (was === isNow) return;
+      const current = readAll();
+      const cur = current[shotId];
+      if (!cur || cur.sessions.length === 0) return;
+      const t = todayKey();
+      const sessions = [...cur.sessions];
+      const idx = sessions.findIndex((s) => s.date === t);
+      if (idx < 0) return;
+      const s = sessions[idx];
+      const delta = (isNow ? 1 : 0) - (was ? 1 : 0);
+      const updated = {
+        ...cur,
+        totalMakes: Math.max(0, cur.totalMakes + delta),
+        sessions: sessions.map((session, i) =>
+          i === idx
+            ? { ...s, makes: Math.max(0, Math.min(s.attempts, s.makes + delta)) }
+            : session,
+        ),
+      };
+      writeAll({ ...current, [shotId]: updated });
+    },
+    [shotId],
+  );
+
   const reset = useCallback(() => {
     const current = readAll();
     if (!current[shotId]) return;
@@ -189,5 +223,5 @@ export function useShotStats(shotId: string) {
     writeAll(rest);
   }, [shotId]);
 
-  return { stats, todaySession, logMake, logMiss, undo, reset };
+  return { stats, todaySession, logMake, logMiss, undo, reset, correctLast };
 }
