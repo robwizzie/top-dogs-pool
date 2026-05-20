@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { CornerDownLeft, Plus, Target, X } from "lucide-react";
 import { useShotStats } from "@/lib/kinister/useShotStats";
+import { logSessionAttempt } from "@/lib/kinister/useSession";
 import { showToast } from "@/components/ui/Toaster";
 import { cn } from "@/lib/utils";
 
@@ -17,13 +18,17 @@ export function AttemptTracker({ shotId }: { shotId: string }) {
   } = useShotStats(shotId);
 
   // Wrap log handlers so the player gets a subtle confirmation toast for
-  // every rep — reassurance the tap landed.
+  // every rep — reassurance the tap landed. We also mirror the attempt
+  // to the active Dawg Drill session, if one is running, so the
+  // end-of-session summary can show this rep.
   const logMake = () => {
     rawLogMake();
+    logSessionAttempt(shotId, true);
     showToast({ message: "Make logged", kind: "success" });
   };
   const logMiss = () => {
     rawLogMiss();
+    logSessionAttempt(shotId, false);
     showToast({ message: "Miss logged", kind: "info" });
   };
 

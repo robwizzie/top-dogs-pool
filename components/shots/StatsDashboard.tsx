@@ -18,11 +18,13 @@ import {
   currentDailyStreak,
 } from "@/lib/kinister/achievements";
 import { DataIO } from "./DataIO";
+import { useSessions } from "@/lib/kinister/useSession";
 import { cn } from "@/lib/utils";
 
 export function StatsDashboard({ shots }: { shots: KinisterShot[] }) {
   const stats = useAllShotStats();
   const { ids: drilledIds } = useDrilled();
+  const sessions = useSessions();
 
   const summary = useMemo(() => {
     let totalAttempts = 0;
@@ -213,6 +215,85 @@ export function StatsDashboard({ shots }: { shots: KinisterShot[] }) {
                 emptyText="Need 3+ attempts on a shot to rank here."
               />
             </section>
+
+            {/* Recent Dawg Drill sessions */}
+            {sessions.length > 0 && (
+              <section className="surface p-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+                  Recent sessions
+                </p>
+                <ul className="mt-3 divide-y divide-[var(--border)]">
+                  {sessions.slice(0, 6).map((s) => {
+                    const att = s.shots.reduce(
+                      (sum, e) => sum + e.attempts,
+                      0,
+                    );
+                    const made = s.shots.reduce(
+                      (sum, e) => sum + e.makes,
+                      0,
+                    );
+                    const pct =
+                      att > 0 ? Math.round((made / att) * 100) : null;
+                    const shotsTried = s.shots.filter(
+                      (e) => e.attempts > 0,
+                    ).length;
+                    const date = s.endedAt ?? s.startedAt;
+                    return (
+                      <li
+                        key={s.id}
+                        className="flex flex-wrap items-baseline justify-between gap-3 py-2.5"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-[var(--fg)]">
+                            {new Date(date).toLocaleDateString(undefined, {
+                              weekday: "short",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                            {!s.endedAt && (
+                              <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-brass-bright)]">
+                                · In progress
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-[11px] text-[var(--fg-dim)]">
+                            {shotsTried || s.shots.length} shots ·{" "}
+                            {new Date(s.startedAt).toLocaleTimeString(
+                              undefined,
+                              { hour: "numeric", minute: "2-digit" },
+                            )}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs">
+                          <span className="font-mono text-[var(--fg)]">
+                            {made}/{att}
+                          </span>
+                          {pct !== null && (
+                            <span
+                              className={cn(
+                                "font-semibold",
+                                pct >= 70
+                                  ? "text-[var(--color-felt-bright)]"
+                                  : pct >= 40
+                                    ? "text-[var(--color-brass-bright)]"
+                                    : "text-[var(--color-pop-bright)]",
+                              )}
+                            >
+                              {pct}%
+                            </span>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {sessions.length > 6 && (
+                  <p className="mt-3 text-[11px] text-[var(--fg-dim)]">
+                    Showing the 6 most recent of {sessions.length} sessions.
+                  </p>
+                )}
+              </section>
+            )}
 
             {/* Achievements grid */}
             <section className="surface p-5">

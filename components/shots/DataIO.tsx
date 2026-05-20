@@ -13,6 +13,8 @@ const STORAGE_KEYS = [
   "topdogs:shot-stats",
   "topdogs:shot-notes",
   "topdogs:dawg-drill-session",
+  "topdogs:sessions",
+  "topdogs:active-session",
   "topdogs:bowliards-games",
   "topdogs:drill-scores",
 ] as const;
