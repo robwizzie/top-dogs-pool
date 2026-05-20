@@ -43,6 +43,13 @@ export type ShotResult = {
   targetPocket: Point | null;
   /** 0..1 confidence the OB matched its reference at the final position. */
   confidence: number;
+  /**
+   * Captured frames during the shot, oldest first. Each frame is a small
+   * JPEG data URL captured at ~12fps and the OB position is computed
+   * lazily by the replay UI. Empty array if the shot was forced or no
+   * frames could be captured.
+   */
+  frames: { dataUrl: string; t: number }[];
 };
 
 export type TrackerState =
@@ -92,6 +99,9 @@ export class ShotTracker {
   private prevImage: ImageData | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;
   private armedAt = 0;
+  /** Ring buffer of frames captured during the shot — for slow-mo replay. */
+  private frameBuffer: { dataUrl: string; t: number }[] = [];
+  private static readonly MAX_FRAMES = 40;
 
   constructor(private readonly cfg: TrackerConfig) {}
 
@@ -101,6 +111,7 @@ export class ShotTracker {
     this.state = { kind: "armed" };
     this.cfg.onState(this.state);
     this.prevImage = null;
+    this.frameBuffer = [];
     if (this.timer) clearInterval(this.timer);
     this.timer = setInterval(() => this.tick(), POLL_MS);
   }
@@ -118,6 +129,7 @@ export class ShotTracker {
 
   /** Manually force a verdict, e.g. on an override or timeout. */
   forceVerdict(verdict: Verdict) {
+    const frames = this.frameBuffer.slice();
     this.stop();
     this.state = {
       kind: "done",
@@ -126,6 +138,7 @@ export class ShotTracker {
         finalOBPos: this.cfg.objectBall.displayPos,
         targetPocket: this.cfg.targetPocket,
         confidence: 0,
+        frames,
       },
     };
     this.cfg.onState(this.state);
@@ -176,6 +189,10 @@ export class ShotTracker {
       if (motion >= SHOT_MOTION_THRESHOLD) {
         this.state = { kind: "in-shot", startedAt: now };
         this.cfg.onState(this.state);
+        // Capture the first frame of the shot (which is the LAST quiet
+        // frame — we want the "before" picture in the replay too).
+        this.captureBufferFrame(prev, now - POLL_MS);
+        this.captureBufferFrame(frame, now);
       } else if (now - this.armedAt > 60_000) {
         // No shot for a minute — pause to save battery; the player can
         // re-arm by tapping Start again.
@@ -185,6 +202,8 @@ export class ShotTracker {
     }
 
     if (this.state.kind === "in-shot") {
+      // Buffer frames during motion so we can replay later.
+      this.captureBufferFrame(frame, now);
       if (motion < SETTLE_MOTION_THRESHOLD) {
         this.state = { kind: "settling", lastMotionAt: now };
         this.cfg.onState(this.state);
@@ -196,6 +215,7 @@ export class ShotTracker {
     }
 
     if (this.state.kind === "settling") {
+      this.captureBufferFrame(frame, now);
       if (motion >= SHOT_MOTION_THRESHOLD) {
         // Re-ignited — more balls bouncing around, keep watching.
         this.state = { kind: "in-shot", startedAt: this.state.lastMotionAt };
@@ -206,6 +226,21 @@ export class ShotTracker {
         this.finalize(frame, null);
       }
       return;
+    }
+  }
+
+  /** Snapshot the current processing canvas as a small JPEG. */
+  private captureBufferFrame(_frame: ImageData, t: number) {
+    const canvas = this.cfg.processingCanvas;
+    try {
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+      this.frameBuffer.push({ dataUrl, t });
+      if (this.frameBuffer.length > ShotTracker.MAX_FRAMES) {
+        this.frameBuffer.shift();
+      }
+    } catch {
+      // Ignore — some browsers throw on tainted canvas. Tracking still
+      // works, replay just won't be available.
     }
   }
 
@@ -317,9 +352,14 @@ export class ShotTracker {
     });
   }
 
-  private emit(result: ShotResult) {
-    this.stop();
-    this.state = { kind: "done", result };
+  private emit(result: Omit<ShotResult, "frames">) {
+    const frames = this.frameBuffer.slice();
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    this.prevImage = null;
+    this.state = { kind: "done", result: { ...result, frames } };
     this.cfg.onState(this.state);
   }
 }

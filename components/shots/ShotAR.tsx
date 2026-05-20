@@ -30,7 +30,12 @@ import {
   logSessionCritique,
 } from "@/lib/kinister/useSession";
 import { useShotStats } from "@/lib/kinister/useShotStats";
-import { captureFrame } from "@/lib/cv/tracking";
+import {
+  captureFrame,
+  toCanvasSpace,
+  toDisplaySpace,
+} from "@/lib/cv/tracking";
+import { classifyBalls, detectBalls } from "@/lib/cv/detect";
 import {
   lockBall,
   ShotTracker,
@@ -44,6 +49,7 @@ import {
   playUncertain,
   primeAudio,
 } from "@/lib/sound/effects";
+import { ShotReplay } from "./ShotReplay";
 import { cn } from "@/lib/utils";
 
 /**
@@ -87,6 +93,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
   // Tracking mode — separate from AI critique. Off by default; opt-in.
   const [trackingMode, setTrackingMode] = useState<
     | { kind: "off" }
+    | { kind: "detecting" }
+    | { kind: "confirm-detected"; cb: BallLock; ob: BallLock }
     | { kind: "lock-cb" }
     | { kind: "lock-ob"; cb: BallLock }
     | { kind: "armed"; cb: BallLock; ob: BallLock }
@@ -106,13 +114,18 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         ob: BallLock;
         verdict: "make" | "miss" | "uncertain";
         finalOBPos: Point | null;
+        confidence: number;
+        frames: { dataUrl: string; t: number }[];
       }
   >({ kind: "off" });
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const [replayOpen, setReplayOpen] = useState(false);
   // Hold the live tracker instance across renders so we can dispose it.
   const trackerRef = useRef<ShotTracker | null>(null);
   // Track the last auto-logged verdict so override knows what to flip.
   const lastLoggedVerdictRef = useRef<"make" | "miss" | null>(null);
+  // Auto-arm next shot — countdown after a result lands.
+  const [autoArmCountdown, setAutoArmCountdown] = useState<number | null>(null);
 
   // Per-shot tracker so we can log makes/misses from the AR view.
   const { logMake, logMiss, correctLast } = useShotStats(shot.id);
@@ -293,6 +306,48 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackingMode.kind, homography, audioEnabled]);
 
+  // Auto-arm: 5 seconds after a confident verdict lands, re-arm the
+  // tracker for the next shot. Player can cancel by interacting (any
+  // override / explicit Next Shot button click also cancels — both
+  // call back into normal state transitions which clear the countdown).
+  useEffect(() => {
+    if (trackingMode.kind !== "result") {
+      setAutoArmCountdown(null);
+      return;
+    }
+    // Don't auto-arm if the verdict was uncertain — the user needs to
+    // confirm what actually happened first.
+    if (trackingMode.verdict === "uncertain") {
+      setAutoArmCountdown(null);
+      return;
+    }
+    let remaining = 5;
+    setAutoArmCountdown(remaining);
+    const tick = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(tick);
+        setAutoArmCountdown(null);
+        // armNextShot reads trackingMode at call time — wrap it so we
+        // re-check (player might have ended tracking in those 5s).
+        setTrackingMode((m) =>
+          m.kind === "result"
+            ? { kind: "armed", cb: m.cb, ob: m.ob }
+            : m,
+        );
+        lastLoggedVerdictRef.current = null;
+      } else {
+        setAutoArmCountdown(remaining);
+      }
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [trackingMode.kind, "verdict" in trackingMode ? trackingMode.verdict : null]);
+
+  // Close the replay modal when a new shot starts.
+  useEffect(() => {
+    if (trackingMode.kind !== "result") setReplayOpen(false);
+  }, [trackingMode.kind]);
+
   function handleTrackerState(state: TrackerState) {
     if (state.kind === "in-shot") {
       setTrackingMode((m) =>
@@ -307,9 +362,13 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           : m,
       );
     } else if (state.kind === "done") {
-      const { verdict, finalOBPos } = state.result;
+      const { verdict, finalOBPos, confidence, frames } = state.result;
+      // Low-confidence verdicts get demoted to "uncertain" so we don't
+      // auto-log on a wobbly read — the user gets the explicit confirm
+      // buttons instead.
+      const finalVerdict: "make" | "miss" | "uncertain" =
+        confidence < 0.5 && verdict !== "uncertain" ? "uncertain" : verdict;
       setTrackingMode((m) => {
-        // Carry the locked balls into the result state if we have them.
         if (
           m.kind === "armed" ||
           m.kind === "in-shot" ||
@@ -319,25 +378,26 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             kind: "result",
             cb: m.cb,
             ob: m.ob,
-            verdict,
+            verdict: finalVerdict,
             finalOBPos,
+            confidence,
+            frames,
           };
         }
         return m;
       });
       // Auto-log + audio.
-      if (verdict === "make") {
+      if (finalVerdict === "make") {
         logMake();
         logSessionAttempt(shot.id, true);
         lastLoggedVerdictRef.current = "make";
         if (audioEnabled) playMake();
-      } else if (verdict === "miss") {
+      } else if (finalVerdict === "miss") {
         logMiss();
         logSessionAttempt(shot.id, false);
         lastLoggedVerdictRef.current = "miss";
         if (audioEnabled) playMiss();
       } else {
-        // "uncertain" doesn't log — wait for user confirm.
         lastLoggedVerdictRef.current = null;
         if (audioEnabled) playUncertain();
       }
@@ -347,6 +407,97 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
   function startTracking() {
     primeAudio();
     lastLoggedVerdictRef.current = null;
+    // Try to auto-find both balls. If we can't, fall back to the manual
+    // tap-each-ball flow without bothering the player.
+    const video = videoRef.current;
+    const canvas = processingCanvasRef.current;
+    if (!video || !canvas || !homography) {
+      setTrackingMode({ kind: "lock-cb" });
+      return;
+    }
+    setTrackingMode({ kind: "detecting" });
+    // Give the camera a frame to settle, then run detection.
+    setTimeout(() => {
+      const frame = captureFrame(video, canvas);
+      if (!frame) {
+        setTrackingMode({ kind: "lock-cb" });
+        return;
+      }
+      // Convert the four calibrated corners to canvas-space so detection
+      // can mask the table polygon.
+      const cornerCanvas = corners.map((p) =>
+        toCanvasSpace(
+          p,
+          vidBox.width,
+          vidBox.height,
+          canvas.width,
+          canvas.height,
+        ),
+      );
+      const tableQuad =
+        cornerCanvas.length === 4
+          ? ([
+              cornerCanvas[0],
+              cornerCanvas[1],
+              cornerCanvas[2],
+              cornerCanvas[3],
+            ] as [Point, Point, Point, Point])
+          : undefined;
+      const candidates = detectBalls(frame, { tableQuad });
+      if (candidates.length < 2) {
+        setTrackingMode({ kind: "lock-cb" });
+        return;
+      }
+      // Where does the catalog say the OB should be? Project into canvas
+      // space and use it as a hint for classification.
+      const expectedObDisplay = applyHomography(homography, shot.objectBall);
+      const expectedObCanvas = toCanvasSpace(
+        expectedObDisplay,
+        vidBox.width,
+        vidBox.height,
+        canvas.width,
+        canvas.height,
+      );
+      const { cue, ob } = classifyBalls(candidates, expectedObCanvas);
+      if (!cue || !ob) {
+        setTrackingMode({ kind: "lock-cb" });
+        return;
+      }
+      // Convert detected canvas-space positions back to display-space
+      // and pack them into BallLocks (color we already have from
+      // detection).
+      const cueDisplay = toDisplaySpace(
+        cue.center,
+        canvas.width,
+        canvas.height,
+        vidBox.width,
+        vidBox.height,
+      );
+      const obDisplay = toDisplaySpace(
+        ob.center,
+        canvas.width,
+        canvas.height,
+        vidBox.width,
+        vidBox.height,
+      );
+      setTrackingMode({
+        kind: "confirm-detected",
+        cb: { displayPos: cueDisplay, reference: cue.color },
+        ob: { displayPos: obDisplay, reference: ob.color },
+      });
+    }, 250);
+  }
+
+  function confirmDetection() {
+    if (trackingMode.kind !== "confirm-detected") return;
+    setTrackingMode({
+      kind: "armed",
+      cb: trackingMode.cb,
+      ob: trackingMode.ob,
+    });
+  }
+
+  function rejectDetectionForManual() {
     setTrackingMode({ kind: "lock-cb" });
   }
 
@@ -693,8 +844,24 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             onArmNextShot={armNextShot}
             audioEnabled={audioEnabled}
             onToggleAudio={() => setAudioEnabled((a) => !a)}
+            autoArmCountdown={autoArmCountdown}
+            onCancelAutoArm={() => setAutoArmCountdown(null)}
+            onOpenReplay={() => setReplayOpen(true)}
+            onConfirmDetection={confirmDetection}
+            onRejectDetection={rejectDetectionForManual}
           />
         )}
+
+        {/* Slow-mo replay modal */}
+        {replayOpen &&
+          trackingMode.kind === "result" &&
+          trackingMode.frames.length > 0 && (
+            <ShotReplay
+              frames={trackingMode.frames}
+              obReference={trackingMode.ob.reference}
+              onClose={() => setReplayOpen(false)}
+            />
+          )}
 
         {/* Tracking-mode visual overlays: locked balls + state pulse. */}
         {homography &&
@@ -956,6 +1123,8 @@ function CalibratedHud({
   onClearAnalysis: () => void;
   trackingMode:
     | { kind: "off" }
+    | { kind: "detecting" }
+    | { kind: "confirm-detected"; cb: BallLock; ob: BallLock }
     | { kind: "lock-cb" }
     | { kind: "lock-ob"; cb: BallLock }
     | { kind: "armed"; cb: BallLock; ob: BallLock }
@@ -967,6 +1136,8 @@ function CalibratedHud({
         ob: BallLock;
         verdict: "make" | "miss" | "uncertain";
         finalOBPos: Point | null;
+        confidence: number;
+        frames: { dataUrl: string; t: number }[];
       };
   onStartTracking: () => void;
   onExitTracking: () => void;
@@ -975,6 +1146,11 @@ function CalibratedHud({
   onArmNextShot: () => void;
   audioEnabled: boolean;
   onToggleAudio: () => void;
+  autoArmCountdown: number | null;
+  onCancelAutoArm: () => void;
+  onOpenReplay: () => void;
+  onConfirmDetection: () => void;
+  onRejectDetection: () => void;
 }) {
   const busy =
     analysisState.kind === "recording" || analysisState.kind === "analyzing";
@@ -985,16 +1161,34 @@ function CalibratedHud({
       {trackingMode.kind === "result" && (
         <TrackingResultBanner
           verdict={trackingMode.verdict}
+          confidence={trackingMode.confidence}
+          hasFrames={trackingMode.frames.length > 0}
           onOverride={onOverride}
           onConfirmUncertain={onConfirmUncertain}
-          onArmNextShot={onArmNextShot}
+          onArmNextShot={() => {
+            onCancelAutoArm();
+            onArmNextShot();
+          }}
+          onOpenReplay={onOpenReplay}
+          autoArmCountdown={autoArmCountdown}
+          onCancelAutoArm={onCancelAutoArm}
+        />
+      )}
+
+      {/* Confirm auto-detected balls before arming the tracker */}
+      {trackingMode.kind === "confirm-detected" && (
+        <ConfirmDetectionBanner
+          onConfirm={onConfirmDetection}
+          onReject={onRejectDetection}
         />
       )}
 
       {/* Tracking lock-in / armed / in-shot status */}
-      {tracking && trackingMode.kind !== "result" && (
-        <TrackingStatusBanner mode={trackingMode} onExit={onExitTracking} />
-      )}
+      {tracking &&
+        trackingMode.kind !== "result" &&
+        trackingMode.kind !== "confirm-detected" && (
+          <TrackingStatusBanner mode={trackingMode} onExit={onExitTracking} />
+        )}
 
       {/* Analysis result card */}
       {analysisState.kind === "result" && (
@@ -1123,6 +1317,7 @@ function TrackingStatusBanner({
   onExit,
 }: {
   mode:
+    | { kind: "detecting" }
     | { kind: "lock-cb" }
     | { kind: "lock-ob"; cb: BallLock }
     | { kind: "armed"; cb: BallLock; ob: BallLock }
@@ -1131,35 +1326,41 @@ function TrackingStatusBanner({
   onExit: () => void;
 }) {
   const status =
-    mode.kind === "lock-cb"
+    mode.kind === "detecting"
       ? {
-          title: "Tap the cue ball",
-          detail: "Touch your real cue ball through the screen so we can lock onto its color.",
+          title: "Looking for your balls…",
+          detail: "Scanning the table — this takes a moment.",
           tone: "brass" as const,
         }
-      : mode.kind === "lock-ob"
+      : mode.kind === "lock-cb"
         ? {
-            title: "Tap the object ball",
-            detail: "Now touch the object ball so we know what to watch.",
+            title: "Tap the cue ball",
+            detail: "Touch your real cue ball through the screen so we can lock onto its color.",
             tone: "brass" as const,
           }
-        : mode.kind === "armed"
+        : mode.kind === "lock-ob"
           ? {
-              title: "Ready — take your shot",
-              detail: "Watching for motion. I'll call it as soon as the balls stop.",
-              tone: "felt" as const,
+              title: "Tap the object ball",
+              detail: "Now touch the object ball so we know what to watch.",
+              tone: "brass" as const,
             }
-          : mode.kind === "in-shot"
+          : mode.kind === "armed"
             ? {
-                title: "Shot in progress…",
-                detail: "Hold the phone steady — settling shortly.",
-                tone: "brass" as const,
+                title: "Ready — take your shot",
+                detail: "Watching for motion. I'll call it as soon as the balls stop.",
+                tone: "felt" as const,
               }
-            : {
-                title: "Reading the table…",
-                detail: "Checking where the object ball ended up.",
-                tone: "brass" as const,
-              };
+            : mode.kind === "in-shot"
+              ? {
+                  title: "Shot in progress…",
+                  detail: "Hold the phone steady — settling shortly.",
+                  tone: "brass" as const,
+                }
+              : {
+                  title: "Reading the table…",
+                  detail: "Checking where the object ball ended up.",
+                  tone: "brass" as const,
+                };
   const accent =
     status.tone === "felt"
       ? "border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/70"
@@ -1196,22 +1397,73 @@ function TrackingStatusBanner({
   );
 }
 
+function ConfirmDetectionBanner({
+  onConfirm,
+  onReject,
+}: {
+  onConfirm: () => void;
+  onReject: () => void;
+}) {
+  return (
+    <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/55 bg-black/80 px-4 py-3 backdrop-blur-md">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
+        Found both balls — confirm?
+      </p>
+      <p className="mt-1 text-sm leading-snug text-white">
+        Cue ball + object ball auto-detected (the circles highlighted on
+        the table). Tap confirm if they look right, otherwise tap each
+        ball yourself.
+      </p>
+      <div className="mt-3 flex gap-2">
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/70 text-sm font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt-deep)]"
+        >
+          ✓ Looks right
+        </button>
+        <button
+          type="button"
+          onClick={onReject}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 text-sm font-semibold text-white hover:bg-white/20"
+        >
+          Tap manually
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function TrackingResultBanner({
   verdict,
+  confidence,
+  hasFrames,
   onOverride,
   onConfirmUncertain,
   onArmNextShot,
+  onOpenReplay,
+  autoArmCountdown,
+  onCancelAutoArm,
 }: {
   verdict: "make" | "miss" | "uncertain";
+  confidence: number;
+  hasFrames: boolean;
   onOverride: (v: "make" | "miss") => void;
   onConfirmUncertain: (v: "make" | "miss") => void;
   onArmNextShot: () => void;
+  onOpenReplay: () => void;
+  autoArmCountdown: number | null;
+  onCancelAutoArm: () => void;
 }) {
   if (verdict === "uncertain") {
     return (
       <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-white/30 bg-black/80 px-4 py-3 backdrop-blur-md">
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
-          Didn&apos;t catch it — log this one yourself
+          Couldn&apos;t call it — log this one yourself
+        </p>
+        <p className="mt-1 text-[11px] leading-snug text-white/60">
+          The detection wasn&apos;t confident enough (only{" "}
+          {Math.round(confidence * 100)}% match). Tap whichever happened.
         </p>
         <div className="mt-2 flex gap-2">
           <button
@@ -1229,10 +1481,26 @@ function TrackingResultBanner({
             ✗ I missed
           </button>
         </div>
+        {hasFrames && (
+          <button
+            type="button"
+            onClick={onOpenReplay}
+            className="mt-2 inline-flex h-8 w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 text-[11px] font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10"
+          >
+            Show me the replay
+          </button>
+        )}
       </div>
     );
   }
   const isMake = verdict === "make";
+  const confidencePct = Math.round(confidence * 100);
+  const confidenceLabel =
+    confidence >= 0.85
+      ? "high confidence"
+      : confidence >= 0.65
+        ? "medium confidence"
+        : "low confidence — double-check";
   return (
     <div
       className={cn(
@@ -1262,9 +1530,24 @@ function TrackingResultBanner({
               )}
             >
               {isMake ? "Made it" : "Missed"}
+              <span className="ml-2 align-middle text-xs font-mono text-white/70">
+                {confidencePct}%
+              </span>
             </p>
             <p className="text-[11px] uppercase tracking-wider text-white/60">
-              Auto-logged · tap below if I got it wrong
+              {confidenceLabel}
+              {autoArmCountdown !== null && (
+                <>
+                  {" · "}
+                  <button
+                    type="button"
+                    onClick={onCancelAutoArm}
+                    className="font-semibold text-white/80 underline-offset-2 hover:underline"
+                  >
+                    Re-arming in {autoArmCountdown}s — pause
+                  </button>
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -1284,6 +1567,15 @@ function TrackingResultBanner({
         >
           {isMake ? "Actually missed →" : "Actually made →"}
         </button>
+        {hasFrames && (
+          <button
+            type="button"
+            onClick={onOpenReplay}
+            className="inline-flex h-9 items-center justify-center gap-1 rounded-full border border-white/30 bg-white/5 px-4 text-[12px] font-semibold uppercase tracking-wider text-white transition-colors hover:bg-white/15"
+          >
+            Replay
+          </button>
+        )}
       </div>
     </div>
   );
