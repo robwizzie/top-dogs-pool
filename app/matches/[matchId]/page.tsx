@@ -7,7 +7,8 @@ import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { getMatch, getOpponentTeams } from "@/lib/apa";
 import { loadSnapshot } from "@/lib/apa/client";
 import { getClipsForMatch } from "@/lib/youtube/client";
-import { matchMvp, matchRecap } from "@/lib/recap";
+import { matchBreakdown, matchMvp, matchRecap } from "@/lib/recap";
+import { ChalkTalk } from "@/components/cards/ChalkTalk";
 import { formatDate, formatTime } from "@/lib/utils";
 import type { MatchResult } from "@/lib/apa/schemas";
 
@@ -135,6 +136,8 @@ export default async function MatchPage({ params, searchParams }: Props) {
   const recapText =
     match.status === "completed" ? matchRecap(match, subjectName) : null;
   const mvp = match.status === "completed" ? matchMvp(match) : null;
+  const breakdown =
+    match.status === "completed" ? matchBreakdown(match, subjectName) : null;
 
   // ----- Fun stats — work on any match with results -----------------------
   // Counts that drive the highlight strip: sweeps, mini-sweeps, B&Rs, 8oBs,
@@ -383,6 +386,15 @@ export default async function MatchPage({ params, searchParams }: Props) {
                 <FunStat index={3} label="Drama" value="—" sub="all forfeits / no scores" />
               )}
             </div>
+          </section>
+        )}
+
+        {/* Chalk Talk — coach's-corner breakdown of what worked + what
+            to clean up. Only renders for completed matches that have a
+            scoresheet to mine. */}
+        {breakdown && (
+          <section id="chalk-talk" className="mb-10 scroll-mt-24">
+            <ChalkTalk breakdown={breakdown} />
           </section>
         )}
 
