@@ -35,7 +35,7 @@ import {
   toCanvasSpace,
   toDisplaySpace,
 } from "@/lib/cv/tracking";
-import { classifyBalls, detectBalls } from "@/lib/cv/detect";
+import { classifyBalls, detectBalls, detectCornerPockets } from "@/lib/cv/detect";
 import {
   lockBall,
   ShotTracker,
@@ -76,6 +76,13 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [permissionAsked, setPermissionAsked] = useState(false);
   const [corners, setCorners] = useState<Point[]>([]);
+  // Auto-detected pocket corners awaiting confirmation. We park them
+  // here (instead of straight into `corners`) so the player can verify
+  // the auto-detect is right before the homography locks in.
+  const [candidateCorners, setCandidateCorners] = useState<Point[] | null>(
+    null,
+  );
+  const [autoDetecting, setAutoDetecting] = useState(false);
   const [homography, setHomography] = useState<Homography | null>(null);
   const [orientation, setOrientation] = useState<"head" | "foot">("head");
 
@@ -234,11 +241,81 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }
   }, [corners, orientation]);
 
+  // Attempt to auto-detect the four corner pockets from the current
+  // frame. Sets `candidateCorners` (not `corners`) so the player can
+  // confirm before the homography locks in.
+  const tryAutoDetectCorners = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = processingCanvasRef.current;
+    if (!video || !canvas || vidBox.width === 0) return;
+    setAutoDetecting(true);
+    setTimeout(() => {
+      const frame = captureFrame(video, canvas);
+      if (!frame) {
+        setAutoDetecting(false);
+        return;
+      }
+      const detected = detectCornerPockets(frame);
+      setAutoDetecting(false);
+      if (!detected || detected.length !== 4) return;
+      // Convert from processing-canvas space into display (CSS-pixel)
+      // space, which is what the click handler and homography compute
+      // expect.
+      const displayCorners = detected.map((p) =>
+        toDisplaySpace(
+          p,
+          canvas.width,
+          canvas.height,
+          vidBox.width,
+          vidBox.height,
+        ),
+      );
+      setCandidateCorners(displayCorners);
+    }, 250);
+  }, [vidBox.width, vidBox.height]);
+
+  // Run auto-detect once on first camera frame. If it fails, the player
+  // sees the normal "tap each pocket" prompt and proceeds manually.
+  useEffect(() => {
+    if (!stream || homography || corners.length > 0) return;
+    if (vidBox.width === 0) return;
+    if (candidateCorners) return;
+    // 800ms delay so autofocus / auto-exposure has time to settle —
+    // running detect on a still-stabilizing frame yields garbage.
+    const t = setTimeout(() => tryAutoDetectCorners(), 800);
+    return () => clearTimeout(t);
+  }, [
+    stream,
+    vidBox.width,
+    homography,
+    corners.length,
+    candidateCorners,
+    tryAutoDetectCorners,
+  ]);
+
+  function acceptCandidateCorners() {
+    if (!candidateCorners) return;
+    setCorners(candidateCorners);
+    setCandidateCorners(null);
+  }
+
+  function rejectCandidateCorners() {
+    setCandidateCorners(null);
+  }
+
   function handleOverlayClick(e: React.MouseEvent<SVGSVGElement>) {
     const svg = e.currentTarget;
     const rect = svg.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    // A pending auto-detect candidate intercepts taps — any tap during
+    // the "confirm?" state is interpreted as "I'd rather do this
+    // manually" so the player isn't trapped by a wrong detection.
+    if (candidateCorners) {
+      setCandidateCorners(null);
+      setCorners([{ x, y }]);
+      return;
+    }
     // Calibration phase consumes taps first.
     if (!homography && corners.length < 4) {
       setCorners((prev) => [...prev, { x, y }]);
@@ -556,6 +633,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     setTrackingMode({ kind: "off" });
     setCorners([]);
     setHomography(null);
+    setCandidateCorners(null);
+    setAutoDetecting(false);
     setAnalysisState({ kind: "idle" });
   }
 
@@ -728,6 +807,41 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             </g>
           ))}
 
+          {/* Candidate auto-detected corners — outlined in brass, with
+              connecting polygon, awaiting player confirmation. */}
+          {candidateCorners && (
+            <g>
+              <polygon
+                points={candidateCorners
+                  .map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+                  .join(" ")}
+                fill="rgba(201,162,74,0.08)"
+                stroke="rgba(201,162,74,0.85)"
+                strokeWidth={2}
+                strokeDasharray="6 4"
+                className="animate-pulse"
+              />
+              {candidateCorners.map((p, i) => (
+                <g key={`cand-${i}`}>
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={20}
+                    fill="rgba(201,162,74,0.2)"
+                    stroke="rgba(255,235,180,0.95)"
+                    strokeWidth={2.5}
+                  />
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={4}
+                    fill="rgba(255,235,180,0.95)"
+                  />
+                </g>
+              ))}
+            </g>
+          )}
+
           {/* AR overlay once calibrated */}
           {overlay && (
             <>
@@ -816,7 +930,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         </svg>
 
         {/* Calibration prompt overlay */}
-        {!homography && (
+        {!homography && !candidateCorners && (
           <CalibrationPrompt
             step={corners.length}
             total={CORNER_ORDER.length}
@@ -825,7 +939,41 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             onSwitchOrientation={() =>
               setOrientation((o) => (o === "head" ? "foot" : "head"))
             }
+            autoDetecting={autoDetecting}
+            onRetryAutoDetect={tryAutoDetectCorners}
           />
+        )}
+
+        {/* Auto-detect confirmation banner */}
+        {candidateCorners && !homography && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
+            <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/60 bg-black/80 px-5 py-4 backdrop-blur-md">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
+                Found your pockets — confirm?
+              </p>
+              <p className="mt-1 text-sm leading-snug text-white">
+                The four highlighted spots are the corner pockets I picked
+                out. Tap to use them, or tap any pocket on screen to take
+                over manually.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <button
+                  type="button"
+                  onClick={acceptCandidateCorners}
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/70 text-sm font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt-deep)]"
+                >
+                  ✓ Use these
+                </button>
+                <button
+                  type="button"
+                  onClick={rejectCandidateCorners}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 text-sm font-semibold text-white hover:bg-white/20"
+                >
+                  Tap manually
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Once calibrated: control strip + (optional) analysis result */}
@@ -1039,14 +1187,42 @@ function CalibrationPrompt({
   currentLabel,
   orientation,
   onSwitchOrientation,
+  autoDetecting,
+  onRetryAutoDetect,
 }: {
   step: number;
   total: number;
   currentLabel: string;
   orientation: "head" | "foot";
   onSwitchOrientation: () => void;
+  autoDetecting: boolean;
+  onRetryAutoDetect: () => void;
 }) {
   if (step >= total) return null;
+  // While we're attempting auto-detection on the very first frames,
+  // show the searching state instead of the "tap" prompt — saves the
+  // player from racing the detector.
+  if (autoDetecting && step === 0) {
+    return (
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
+        <div className="pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl border border-[var(--color-brass)]/55 bg-black/75 px-5 py-4 backdrop-blur-md">
+          <Loader2
+            size={16}
+            className="shrink-0 animate-spin text-[var(--color-brass-bright)]"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
+              Looking for pockets…
+            </p>
+            <p className="mt-1 text-sm leading-snug text-white">
+              Scanning the table corners. You can also tap the four corner
+              pockets yourself.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
       <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-white/15 bg-black/70 px-5 py-4 backdrop-blur-md">
@@ -1085,6 +1261,16 @@ function CalibrationPrompt({
             />
           ))}
         </div>
+        {step === 0 && (
+          <button
+            type="button"
+            onClick={onRetryAutoDetect}
+            className="inline-flex h-8 w-fit items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 text-[10px] font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10"
+          >
+            <Crosshair size={11} />
+            Try auto-detect again
+          </button>
+        )}
       </div>
     </div>
   );
