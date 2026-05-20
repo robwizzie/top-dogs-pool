@@ -25,6 +25,14 @@ import type { Difficulty, KinisterShot } from "@/lib/kinister/shots";
 import { PoolTable } from "./PoolTable";
 import { AttemptTracker } from "./AttemptTracker";
 import { describePosition, pocketLabel } from "@/lib/kinister/setup";
+import {
+  discardActiveSession,
+  endActiveSession,
+  getSession,
+  readActiveSessionId,
+  startSession,
+  type Session as TrackedSession,
+} from "@/lib/kinister/useSession";
 import { showToast } from "@/components/ui/Toaster";
 import { cn } from "@/lib/utils";
 
@@ -158,10 +166,18 @@ export function DawgDrillRunner({ shots }: { shots: KinisterShot[] }) {
 
   function start(next: SessionState) {
     setResumeCandidate(null);
+    // Begin a tracked session so per-shot make/miss + AI critiques get
+    // attributed to this drill, not just the all-time stats.
+    startSession(
+      next.items.map((it) => ({ shotId: it.shot.id, reps: it.reps })),
+    );
     setSession(next);
   }
 
   function endSession() {
+    // Finalize the active session — keep the record so it shows up in
+    // session history, but stop attaching new attempts to it.
+    endActiveSession();
     setSession(null);
     persistSession(null);
   }
@@ -182,11 +198,26 @@ export function DawgDrillRunner({ shots }: { shots: KinisterShot[] }) {
       resumeCandidate={resumeCandidate}
       onResume={() => {
         if (resumeCandidate) {
+          // If the session record from the original start() got
+          // dropped (e.g. localStorage cleared), recreate one now so
+          // attempts logged during the resumed drill are tracked.
+          if (!readActiveSessionId()) {
+            startSession(
+              resumeCandidate.items.map((it) => ({
+                shotId: it.shot.id,
+                reps: it.reps,
+              })),
+            );
+          }
           setSession(resumeCandidate);
           setResumeCandidate(null);
         }
       }}
       onDiscardResume={() => {
+        // Throw away the half-finished drill AND the session record
+        // attached to it — the player explicitly said they don't want
+        // it anymore.
+        discardActiveSession();
         setResumeCandidate(null);
         persistSession(null);
       }}
@@ -888,29 +919,267 @@ function Complete({
   onFinish: () => void;
   session: SessionState;
 }) {
-  const totalReps = session.items.reduce((sum, i) => sum + i.reps, 0);
+  // The active session in localStorage carries the actual rep results —
+  // attempts, makes, and AI critiques per shot. Snapshot it on first
+  // mount and THEN finalize, so the summary keeps showing real data
+  // even if the player navigates between Complete and /stats and back.
+  const [activeSession, setActiveSession] = useState<TrackedSession | null>(
+    null,
+  );
+  useEffect(() => {
+    const id = readActiveSessionId();
+    if (id) {
+      const snap = getSession(id);
+      setActiveSession(snap);
+      // Finalize the session record (so /stats history shows it as
+      // completed) but leave the snapshot for this view.
+      endActiveSession();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const targetReps = session.items.reduce((sum, i) => sum + i.reps, 0);
+  const summary = useMemo(() => {
+    if (!activeSession) {
+      return {
+        totalAttempts: 0,
+        totalMakes: 0,
+        makePct: null as number | null,
+        perShot: session.items.map((it) => ({
+          shot: it.shot,
+          target: it.reps,
+          attempts: 0,
+          makes: 0,
+          critiques: [] as { verdict: string; summary: string }[],
+        })),
+      };
+    }
+    const perShot = session.items.map((it) => {
+      const entry = activeSession.shots.find(
+        (e) => e.shotId === it.shot.id,
+      );
+      return {
+        shot: it.shot,
+        target: it.reps,
+        attempts: entry?.attempts ?? 0,
+        makes: entry?.makes ?? 0,
+        critiques:
+          entry?.critiques.map((c) => ({
+            verdict: c.verdict,
+            summary: c.summary,
+          })) ?? [],
+      };
+    });
+    const totalAttempts = perShot.reduce((s, p) => s + p.attempts, 0);
+    const totalMakes = perShot.reduce((s, p) => s + p.makes, 0);
+    return {
+      totalAttempts,
+      totalMakes,
+      makePct:
+        totalAttempts > 0
+          ? Math.round((totalMakes / totalAttempts) * 100)
+          : null,
+      perShot,
+    };
+  }, [activeSession, session.items]);
 
   // Single celebratory toast on first mount of the complete screen.
   useEffect(() => {
     showToast({
       message: "Dawg Drill complete",
-      detail: `${session.items.length} shots · ${totalReps} reps`,
+      detail:
+        summary.totalAttempts > 0
+          ? `${summary.totalMakes}/${summary.totalAttempts} made`
+          : `${session.items.length} shots · ${targetReps} reps`,
       kind: "success",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Best + toughest shot by make rate (only counting shots with attempts).
+  const ranked = summary.perShot
+    .filter((p) => p.attempts > 0)
+    .map((p) => ({ ...p, pct: p.makes / p.attempts }));
+  const best = ranked.length
+    ? [...ranked].sort((a, b) => b.pct - a.pct)[0]
+    : null;
+  const tough =
+    ranked.length > 1
+      ? [...ranked].sort((a, b) => a.pct - b.pct)[0]
+      : null;
+
+  // Collect all "needs work" critiques across the session — the bits a
+  // player most wants to read at the end.
+  const lessonsLearned = summary.perShot.flatMap((p) =>
+    p.critiques
+      .filter((c) => c.verdict === "needs work")
+      .map((c) => ({ shot: p.shot, summary: c.summary })),
+  );
+
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 px-4 py-20 text-center">
-      <CheckCircle2 size={64} className="text-[var(--color-felt-bright)]" />
-      <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wide">
-        Dawg Drill complete
-      </h1>
-      <p className="text-[var(--fg-dim)]">
-        {session.items.length} shots · {totalReps} reps. Open any of them in
-        the catalog to see how your make-rate sparkline moved.
-      </p>
-      <div className="flex flex-wrap gap-2">
+    <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-12 sm:py-16">
+      <header className="flex flex-col items-center gap-3 text-center">
+        <CheckCircle2 size={56} className="text-[var(--color-felt-bright)]" />
+        <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wide">
+          Dawg Drill complete
+        </h1>
+        {summary.totalAttempts > 0 ? (
+          <p className="text-[var(--fg)]">
+            <span className="font-[family-name:var(--font-display)] text-3xl text-[var(--color-brass-bright)]">
+              {summary.totalMakes}
+              <span className="text-[var(--fg-dim)]">/{summary.totalAttempts}</span>
+            </span>
+            <span className="ml-3 text-sm text-[var(--fg-dim)]">
+              ({summary.makePct}% made)
+            </span>
+          </p>
+        ) : (
+          <p className="text-sm text-[var(--fg-dim)]">
+            No reps logged this session — tap{" "}
+            <span className="font-semibold text-[var(--fg)]">Made</span> or{" "}
+            <span className="font-semibold text-[var(--fg)]">Missed</span> on
+            each rep next time and the summary fills in.
+          </p>
+        )}
+      </header>
+
+      {/* Best / tough callouts */}
+      {(best || tough) && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {best && (
+            <CalloutCard
+              tone="felt"
+              label="Strongest"
+              shotName={best.shot.name}
+              shotNumber={best.shot.number}
+              makes={best.makes}
+              attempts={best.attempts}
+            />
+          )}
+          {tough && tough !== best && (
+            <CalloutCard
+              tone="pop"
+              label="Toughest"
+              shotName={tough.shot.name}
+              shotNumber={tough.shot.number}
+              makes={tough.makes}
+              attempts={tough.attempts}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Per-shot breakdown */}
+      <section className="surface overflow-hidden">
+        <div className="border-b border-[var(--border)] px-5 py-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+            Shot-by-shot
+          </p>
+        </div>
+        <ul className="divide-y divide-[var(--border)]">
+          {summary.perShot.map((p) => {
+            const pct =
+              p.attempts > 0
+                ? Math.round((p.makes / p.attempts) * 100)
+                : null;
+            return (
+              <li key={p.shot.id} className="px-5 py-3">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <Link
+                    href={`/shots/${p.shot.id}`}
+                    className="text-sm font-semibold text-[var(--fg)] hover:text-[var(--color-brass-bright)]"
+                  >
+                    <span className="text-[var(--fg-dim)]">
+                      {String(p.shot.number).padStart(2, "0")} ·{" "}
+                    </span>
+                    {p.shot.name}
+                  </Link>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="font-mono text-[var(--fg)]">
+                      {p.makes}/{p.attempts}
+                      <span className="text-[var(--fg-dim)]"> of {p.target}</span>
+                    </span>
+                    {pct !== null && (
+                      <span
+                        className={cn(
+                          "font-semibold",
+                          pct >= 70
+                            ? "text-[var(--color-felt-bright)]"
+                            : pct >= 40
+                              ? "text-[var(--color-brass-bright)]"
+                              : "text-[var(--color-pop-bright)]",
+                        )}
+                      >
+                        {pct}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {/* Progress bar */}
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--border)]/50">
+                  <div
+                    className="h-full bg-[var(--color-felt-bright)] transition-all"
+                    style={{
+                      width:
+                        p.target > 0
+                          ? `${Math.min(100, (p.attempts / p.target) * 100)}%`
+                          : "0%",
+                    }}
+                  />
+                </div>
+                {p.critiques.length > 0 && (
+                  <ul className="mt-2 space-y-1">
+                    {p.critiques.map((c, i) => (
+                      <li
+                        key={i}
+                        className="border-l-2 border-[var(--color-brass)]/45 pl-2 text-[12px] leading-relaxed text-[var(--fg-dim)]"
+                      >
+                        <span
+                          className={cn(
+                            "mr-1 font-semibold uppercase tracking-wider",
+                            c.verdict === "looked great"
+                              ? "text-[var(--color-felt-bright)]"
+                              : c.verdict === "needs work"
+                                ? "text-[var(--color-pop-bright)]"
+                                : "text-[var(--fg)]",
+                          )}
+                        >
+                          AI · {c.verdict}
+                        </span>
+                        {c.summary}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      {/* Lessons learned — the "needs work" highlights pulled together. */}
+      {lessonsLearned.length > 0 && (
+        <section className="surface p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-pop-bright)]">
+            What to work on next
+          </p>
+          <ul className="mt-3 space-y-2">
+            {lessonsLearned.map((l, i) => (
+              <li
+                key={i}
+                className="border-l-2 border-[var(--color-pop)]/55 pl-3 text-sm leading-relaxed text-[var(--fg)]"
+              >
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--fg-dim)]">
+                  {l.shot.name}
+                </span>
+                <p>{l.summary}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div className="flex flex-wrap justify-center gap-2">
         <button
           type="button"
           onClick={onFinish}
@@ -925,6 +1194,45 @@ function Complete({
           See your stats
         </Link>
       </div>
+    </div>
+  );
+}
+
+function CalloutCard({
+  tone,
+  label,
+  shotName,
+  shotNumber,
+  makes,
+  attempts,
+}: {
+  tone: "felt" | "pop";
+  label: string;
+  shotName: string;
+  shotNumber: number;
+  makes: number;
+  attempts: number;
+}) {
+  const accent =
+    tone === "felt"
+      ? "border-[var(--color-felt-bright)]/45 text-[var(--color-felt-bright)]"
+      : "border-[var(--color-pop)]/45 text-[var(--color-pop-bright)]";
+  const pct =
+    attempts > 0 ? Math.round((makes / attempts) * 100) : 0;
+  return (
+    <div className={cn("surface flex flex-col gap-1 border p-4", accent)}>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.32em]">
+        {label}
+      </p>
+      <p className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--fg)]">
+        <span className="text-[var(--fg-dim)]">
+          {String(shotNumber).padStart(2, "0")} ·{" "}
+        </span>
+        {shotName}
+      </p>
+      <p className="text-sm text-[var(--fg-dim)]">
+        {makes}/{attempts} made · {pct}%
+      </p>
     </div>
   );
 }

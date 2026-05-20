@@ -21,6 +21,7 @@ import {
   type Point,
 } from "@/lib/kinister/homography";
 import { describePosition } from "@/lib/kinister/setup";
+import { logSessionCritique } from "@/lib/kinister/useSession";
 import { cn } from "@/lib/utils";
 
 /**
@@ -231,6 +232,13 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       } else {
         setAnalysisState({
           kind: "result",
+          verdict: data.verdict,
+          summary: data.summary,
+        });
+        // Persist the critique to the active session (no-op when not in
+        // a Dawg Drill) so the end-of-session summary can replay what
+        // the AI flagged.
+        logSessionCritique(shot.id, {
           verdict: data.verdict,
           summary: data.summary,
         });
