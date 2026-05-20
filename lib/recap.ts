@@ -315,14 +315,34 @@ export function matchBreakdown(
     typeof r.skillLevel === "number" &&
     typeof r.opponentSkillLevel === "number" &&
     r.opponentSkillLevel < r.skillLevel;
+  /** The schema's `sweep` / `miniSweep` flags only fire when the row's
+   *  player WON (sweep = "I won and they got 0"). To detect that WE got
+   *  swept (or mini-swept), we derive it from the score against the
+   *  loser's hill threshold. */
+  const weGotSwept = (r: MatchResult): boolean => {
+    if (r.outcome !== "L" || !r.score) return false;
+    const m = r.score.match(/(\d+)-(\d+)/);
+    if (!m) return false;
+    return parseInt(m[1], 10) === 0 && parseInt(m[2], 10) > 0;
+  };
+  const weGotMiniSwept = (r: MatchResult): boolean => {
+    if (r.outcome !== "L" || !r.score) return false;
+    if (weGotSwept(r)) return false;
+    const m = r.score.match(/(\d+)-(\d+)/);
+    if (!m) return false;
+    const myWins = parseInt(m[1], 10);
+    const myHill = winsRequired(r.skillLevel, r.opponentSkillLevel) - 1;
+    // Mini-sweep against us = we never reached our hill.
+    return myWins < myHill && myHill > 0;
+  };
 
   // ---- counts -----------------------------------------------------------
   const ourWins = named.filter((r) => r.outcome === "W");
   const ourLosses = named.filter((r) => r.outcome === "L");
   const ourSweeps = ourWins.filter((r) => r.sweep);
   const ourMinis = ourWins.filter((r) => !r.sweep && r.miniSweep);
-  const oppSweeps = ourLosses.filter((r) => r.sweep);
-  const oppMinis = ourLosses.filter((r) => !r.sweep && r.miniSweep);
+  const oppSweeps = ourLosses.filter(weGotSwept);
+  const oppMinis = ourLosses.filter(weGotMiniSwept);
   const ourBR = ourWins.filter((r) => r.breakAndRun);
   const ourEOB = ourWins.filter((r) => r.eightOnBreak);
   const oppBR = ourLosses.filter((r) => r.breakAndRun);
