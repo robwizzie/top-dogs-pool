@@ -68,9 +68,17 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
   const sequence = shot.sequence;
   const stepCount = sequence?.length ?? 1;
 
+  // For shots that pocket the OB, the cue ball must arrive at the GHOST BALL
+  // position (the standard aim) — not just stop-short along the CB→OB line.
+  // That's the spot where, on contact, the OB is driven straight toward the
+  // target pocket. Without a target (safeties/kicks) we fall back to the
+  // visual stop-short.
   const contact = useMemo(
-    () => contactPoint(shot.cueBall, shot.objectBall),
-    [shot.cueBall, shot.objectBall],
+    () =>
+      shot.targetPocket
+        ? ghostBall(shot.objectBall, POCKETS[shot.targetPocket])
+        : contactPoint(shot.cueBall, shot.objectBall),
+    [shot.cueBall, shot.objectBall, shot.targetPocket],
   );
 
   // Static (or final) positions for the diagram lines.
@@ -594,6 +602,37 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
               <circle cx={ob.x} cy={ob.y} r={BALL_R * 0.45} fill="#fff" />
             </g>
           )}
+
+          {/* Final cue-ball resting position — dashed outline so the player
+              sees where the CB is supposed to end up. Hidden once the CB
+              actually arrives so the two don't visually overlap. */}
+          {(() => {
+            const finalCue = sequence
+              ? sequence[sequence.length - 1]?.cueAfter
+              : shot.cueBallPath[shot.cueBallPath.length - 1];
+            if (!finalCue) return null;
+            if (progress >= 0.995) return null;
+            const f = toSvg(finalCue);
+            return (
+              <g aria-hidden>
+                <circle
+                  cx={f.x}
+                  cy={f.y}
+                  r={BALL_R}
+                  fill="none"
+                  stroke="rgba(236,225,196,0.7)"
+                  strokeWidth={1.4}
+                  strokeDasharray="2 3"
+                />
+                <circle
+                  cx={f.x}
+                  cy={f.y}
+                  r={1.8}
+                  fill="rgba(236,225,196,0.65)"
+                />
+              </g>
+            );
+          })()}
 
           {/* Cue ball */}
           <circle

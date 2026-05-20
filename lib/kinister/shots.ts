@@ -295,13 +295,13 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBallPath: [
       { x: 0, y: 0.9 },
       { x: 1.8, y: 4 },
-      { x: 2.8, y: 2.5 },
+      { x: 4, y: 2 },
     ],
     english: { x: -0.6, y: 0 },
     description:
-      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs up the rail to the short rail, kicks across to the far long rail, and floats back to land in the middle of the head end of the table.",
+      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs up the rail to the short rail, kicks across to the far long rail, and floats back to land in the dead center of the table.",
     technique:
-      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across into the open zone near the head spot.",
+      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across and lands on the center spot.",
     commonMistakes: [
       "Too much english — CB throws the OB off the rail",
       "Wrong english — outside spin shortens the rebound and CB stays near the rail",
@@ -312,7 +312,7 @@ export const KINISTER_SHOTS: KinisterShot[] = [
       "Visualize the CB's rebound point on the short rail before stroking",
     ],
     teaches:
-      "Using inside english to recover position into the middle of the head end after a rail-line shot.",
+      "Using inside english to recover position into the dead center of the table after a rail-line shot.",
   },
   {
     id: "three-rail-middle",
@@ -689,23 +689,23 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBallPath: [
       { x: 0, y: 0.7 },
       { x: 1, y: 4 },
-      { x: 2.7, y: 2.5 },
+      { x: 4, y: 2 },
     ],
     english: { x: -0.5, y: 0.2 },
     description:
-      "Pat's go-to shape shot. Pocket the OB in the corner from a near-straight angle and send the cue ball off the short rail near the pocket and the far long rail to land in the middle of the upper half of the table.",
+      "Pat's go-to shape shot. Pocket the OB in the corner from a near-straight angle and send the cue ball off the short rail near the pocket and the far long rail to land in the dead center of the table.",
     technique:
-      "Running english, medium pace. Two rails wrap the CB across to the middle of the table for shape on the next ball.",
+      "Running english, medium pace. Two rails wrap the CB across to the center of the table for shape on the next ball.",
     commonMistakes: [
       "Wrong english → second rail rebound dies short",
       "Too much pace → CB grabs a third rail and overshoots",
     ],
     tips: [
-      "Pick the middle-of-table landing zone before stroking",
+      "Pick the center-of-table landing spot before stroking",
       "Running english is the constant — pace dictates landing distance",
     ],
     teaches:
-      "Two-rail wrap shape — the bread-and-butter position route Pat uses for the next ball.",
+      "Two-rail wrap shape — the bread-and-butter position route Pat uses to land in the center of the table for the next ball.",
   },
   {
     id: "two-rails-top-middle",
