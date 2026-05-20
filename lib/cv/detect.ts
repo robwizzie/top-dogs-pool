@@ -53,16 +53,12 @@ export function detectBalls(
   const minArea = options.minArea ?? DEFAULTS.minArea;
   const maxArea = options.maxArea ?? DEFAULTS.maxArea;
 
-  // (1) Establish felt reference.
-  const feltColor =
-    options.feltColor ??
-    (tableQuad
-      ? sampleColor(image, quadCenter(tableQuad), 12)
-      : sampleColor(
-          image,
-          { x: width / 2, y: height / 2 },
-          12,
-        ));
+  // (1) Establish felt reference. Sample from several spots on the felt
+  // and take the median per channel. Robust to:
+  //   - the foot spot / center marking many tables have
+  //   - uneven lighting (window glare on one side, shadow on the other)
+  //   - chalk smudges or a stray ball that happens to be near center
+  const feltColor = options.feltColor ?? medianFeltSample(image, tableQuad);
 
   // (2) Mask non-felt pixels inside the table polygon. Pixels outside
   // the polygon never enter the search, so we don't pick up the rails
@@ -247,11 +243,71 @@ class UnionFind {
   }
 }
 
-function quadCenter(q: [Point, Point, Point, Point]): Point {
-  return {
-    x: (q[0].x + q[1].x + q[2].x + q[3].x) / 4,
-    y: (q[0].y + q[1].y + q[2].y + q[3].y) / 4,
-  };
+/**
+ * Sample 9 points spread across the felt and return the median R/G/B
+ * per channel. The median is far more robust than the mean to outliers
+ * (center spot, chalk smudge, a ball that happens to be near the
+ * sample) and to half-lit tables.
+ */
+function medianFeltSample(
+  image: ImageData,
+  tableQuad?: [Point, Point, Point, Point],
+): [number, number, number] {
+  const samples: Point[] = [];
+  if (tableQuad) {
+    // Bilinear blend over the quad — 9 interior points at the (¼, ½, ¾)
+    // grid. None at the corners (rails / pockets).
+    const fractions = [0.25, 0.5, 0.75];
+    for (const u of fractions) {
+      for (const v of fractions) {
+        samples.push(bilinear(tableQuad, u, v));
+      }
+    }
+  } else {
+    const cx = image.width / 2;
+    const cy = image.height / 2;
+    const r = Math.min(image.width, image.height) * 0.2;
+    for (const dx of [-r, 0, r]) {
+      for (const dy of [-r, 0, r]) {
+        samples.push({ x: cx + dx, y: cy + dy });
+      }
+    }
+  }
+  const rs: number[] = [];
+  const gs: number[] = [];
+  const bs: number[] = [];
+  for (const p of samples) {
+    const [r, g, b] = sampleColor(image, p, 8);
+    rs.push(r);
+    gs.push(g);
+    bs.push(b);
+  }
+  return [median(rs), median(gs), median(bs)];
+}
+
+function median(xs: number[]): number {
+  if (xs.length === 0) return 0;
+  const sorted = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0
+    ? (sorted[m - 1] + sorted[m]) / 2
+    : sorted[m];
+}
+
+function bilinear(
+  q: [Point, Point, Point, Point],
+  u: number,
+  v: number,
+): Point {
+  // Quad order is the player's tap order: near-right, near-left,
+  // far-left, far-right. u runs near→far, v runs right→left.
+  const top = { x: lerp(q[0].x, q[1].x, v), y: lerp(q[0].y, q[1].y, v) };
+  const bot = { x: lerp(q[3].x, q[2].x, v), y: lerp(q[3].y, q[2].y, v) };
+  return { x: lerp(top.x, bot.x, u), y: lerp(top.y, bot.y, u) };
+}
+
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
 }
 
 /**
