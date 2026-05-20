@@ -1115,6 +1115,11 @@ function CalibratedHud({
   onArmNextShot,
   audioEnabled,
   onToggleAudio,
+  autoArmCountdown,
+  onCancelAutoArm,
+  onOpenReplay,
+  onConfirmDetection,
+  onRejectDetection,
 }: {
   shot: KinisterShot;
   onRecalibrate: () => void;
