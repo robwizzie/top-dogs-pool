@@ -22,7 +22,8 @@ import {
   playerPointsTrajectories,
   teamMomentum,
 } from "@/lib/research";
-import { matchMvp, matchRecap } from "@/lib/recap";
+import { matchBreakdown, matchMvp, matchRecap } from "@/lib/recap";
+import { ChalkTalk } from "@/components/cards/ChalkTalk";
 import { formatDate, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
 
 export const revalidate = 3600;
@@ -44,6 +45,7 @@ export default async function HomePage() {
   const lastCompleted = recent[0] ?? null;
   const recapText = lastCompleted ? matchRecap(lastCompleted) : null;
   const lastMvp = lastCompleted ? matchMvp(lastCompleted) : null;
+  const lastBreakdown = lastCompleted ? matchBreakdown(lastCompleted) : null;
   const dataReady = !!team && roster.length > 0;
   // Treat rank 0 as "no rank yet" — APA fills standings after the first
   // match week. Pass undefined so the Hero renders a dash.
@@ -220,6 +222,20 @@ export default async function HomePage() {
                 </aside>
               )}
             </div>
+          </Link>
+        </Section>
+      )}
+
+      {/* Chalk Talk — coach's-corner breakdown of the last match: what
+          worked, what didn't, what to take into next week. Compact mode
+          on the home page; full version on /matches/[id]. */}
+      {lastBreakdown && lastCompleted && (
+        <Section eyebrow="Chalk Talk" title="Coach's Corner">
+          <Link
+            href={`/matches/${lastCompleted.id}#chalk-talk`}
+            className="block transition-transform hover:-translate-y-0.5"
+          >
+            <ChalkTalk breakdown={lastBreakdown} compact />
           </Link>
         </Section>
       )}
