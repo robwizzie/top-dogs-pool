@@ -26,6 +26,9 @@ import { cn } from "@/lib/utils";
 
 type Params = { id: string };
 
+export const dynamicParams = false;
+export const revalidate = false;
+
 export function generateStaticParams(): Params[] {
   return KINISTER_SHOTS.map((s) => ({ id: s.id }));
 }

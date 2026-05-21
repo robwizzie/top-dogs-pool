@@ -17,8 +17,10 @@ export const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET ?? "";
 
 /** ISR revalidation seconds for APA scrape — 1h */
 export const APA_REVALIDATE_SECONDS = 60 * 60;
-/** ISR revalidation for YouTube — 30m */
-export const YOUTUBE_REVALIDATE_SECONDS = 30 * 60;
+/** ISR revalidation for YouTube — 6h. Playlist rarely changes between
+ *  match weeks, and the /api/revalidate hook can bust the cache when
+ *  we actually publish a new clip. */
+export const YOUTUBE_REVALIDATE_SECONDS = 6 * 60 * 60;
 
 export type NavItem = { href: string; label: string };
 export type NavGroup = { label: string; items: readonly NavItem[] };

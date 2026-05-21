@@ -48,6 +48,11 @@ export function YouTubeEmbed({
                 sizes="(max-width: 768px) 100vw, 33vw"
                 priority={priority}
                 style={{ objectFit: "cover" }}
+                // i.ytimg.com already serves CDN-optimized JPGs at the
+                // sizes we use — running them back through Vercel's
+                // image optimizer would just burn function invocations
+                // and origin transfer for no quality win.
+                unoptimized
               />
             )}
             <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
