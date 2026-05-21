@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import { KINISTER_SHOTS } from "@/lib/kinister/shots";
 import { DawgDrillRunner } from "@/components/shots/DawgDrillRunner";
 
+export const dynamic = "force-static";
+
 export const metadata = {
   title: "Dawg Drill — Top Dogs Pool",
   description:

@@ -10,7 +10,9 @@ import {
 } from "@/lib/config";
 import { formatDate, formatTime, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
 
-export const revalidate = 60;
+// The live banner just flips on/off based on the schedule (Tue 7:30-11:30pm);
+// a 5-min stale window is fine and saves a lot of background regen cycles.
+export const revalidate = 300;
 
 export const metadata = {
   title: "Live",

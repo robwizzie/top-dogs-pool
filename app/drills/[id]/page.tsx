@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 
 type Params = { id: string };
 
+export const dynamicParams = false;
+export const revalidate = false;
+
 export function generateStaticParams(): Params[] {
   return DRILLS.map((d) => ({ id: d.id }));
 }

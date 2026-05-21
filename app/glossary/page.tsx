@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { GLOSSARY, type GlossaryEntry } from "@/lib/kinister/glossary";
 
+export const dynamic = "force-static";
+
 export const metadata = {
   title: "Glossary — Top Dogs Pool",
   description:

@@ -6,6 +6,8 @@ import { DrillCard } from "@/components/shots/DrillCard";
 import { KINISTER_SHOTS } from "@/lib/kinister/shots";
 import { DRILLS } from "@/lib/kinister/drills";
 
+export const dynamic = "force-static";
+
 export const metadata = {
   title: "Shots — The Kinister Workout",
   description:

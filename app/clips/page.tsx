@@ -3,7 +3,7 @@ import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { getClips } from "@/lib/youtube/client";
 import { Video } from "lucide-react";
 
-export const revalidate = 1800;
+export const revalidate = 21600;
 
 export const metadata = {
   title: "Clips",

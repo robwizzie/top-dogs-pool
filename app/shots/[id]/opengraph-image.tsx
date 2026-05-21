@@ -1,12 +1,26 @@
 import { ImageResponse } from "next/og";
-import { getShot, POCKETS } from "@/lib/kinister/shots";
+import { getShot, KINISTER_SHOTS, POCKETS } from "@/lib/kinister/shots";
 import { contactPoint, toSvg } from "@/lib/kinister/geometry";
 import type { KinisterShot } from "@/lib/kinister/shots";
 
-export const runtime = "edge";
+// nodejs runtime instead of edge so we can prerender every shot card at
+// build time via generateStaticParams. Edge runtime is incompatible with
+// static params, and we don't want this regenerating on every share-link
+// preview — it was a heavy slice of our Fluid Active CPU budget.
+export const runtime = "nodejs";
 export const alt = "Top Dogs Pool — shot card";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+// Shots are static source data — pre-render every OG card at build time
+// and never re-render. Each share preview / crawler hit then serves from
+// the CDN instead of re-invoking the edge function.
+export const revalidate = false;
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return KINISTER_SHOTS.map((s) => ({ id: s.id }));
+}
 
 // Diagram (SVG viewBox) constants from lib/kinister/geometry — duplicated
 // here as numeric constants because Satori in next/og prefers plain JSX.
