@@ -76,12 +76,14 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [permissionAsked, setPermissionAsked] = useState(false);
   const [corners, setCorners] = useState<Point[]>([]);
-  // Auto-detected pocket corners awaiting confirmation. We park them
-  // here (instead of straight into `corners`) so the player can verify
-  // the auto-detect is right before the homography locks in.
-  const [candidateCorners, setCandidateCorners] = useState<Point[] | null>(
-    null,
-  );
+  // Auto-detected setup awaiting confirmation. Always carries the four
+  // corner pockets; optionally also the cue ball + OB if ball detection
+  // succeeded in the same frame. With both, the player goes from camera
+  // to fully-armed tracking in one tap.
+  const [candidate, setCandidate] = useState<{
+    corners: Point[];
+    balls: { cb: BallLock; ob: BallLock } | null;
+  } | null>(null);
   const [autoDetecting, setAutoDetecting] = useState(false);
   const [homography, setHomography] = useState<Homography | null>(null);
   const [orientation, setOrientation] = useState<"head" | "foot">("head");
@@ -241,9 +243,9 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }
   }, [corners, orientation]);
 
-  // Attempt to auto-detect the four corner pockets from the current
-  // frame. Sets `candidateCorners` (not `corners`) so the player can
-  // confirm before the homography locks in.
+  // Attempt to auto-detect the four corner pockets *and* the cue ball
+  // + object ball from a single frame. With everything found, the
+  // player gets to "Looks right? Start tracking" in one decision.
   const tryAutoDetectCorners = useCallback(() => {
     const video = videoRef.current;
     const canvas = processingCanvasRef.current;
@@ -255,13 +257,18 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         setAutoDetecting(false);
         return;
       }
-      const detected = detectCornerPockets(frame);
-      setAutoDetecting(false);
-      if (!detected || detected.length !== 4) return;
-      // Convert from processing-canvas space into display (CSS-pixel)
-      // space, which is what the click handler and homography compute
-      // expect.
-      const displayCorners = detected.map((p) =>
+
+      // (1) Corner pockets.
+      const detectedCorners = detectCornerPockets(frame);
+      if (!detectedCorners || detectedCorners.length !== 4) {
+        setAutoDetecting(false);
+        return;
+      }
+      // Canvas-space corners stay around so ball detection can mask the
+      // table polygon. We also convert to display-space for the
+      // homography compute downstream.
+      const cornersCanvas = detectedCorners;
+      const cornersDisplay = detectedCorners.map((p) =>
         toDisplaySpace(
           p,
           canvas.width,
@@ -270,16 +277,76 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           vidBox.height,
         ),
       );
-      setCandidateCorners(displayCorners);
+
+      // (2) Ball detection inside that table polygon. Even if this
+      // fails we still let the player confirm the corners — they can
+      // then enter tracking via the "Track shots" button manually.
+      let balls: { cb: BallLock; ob: BallLock } | null = null;
+      try {
+        const cornerOrderCoords = [
+          { x: 0, y: 0 },
+          { x: 0, y: 4 },
+          { x: 8, y: 4 },
+          { x: 8, y: 0 },
+        ] as [Point, Point, Point, Point];
+        // Temp homography: diamond-space → canvas-space, so we can
+        // project the catalog's expected OB into the same frame the
+        // detector is searching.
+        const dst =
+          orientation === "head"
+            ? cornersCanvas
+            : (cornerOrderCoords.map((_, i) =>
+                cornersCanvas[(i + 2) % 4],
+              ) as [Point, Point, Point, Point]);
+        const tempHomography = computeHomography(
+          cornerOrderCoords,
+          dst as [Point, Point, Point, Point],
+        );
+        const candidates = detectBalls(frame, {
+          tableQuad: cornersCanvas as [Point, Point, Point, Point],
+        });
+        if (candidates.length >= 2) {
+          const expectedObCanvas = applyHomography(
+            tempHomography,
+            shot.objectBall,
+          );
+          const { cue, ob } = classifyBalls(candidates, expectedObCanvas);
+          if (cue && ob) {
+            const cueDisplay = toDisplaySpace(
+              cue.center,
+              canvas.width,
+              canvas.height,
+              vidBox.width,
+              vidBox.height,
+            );
+            const obDisplay = toDisplaySpace(
+              ob.center,
+              canvas.width,
+              canvas.height,
+              vidBox.width,
+              vidBox.height,
+            );
+            balls = {
+              cb: { displayPos: cueDisplay, reference: cue.color },
+              ob: { displayPos: obDisplay, reference: ob.color },
+            };
+          }
+        }
+      } catch {
+        // Detection error — just skip the ball part. Corners still useful.
+      }
+
+      setAutoDetecting(false);
+      setCandidate({ corners: cornersDisplay, balls });
     }, 250);
-  }, [vidBox.width, vidBox.height]);
+  }, [vidBox.width, vidBox.height, shot.objectBall, orientation]);
 
   // Run auto-detect once on first camera frame. If it fails, the player
   // sees the normal "tap each pocket" prompt and proceeds manually.
   useEffect(() => {
     if (!stream || homography || corners.length > 0) return;
     if (vidBox.width === 0) return;
-    if (candidateCorners) return;
+    if (candidate) return;
     // 800ms delay so autofocus / auto-exposure has time to settle —
     // running detect on a still-stabilizing frame yields garbage.
     const t = setTimeout(() => tryAutoDetectCorners(), 800);
@@ -289,18 +356,36 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     vidBox.width,
     homography,
     corners.length,
-    candidateCorners,
+    candidate,
     tryAutoDetectCorners,
   ]);
 
-  function acceptCandidateCorners() {
-    if (!candidateCorners) return;
-    setCorners(candidateCorners);
-    setCandidateCorners(null);
+  function acceptCandidate() {
+    if (!candidate) return;
+    setCorners(candidate.corners);
+    // If we got balls too, the homography compute is going to fire on
+    // the next render; wait for it before we arm so the tracker has a
+    // homography to use. The "armed" effect already depends on it.
+    if (candidate.balls) {
+      primeAudio();
+      lastLoggedVerdictRef.current = null;
+      setTrackingMode({
+        kind: "armed",
+        cb: candidate.balls.cb,
+        ob: candidate.balls.ob,
+      });
+    }
+    setCandidate(null);
   }
 
-  function rejectCandidateCorners() {
-    setCandidateCorners(null);
+  function acceptCornersOnly() {
+    if (!candidate) return;
+    setCorners(candidate.corners);
+    setCandidate(null);
+  }
+
+  function rejectCandidate() {
+    setCandidate(null);
   }
 
   function handleOverlayClick(e: React.MouseEvent<SVGSVGElement>) {
@@ -311,8 +396,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     // A pending auto-detect candidate intercepts taps — any tap during
     // the "confirm?" state is interpreted as "I'd rather do this
     // manually" so the player isn't trapped by a wrong detection.
-    if (candidateCorners) {
-      setCandidateCorners(null);
+    if (candidate) {
+      setCandidate(null);
       setCorners([{ x, y }]);
       return;
     }
@@ -633,7 +718,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     setTrackingMode({ kind: "off" });
     setCorners([]);
     setHomography(null);
-    setCandidateCorners(null);
+    setCandidate(null);
     setAutoDetecting(false);
     setAnalysisState({ kind: "idle" });
   }
@@ -807,12 +892,13 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             </g>
           ))}
 
-          {/* Candidate auto-detected corners — outlined in brass, with
-              connecting polygon, awaiting player confirmation. */}
-          {candidateCorners && (
+          {/* Candidate auto-detected setup — corners outlined in brass
+              with a connecting polygon, plus highlighted ball markers
+              if detection nailed those too. Awaits player confirmation. */}
+          {candidate && (
             <g>
               <polygon
-                points={candidateCorners
+                points={candidate.corners
                   .map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`)
                   .join(" ")}
                 fill="rgba(201,162,74,0.08)"
@@ -821,7 +907,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
                 strokeDasharray="6 4"
                 className="animate-pulse"
               />
-              {candidateCorners.map((p, i) => (
+              {candidate.corners.map((p, i) => (
                 <g key={`cand-${i}`}>
                   <circle
                     cx={p.x}
@@ -839,6 +925,26 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
                   />
                 </g>
               ))}
+              {candidate.balls && (
+                <g>
+                  <circle
+                    cx={candidate.balls.cb.displayPos.x}
+                    cy={candidate.balls.cb.displayPos.y}
+                    r={18}
+                    fill="rgba(255,255,255,0.18)"
+                    stroke="rgba(255,255,255,0.95)"
+                    strokeWidth={2.5}
+                  />
+                  <circle
+                    cx={candidate.balls.ob.displayPos.x}
+                    cy={candidate.balls.ob.displayPos.y}
+                    r={18}
+                    fill="rgba(224,168,46,0.22)"
+                    stroke="rgba(224,168,46,0.95)"
+                    strokeWidth={2.5}
+                  />
+                </g>
+              )}
             </g>
           )}
 
@@ -930,7 +1036,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         </svg>
 
         {/* Calibration prompt overlay */}
-        {!homography && !candidateCorners && (
+        {!homography && !candidate && (
           <CalibrationPrompt
             step={corners.length}
             total={CORNER_ORDER.length}
@@ -944,29 +1050,52 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           />
         )}
 
-        {/* Auto-detect confirmation banner */}
-        {candidateCorners && !homography && (
+        {/* Auto-detect confirmation banner — either corners + balls (one
+            tap to fully armed) or just corners (one tap to overlay). */}
+        {candidate && !homography && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
             <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/60 bg-black/80 px-5 py-4 backdrop-blur-md">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
-                Found your pockets — confirm?
+                {candidate.balls
+                  ? "Found everything — start tracking?"
+                  : "Found your pockets — confirm?"}
               </p>
               <p className="mt-1 text-sm leading-snug text-white">
-                The four highlighted spots are the corner pockets I picked
-                out. Tap to use them, or tap any pocket on screen to take
-                over manually.
+                {candidate.balls
+                  ? "Pockets, cue ball, and object ball all auto-detected (highlighted). Tap to lock everything in and start watching for your shot."
+                  : "The four highlighted spots are the corner pockets I picked out. Tap to use them, or tap any pocket on screen to take over manually."}
               </p>
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
+                {candidate.balls ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={acceptCandidate}
+                      className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/70 text-sm font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt-deep)]"
+                    >
+                      ✓ Start tracking
+                    </button>
+                    <button
+                      type="button"
+                      onClick={acceptCornersOnly}
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 text-xs font-semibold uppercase tracking-wider text-white hover:bg-white/20"
+                      title="Use just the AR overlay without auto-tracking shots"
+                    >
+                      Overlay only
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={acceptCandidate}
+                    className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/70 text-sm font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt-deep)]"
+                  >
+                    ✓ Use these
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={acceptCandidateCorners}
-                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/70 text-sm font-semibold text-[var(--color-felt-bright)] hover:bg-[var(--color-felt-deep)]"
-                >
-                  ✓ Use these
-                </button>
-                <button
-                  type="button"
-                  onClick={rejectCandidateCorners}
+                  onClick={rejectCandidate}
                   className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 text-sm font-semibold text-white hover:bg-white/20"
                 >
                   Tap manually
