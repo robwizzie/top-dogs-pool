@@ -619,11 +619,13 @@ export async function getPatchInstances(
     }
   }
 
-  // Roster-bump level-ups. APA sometimes raises a player's SL AFTER the
-  // matches that earned the bump are recorded — the match results still show
-  // the old SL, but the current roster reflects the new one. Credit the
-  // remaining level-up(s) to the current session so the patch shows up right
-  // away instead of waiting for the next match recorded at the new SL.
+  // Roster-bump level-ups. APA can re-rate a current-session player AFTER
+  // the matches that earned the bump (their match results still show the old
+  // SL, but the live roster reflects the new one). Credit a level-up
+  // instance only if (a) the bump is in scope, (b) the new SL hasn't been
+  // reached in any earlier match — the career-wide `priorMaxSL` walk above
+  // captures any prior visit, so a player bouncing back to a previously-
+  // held SL gets no patch (matches the rule "first time only").
   const currentSessionId = snap.currentSession?.id;
   const currentSessionInScope =
     currentSessionId !== undefined &&

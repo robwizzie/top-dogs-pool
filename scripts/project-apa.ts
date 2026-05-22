@@ -512,6 +512,60 @@ function extractMvpRows(
   return out;
 }
 
+/**
+ * Walk a captured `memberTeams` payload and emit (sessionId, skillLevel)
+ * tuples from the player's `pastTeams` history for the given format
+ * (`EightBallPlayer` etc.). Used to recognize when a player's "level-up"
+ * actually returns them to a skill level they've held before — only the
+ * first time a player reaches each new SL earns the Level Up patch.
+ */
+function extractPastSkillLevels(
+  memberTeams: Record<string, Record<string, unknown>> | undefined,
+  formatTypename: string,
+): Map<number, number> {
+  const out = new Map<number, number>();
+  if (!memberTeams) return out;
+  const visit = (node: unknown): void => {
+    if (!node || typeof node !== "object") return;
+    if (Array.isArray(node)) {
+      for (const x of node) visit(x);
+      return;
+    }
+    const rec = node as Record<string, unknown>;
+    if (
+      rec.__typename === formatTypename &&
+      typeof rec.skillLevel === "number" &&
+      rec.session &&
+      typeof rec.session === "object"
+    ) {
+      const sid = (rec.session as { id?: unknown }).id;
+      if (typeof sid === "number") {
+        const sl = rec.skillLevel as number;
+        const prev = out.get(sid) ?? 0;
+        if (sl > prev) out.set(sid, sl);
+      }
+    }
+    for (const v of Object.values(rec)) visit(v);
+  };
+  for (const payload of Object.values(memberTeams)) visit(payload);
+  return out;
+}
+
+function formatTypename(format: string): string {
+  switch (format) {
+    case "8-ball":
+      return "EightBallPlayer";
+    case "9-ball":
+      return "NineBallPlayer";
+    case "masters":
+      return "MastersPlayer";
+    case "doubles":
+      return "DoublesPlayer";
+    default:
+      return "EightBallPlayer";
+  }
+}
+
 /* ------------------------------------------------------ projection main */
 
 async function main() {
@@ -883,39 +937,120 @@ async function main() {
     }
   }
 
-  // 6a. Post-match level-up bumps. APA can re-rate a player AFTER their
-  // session matches were played — match results still show the old SL, but
-  // the current roster lists the new SL. Detect this for the CURRENT session
-  // and credit the missing level-up(s) so the patch shows up immediately
-  // rather than waiting for the next match to be recorded at the new SL.
-  let postMatchLevelUpStamps = 0;
-  if (currentSessionId !== null) {
+  // 6a. Career-wide level-up rule.
+  //
+  // Per "Level Up patch fires the first time a player reaches each SL", we
+  // re-derive level-up counts using a career-wide running peak. The earlier
+  // per-session walk credits any SL increase observed within a session, which
+  // double-counts re-rates (a player bouncing 3 → 4 → 3 → 4 would get two
+  // patches; they only deserve one). It also misses APA post-match re-rates
+  // for the current session — but those only deserve a patch if the new SL
+  // hasn't been reached before.
+  //
+  // Sources of per-session peak SL:
+  //   - match-derived endingSkillLevel (from the loop above)
+  //   - APA pastTeams data (covers sessions we may not have match data for,
+  //     including the player's history on non-Top-Dawgs teams in the same
+  //     format)
+  //   - live roster currentSL (only for the current session — this is how
+  //     the post-match re-rate lands on the leaderboard)
+  const pastSlByPlayer = new Map<string, Map<number, number>>();
+  for (const [internalId, member] of members) {
+    let memberNumber: string | undefined;
+    for (const [mn, iid] of memberNumberToInternalId) {
+      if (iid === internalId) {
+        memberNumber = mn;
+        break;
+      }
+    }
+    if (!memberNumber) continue;
+    const meta = memberNumberMeta.get(memberNumber);
+    if (!meta) continue;
+    const tn = formatTypename(meta.format);
+    const past = extractPastSkillLevels(member.memberTeams, tn);
+    if (past.size > 0) pastSlByPlayer.set(memberNumber, past);
+  }
+
+  const playersWithAggs = new Set<string>();
+  for (const k of aggregations.keys()) playersWithAggs.add(k.split("::")[1]);
+
+  let correctedSessions = 0;
+  let netLevelUpDelta = 0;
+  for (const playerId of playersWithAggs) {
+    const sessionPeaks = new Map<number, number>();
     for (const [k, agg] of aggregations) {
-      if (agg.sessionId !== currentSessionId) continue;
-      const [, playerId] = k.split("::");
-      const memberMeta = memberNumberMeta.get(playerId);
-      const currentSL = memberMeta?.currentSL;
-      if (typeof currentSL !== "number") continue;
-      const endingSL = agg.endingSkillLevel;
-      if (typeof endingSL !== "number") continue;
-      if (currentSL <= endingSL) continue;
-      const bump = currentSL - endingSL;
-      agg.levelUps += bump;
-      agg.points += bump;
-      agg.endingSkillLevel = currentSL;
-      agg.skillLevel = currentSL;
+      if (agg.sessionId == null) continue;
+      if (k !== aggKey(agg.sessionId, playerId)) continue;
+      if (typeof agg.endingSkillLevel === "number") {
+        sessionPeaks.set(
+          agg.sessionId,
+          Math.max(sessionPeaks.get(agg.sessionId) ?? 0, agg.endingSkillLevel),
+        );
+      }
+    }
+    const past = pastSlByPlayer.get(playerId);
+    if (past) {
+      for (const [sid, sl] of past) {
+        sessionPeaks.set(sid, Math.max(sessionPeaks.get(sid) ?? 0, sl));
+      }
+    }
+    if (currentSessionId !== null) {
+      const liveSL = memberNumberMeta.get(playerId)?.currentSL;
+      if (typeof liveSL === "number") {
+        sessionPeaks.set(
+          currentSessionId,
+          Math.max(sessionPeaks.get(currentSessionId) ?? 0, liveSL),
+        );
+      }
+    }
+    if (sessionPeaks.size === 0) continue;
+
+    const sortedSessionIds = [...sessionPeaks.keys()].sort((a, b) => a - b);
+    // First observation seeds the baseline — joining the league at SL X is
+    // not a level-up. Subsequent sessions only earn a level-up when the
+    // session's peak SL exceeds anything the player has held before.
+    let careerPeak: number | undefined;
+    for (const sid of sortedSessionIds) {
+      const peak = sessionPeaks.get(sid)!;
+      let trueLU = 0;
+      if (careerPeak === undefined) {
+        careerPeak = peak;
+      } else if (peak > careerPeak) {
+        trueLU = peak - careerPeak;
+        careerPeak = peak;
+      }
+      const agg = aggregations.get(aggKey(sid, playerId));
+      if (!agg) continue;
+      // Reflect APA's post-match re-rate on the leaderboard SL display.
+      if (sid === currentSessionId) {
+        const liveSL = memberNumberMeta.get(playerId)?.currentSL;
+        if (typeof liveSL === "number" && liveSL > (agg.endingSkillLevel ?? 0)) {
+          agg.endingSkillLevel = liveSL;
+          agg.skillLevel = liveSL;
+        }
+      }
+      if (agg.levelUps === trueLU) continue;
+      const delta = trueLU - agg.levelUps;
+      agg.levelUps = trueLU;
+      agg.points += delta;
       const car = careers.get(playerId);
       if (car) {
-        car.levelUps += bump;
-        car.points += bump;
-        car.skillLevel = currentSL;
+        car.levelUps += delta;
+        car.points += delta;
+        if (sid === currentSessionId) {
+          const liveSL = memberNumberMeta.get(playerId)?.currentSL;
+          if (typeof liveSL === "number") car.skillLevel = liveSL;
+        }
       }
-      postMatchLevelUpStamps += 1;
+      correctedSessions += 1;
+      netLevelUpDelta += delta;
     }
   }
-  if (postMatchLevelUpStamps > 0) {
+  if (correctedSessions > 0) {
     console.log(
-      `→ Post-match level-up bumps: credited ${postMatchLevelUpStamps} player(s) for SL increases announced after their last match`,
+      `→ Career-wide level-up rule applied: corrected ${correctedSessions} session(s), ` +
+        `net Δ=${netLevelUpDelta > 0 ? "+" : ""}${netLevelUpDelta} level-up(s) ` +
+        `(only the first time at each SL counts toward the Level Up patch)`,
     );
   }
 
