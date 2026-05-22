@@ -70,6 +70,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
           <ShareLeaderboardButton
             rows={rows}
             scopeLabel={headerLabel}
+            sessionParam={session}
             previousRanks={previousRanks}
           />
         </div>
