@@ -31,7 +31,12 @@ const MAX_ROWS = 12;
 const PATCH_PX = 128;
 const ROW_HEADER_H = 124; // rank + avatar + name block
 const ROW_PATCH_RH = 158; // height contributed by a single line of patches
-const PATCHES_PER_PATCH_ROW = 4;
+// Patches per visual row. At 128px patch + the ×count chip + padding +
+// inter-chip gap, three chips fit reliably even when the counts are big
+// (×27, ×15, etc.). Going higher risks the 4th chip wrapping unexpectedly
+// inside Satori, which would push it into the next player's row.
+const PATCHES_PER_PATCH_ROW = 3;
+const PATCH_CHIP_MIN_W = 232; // gives chips a stable width so flex-wrap is predictable
 
 async function readPublicAsDataUrl(
   relPath: string,
@@ -429,6 +434,11 @@ export async function GET(req: Request) {
                     flexDirection: "column",
                     padding: "20px 56px",
                     height: thisRowH,
+                    // Clip anything that exceeds the computed row height so a
+                    // mis-wrapped patch can never spill into the next player's
+                    // row. The height math above is conservative, so this is
+                    // a defense-in-depth guard rather than a regular truncation.
+                    overflow: "hidden",
                     borderBottom:
                       i < rows.length - 1
                         ? "1px solid rgba(255,255,255,0.07)"
@@ -668,6 +678,10 @@ export async function GET(req: Request) {
                               background: "rgba(255,255,255,0.06)",
                               border: `1px solid ${tint}66`,
                               height: PATCH_PX + 12,
+                              // Stable width keeps the flex-wrap deterministic
+                              // regardless of how big the ×count text is.
+                              width: PATCH_CHIP_MIN_W,
+                              flexShrink: 0,
                             }}
                           >
                             <img
