@@ -250,6 +250,10 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     const video = videoRef.current;
     const canvas = processingCanvasRef.current;
     if (!video || !canvas || vidBox.width === 0) return;
+    // Reset any in-progress manual taps and pending candidate so the
+    // retry produces a clean slate.
+    setCorners([]);
+    setCandidate(null);
     setAutoDetecting(true);
     setTimeout(() => {
       const frame = captureFrame(video, canvas);
@@ -431,14 +435,37 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }
   }
 
-  // Spin up / tear down the live tracker as the mode changes. The tracker
-  // polls every ~80ms looking for shot-start, shot-end, then verdict.
+  // Tracker lifecycle. The previous version of this effect tore down the
+  // tracker every time `trackingMode.kind` changed — including when the
+  // tracker itself drove the kind from "armed" → "in-shot" — which
+  // killed the polling mid-shot and trapped the UI in "Shot in progress".
+  //
+  // The fix: only ACT on transitions into "armed" (start a fresh tracker)
+  // or out of any tracking state (stop). For armed → in-shot → settling
+  // → done we leave the existing tracker alone; it manages its own
+  // internal state and self-stops when it emits "done" (we clear the
+  // ref in handleTrackerState).
   useEffect(() => {
-    if (trackingMode.kind !== "armed") {
-      trackerRef.current?.stop();
-      trackerRef.current = null;
+    const isActive =
+      trackingMode.kind === "armed" ||
+      trackingMode.kind === "in-shot" ||
+      trackingMode.kind === "settling" ||
+      trackingMode.kind === "result";
+
+    // Leaving all tracking — stop and clear.
+    if (!isActive) {
+      if (trackerRef.current) {
+        trackerRef.current.stop();
+        trackerRef.current = null;
+      }
       return;
     }
+
+    // In an active state but already have a tracker — leave it running.
+    if (trackingMode.kind !== "armed") return;
+    if (trackerRef.current) return;
+
+    // Entering armed with no tracker — create one and arm.
     const video = videoRef.current;
     const canvas = processingCanvasRef.current;
     if (!video || !canvas || !homography) return;
@@ -461,12 +488,17 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     trackerRef.current = tracker;
     tracker.arm();
     if (audioEnabled) playReady();
-    return () => {
-      tracker.stop();
-      if (trackerRef.current === tracker) trackerRef.current = null;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackingMode.kind, homography, audioEnabled]);
+
+  // Unmount cleanup — make sure the tracker stops even if the component
+  // is dropped mid-shot.
+  useEffect(() => {
+    return () => {
+      trackerRef.current?.stop();
+      trackerRef.current = null;
+    };
+  }, []);
 
   // Auto-arm: 5 seconds after a confident verdict lands, re-arm the
   // tracker for the next shot. Player can cancel by interacting (any
@@ -524,6 +556,9 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           : m,
       );
     } else if (state.kind === "done") {
+      // Tracker has self-stopped via emit(). Drop our ref so the next
+      // re-arm cleanly creates a fresh one.
+      trackerRef.current = null;
       const { verdict, finalOBPos, confidence, frames } = state.result;
       // Low-confidence verdicts get demoted to "uncertain" so we don't
       // auto-log on a wobbly read — the user gets the explicit confirm
@@ -678,6 +713,18 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       cb: trackingMode.cb,
       ob: trackingMode.ob,
     });
+  }
+
+  /**
+   * Force the tracker to finalize early — used by the "Mark as
+   * complete" button visible during in-shot / settling so the player
+   * can bail out of a stuck state without waiting for the timeout.
+   */
+  function forceCompleteShot(verdict: "make" | "miss") {
+    trackerRef.current?.forceVerdict(verdict);
+    // The tracker's onState will fire with kind: "done" which goes
+    // through handleTrackerState — same code path as a natural verdict
+    // so logging + sound + auto-arm all kick in.
   }
 
   function overrideResult(verdict: "make" | "miss") {
@@ -1126,6 +1173,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             onOpenReplay={() => setReplayOpen(true)}
             onConfirmDetection={confirmDetection}
             onRejectDetection={rejectDetectionForManual}
+            onForceComplete={forceCompleteShot}
           />
         )}
 
@@ -1353,19 +1401,19 @@ function CalibrationPrompt({
     );
   }
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
-      <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-white/15 bg-black/70 px-5 py-4 backdrop-blur-md">
-        <div className="flex items-center justify-between gap-3">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-3 sm:p-4">
+      <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-white/15 bg-black/75 px-4 py-3.5 backdrop-blur-md sm:px-5 sm:py-4">
+        <div className="flex items-center justify-between gap-2">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
             Calibrate · step {step + 1} of {total}
           </p>
           <button
             type="button"
             onClick={onSwitchOrientation}
-            className="text-[10px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
+            className="shrink-0 text-[9px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
             title="Flip which end of the table you're standing at"
           >
-            Standing at {orientation === "head" ? "head" : "foot"} rail — flip
+            {orientation === "head" ? "Head rail" : "Foot rail"} ⇄ flip
           </button>
         </div>
         <p className="text-sm leading-snug text-white">
@@ -1373,7 +1421,7 @@ function CalibrationPrompt({
           <span className="font-semibold text-[var(--color-brass-bright)]">
             {currentLabel}
           </span>{" "}
-          pocket on the screen.
+          pocket.
         </p>
         <div className="flex items-center gap-1">
           {Array.from({ length: total }).map((_, i) => (
@@ -1390,16 +1438,16 @@ function CalibrationPrompt({
             />
           ))}
         </div>
-        {step === 0 && (
-          <button
-            type="button"
-            onClick={onRetryAutoDetect}
-            className="inline-flex h-8 w-fit items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 text-[10px] font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10"
-          >
-            <Crosshair size={11} />
-            Try auto-detect again
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={onRetryAutoDetect}
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[var(--color-brass)]/60 bg-[var(--color-brass)]/15 text-sm font-semibold text-[var(--color-brass-bright)] transition-colors active:scale-[0.99] hover:bg-[var(--color-brass)]/25"
+        >
+          <Crosshair size={14} />
+          {step === 0
+            ? "Find pockets automatically"
+            : "Steady the phone — try auto-detect again"}
+        </button>
       </div>
     </div>
   );
@@ -1435,6 +1483,7 @@ function CalibratedHud({
   onOpenReplay,
   onConfirmDetection,
   onRejectDetection,
+  onForceComplete,
 }: {
   shot: KinisterShot;
   onRecalibrate: () => void;
@@ -1471,6 +1520,7 @@ function CalibratedHud({
   onOpenReplay: () => void;
   onConfirmDetection: () => void;
   onRejectDetection: () => void;
+  onForceComplete: (verdict: "make" | "miss") => void;
 }) {
   const busy =
     analysisState.kind === "recording" || analysisState.kind === "analyzing";
@@ -1507,7 +1557,11 @@ function CalibratedHud({
       {tracking &&
         trackingMode.kind !== "result" &&
         trackingMode.kind !== "confirm-detected" && (
-          <TrackingStatusBanner mode={trackingMode} onExit={onExitTracking} />
+          <TrackingStatusBanner
+            mode={trackingMode}
+            onExit={onExitTracking}
+            onForceComplete={onForceComplete}
+          />
         )}
 
       {/* Analysis result card */}
@@ -1635,6 +1689,7 @@ function CalibratedHud({
 function TrackingStatusBanner({
   mode,
   onExit,
+  onForceComplete,
 }: {
   mode:
     | { kind: "detecting" }
@@ -1644,7 +1699,10 @@ function TrackingStatusBanner({
     | { kind: "in-shot"; cb: BallLock; ob: BallLock }
     | { kind: "settling"; cb: BallLock; ob: BallLock };
   onExit: () => void;
+  onForceComplete: (verdict: "make" | "miss") => void;
 }) {
+  const canForceComplete =
+    mode.kind === "in-shot" || mode.kind === "settling";
   const status =
     mode.kind === "detecting"
       ? {
@@ -1688,31 +1746,51 @@ function TrackingStatusBanner({
   return (
     <div
       className={cn(
-        "pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl border px-4 py-3 backdrop-blur-md",
+        "pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border px-4 py-3 backdrop-blur-md",
         accent,
       )}
     >
-      <Radar
-        size={16}
-        className={cn(
-          "shrink-0",
-          status.tone === "felt"
-            ? "text-[var(--color-felt-bright)]"
-            : "text-[var(--color-brass-bright)]",
-          (mode.kind === "armed" || mode.kind === "in-shot") && "animate-pulse",
-        )}
-      />
-      <div className="min-w-0 flex-1 text-left">
-        <p className="text-sm font-semibold text-white">{status.title}</p>
-        <p className="text-[11px] leading-snug text-white/70">{status.detail}</p>
+      <div className="flex items-center gap-3">
+        <Radar
+          size={16}
+          className={cn(
+            "shrink-0",
+            status.tone === "felt"
+              ? "text-[var(--color-felt-bright)]"
+              : "text-[var(--color-brass-bright)]",
+            (mode.kind === "armed" || mode.kind === "in-shot") && "animate-pulse",
+          )}
+        />
+        <div className="min-w-0 flex-1 text-left">
+          <p className="text-sm font-semibold text-white">{status.title}</p>
+          <p className="text-[11px] leading-snug text-white/70">{status.detail}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onExit}
+          className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
+        >
+          Exit
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onExit}
-        className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
-      >
-        Exit tracking
-      </button>
+      {canForceComplete && (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => onForceComplete("make")}
+            className="inline-flex h-9 flex-1 items-center justify-center gap-1 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/60 text-xs font-semibold uppercase tracking-wider text-[var(--color-felt-bright)] transition-colors hover:bg-[var(--color-felt-deep)]/80"
+          >
+            ✓ Made
+          </button>
+          <button
+            type="button"
+            onClick={() => onForceComplete("miss")}
+            className="inline-flex h-9 flex-1 items-center justify-center gap-1 rounded-full border border-[var(--color-pop)]/55 bg-[var(--color-pop)]/15 text-xs font-semibold uppercase tracking-wider text-[var(--color-pop-bright)] transition-colors hover:bg-[var(--color-pop)]/25"
+          >
+            ✗ Missed
+          </button>
+        </div>
+      )}
     </div>
   );
 }

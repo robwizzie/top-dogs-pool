@@ -76,11 +76,22 @@ export type TrackerConfig = {
 
 /** Motion in the OB region above this magnitude = "shot in progress". */
 const SHOT_MOTION_THRESHOLD = 0.08;
-/** Below this magnitude for `SETTLE_MS` = "shot is over." */
-const SETTLE_MOTION_THRESHOLD = 0.02;
-const SETTLE_MS = 600;
-/** Max time we'll watch a single shot before giving up. */
-const MAX_SHOT_MS = 6000;
+/**
+ * Below this magnitude = "no real motion." Higher than the previous 0.02
+ * because hand-held cameras have constant low-level shake that used to
+ * keep us stuck in in-shot forever.
+ */
+const SETTLE_MOTION_THRESHOLD = 0.045;
+/** How long motion must stay quiet before we call the shot complete. */
+const SETTLE_MS = 700;
+/**
+ * Max time spent in any single in-shot or settling phase before we
+ * force-finalize. Was 6s; brought down because real-world testing
+ * showed people staring at "Shot in progress" expecting feedback.
+ */
+const MAX_PHASE_MS = 3500;
+/** Hard ceiling on the entire armed → done window. Belt + suspenders. */
+const MAX_TOTAL_MS = 15_000;
 /** Frame-poll interval. 12-15 fps is plenty for the before/after model. */
 const POLL_MS = 80;
 
@@ -201,15 +212,28 @@ export class ShotTracker {
       return;
     }
 
+    // Hard cap on the entire armed → done window. Prevents the
+    // pathological case of small constant camera shake keeping us
+    // bouncing between in-shot and settling forever.
+    if (
+      (this.state.kind === "in-shot" ||
+        this.state.kind === "settling") &&
+      now - this.armedAt > MAX_TOTAL_MS
+    ) {
+      this.finalize(frame, "uncertain");
+      return;
+    }
+
     if (this.state.kind === "in-shot") {
       // Buffer frames during motion so we can replay later.
       this.captureBufferFrame(frame, now);
       if (motion < SETTLE_MOTION_THRESHOLD) {
         this.state = { kind: "settling", lastMotionAt: now };
         this.cfg.onState(this.state);
-      } else if (now - this.state.startedAt > MAX_SHOT_MS) {
-        // Shot has been "in progress" too long — call uncertain.
-        this.finalize(frame, "uncertain");
+      } else if (now - this.state.startedAt > MAX_PHASE_MS) {
+        // Single phase ran too long — call settling and let it decide.
+        this.state = { kind: "settling", lastMotionAt: now };
+        this.cfg.onState(this.state);
       }
       return;
     }
@@ -218,7 +242,9 @@ export class ShotTracker {
       this.captureBufferFrame(frame, now);
       if (motion >= SHOT_MOTION_THRESHOLD) {
         // Re-ignited — more balls bouncing around, keep watching.
-        this.state = { kind: "in-shot", startedAt: this.state.lastMotionAt };
+        // Cap how many times we can re-ignite by checking total time
+        // above; we'll force-finalize from MAX_TOTAL_MS.
+        this.state = { kind: "in-shot", startedAt: now };
         this.cfg.onState(this.state);
         return;
       }

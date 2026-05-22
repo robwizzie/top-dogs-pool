@@ -171,109 +171,82 @@ export function detectBalls(
 /**
  * Auto-detect the four corner pockets of the table.
  *
- * Pockets are dark and roughly circular; a regulation table has 6
- * (four corners + two sides). We find the darkest blob-shaped regions
- * in the frame, take their convex hull, and the four vertices of the
- * hull are the corner pockets — by definition. Returned in the
- * calibration order the rest of the app expects: near-right, near-left,
- * far-left, far-right (clockwise from the player's perspective,
- * assuming they're at the head end of the table = bottom of the frame).
+ * Strategy: find the felt (the largest single-color region) and take its
+ * bounding quadrilateral. The felt is the dominant continuous color
+ * region in any pool-table photo — much more robust than looking for
+ * dark blobs, which gets confused by shadows, clothing, the scoreboard,
+ * or anything else dark in the room.
  *
- * Returns null if we couldn't find a confident four-corner read; the
- * caller should fall back to manual tap-each-corner calibration in
- * that case.
+ * Steps:
+ *   1. Sample the assumed felt color from the median of 9 points
+ *      spread across the frame (handles uneven lighting + center
+ *      markings).
+ *   2. Mask every pixel within colorDistance of that felt color.
+ *   3. Union-find to identify connected felt regions.
+ *   4. Keep only the largest — if it's at least 20% of the frame, we
+ *      almost certainly have the table.
+ *   5. Extract the boundary pixels of that region.
+ *   6. Convex hull of the boundary, then iteratively simplify down to
+ *      the 4 corners by removing the most-colinear vertex each pass.
+ *   7. Order: near-right, near-left, far-left, far-right.
+ *
+ * Returns null if no confident table-shaped felt region is found.
  */
 export function detectCornerPockets(image: ImageData): Point[] | null {
-  const { width, height, data } = image;
+  const { width, height } = image;
 
-  // (1) Mask dark pixels — pockets are near-black at ~brightness < 60.
+  // (1) Establish felt reference from the whole frame.
+  const feltColor = medianFeltSample(image);
+
+  // (2) Mask felt pixels — we use a slightly looser distance than the
+  // ball detector since the table is huge and we want to catch the
+  // whole thing including darker/lighter cloth sections.
   const total = width * height;
   const mask = new Uint8Array(total);
-  for (let i = 0; i < total; i++) {
-    const pi = i * 4;
-    const brightness = (data[pi] + data[pi + 1] + data[pi + 2]) / 3;
-    if (brightness < 65) mask[i] = 1;
-  }
-
-  // (2) Connected components.
-  const uf = new UnionFind(total);
+  const feltDistance = 90;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const i = y * width + x;
-      if (!mask[i]) continue;
-      if (x > 0 && mask[i - 1]) uf.union(i, i - 1);
-      if (y > 0 && mask[i - width]) uf.union(i, i - width);
+      const i = (y * width + x) * 4;
+      const dr = image.data[i] - feltColor[0];
+      const dg = image.data[i + 1] - feltColor[1];
+      const db = image.data[i + 2] - feltColor[2];
+      const dist = Math.sqrt(dr * dr + dg * dg + db * db);
+      if (dist < feltDistance) mask[y * width + x] = 1;
     }
   }
 
-  // (3) Aggregate blob stats.
-  type Blob = {
-    sumX: number;
-    sumY: number;
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-    count: number;
-  };
-  const blobs = new Map<number, Blob>();
+  // (3) Largest connected felt region.
+  const largest = largestConnectedComponent(mask, width, height);
+  if (!largest) return null;
+  if (largest.size < 0.18 * total) return null; // table not dominant in frame
+
+  // (5) Boundary pixels of the largest felt region.
+  const boundary: Point[] = [];
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = y * width + x;
-      if (!mask[i]) continue;
-      const root = uf.find(i);
-      let b = blobs.get(root);
-      if (!b) {
-        b = {
-          sumX: 0,
-          sumY: 0,
-          minX: x,
-          minY: y,
-          maxX: x,
-          maxY: y,
-          count: 0,
-        };
-        blobs.set(root, b);
+      if (!largest.mask[i]) continue;
+      // Boundary if any 4-neighbor is NOT in the region.
+      if (
+        x === 0 ||
+        y === 0 ||
+        x === width - 1 ||
+        y === height - 1 ||
+        !largest.mask[i - 1] ||
+        !largest.mask[i + 1] ||
+        !largest.mask[i - width] ||
+        !largest.mask[i + width]
+      ) {
+        boundary.push({ x, y });
       }
-      b.sumX += x;
-      b.sumY += y;
-      if (x < b.minX) b.minX = x;
-      if (y < b.minY) b.minY = y;
-      if (x > b.maxX) b.maxX = x;
-      if (y > b.maxY) b.maxY = y;
-      b.count += 1;
     }
   }
+  if (boundary.length < 20) return null;
 
-  // (4) Filter to pocket candidates. Pockets in a 640px-wide frame are
-  // roughly 200-2500 pixels in area, with bounding boxes that are
-  // roughly square.
-  const candidates: { center: Point; area: number }[] = [];
-  for (const b of blobs.values()) {
-    if (b.count < 180 || b.count > 4000) continue;
-    const w = b.maxX - b.minX + 1;
-    const h = b.maxY - b.minY + 1;
-    if (w < 8 || h < 8) continue;
-    const aspect = w > h ? w / h : h / w;
-    if (aspect > 2.2) continue;
-    candidates.push({
-      center: { x: b.sumX / b.count, y: b.sumY / b.count },
-      area: b.count,
-    });
-  }
-  if (candidates.length < 4) return null;
-
-  // (5) Keep the most blob-like candidates by descending area, then
-  // compute the convex hull of their centers. The hull's vertices are
-  // the outermost dark blobs, which on a pool table are the four
-  // corner pockets.
-  candidates.sort((a, b) => b.area - a.area);
-  const considered = candidates.slice(0, 12).map((c) => c.center);
-  const hull = convexHull(considered);
-
-  // (6) If the hull has more than 4 vertices, prune by removing the
-  // vertex with the largest interior angle (closest to colinear) until
-  // 4 remain.
+  // (6) Convex hull → simplify to 4 vertices by removing
+  // most-colinear vertices iteratively.
+  const hull = convexHull(boundary);
+  if (hull.length < 4) return null;
   let corners = hull.slice();
   while (corners.length > 4) {
     let mostColinearIdx = 0;
@@ -285,10 +258,17 @@ export function detectCornerPockets(image: ImageData): Point[] | null {
       const a = Math.hypot(cur.x - prev.x, cur.y - prev.y);
       const b = Math.hypot(next.x - cur.x, next.y - cur.y);
       const c = Math.hypot(next.x - prev.x, next.y - prev.y);
-      // Angle at `cur` via law of cosines — bigger = closer to flat.
-      const angle = Math.acos(
-        Math.max(-1, Math.min(1, (a * a + b * b - c * c) / (2 * a * b))),
+      if (a < 1e-3 || b < 1e-3) {
+        // Degenerate — remove immediately.
+        mostColinearAngle = Infinity;
+        mostColinearIdx = i;
+        break;
+      }
+      const cos = Math.max(
+        -1,
+        Math.min(1, (a * a + b * b - c * c) / (2 * a * b)),
       );
+      const angle = Math.acos(cos);
       if (angle > mostColinearAngle) {
         mostColinearAngle = angle;
         mostColinearIdx = i;
@@ -298,16 +278,55 @@ export function detectCornerPockets(image: ImageData): Point[] | null {
   }
   if (corners.length !== 4) return null;
 
-  // (7) Sanity check — the four corners should bound a region that
-  // covers a reasonable fraction of the frame. Tiny quads are usually
-  // a false detection of background clutter.
+  // (7) Final sanity: quad must cover a reasonable fraction of the frame.
   const area = quadArea(corners as [Point, Point, Point, Point]);
   if (area < 0.1 * width * height) return null;
 
-  // (8) Order: near-right, near-left, far-left, far-right.
   return orderCornersForCalibration(
     corners as [Point, Point, Point, Point],
   );
+}
+
+/**
+ * Find the largest connected component in a binary mask. Returns the
+ * mask of just that component plus its pixel count, or null if empty.
+ */
+function largestConnectedComponent(
+  mask: Uint8Array,
+  width: number,
+  height: number,
+): { mask: Uint8Array; size: number } | null {
+  const total = width * height;
+  const uf = new UnionFind(total);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = y * width + x;
+      if (!mask[i]) continue;
+      if (x > 0 && mask[i - 1]) uf.union(i, i - 1);
+      if (y > 0 && mask[i - width]) uf.union(i, i - width);
+    }
+  }
+  const sizes = new Map<number, number>();
+  for (let i = 0; i < total; i++) {
+    if (!mask[i]) continue;
+    const r = uf.find(i);
+    sizes.set(r, (sizes.get(r) ?? 0) + 1);
+  }
+  if (sizes.size === 0) return null;
+  let bestRoot = -1;
+  let bestSize = 0;
+  for (const [r, s] of sizes) {
+    if (s > bestSize) {
+      bestSize = s;
+      bestRoot = r;
+    }
+  }
+  if (bestRoot === -1) return null;
+  const out = new Uint8Array(total);
+  for (let i = 0; i < total; i++) {
+    if (mask[i] && uf.find(i) === bestRoot) out[i] = 1;
+  }
+  return { mask: out, size: bestSize };
 }
 
 /**
