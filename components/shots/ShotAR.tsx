@@ -85,6 +85,11 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     balls: { cb: BallLock; ob: BallLock } | null;
   } | null>(null);
   const [autoDetecting, setAutoDetecting] = useState(false);
+  // Track whether we've already run the initial auto-detect this
+  // calibration cycle so rejecting the candidate doesn't immediately
+  // re-trigger a new attempt. Reset on recalibrate / by the explicit
+  // "Find pockets again" button.
+  const [autoDetectAttempted, setAutoDetectAttempted] = useState(false);
   const [homography, setHomography] = useState<Homography | null>(null);
   const [orientation, setOrientation] = useState<"head" | "foot">("head");
 
@@ -250,6 +255,11 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     const video = videoRef.current;
     const canvas = processingCanvasRef.current;
     if (!video || !canvas || vidBox.width === 0) return;
+    // Reset any in-progress manual taps and pending candidate so the
+    // retry produces a clean slate.
+    setCorners([]);
+    setCandidate(null);
+    setAutoDetectAttempted(true);
     setAutoDetecting(true);
     setTimeout(() => {
       const frame = captureFrame(video, canvas);
@@ -341,12 +351,15 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }, 250);
   }, [vidBox.width, vidBox.height, shot.objectBall, orientation]);
 
-  // Run auto-detect once on first camera frame. If it fails, the player
-  // sees the normal "tap each pocket" prompt and proceeds manually.
+  // Run auto-detect once on first camera frame. If it fails OR the
+  // player rejects the candidate, fall back to the manual-tap prompt
+  // without re-attempting — the player can always click the
+  // "Find pockets automatically" button when they're ready.
   useEffect(() => {
     if (!stream || homography || corners.length > 0) return;
     if (vidBox.width === 0) return;
     if (candidate) return;
+    if (autoDetectAttempted) return;
     // 800ms delay so autofocus / auto-exposure has time to settle —
     // running detect on a still-stabilizing frame yields garbage.
     const t = setTimeout(() => tryAutoDetectCorners(), 800);
@@ -357,6 +370,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     homography,
     corners.length,
     candidate,
+    autoDetectAttempted,
     tryAutoDetectCorners,
   ]);
 
@@ -431,14 +445,37 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }
   }
 
-  // Spin up / tear down the live tracker as the mode changes. The tracker
-  // polls every ~80ms looking for shot-start, shot-end, then verdict.
+  // Tracker lifecycle. The previous version of this effect tore down the
+  // tracker every time `trackingMode.kind` changed — including when the
+  // tracker itself drove the kind from "armed" → "in-shot" — which
+  // killed the polling mid-shot and trapped the UI in "Shot in progress".
+  //
+  // The fix: only ACT on transitions into "armed" (start a fresh tracker)
+  // or out of any tracking state (stop). For armed → in-shot → settling
+  // → done we leave the existing tracker alone; it manages its own
+  // internal state and self-stops when it emits "done" (we clear the
+  // ref in handleTrackerState).
   useEffect(() => {
-    if (trackingMode.kind !== "armed") {
-      trackerRef.current?.stop();
-      trackerRef.current = null;
+    const isActive =
+      trackingMode.kind === "armed" ||
+      trackingMode.kind === "in-shot" ||
+      trackingMode.kind === "settling" ||
+      trackingMode.kind === "result";
+
+    // Leaving all tracking — stop and clear.
+    if (!isActive) {
+      if (trackerRef.current) {
+        trackerRef.current.stop();
+        trackerRef.current = null;
+      }
       return;
     }
+
+    // In an active state but already have a tracker — leave it running.
+    if (trackingMode.kind !== "armed") return;
+    if (trackerRef.current) return;
+
+    // Entering armed with no tracker — create one and arm.
     const video = videoRef.current;
     const canvas = processingCanvasRef.current;
     if (!video || !canvas || !homography) return;
@@ -461,12 +498,17 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     trackerRef.current = tracker;
     tracker.arm();
     if (audioEnabled) playReady();
-    return () => {
-      tracker.stop();
-      if (trackerRef.current === tracker) trackerRef.current = null;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackingMode.kind, homography, audioEnabled]);
+
+  // Unmount cleanup — make sure the tracker stops even if the component
+  // is dropped mid-shot.
+  useEffect(() => {
+    return () => {
+      trackerRef.current?.stop();
+      trackerRef.current = null;
+    };
+  }, []);
 
   // Auto-arm: 5 seconds after a confident verdict lands, re-arm the
   // tracker for the next shot. Player can cancel by interacting (any
@@ -524,6 +566,9 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           : m,
       );
     } else if (state.kind === "done") {
+      // Tracker has self-stopped via emit(). Drop our ref so the next
+      // re-arm cleanly creates a fresh one.
+      trackerRef.current = null;
       const { verdict, finalOBPos, confidence, frames } = state.result;
       // Low-confidence verdicts get demoted to "uncertain" so we don't
       // auto-log on a wobbly read — the user gets the explicit confirm
@@ -680,6 +725,18 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     });
   }
 
+  /**
+   * Force the tracker to finalize early — used by the "Mark as
+   * complete" button visible during in-shot / settling so the player
+   * can bail out of a stuck state without waiting for the timeout.
+   */
+  function forceCompleteShot(verdict: "make" | "miss") {
+    trackerRef.current?.forceVerdict(verdict);
+    // The tracker's onState will fire with kind: "done" which goes
+    // through handleTrackerState — same code path as a natural verdict
+    // so logging + sound + auto-arm all kick in.
+  }
+
   function overrideResult(verdict: "make" | "miss") {
     if (trackingMode.kind !== "result") return;
     const was = lastLoggedVerdictRef.current;
@@ -720,6 +777,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     setHomography(null);
     setCandidate(null);
     setAutoDetecting(false);
+    setAutoDetectAttempted(false);
     setAnalysisState({ kind: "idle" });
   }
 
@@ -868,6 +926,17 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           )}
           xmlns="http://www.w3.org/2000/svg"
         >
+          {/* Big pulsing on-screen target showing where the player
+              should tap NEXT. Only shows during manual calibration —
+              not while the auto-detect candidate is on screen, not
+              after calibration is done. */}
+          {!homography &&
+            !candidate &&
+            !autoDetecting &&
+            corners.length < CORNER_ORDER.length && (
+              <ScreenCornerTarget step={corners.length} vidBox={vidBox} />
+            )}
+
           {/* Tapped corner markers */}
           {corners.map((p, i) => (
             <g key={i}>
@@ -948,8 +1017,12 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             </g>
           )}
 
-          {/* AR overlay once calibrated */}
-          {overlay && (
+          {/* AR overlay once calibrated. We show the full educational
+              overlay (carom paths, OB path, catalog ball markers) only
+              when the player is NOT in active tracking mode — during
+              tracking those markers conflict with the locked-onto
+              positions of the actual balls and clutter the view. */}
+          {overlay && trackingMode.kind === "off" && (
             <>
               {/* Approach line from CB → ghost ball */}
               <line
@@ -1019,19 +1092,22 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
                 stroke="rgba(224,168,46,0.95)"
                 strokeWidth={2}
               />
-              {/* Target pocket pulse */}
-              {overlay.targetPocket && (
-                <circle
-                  cx={overlay.targetPocket.x}
-                  cy={overlay.targetPocket.y}
-                  r={overlay.ballRadius * 1.8}
-                  fill="none"
-                  stroke="rgba(232,82,72,0.85)"
-                  strokeWidth={2}
-                  strokeDasharray="6 4"
-                />
-              )}
             </>
+          )}
+
+          {/* Target pocket pulse is the one overlay we keep in both
+              static-overlay and tracking modes — players always want
+              to know which pocket they're aiming at. */}
+          {overlay && overlay.targetPocket && (
+            <circle
+              cx={overlay.targetPocket.x}
+              cy={overlay.targetPocket.y}
+              r={overlay.ballRadius * 1.8}
+              fill="none"
+              stroke="rgba(232,82,72,0.85)"
+              strokeWidth={2}
+              strokeDasharray="6 4"
+            />
           )}
         </svg>
 
@@ -1053,8 +1129,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         {/* Auto-detect confirmation banner — either corners + balls (one
             tap to fully armed) or just corners (one tap to overlay). */}
         {candidate && !homography && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
-            <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/60 bg-black/80 px-5 py-4 backdrop-blur-md">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex max-h-[75dvh] justify-center overflow-y-auto overscroll-contain p-3 sm:p-4">
+            <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/60 bg-black/80 px-4 py-3.5 backdrop-blur-md sm:px-5 sm:py-4">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
                 {candidate.balls
                   ? "Found everything — start tracking?"
@@ -1126,6 +1202,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             onOpenReplay={() => setReplayOpen(true)}
             onConfirmDetection={confirmDetection}
             onRejectDetection={rejectDetectionForManual}
+            onForceComplete={forceCompleteShot}
           />
         )}
 
@@ -1353,28 +1430,32 @@ function CalibrationPrompt({
     );
   }
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
-      <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-white/15 bg-black/70 px-5 py-4 backdrop-blur-md">
-        <div className="flex items-center justify-between gap-3">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-3 sm:p-4">
+      <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-white/15 bg-black/75 px-4 py-3.5 backdrop-blur-md sm:px-5 sm:py-4">
+        <div className="flex items-center justify-between gap-2">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
-            Calibrate · step {step + 1} of {total}
+            Calibrate · pocket {step + 1} of {total}
           </p>
           <button
             type="button"
             onClick={onSwitchOrientation}
-            className="text-[10px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
+            className="shrink-0 text-[9px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
             title="Flip which end of the table you're standing at"
           >
-            Standing at {orientation === "head" ? "head" : "foot"} rail — flip
+            {orientation === "head" ? "Head rail" : "Foot rail"} ⇄ flip
           </button>
         </div>
-        <p className="text-sm leading-snug text-white">
-          Tap the{" "}
-          <span className="font-semibold text-[var(--color-brass-bright)]">
-            {currentLabel}
-          </span>{" "}
-          pocket on the screen.
-        </p>
+        <div className="flex items-center gap-3">
+          {/* Mini schematic — current corner highlighted in brass. */}
+          <CornerSchematic step={step} total={total} />
+          <p className="min-w-0 flex-1 text-sm leading-snug text-white">
+            Tap the pocket{" "}
+            <span className="font-semibold text-[var(--color-brass-bright)]">
+              highlighted on your screen
+            </span>{" "}
+            — see the brass target.
+          </p>
+        </div>
         <div className="flex items-center gap-1">
           {Array.from({ length: total }).map((_, i) => (
             <span
@@ -1390,18 +1471,145 @@ function CalibrationPrompt({
             />
           ))}
         </div>
-        {step === 0 && (
-          <button
-            type="button"
-            onClick={onRetryAutoDetect}
-            className="inline-flex h-8 w-fit items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 text-[10px] font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10"
-          >
-            <Crosshair size={11} />
-            Try auto-detect again
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={onRetryAutoDetect}
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[var(--color-brass)]/60 bg-[var(--color-brass)]/15 text-sm font-semibold text-[var(--color-brass-bright)] transition-colors active:scale-[0.99] hover:bg-[var(--color-brass)]/25"
+        >
+          <Crosshair size={14} />
+          {step === 0
+            ? "Find pockets automatically"
+            : "Steady the phone — try auto-detect again"}
+        </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Tiny pool-table icon with the four corner pockets drawn. The pocket
+ * the player is being asked to tap RIGHT NOW glows brass; the rest sit
+ * dim. The corners are positioned to match the on-screen target overlay
+ * (BR → BL → TL → TR) so the schematic, the screen target, and the
+ * real-world tap all match up.
+ */
+function CornerSchematic({ step, total }: { step: number; total: number }) {
+  // Screen-space order: BR, BL, TL, TR (same as CORNER_ORDER intent).
+  const positions: { x: number; y: number }[] = [
+    { x: 66, y: 36 }, // BR
+    { x: 14, y: 36 }, // BL
+    { x: 14, y: 14 }, // TL
+    { x: 66, y: 14 }, // TR
+  ];
+  return (
+    <svg
+      viewBox="0 0 80 50"
+      className="h-11 w-16 shrink-0"
+      aria-hidden
+    >
+      <rect
+        x={6}
+        y={6}
+        width={68}
+        height={38}
+        rx={3}
+        fill="rgba(31,110,61,0.55)"
+        stroke="rgba(201,162,74,0.45)"
+        strokeWidth={1.4}
+      />
+      {positions.slice(0, total).map((p, i) => {
+        const isActive = i === step;
+        const isDone = i < step;
+        return (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={isActive ? 6 : 4}
+            fill={
+              isActive
+                ? "#c9a24a"
+                : isDone
+                  ? "rgba(201,162,74,0.4)"
+                  : "rgba(0,0,0,0.65)"
+            }
+            stroke={isActive ? "#fff8d8" : "rgba(255,255,255,0.4)"}
+            strokeWidth={isActive ? 1.6 : 1}
+            className={isActive ? "animate-pulse" : undefined}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+/**
+ * The big on-screen pulsing target placed at roughly the screen corner
+ * where the next pocket should be tapped. Doesn't constrain the tap
+ * location (the player can tap anywhere) — it's purely a visual hint.
+ */
+function ScreenCornerTarget({
+  step,
+  vidBox,
+}: {
+  step: number;
+  vidBox: { width: number; height: number };
+}) {
+  // Screen-corner positions, same order as the manual-calibration
+  // sequence and the mini schematic.
+  const corners = [
+    { x: vidBox.width * 0.88, y: vidBox.height * 0.82 }, // BR
+    { x: vidBox.width * 0.12, y: vidBox.height * 0.82 }, // BL
+    { x: vidBox.width * 0.12, y: vidBox.height * 0.18 }, // TL
+    { x: vidBox.width * 0.88, y: vidBox.height * 0.18 }, // TR
+  ];
+  const p = corners[step];
+  if (!p) return null;
+  return (
+    <g className="animate-pulse" pointerEvents="none">
+      <circle
+        cx={p.x}
+        cy={p.y}
+        r={36}
+        fill="rgba(201,162,74,0.18)"
+        stroke="rgba(201,162,74,0.95)"
+        strokeWidth={3}
+        strokeDasharray="6 4"
+      />
+      <circle cx={p.x} cy={p.y} r={6} fill="#c9a24a" />
+      <line
+        x1={p.x - 50}
+        y1={p.y}
+        x2={p.x - 18}
+        y2={p.y}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+      <line
+        x1={p.x + 18}
+        y1={p.y}
+        x2={p.x + 50}
+        y2={p.y}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+      <line
+        x1={p.x}
+        y1={p.y - 50}
+        x2={p.x}
+        y2={p.y - 18}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+      <line
+        x1={p.x}
+        y1={p.y + 18}
+        x2={p.x}
+        y2={p.y + 50}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+    </g>
   );
 }
 
@@ -1435,6 +1643,7 @@ function CalibratedHud({
   onOpenReplay,
   onConfirmDetection,
   onRejectDetection,
+  onForceComplete,
 }: {
   shot: KinisterShot;
   onRecalibrate: () => void;
@@ -1471,12 +1680,18 @@ function CalibratedHud({
   onOpenReplay: () => void;
   onConfirmDetection: () => void;
   onRejectDetection: () => void;
+  onForceComplete: (verdict: "make" | "miss") => void;
 }) {
   const busy =
     analysisState.kind === "recording" || analysisState.kind === "analyzing";
   const tracking = trackingMode.kind !== "off";
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 p-4">
+    <div
+      // Cap height to the bottom 70% of the viewport so on a small
+      // phone screen the HUD never grows past the visible area. If it
+      // somehow does, the inner content scrolls.
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex max-h-[75dvh] flex-col items-center gap-2 overflow-y-auto overscroll-contain p-3 sm:gap-3 sm:p-4"
+    >
       {/* Tracking result banner (highest priority — show on top) */}
       {trackingMode.kind === "result" && (
         <TrackingResultBanner
@@ -1507,7 +1722,11 @@ function CalibratedHud({
       {tracking &&
         trackingMode.kind !== "result" &&
         trackingMode.kind !== "confirm-detected" && (
-          <TrackingStatusBanner mode={trackingMode} onExit={onExitTracking} />
+          <TrackingStatusBanner
+            mode={trackingMode}
+            onExit={onExitTracking}
+            onForceComplete={onForceComplete}
+          />
         )}
 
       {/* Analysis result card */}
@@ -1635,6 +1854,7 @@ function CalibratedHud({
 function TrackingStatusBanner({
   mode,
   onExit,
+  onForceComplete,
 }: {
   mode:
     | { kind: "detecting" }
@@ -1644,7 +1864,10 @@ function TrackingStatusBanner({
     | { kind: "in-shot"; cb: BallLock; ob: BallLock }
     | { kind: "settling"; cb: BallLock; ob: BallLock };
   onExit: () => void;
+  onForceComplete: (verdict: "make" | "miss") => void;
 }) {
+  const canForceComplete =
+    mode.kind === "in-shot" || mode.kind === "settling";
   const status =
     mode.kind === "detecting"
       ? {
@@ -1688,31 +1911,51 @@ function TrackingStatusBanner({
   return (
     <div
       className={cn(
-        "pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl border px-4 py-3 backdrop-blur-md",
+        "pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border px-4 py-3 backdrop-blur-md",
         accent,
       )}
     >
-      <Radar
-        size={16}
-        className={cn(
-          "shrink-0",
-          status.tone === "felt"
-            ? "text-[var(--color-felt-bright)]"
-            : "text-[var(--color-brass-bright)]",
-          (mode.kind === "armed" || mode.kind === "in-shot") && "animate-pulse",
-        )}
-      />
-      <div className="min-w-0 flex-1 text-left">
-        <p className="text-sm font-semibold text-white">{status.title}</p>
-        <p className="text-[11px] leading-snug text-white/70">{status.detail}</p>
+      <div className="flex items-center gap-3">
+        <Radar
+          size={16}
+          className={cn(
+            "shrink-0",
+            status.tone === "felt"
+              ? "text-[var(--color-felt-bright)]"
+              : "text-[var(--color-brass-bright)]",
+            (mode.kind === "armed" || mode.kind === "in-shot") && "animate-pulse",
+          )}
+        />
+        <div className="min-w-0 flex-1 text-left">
+          <p className="text-sm font-semibold text-white">{status.title}</p>
+          <p className="text-[11px] leading-snug text-white/70">{status.detail}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onExit}
+          className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
+        >
+          Exit
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onExit}
-        className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-white/70 transition-colors hover:text-white"
-      >
-        Exit tracking
-      </button>
+      {canForceComplete && (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => onForceComplete("make")}
+            className="inline-flex h-9 flex-1 items-center justify-center gap-1 rounded-full border border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/60 text-xs font-semibold uppercase tracking-wider text-[var(--color-felt-bright)] transition-colors hover:bg-[var(--color-felt-deep)]/80"
+          >
+            ✓ Made
+          </button>
+          <button
+            type="button"
+            onClick={() => onForceComplete("miss")}
+            className="inline-flex h-9 flex-1 items-center justify-center gap-1 rounded-full border border-[var(--color-pop)]/55 bg-[var(--color-pop)]/15 text-xs font-semibold uppercase tracking-wider text-[var(--color-pop-bright)] transition-colors hover:bg-[var(--color-pop)]/25"
+          >
+            ✗ Missed
+          </button>
+        </div>
+      )}
     </div>
   );
 }
