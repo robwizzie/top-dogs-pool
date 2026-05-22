@@ -28,10 +28,10 @@ const MAX_ROWS = 12;
 // PATCH_PX is intentionally large so the patches are immediately recognizable
 // in a chat preview, and PATCHES_PER_PATCH_ROW reflects how many chips fit
 // at that size given the indented usable width.
-const PATCH_PX = 88;
+const PATCH_PX = 128;
 const ROW_HEADER_H = 124; // rank + avatar + name block
-const ROW_PATCH_RH = 116; // height contributed by a single line of patches
-const PATCHES_PER_PATCH_ROW = 5;
+const ROW_PATCH_RH = 158; // height contributed by a single line of patches
+const PATCHES_PER_PATCH_ROW = 4;
 
 async function readPublicAsDataUrl(
   relPath: string,
@@ -677,20 +677,18 @@ export async function GET(req: Request) {
                               alt=""
                               style={{ width: PATCH_PX, height: PATCH_PX }}
                             />
-                            {count > 1 && (
-                              <span
-                                style={{
-                                  fontSize: 32,
-                                  fontWeight: 800,
-                                  color: tint,
-                                  letterSpacing: -1.5,
-                                  display: "flex",
-                                  lineHeight: 1,
-                                }}
-                              >
-                                ×{count}
-                              </span>
-                            )}
+                            <span
+                              style={{
+                                fontSize: 38,
+                                fontWeight: 800,
+                                color: tint,
+                                letterSpacing: -1.5,
+                                display: "flex",
+                                lineHeight: 1,
+                              }}
+                            >
+                              ×{count}
+                            </span>
                           </div>
                         );
                       })}
