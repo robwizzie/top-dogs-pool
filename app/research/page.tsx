@@ -4,6 +4,7 @@ import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import { loadSnapshot } from "@/lib/apa/client";
 import {
   getCurrentSession,
+  getPatchInstances,
   getRoster,
   getSessions,
 } from "@/lib/apa";
@@ -18,6 +19,7 @@ import {
   hotColdPlayers,
   levelUpWatch,
   lineupBreakdown,
+  mvpRaceBonus,
   mvpRaceData,
   nextMatchBriefing,
   playerChemistry,
@@ -173,7 +175,27 @@ export default async function ResearchPage({ searchParams }: Props) {
   const impact = playerImpact(matches, roster);
   const ach = achievements(matches, roster);
   const records = recordsBook(matches, roster);
-  const mvpRace = mvpRaceData(matches, roster);
+  // Pull the same patch instances the leaderboard uses so the MVP race
+  // includes ALL patch points (sweeps + mini + B&R + 8oB + level-ups + first
+  // win + session MVP), matching the leaderboard's final totals.
+  const patchInstancesByPlayer = await getPatchInstances(
+    scope.kind === "all" ? "all" : selectedIds,
+  );
+  const mvpSessionsByPlayer = new Map<string, Set<number>>();
+  for (const [pid, profile] of Object.entries(snap.players)) {
+    const sids = new Set<number>();
+    for (const s of profile.sessions ?? []) {
+      if (s.mvp === 1) sids.add(s.sessionId);
+    }
+    if (sids.size > 0) mvpSessionsByPlayer.set(pid, sids);
+  }
+  const mvpRaceBonusMap = mvpRaceBonus({
+    matches,
+    patchInstances: patchInstancesByPlayer,
+    mvpSessionsByPlayer,
+    scopedSessionIds: selectedIds,
+  });
+  const mvpRace = mvpRaceData(matches, roster, mvpRaceBonusMap);
   const radar = radarStats(matches, roster);
   const calendar = calendarHeatmap(matches);
   const playersForLevelUp = roster.map((p) => {
