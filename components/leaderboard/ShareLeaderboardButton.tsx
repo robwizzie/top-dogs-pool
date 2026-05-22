@@ -268,13 +268,23 @@ export function ShareLeaderboardButton({
             <div className="flex-1 overflow-y-auto p-4">
               {mode === "image" ? (
                 <div className="flex justify-center">
-                  <div className="relative w-full max-w-[420px] overflow-hidden rounded-md border border-[var(--border)] bg-[var(--bg-elev)]">
+                  <div
+                    className="relative w-full max-w-[420px] overflow-hidden rounded-md border border-[var(--border)] bg-[var(--bg-elev)]"
+                    style={{
+                      minHeight: imageStatus === "ready" ? undefined : 460,
+                    }}
+                  >
                     {imageStatus === "loading" && (
-                      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[var(--bg-elev)]/90 text-[var(--fg-dim)]">
-                        <PoolBall number={8} size={56} spin />
-                        <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)]">
-                          Racking the patches…
-                        </span>
+                      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[var(--bg-elev)] text-[var(--fg-dim)]">
+                        <PoolBall number={8} size={72} spin />
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-brass-bright)]">
+                            Racking the patches…
+                          </span>
+                          <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+                            Building your share card
+                          </span>
+                        </div>
                       </div>
                     )}
                     {imageStatus === "error" ? (
