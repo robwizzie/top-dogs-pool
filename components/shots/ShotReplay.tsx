@@ -121,20 +121,14 @@ export function ShotReplay({
     setIdx(Math.max(0, Math.min(imageElements.length - 1, i)));
   }
 
-  // Visible portion of the trace at the current playback index.
+  // Visible portion of the trace at the current playback index — the
+  // trail "draws itself" as playback progresses rather than appearing
+  // all at once at frame 0.
   const visibleTrace = useMemo(() => {
     if (idx === 0 || trace.length === 0) return trace;
-    const cutoff = imageElements[idx]
-      ? imageElements[idx].dataset.t ?? null
-      : null;
-    if (cutoff === null) {
-      const slice = (idx / Math.max(1, imageElements.length)) * trace.length;
-      return trace.slice(0, Math.ceil(slice));
-    }
-    return trace;
-  }, [idx, trace, imageElements]);
-
-  const aspect = size.h / size.w;
+    const slice = (idx / Math.max(1, imageElements.length)) * trace.length;
+    return trace.slice(0, Math.max(1, Math.ceil(slice)));
+  }, [idx, trace, imageElements.length]);
 
   return (
     <div className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur">
