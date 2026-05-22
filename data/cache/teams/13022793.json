@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-22T13:51:00.403Z",
+  "fetchedAt": "2026-05-22T18:17:57.553Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Top Dawgs",
         "number": "06806",
         "isTied": false,
-        "standing": 3,
+        "standing": 2,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -63,10 +63,10 @@
             "id": 92156442,
             "memberNumber": "08211481",
             "displayName": "Aaron Bickford",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -93,11 +93,11 @@
             "id": 92156438,
             "memberNumber": "08203833",
             "displayName": "Peter Johnson V",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 3,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
+            "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3168689,
@@ -139,7 +139,7 @@
             "memberNumber": "08215468",
             "displayName": "Patrick Daley",
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 7,
@@ -154,9 +154,9 @@
             "memberNumber": "08203845",
             "displayName": "Greg Carpenter",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -169,9 +169,9 @@
             "memberNumber": "08214528",
             "displayName": "Jake McNamee",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022793,
         "sessionBonusPoints": 0,
-        "sessionPoints": 12,
-        "sessionTotalPoints": 12,
+        "sessionPoints": 23,
+        "sessionTotalPoints": 23,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -284,11 +284,28 @@
             "isMine": true,
             "isPaid": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -340,7 +357,7 @@
             "id": 50630049,
             "isBye": false,
             "status": "UNPLAYED",
-            "scoresheet": null,
+            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/50630049/3175746/3",
             "startTime": "2026-05-26T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
