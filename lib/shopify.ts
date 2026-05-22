@@ -100,27 +100,60 @@ async function shopifyFetch<T>(
   if (!SHOPIFY_CONFIGURED) {
     throw new Error("Shopify storefront is not configured.");
   }
-  const res = await fetch(ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": TOKEN,
-    },
-    body: JSON.stringify({ query, variables }),
-    cache: options.cache,
-    next: options.next,
-  });
-  if (!res.ok) {
-    throw new Error(`Shopify API ${res.status}: ${await res.text()}`);
+  // Retry transient network failures and 5xx responses — Vercel ↔ Shopify
+  // occasionally times out during prerender, and a single flake otherwise
+  // fails the entire static build for a product page.
+  const maxAttempts = 3;
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": TOKEN,
+        },
+        body: JSON.stringify({ query, variables }),
+        cache: options.cache,
+        next: options.next,
+      });
+      if (!res.ok) {
+        const body = await res.text();
+        // Retry on 5xx / 429; surface 4xx immediately since those are real
+        // errors and won't fix themselves.
+        if ((res.status >= 500 || res.status === 429) && attempt < maxAttempts) {
+          lastErr = new Error(`Shopify API ${res.status}: ${body}`);
+        } else {
+          throw new Error(`Shopify API ${res.status}: ${body}`);
+        }
+      } else {
+        const json = (await res.json()) as GraphQLResponse<T>;
+        if (json.errors?.length) {
+          throw new Error(
+            `Shopify GraphQL: ${json.errors.map((e) => e.message).join("; ")}`,
+          );
+        }
+        if (!json.data) throw new Error("Shopify GraphQL: empty data");
+        return json.data;
+      }
+    } catch (err) {
+      lastErr = err;
+      // Bail immediately on non-network errors (auth, GraphQL, schema, etc.).
+      const msg = err instanceof Error ? err.message : String(err);
+      const isNetwork =
+        msg.includes("fetch failed") ||
+        msg.includes("ETIMEDOUT") ||
+        msg.includes("ECONNRESET") ||
+        msg.includes("ENOTFOUND") ||
+        msg.includes("EAI_AGAIN") ||
+        msg.startsWith("Shopify API 5") ||
+        msg.startsWith("Shopify API 429");
+      if (!isNetwork || attempt === maxAttempts) throw err;
+    }
+    // Exponential backoff: 500ms, 1500ms.
+    await new Promise((r) => setTimeout(r, 500 * Math.pow(3, attempt - 1)));
   }
-  const json = (await res.json()) as GraphQLResponse<T>;
-  if (json.errors?.length) {
-    throw new Error(`Shopify GraphQL: ${json.errors.map((e) => e.message).join("; ")}`);
-  }
-  if (!json.data) {
-    throw new Error("Shopify GraphQL: empty data");
-  }
-  return json.data;
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
 
 const PRODUCT_SUMMARY_FRAGMENT = /* GraphQL */ `
