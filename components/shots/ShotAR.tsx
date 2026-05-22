@@ -133,11 +133,54 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       }
   >({ kind: "off" });
   const [audioEnabled, setAudioEnabled] = useState(true);
+  // Mirror audioEnabled into a ref so callbacks held by the long-lived
+  // ShotTracker (created at arm-time) see the current value rather than
+  // a closure snapshot from when the tracker was instantiated.
+  const audioEnabledRef = useRef(true);
+  useEffect(() => {
+    audioEnabledRef.current = audioEnabled;
+  }, [audioEnabled]);
   const [replayOpen, setReplayOpen] = useState(false);
   // Hold the live tracker instance across renders so we can dispose it.
   const trackerRef = useRef<ShotTracker | null>(null);
   // Track the last auto-logged verdict so override knows what to flip.
   const lastLoggedVerdictRef = useRef<"make" | "miss" | null>(null);
+  // Track whether the AR view is still mounted so async loops can bail
+  // out instead of setting state on an unmounted component.
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  // Track pending timeouts spawned by tryAutoDetectCorners / startTracking
+  // so they can be cancelled on unmount or recalibrate.
+  const pendingTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(
+    new Set(),
+  );
+  const scheduleTimeout = useCallback(
+    (fn: () => void, ms: number) => {
+      const id = setTimeout(() => {
+        pendingTimeoutsRef.current.delete(id);
+        if (!mountedRef.current) return;
+        fn();
+      }, ms);
+      pendingTimeoutsRef.current.add(id);
+      return id;
+    },
+    [],
+  );
+  useEffect(() => {
+    // Snapshot the Set instance so the cleanup uses the same one that
+    // accumulated IDs across the component lifetime — the ref itself
+    // is stable but eslint can't tell.
+    const timeouts = pendingTimeoutsRef.current;
+    return () => {
+      for (const id of timeouts) clearTimeout(id);
+      timeouts.clear();
+    };
+  }, []);
   // Auto-arm next shot — countdown after a result lands.
   const [autoArmCountdown, setAutoArmCountdown] = useState<number | null>(null);
 
@@ -261,7 +304,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     setCandidate(null);
     setAutoDetectAttempted(true);
     setAutoDetecting(true);
-    setTimeout(() => {
+    scheduleTimeout(() => {
       const frame = captureFrame(video, canvas);
       if (!frame) {
         setAutoDetecting(false);
@@ -349,7 +392,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       setAutoDetecting(false);
       setCandidate({ corners: cornersDisplay, balls });
     }, 250);
-  }, [vidBox.width, vidBox.height, shot.objectBall, orientation]);
+  }, [vidBox.width, vidBox.height, shot.objectBall, orientation, scheduleTimeout]);
 
   // Run auto-detect once on first camera frame. If it fails OR the
   // player rejects the candidate, fall back to the manual-tap prompt
@@ -497,9 +540,9 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     });
     trackerRef.current = tracker;
     tracker.arm();
-    if (audioEnabled) playReady();
+    if (audioEnabledRef.current) playReady();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackingMode.kind, homography, audioEnabled]);
+  }, [trackingMode.kind, homography]);
 
   // Unmount cleanup — make sure the tracker stops even if the component
   // is dropped mid-shot.
@@ -512,13 +555,18 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
 
   // Auto-arm: 5 seconds after a confident verdict lands, re-arm the
   // tracker for the next shot. Player can cancel by interacting (any
-  // override / explicit Next Shot button click also cancels — both
-  // call back into normal state transitions which clear the countdown).
+  // override clears the countdown directly). The effect only depends
+  // on `kind` changing — verdict flips during result (overrides) do
+  // NOT restart the timer. Initial verdict at result-entry decides
+  // whether to start counting.
+  const initialVerdictRef = useRef<"make" | "miss" | "uncertain" | null>(null);
   useEffect(() => {
     if (trackingMode.kind !== "result") {
       setAutoArmCountdown(null);
+      initialVerdictRef.current = null;
       return;
     }
+    initialVerdictRef.current = trackingMode.verdict;
     // Don't auto-arm if the verdict was uncertain — the user needs to
     // confirm what actually happened first.
     if (trackingMode.verdict === "uncertain") {
@@ -532,10 +580,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       if (remaining <= 0) {
         clearInterval(tick);
         setAutoArmCountdown(null);
-        // armNextShot reads trackingMode at call time — wrap it so we
-        // re-check (player might have ended tracking in those 5s).
         setTrackingMode((m) =>
-          m.kind === "result"
+          m.kind === "result" && m.verdict !== "uncertain"
             ? { kind: "armed", cb: m.cb, ob: m.ob }
             : m,
         );
@@ -545,7 +591,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       }
     }, 1000);
     return () => clearInterval(tick);
-  }, [trackingMode.kind, "verdict" in trackingMode ? trackingMode.verdict : null]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackingMode.kind]);
 
   // Close the replay modal when a new shot starts.
   useEffect(() => {
@@ -598,15 +645,15 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         logMake();
         logSessionAttempt(shot.id, true);
         lastLoggedVerdictRef.current = "make";
-        if (audioEnabled) playMake();
+        if (audioEnabledRef.current) playMake();
       } else if (finalVerdict === "miss") {
         logMiss();
         logSessionAttempt(shot.id, false);
         lastLoggedVerdictRef.current = "miss";
-        if (audioEnabled) playMiss();
+        if (audioEnabledRef.current) playMiss();
       } else {
         lastLoggedVerdictRef.current = null;
-        if (audioEnabled) playUncertain();
+        if (audioEnabledRef.current) playUncertain();
       }
     }
   }
@@ -624,7 +671,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }
     setTrackingMode({ kind: "detecting" });
     // Give the camera a frame to settle, then run detection.
-    setTimeout(() => {
+    scheduleTimeout(() => {
       const frame = captureFrame(video, canvas);
       if (!frame) {
         setTrackingMode({ kind: "lock-cb" });
@@ -758,8 +805,12 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       correctSessionAttempt(shot.id, wasMake, isNow);
     }
     lastLoggedVerdictRef.current = verdict;
+    // Cancel any pending auto-arm — when the player overrides, they're
+    // actively reviewing the shot and a surprise re-arm 2 seconds later
+    // would yank the UI out from under them.
+    setAutoArmCountdown(null);
     setTrackingMode({ ...trackingMode, verdict });
-    if (audioEnabled) {
+    if (audioEnabledRef.current) {
       if (verdict === "make") playMake();
       else playMiss();
     }
@@ -772,6 +823,9 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
   function recalibrate() {
     trackerRef.current?.stop();
     trackerRef.current = null;
+    lastLoggedVerdictRef.current = null;
+    for (const id of pendingTimeoutsRef.current) clearTimeout(id);
+    pendingTimeoutsRef.current.clear();
     setTrackingMode({ kind: "off" });
     setCorners([]);
     setHomography(null);
@@ -779,6 +833,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     setAutoDetecting(false);
     setAutoDetectAttempted(false);
     setAnalysisState({ kind: "idle" });
+    setAutoArmCountdown(null);
   }
 
   /**
@@ -811,6 +866,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }
 
     for (let i = 0; i < TOTAL_FRAMES; i++) {
+      if (!mountedRef.current) return;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       frames.push(canvas.toDataURL("image/jpeg", 0.7));
       setAnalysisState({
@@ -823,6 +879,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
       }
     }
 
+    if (!mountedRef.current) return;
     setAnalysisState({ kind: "analyzing" });
     try {
       const res = await fetch("/api/shot-feedback", {
@@ -831,6 +888,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         body: JSON.stringify({ shotId: shot.id, frames }),
       });
       const data = await res.json();
+      if (!mountedRef.current) return;
       if (!data.ok) {
         setAnalysisState({
           kind: "error",
@@ -851,6 +909,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         });
       }
     } catch (err) {
+      if (!mountedRef.current) return;
       setAnalysisState({
         kind: "error",
         message:
@@ -1116,7 +1175,6 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           <CalibrationPrompt
             step={corners.length}
             total={CORNER_ORDER.length}
-            currentLabel={CORNER_ORDER[corners.length]?.pocketLabel ?? ""}
             orientation={orientation}
             onSwitchOrientation={() =>
               setOrientation((o) => (o === "head" ? "foot" : "head"))
@@ -1390,7 +1448,6 @@ function CameraError({
 function CalibrationPrompt({
   step,
   total,
-  currentLabel,
   orientation,
   onSwitchOrientation,
   autoDetecting,
@@ -1398,7 +1455,6 @@ function CalibrationPrompt({
 }: {
   step: number;
   total: number;
-  currentLabel: string;
   orientation: "head" | "foot";
   onSwitchOrientation: () => void;
   autoDetecting: boolean;
