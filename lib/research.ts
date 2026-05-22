@@ -2079,9 +2079,18 @@ export type MVPRacePoint = {
   series: Array<{ date: string; matchId: string; cumulativePoints: number }>;
 };
 
+/**
+ * Extra per-match point bonuses to overlay onto the base mvpRaceData walk
+ * (sweep / mini / B&R / 8oB). Captures the remaining Patch Watch points
+ * — level-ups, first career win, session MVP — keyed by matchId so the
+ * cumulative chart lines up with the leaderboard's final totals.
+ */
+export type MVPRaceBonus = Map<string, Map<string, number>>;
+
 export function mvpRaceData(
   matches: Match[],
   roster: Player[],
+  bonusByMatch?: MVPRaceBonus,
 ): MVPRacePoint[] {
   const sorted = [...matches]
     .filter((m) => m.status === "completed")
@@ -2104,6 +2113,12 @@ export function mvpRaceData(
         r.playerId,
         (earnedThisMatch.get(r.playerId) ?? 0) + pts,
       );
+    }
+    const bonus = bonusByMatch?.get(m.id);
+    if (bonus) {
+      for (const [pid, pts] of bonus) {
+        earnedThisMatch.set(pid, (earnedThisMatch.get(pid) ?? 0) + pts);
+      }
     }
     for (const [pid, s] of series) {
       const inThisMatch = earnedThisMatch.has(pid);
@@ -2131,6 +2146,74 @@ export function mvpRaceData(
     const bl = b.series[b.series.length - 1]?.cumulativePoints ?? 0;
     return bl - al;
   });
+}
+
+/**
+ * Build the per-match bonus map for the MVP race so its cumulative line
+ * matches the leaderboard's final patch-point totals.
+ *
+ *   - level-up patches (1 pt each)  → credited to the patch instance's match
+ *   - first-win patches (1 pt)       → credited to the patch instance's match
+ *   - session MVP (1 pt per session) → credited to the last completed in-
+ *     scope match of that session (the leaderboard awards it at session-end;
+ *     attaching to the last match makes the chart line jump on the right day)
+ *
+ * `scopedSessionIds` is the same session-id set the page used to filter the
+ * matches passed to mvpRaceData. MVP awards from out-of-scope sessions are
+ * intentionally dropped — they'd land on matches the chart isn't showing.
+ */
+export type MvpRaceBonusInput = {
+  matches: Match[];
+  patchInstances: Map<
+    string,
+    Partial<
+      Record<
+        "sweep" | "mini-sweep" | "break-and-run" | "8-on-break" | "level-up" | "first-win" | "mvp",
+        Array<{ matchId?: string }>
+      >
+    >
+  >;
+  /** playerId → set of sessionIds where the player finished 1st (mvp=1). */
+  mvpSessionsByPlayer: Map<string, Set<number>>;
+  scopedSessionIds: Set<number>;
+};
+
+export function mvpRaceBonus(input: MvpRaceBonusInput): MVPRaceBonus {
+  const { matches, patchInstances, mvpSessionsByPlayer, scopedSessionIds } = input;
+  const bonus: MVPRaceBonus = new Map();
+  const add = (matchId: string, playerId: string, pts: number) => {
+    let m = bonus.get(matchId);
+    if (!m) {
+      m = new Map();
+      bonus.set(matchId, m);
+    }
+    m.set(playerId, (m.get(playerId) ?? 0) + pts);
+  };
+
+  for (const [playerId, kinds] of patchInstances) {
+    for (const inst of kinds["level-up"] ?? []) {
+      if (inst.matchId) add(inst.matchId, playerId, 1);
+    }
+    for (const inst of kinds["first-win"] ?? []) {
+      if (inst.matchId) add(inst.matchId, playerId, 1);
+    }
+  }
+
+  // MVP: attribute 1 pt to the last completed in-scope match of each MVP session.
+  const lastMatchBySession = new Map<number, string>();
+  const ascending = [...matches]
+    .filter((m) => m.status === "completed" && m.sessionId !== undefined)
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  for (const m of ascending) lastMatchBySession.set(m.sessionId!, m.id);
+  for (const [playerId, sessionIds] of mvpSessionsByPlayer) {
+    for (const sid of sessionIds) {
+      if (!scopedSessionIds.has(sid)) continue;
+      const matchId = lastMatchBySession.get(sid);
+      if (matchId) add(matchId, playerId, 1);
+    }
+  }
+
+  return bonus;
 }
 
 /* ============================================================ RADAR STATS */

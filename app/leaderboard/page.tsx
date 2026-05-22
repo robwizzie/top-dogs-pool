@@ -1,11 +1,13 @@
 import { PageHeader } from "@/components/ui/Section";
 import { SweepRow } from "@/components/leaderboard/SweepRow";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
+import { ShareLeaderboardButton } from "@/components/leaderboard/ShareLeaderboardButton";
 import {
   getCurrentSession,
   getLeaderboard,
   getPatchInstances,
   getPlayerHistory,
+  getPreviousWeekRanks,
   getSessions,
 } from "@/lib/apa";
 import {
@@ -36,11 +38,13 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const scope = parseSessionScope(session, allIds);
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
 
-  const [rows, history, patchInstances] = await Promise.all([
+  const [rows, history, patchInstances, prevRanks] = await Promise.all([
     getLeaderboard(scope.kind === "all" ? "all" : selectedIds),
     getPlayerHistory(),
     getPatchInstances(scope.kind === "all" ? "all" : selectedIds),
+    getPreviousWeekRanks(scope.kind === "all" ? "all" : selectedIds),
   ]);
+  const previousRanks: Record<string, number> = Object.fromEntries(prevRanks);
   const headerLabel = scopeLabel(selectedIds, sessions);
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
   const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
@@ -57,11 +61,16 @@ export default async function LeaderboardPage({ searchParams }: Props) {
       />
 
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-5">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <SessionPicker
             basePath="/leaderboard"
             sessions={sessions}
             selectedIds={selectedIds}
+          />
+          <ShareLeaderboardButton
+            rows={rows}
+            scopeLabel={headerLabel}
+            previousRanks={previousRanks}
           />
         </div>
 
