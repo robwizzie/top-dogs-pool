@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-15T13:37:28.015Z",
+  "fetchedAt": "2026-05-22T13:50:12.927Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -15,7 +15,7 @@
             "id": 92156442,
             "team": {
               "id": 13022793,
-              "name": "Eight Men Out",
+              "name": "Top Dawgs",
               "number": "06806",
               "active": true,
               "__typename": "Team"
@@ -476,12 +476,12 @@
         "EightBallStats": [
           {
             "id": 803037680,
-            "matchesWon": 75,
-            "matchesPlayed": 150,
+            "matchesWon": 76,
+            "matchesPlayed": 151,
             "CLA": 0,
-            "defensiveShotAvg": 1.5,
-            "matchCountForLastTwoYrs": 91,
-            "lastPlayed": "2026-05-05T00:00:00Z",
+            "defensiveShotAvg": 1.49,
+            "matchCountForLastTwoYrs": 92,
+            "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -603,6 +603,11 @@
         "feature": false,
         "league": {
           "news": [
+            {
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
+              "__typename": "News"
+            },
             {
               "id": 4624,
               "title": "Follow Us on Social Media",
@@ -753,17 +758,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 0,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1121,8 +1126,8 @@
             {
               "id": 92156442,
               "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
               "nickName": null,
               "matchesPlayed": 0,
               "matchesWon": 0,
@@ -1135,7 +1140,7 @@
               "rank": null,
               "team": {
                 "id": 13022793,
-                "name": "Eight Men Out",
+                "name": "Top Dawgs",
                 "division": {
                   "id": 431614,
                   "isTournament": false,

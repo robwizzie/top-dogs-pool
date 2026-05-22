@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-15T13:38:08.227Z",
+  "fetchedAt": "2026-05-22T13:50:51.916Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -11,6 +11,26 @@
           "__typename": "League"
         },
         "players": [
+          {
+            "id": 92418657,
+            "team": {
+              "id": 13022792,
+              "name": "Lights Out",
+              "number": "06805",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 91261578,
             "team": {
@@ -340,6 +360,11 @@
         "id": 2915042,
         "sessions": [
           {
+            "id": 139,
+            "name": "Summer 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 138,
             "name": "Spring 2026",
             "__typename": "Session"
@@ -427,6 +452,18 @@
       "alias": {
         "players": [
           {
+            "id": 92418657,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92158237,
             "session": {
               "id": 139,
@@ -456,7 +493,7 @@
               "id": 138,
               "__typename": "Session"
             },
-            "nineOnSnaps": 1,
+            "nineOnSnaps": 2,
             "nineBallBreakAndRuns": 1,
             "miniSlams": 0,
             "skunks": 0,
@@ -744,24 +781,24 @@
         "EightBallStats": [
           {
             "id": 802915042,
-            "matchesWon": 84,
-            "matchesPlayed": 212,
+            "matchesWon": 85,
+            "matchesPlayed": 213,
             "CLA": 4,
-            "defensiveShotAvg": 1.66,
+            "defensiveShotAvg": 1.7,
             "matchCountForLastTwoYrs": 52,
-            "lastPlayed": "2026-04-14T00:00:00Z",
+            "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902915042,
-            "matchesWon": 44,
-            "matchesPlayed": 87,
+            "matchesWon": 45,
+            "matchesPlayed": 88,
             "CLA": 0,
-            "defensiveShotAvg": 0.78,
-            "matchCountForLastTwoYrs": 65,
-            "lastPlayed": "2026-05-04T00:00:00Z",
+            "defensiveShotAvg": 0.79,
+            "matchCountForLastTwoYrs": 66,
+            "lastPlayed": "2026-05-18T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1059,6 +1096,11 @@
         "league": {
           "news": [
             {
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
+              "__typename": "News"
+            },
+            {
               "id": 4624,
               "title": "Follow Us on Social Media",
               "__typename": "News"
@@ -1208,17 +1250,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 0,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1574,6 +1616,33 @@
             }
           ],
           "currentTeams": [
+            {
+              "id": 92418657,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Pete",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13022792,
+                "name": "Lights Out",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 92158237,
               "isActive": true,

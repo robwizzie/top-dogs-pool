@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-13T18:13:35.408Z",
+  "fetchedAt": "2026-05-22T13:56:22.206Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -17,6 +17,26 @@
               "id": 13022712,
               "name": "Chalk Is Cheap!!",
               "number": "06202",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92159637,
+            "team": {
+              "id": 13023247,
+              "name": "D-Block",
+              "number": "05609",
               "active": true,
               "__typename": "Team"
             },
@@ -364,6 +384,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 92159637,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92156448,
             "session": {
               "id": 139,
@@ -529,7 +561,7 @@
             "matchesPlayed": 139,
             "CLA": 0,
             "defensiveShotAvg": 1.05,
-            "matchCountForLastTwoYrs": 182,
+            "matchCountForLastTwoYrs": 184,
             "lastPlayed": "2026-04-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -541,7 +573,7 @@
             "matchesPlayed": 24,
             "CLA": 0,
             "defensiveShotAvg": 0,
-            "matchCountForLastTwoYrs": 74,
+            "matchCountForLastTwoYrs": 70,
             "lastPlayed": "2023-08-28T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -642,8 +674,8 @@
         "league": {
           "news": [
             {
-              "id": 54105,
-              "title": "50% Off APA T-Shirts",
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -799,25 +831,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296803011,
-              "type": "match",
-              "title": "You have pool league tonight!",
-              "body": "7:30 pm at Wilson's Pub vs Lights Out",
-              "isRead": false,
-              "createdDate": "2026-05-12T18:13:48Z",
-              "typeId": null,
-              "metaData": "{\"id\":50630041,\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1165,6 +1186,33 @@
                 "name": "Chalk Is Cheap!!",
                 "division": {
                   "id": 431608,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92159637,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13023247,
+                "name": "D-Block",
+                "division": {
+                  "id": 431658,
                   "isTournament": false,
                   "__typename": "Division"
                 },

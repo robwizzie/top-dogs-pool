@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-13T18:13:48.845Z",
+  "fetchedAt": "2026-05-22T13:56:36.662Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -12,11 +12,11 @@
         },
         "players": [
           {
-            "id": 92156445,
+            "id": 92159636,
             "team": {
-              "id": 13022794,
-              "name": "Keep It Simple Stupid",
-              "number": "06807",
+              "id": 13023247,
+              "name": "D-Block",
+              "number": "05609",
               "active": true,
               "__typename": "Team"
             },
@@ -25,6 +25,26 @@
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
             "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92156445,
+            "team": {
+              "id": 13022794,
+              "name": "Keep It Simple Stupid",
+              "number": "06807",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "eightBallMatchPointsEarned": 2,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -887,6 +907,18 @@
       "alias": {
         "players": [
           {
+            "id": 92159636,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92156445,
             "session": {
               "id": 139,
@@ -1348,12 +1380,12 @@
         "EightBallStats": [
           {
             "id": 802497001,
-            "matchesWon": 186,
-            "matchesPlayed": 376,
+            "matchesWon": 187,
+            "matchesPlayed": 377,
             "CLA": 0,
             "defensiveShotAvg": 1.6,
-            "matchCountForLastTwoYrs": 124,
-            "lastPlayed": "2026-05-03T00:00:00Z",
+            "matchCountForLastTwoYrs": 125,
+            "lastPlayed": "2026-05-12T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1553,8 +1585,8 @@
         "league": {
           "news": [
             {
-              "id": 54105,
-              "title": "50% Off APA T-Shirts",
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -1710,25 +1742,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296803011,
-              "type": "match",
-              "title": "You have pool league tonight!",
-              "body": "7:30 pm at Wilson's Pub vs Lights Out",
-              "isRead": false,
-              "createdDate": "2026-05-12T18:13:48Z",
-              "typeId": null,
-              "metaData": "{\"id\":50630041,\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2085,13 +2106,40 @@
           ],
           "currentTeams": [
             {
-              "id": 92156445,
+              "id": 92159636,
               "isActive": true,
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
               "matchesPlayed": 0,
               "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13023247,
+                "name": "D-Block",
+                "division": {
+                  "id": 431658,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92156445,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",

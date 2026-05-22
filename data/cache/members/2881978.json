@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-11T16:42:48.097Z",
+  "fetchedAt": "2026-05-22T13:54:27.753Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,15 +20,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 1,
+            "ppm": 3,
+            "eightBallMatchPointsEarned": 3,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -804,7 +804,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -1534,12 +1534,12 @@
         "EightBallStats": [
           {
             "id": 802498378,
-            "matchesWon": 133,
-            "matchesPlayed": 269,
+            "matchesWon": 134,
+            "matchesPlayed": 271,
             "CLA": 0,
             "defensiveShotAvg": 0.39,
-            "matchCountForLastTwoYrs": 0,
-            "lastPlayed": "2024-03-07T00:00:00Z",
+            "matchCountForLastTwoYrs": 2,
+            "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1563,7 +1563,7 @@
         "id": 2498378,
         "member": {
           "id": 2881978,
-          "consecutiveYearsPlayed": 10,
+          "consecutiveYearsPlayed": 1,
           "membershipHistory": [
             {
               "id": 5063139,
@@ -1674,11 +1674,610 @@
                 "__typename": "League"
               },
               "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7803544,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
             }
           ],
           "__typename": "Member"
         },
         "__typename": "Alias"
+      }
+    },
+    "memberTeams": {
+      "viewerLeagues": {
+        "viewer": {
+          "id": 3175746,
+          "__typename": "Member",
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ]
+        }
+      },
+      "sidebar": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "DisableCheck": {
+        "feature": false,
+        "league": {
+          "news": [
+            {
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
+              "__typename": "News"
+            },
+            {
+              "id": 4624,
+              "title": "Follow Us on Social Media",
+              "__typename": "News"
+            }
+          ],
+          "__typename": "League"
+        }
+      },
+      "TournamentBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "registrationWindows": [],
+          "__typename": "Member"
+        }
+      },
+      "MembershipBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ViewerQuery": {
+        "viewer": {
+          "__typename": "Member",
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com"
+        }
+      },
+      "FeatureCheck": {
+        "features": [
+          {
+            "id": 1,
+            "name": "qualifiers",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 2,
+            "name": "search",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 3,
+            "name": "calendarSubscription",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 4,
+            "name": "ShowHomeVisitingTeam",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 5,
+            "name": "NonRatedSkillLevel",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 6,
+            "name": "electronicScoringEnabled",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 7,
+            "name": "EmergencyNotice",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 8,
+            "name": "8bSeniorSkillLevelCheck",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 9,
+            "name": "eRegistration",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 10,
+            "name": "eightAdvancedSkillLevel",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 11,
+            "name": "eRegistrationEventPolicy",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 12,
+            "name": "tbd",
+            "active": false,
+            "__typename": "Feature"
+          }
+        ]
+      },
+      "UseGetViewerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "RaygunUserTracking": {
+        "viewer": {
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com",
+          "__typename": "Member"
+        }
+      },
+      "viewerCountryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "country": {
+            "id": 1,
+            "__typename": "Country"
+          },
+          "__typename": "Member"
+        }
+      },
+      "Header": {
+        "viewer": {
+          "id": 3175746,
+          "initials": "RW",
+          "__typename": "Member"
+        }
+      },
+      "notificationBell": {
+        "viewer": {
+          "id": 3175746,
+          "notificationBellCount": 1,
+          "notifications": [
+            {
+              "id": 297375981,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
+              "typeId": null,
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "HeaderCartQueryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League",
+              "country": {
+                "id": 1,
+                "__typename": "Country"
+              }
+            }
+          ],
+          "membershipExpires": "2026-12-31T23:59:59Z",
+          "setting": "890",
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ComponentFeatureCheck": {
+        "feature": true
+      },
+      "LiveStream": {
+        "liveStream": {
+          "__typename": "LiveStreamPayload",
+          "feeds": []
+        }
+      },
+      "getMemberStatsHeader": {
+        "member": {
+          "id": 2881978,
+          "firstName": "Kurt",
+          "lastName": "Kreidler",
+          "initials": "KK",
+          "aliases": [
+            {
+              "id": 2498378,
+              "displayName": "Kurt Kreidler",
+              "memberNumber": "08206836",
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "name": "APA of South Jersey",
+                "isDefault": true,
+                "number": "082",
+                "__typename": "League"
+              },
+              "formats": [
+                "EIGHT",
+                "NINE"
+              ],
+              "stats": [
+                {
+                  "__typename": "EightBallLifetimeStatistics",
+                  "skillLevel": 5,
+                  "CLA": 0
+                },
+                {
+                  "__typename": "NineBallLifetimeStatistics",
+                  "skillLevel": 5,
+                  "CLA": 0
+                }
+              ],
+              "__typename": "Alias"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "TeamStat": {
+        "alias": {
+          "id": 2498378,
+          "pastTeams": [
+            {
+              "id": 88470246,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 133,
+                "name": "Summer 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 12514594,
+                "name": "Happy Accidents",
+                "division": {
+                  "id": 386525,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 87788859,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 2,
+              "session": {
+                "id": 132,
+                "name": "Spring 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 18,
+              "team": {
+                "id": 12417082,
+                "name": "F.O.C.U.S.",
+                "division": {
+                  "id": 377837,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 87789795,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 4,
+              "session": {
+                "id": 132,
+                "name": "Spring 2024",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 1,
+              "team": {
+                "id": 12417234,
+                "name": "Happy Accidents",
+                "division": {
+                  "id": 377881,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 87017434,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 3,
+              "session": {
+                "id": 130,
+                "name": "Fall 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 12,
+              "team": {
+                "id": 12311005,
+                "name": "F.O.C.U.S.",
+                "division": {
+                  "id": 368527,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 87020240,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 5,
+              "matchesWon": 3,
+              "session": {
+                "id": 130,
+                "name": "Fall 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 3,
+              "team": {
+                "id": 12311423,
+                "name": "Happy Accidents",
+                "division": {
+                  "id": 368571,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 86523399,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 5,
+              "session": {
+                "id": 129,
+                "name": "Summer 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 13,
+              "team": {
+                "id": 12240490,
+                "name": "F.O.C.U.S.",
+                "division": {
+                  "id": 362297,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 86523388,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 5,
+              "matchesWon": 1,
+              "session": {
+                "id": 129,
+                "name": "Summer 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 9,
+              "team": {
+                "id": 12240489,
+                "name": "Happy Accidents",
+                "division": {
+                  "id": 362341,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 86523421,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 8,
+              "matchesWon": 5,
+              "session": {
+                "id": 129,
+                "name": "Summer 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 5,
+              "team": {
+                "id": 12240493,
+                "name": "We're Solids Right?",
+                "division": {
+                  "id": 362322,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 85999107,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 1,
+              "session": {
+                "id": 125,
+                "name": "Spring 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 24,
+              "team": {
+                "id": 12166973,
+                "name": "F.O.C.U.S.",
+                "division": {
+                  "id": 355726,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 85999088,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
+              "session": {
+                "id": 125,
+                "name": "Spring 2023",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 11,
+              "team": {
+                "id": 12166971,
+                "name": "Happy Accidents",
+                "division": {
+                  "id": 355714,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            }
+          ],
+          "currentTeams": [
+            {
+              "id": 92369012,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13051645,
+                "name": "The Railhouse",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            }
+          ],
+          "__typename": "Alias"
+        }
       }
     }
   }

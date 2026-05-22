@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-13T18:12:49.406Z",
+  "fetchedAt": "2026-05-22T13:53:34.833Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -12,26 +12,6 @@
         },
         "players": [
           {
-            "id": 92156453,
-            "team": {
-              "id": 13022795,
-              "name": "Here We Go!",
-              "number": "05305",
-              "active": true,
-              "__typename": "Team"
-            },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "eightBallBreakAndRuns": 0,
-            "eightOnBreaks": 0,
-            "miniSlams": 0,
-            "rackless": 0,
-            "__typename": "EightBallPlayer"
-          },
-          {
             "id": 92369008,
             "team": {
               "id": 13051645,
@@ -40,15 +20,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 1,
+            "ppm": 3,
+            "eightBallMatchPointsEarned": 3,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -872,26 +852,14 @@
       "alias": {
         "players": [
           {
-            "id": 92156453,
-            "session": {
-              "id": 139,
-              "__typename": "Session"
-            },
-            "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 0,
-            "rackless": 0,
-            "miniSlams": 0,
-            "__typename": "EightBallPlayer"
-          },
-          {
             "id": 92369008,
             "session": {
               "id": 139,
               "__typename": "Session"
             },
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -1309,12 +1277,12 @@
         "EightBallStats": [
           {
             "id": 801707364,
-            "matchesWon": 254,
-            "matchesPlayed": 400,
+            "matchesWon": 256,
+            "matchesPlayed": 402,
             "CLA": 0,
             "defensiveShotAvg": 0.49,
             "matchCountForLastTwoYrs": 146,
-            "lastPlayed": "2026-04-16T00:00:00Z",
+            "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1492,8 +1460,8 @@
         "league": {
           "news": [
             {
-              "id": 54105,
-              "title": "50% Off APA T-Shirts",
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -1649,25 +1617,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296803011,
-              "type": "match",
-              "title": "You have pool league tonight!",
-              "body": "7:30 pm at Wilson's Pub vs Lights Out",
-              "isRead": false,
-              "createdDate": "2026-05-12T18:13:48Z",
-              "typeId": null,
-              "metaData": "{\"id\":50630041,\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2023,40 +1980,13 @@
           ],
           "currentTeams": [
             {
-              "id": 92156453,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": null,
-              "team": {
-                "id": 13022795,
-                "name": "Here We Go!",
-                "division": {
-                  "id": 431654,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
               "id": 92369008,
               "isActive": true,
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",

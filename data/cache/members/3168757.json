@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-15T13:37:19.671Z",
+  "fetchedAt": "2026-05-22T13:50:06.826Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -15,7 +15,7 @@
             "id": 92156439,
             "team": {
               "id": 13022793,
-              "name": "Eight Men Out",
+              "name": "Top Dawgs",
               "number": "06806",
               "active": true,
               "__typename": "Team"
@@ -452,18 +452,6 @@
       "alias": {
         "players": [
           {
-            "id": 92156439,
-            "session": {
-              "id": 139,
-              "__typename": "Session"
-            },
-            "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 0,
-            "rackless": 0,
-            "miniSlams": 0,
-            "__typename": "EightBallPlayer"
-          },
-          {
             "id": 92158239,
             "session": {
               "id": 139,
@@ -476,6 +464,18 @@
             "__typename": "NineBallPlayer"
           },
           {
+            "id": 92156439,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91261580,
             "session": {
               "id": 138,
@@ -483,7 +483,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 6,
+            "rackless": 7,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -908,6 +908,11 @@
         "league": {
           "news": [
             {
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
+              "__typename": "News"
+            },
+            {
               "id": 4624,
               "title": "Follow Us on Social Media",
               "__typename": "News"
@@ -1057,17 +1062,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 0,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1424,39 +1429,12 @@
           ],
           "currentTeams": [
             {
-              "id": 92156439,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": null,
-              "team": {
-                "id": 13022793,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
               "id": 92158239,
               "isActive": true,
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 0,
+              "matchesPlayed": 1,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -1476,6 +1454,33 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 92156439,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13022793,
+                "name": "Top Dawgs",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
             },
             {
               "id": 91261580,

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-13T18:17:11.497Z",
+  "fetchedAt": "2026-05-22T14:00:21.546Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,31 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 0,
-            "eightBallBreakAndRuns": 0,
-            "eightOnBreaks": 0,
-            "miniSlams": 0,
-            "rackless": 0,
-            "__typename": "EightBallPlayer"
-          },
-          {
-            "id": 92159267,
-            "team": {
-              "id": 13023196,
-              "name": "This One's 4 Bruce!",
-              "number": "05306",
-              "active": true,
-              "__typename": "Team"
-            },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -604,18 +584,6 @@
             "__typename": "EightBallPlayer"
           },
           {
-            "id": 92159267,
-            "session": {
-              "id": 139,
-              "__typename": "Session"
-            },
-            "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 0,
-            "rackless": 0,
-            "miniSlams": 0,
-            "__typename": "EightBallPlayer"
-          },
-          {
             "id": 91745751,
             "session": {
               "id": 138,
@@ -1114,11 +1082,11 @@
           {
             "id": 802585003,
             "matchesWon": 84,
-            "matchesPlayed": 186,
+            "matchesPlayed": 187,
             "CLA": 0,
-            "defensiveShotAvg": 0.65,
+            "defensiveShotAvg": 0.66,
             "matchCountForLastTwoYrs": 86,
-            "lastPlayed": "2026-05-05T00:00:00Z",
+            "lastPlayed": "2026-05-12T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1285,8 +1253,8 @@
         "league": {
           "news": [
             {
-              "id": 54105,
-              "title": "50% Off APA T-Shirts",
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -1442,25 +1410,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296803011,
-              "type": "match",
-              "title": "You have pool league tonight!",
-              "body": "7:30 pm at Wilson's Pub vs Lights Out",
-              "isRead": false,
-              "createdDate": "2026-05-12T18:13:48Z",
-              "typeId": null,
-              "metaData": "{\"id\":50630041,\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1822,7 +1779,7 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": "Must Pay $630",
-              "matchesPlayed": 0,
+              "matchesPlayed": 1,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -1836,33 +1793,6 @@
                 "name": "8 Balls for Sale",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92159267,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Must Pay $630",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": null,
-              "team": {
-                "id": 13023196,
-                "name": "This One's 4 Bruce!",
-                "division": {
-                  "id": 431654,
                   "isTournament": false,
                   "__typename": "Division"
                 },

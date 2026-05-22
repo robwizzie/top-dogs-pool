@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-15T13:38:02.150Z",
+  "fetchedAt": "2026-05-22T13:50:44.115Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 1,
+            "ppm": 3,
+            "eightBallMatchPointsEarned": 3,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -32,11 +32,11 @@
             "__typename": "EightBallPlayer"
           },
           {
-            "id": 92156435,
+            "id": 92158209,
             "team": {
-              "id": 13022793,
-              "name": "Eight Men Out",
-              "number": "06806",
+              "id": 13023044,
+              "name": "Franks N Beans",
+              "number": "07907",
               "active": true,
               "__typename": "Team"
             },
@@ -52,11 +52,11 @@
             "__typename": "EightBallPlayer"
           },
           {
-            "id": 92158209,
+            "id": 92156435,
             "team": {
-              "id": 13023044,
-              "name": "Franks N Beans",
-              "number": "07907",
+              "id": 13022793,
+              "name": "Top Dawgs",
+              "number": "06806",
               "active": true,
               "__typename": "Team"
             },
@@ -944,7 +944,7 @@
             "__typename": "EightBallPlayer"
           },
           {
-            "id": 92156435,
+            "id": 92158209,
             "session": {
               "id": 139,
               "__typename": "Session"
@@ -956,7 +956,7 @@
             "__typename": "EightBallPlayer"
           },
           {
-            "id": 92158209,
+            "id": 92156435,
             "session": {
               "id": 139,
               "__typename": "Session"
@@ -1501,12 +1501,12 @@
         "EightBallStats": [
           {
             "id": 800880078,
-            "matchesWon": 249,
-            "matchesPlayed": 366,
+            "matchesWon": 250,
+            "matchesPlayed": 368,
             "CLA": 5,
             "defensiveShotAvg": 0.9,
-            "matchCountForLastTwoYrs": 122,
-            "lastPlayed": "2026-05-12T00:00:00Z",
+            "matchCountForLastTwoYrs": 123,
+            "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1767,6 +1767,11 @@
         "league": {
           "news": [
             {
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
+              "__typename": "News"
+            },
+            {
               "id": 4624,
               "title": "Follow Us on Social Media",
               "__typename": "News"
@@ -1916,17 +1921,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 0,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 296424953,
+              "id": 297375981,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": true,
-              "createdDate": "2026-05-10T15:58:47Z",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12916054,\"leagueDivisionSessionScheduleMatchId\":50630041,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2288,8 +2293,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2302,33 +2307,6 @@
                 "name": "Bobby D’s Cue Crew",
                 "division": {
                   "id": 431606,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92156435,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": null,
-              "team": {
-                "id": 13022793,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 431614,
                   "isTournament": false,
                   "__typename": "Division"
                 },
@@ -2356,6 +2334,33 @@
                 "name": "Franks N Beans",
                 "division": {
                   "id": 431637,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92156435,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": null,
+              "team": {
+                "id": 13022793,
+                "name": "Top Dawgs",
+                "division": {
+                  "id": 431614,
                   "isTournament": false,
                   "__typename": "Division"
                 },

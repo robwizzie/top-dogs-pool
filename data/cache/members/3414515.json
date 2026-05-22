@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-11T16:26:51.517Z",
+  "fetchedAt": "2026-05-22T13:57:55.057Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -181,11 +181,11 @@
           {
             "id": 803290665,
             "matchesWon": 10,
-            "matchesPlayed": 22,
+            "matchesPlayed": 23,
             "CLA": 0,
-            "defensiveShotAvg": 0.32,
-            "matchCountForLastTwoYrs": 22,
-            "lastPlayed": "2026-03-24T00:00:00Z",
+            "defensiveShotAvg": 0.3,
+            "matchCountForLastTwoYrs": 23,
+            "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -237,6 +237,349 @@
           "__typename": "Member"
         },
         "__typename": "Alias"
+      }
+    },
+    "memberTeams": {
+      "viewerLeagues": {
+        "viewer": {
+          "id": 3175746,
+          "__typename": "Member",
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ]
+        }
+      },
+      "sidebar": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "DisableCheck": {
+        "feature": false,
+        "league": {
+          "news": [
+            {
+              "id": 54938,
+              "title": "APA Patriotic Shirts Presale Offer",
+              "__typename": "News"
+            },
+            {
+              "id": 4624,
+              "title": "Follow Us on Social Media",
+              "__typename": "News"
+            }
+          ],
+          "__typename": "League"
+        }
+      },
+      "TournamentBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "registrationWindows": [],
+          "__typename": "Member"
+        }
+      },
+      "MembershipBannerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ViewerQuery": {
+        "viewer": {
+          "__typename": "Member",
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com"
+        }
+      },
+      "FeatureCheck": {
+        "features": [
+          {
+            "id": 1,
+            "name": "qualifiers",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 2,
+            "name": "search",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 3,
+            "name": "calendarSubscription",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 4,
+            "name": "ShowHomeVisitingTeam",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 5,
+            "name": "NonRatedSkillLevel",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 6,
+            "name": "electronicScoringEnabled",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 7,
+            "name": "EmergencyNotice",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 8,
+            "name": "8bSeniorSkillLevelCheck",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 9,
+            "name": "eRegistration",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 10,
+            "name": "eightAdvancedSkillLevel",
+            "active": false,
+            "__typename": "Feature"
+          },
+          {
+            "id": 11,
+            "name": "eRegistrationEventPolicy",
+            "active": true,
+            "__typename": "Feature"
+          },
+          {
+            "id": 12,
+            "name": "tbd",
+            "active": false,
+            "__typename": "Feature"
+          }
+        ]
+      },
+      "UseGetViewerQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "__typename": "League"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "RaygunUserTracking": {
+        "viewer": {
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com",
+          "__typename": "Member"
+        }
+      },
+      "viewerCountryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "country": {
+            "id": 1,
+            "__typename": "Country"
+          },
+          "__typename": "Member"
+        }
+      },
+      "Header": {
+        "viewer": {
+          "id": 3175746,
+          "initials": "RW",
+          "__typename": "Member"
+        }
+      },
+      "notificationBell": {
+        "viewer": {
+          "id": 3175746,
+          "notificationBellCount": 1,
+          "notifications": [
+            {
+              "id": 297375981,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-05-15T17:53:53Z",
+              "typeId": null,
+              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "HeaderCartQueryQuery": {
+        "viewer": {
+          "id": 3175746,
+          "leagues": [
+            {
+              "id": 890,
+              "slug": "southjersey",
+              "name": "APA of South Jersey",
+              "isDefault": true,
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League",
+              "country": {
+                "id": 1,
+                "__typename": "Country"
+              }
+            }
+          ],
+          "membershipExpires": "2026-12-31T23:59:59Z",
+          "setting": "890",
+          "fee": null,
+          "__typename": "Member"
+        }
+      },
+      "ComponentFeatureCheck": {
+        "feature": true
+      },
+      "LiveStream": {
+        "liveStream": {
+          "__typename": "LiveStreamPayload",
+          "feeds": []
+        }
+      },
+      "getMemberStatsHeader": {
+        "member": {
+          "id": 3414515,
+          "firstName": "Jeremy",
+          "lastName": "Spiegel",
+          "initials": "JS",
+          "aliases": [
+            {
+              "id": 3290665,
+              "displayName": "Jeremy Spiegel",
+              "memberNumber": "08214208",
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "name": "APA of South Jersey",
+                "isDefault": true,
+                "number": "082",
+                "__typename": "League"
+              },
+              "formats": [
+                "EIGHT"
+              ],
+              "stats": [
+                {
+                  "__typename": "EightBallLifetimeStatistics",
+                  "skillLevel": 3,
+                  "CLA": 0
+                },
+                {
+                  "__typename": "NineBallLifetimeStatistics",
+                  "skillLevel": 0,
+                  "CLA": 0
+                }
+              ],
+              "__typename": "Alias"
+            }
+          ],
+          "__typename": "Member"
+        }
+      },
+      "TeamStat": {
+        "alias": {
+          "id": 3290665,
+          "pastTeams": [],
+          "currentTeams": [
+            {
+              "id": 92156465,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13022796,
+                "name": "The Office",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261551,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 1,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 19,
+              "team": {
+                "id": 12894669,
+                "name": "The Office",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            }
+          ],
+          "__typename": "Alias"
+        }
       }
     }
   }
