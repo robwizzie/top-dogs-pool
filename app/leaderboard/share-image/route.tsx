@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { loadSnapshot } from "@/lib/apa/client";
 import {
   getCurrentSession,
   getLeaderboard,
@@ -17,10 +18,13 @@ export const runtime = "nodejs";
 export const revalidate = 3600;
 
 const WIDTH = 1080;
-const HEADER_H = 280;
-const ROW_H = 134;
-const FOOTER_H = 96;
+const HEADER_H = 320;
+const ROW_H_BASE = 168;
+const ROW_H_TALL = 240; // when patches wrap to a second line
+const FOOTER_H = 104;
 const MAX_ROWS = 12;
+const PATCH_PX = 60;
+const PATCHES_PER_ROW = 6; // ~60px patch + ~26px count + 14 gap ≈ 100px each; 6 fit comfortably in 880px
 
 async function readPublicAsDataUrl(
   relPath: string,
@@ -91,7 +95,8 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const session = url.searchParams.get("session") ?? undefined;
 
-  const [sessions, currentSession] = await Promise.all([
+  const [snap, sessions, currentSession] = await Promise.all([
+    loadSnapshot(),
     getSessions(),
     getCurrentSession(),
   ]);
@@ -106,6 +111,28 @@ export async function GET(req: Request) {
   ]);
   const rows = allRows.slice(0, MAX_ROWS);
   const hasPrev = prevRanksMap.size > 0;
+
+  // Team record across the scope — count completed matches where teamScore
+  // beats / trails / equals opponentScore. snap.matches is already filtered
+  // to our team during projection, so a session filter is all that's needed.
+  let teamWins = 0;
+  let teamLosses = 0;
+  let teamTies = 0;
+  for (const m of Object.values(snap.matches)) {
+    if (m.status !== "completed") continue;
+    if (m.sessionId === undefined || !selectedIds.has(m.sessionId)) continue;
+    if (m.teamScore === undefined || m.opponentScore === undefined) continue;
+    if (m.teamScore > m.opponentScore) teamWins += 1;
+    else if (m.teamScore < m.opponentScore) teamLosses += 1;
+    else teamTies += 1;
+  }
+  const teamMatches = teamWins + teamLosses + teamTies;
+  const recordText =
+    teamMatches > 0
+      ? teamTies > 0
+        ? `${teamWins}–${teamLosses}–${teamTies}`
+        : `${teamWins}–${teamLosses}`
+      : null;
 
   // Load all required image assets as data URLs (Satori needs them inline).
   const patchAssets = Object.fromEntries(
@@ -134,7 +161,26 @@ export async function GET(req: Request) {
   const totalFirstWins = rows.reduce((s, r) => s + r.firstWin, 0);
   const totalMvp = rows.reduce((s, r) => s + r.mvp, 0);
 
-  const HEIGHT = HEADER_H + Math.max(rows.length, 1) * ROW_H + FOOTER_H;
+  // Per-row patch counts decide whether that row needs the tall layout
+  // (patches wrap to a second line). Sum heights for the full card height.
+  function patchKindCount(r: (typeof rows)[number]): number {
+    let n = 0;
+    if (r.sweeps) n += 1;
+    if (r.miniSweeps) n += 1;
+    if (r.breakAndRuns) n += 1;
+    if (r.eightOnBreaks) n += 1;
+    if (r.levelUps) n += 1;
+    if (r.firstWin) n += 1;
+    if (r.mvp) n += 1;
+    return n;
+  }
+  function rowHeightFor(r: (typeof rows)[number]): number {
+    return patchKindCount(r) > PATCHES_PER_ROW ? ROW_H_TALL : ROW_H_BASE;
+  }
+  const rowsTotalHeight = rows.length
+    ? rows.reduce((s, r) => s + rowHeightFor(r), 0)
+    : ROW_H_BASE;
+  const HEIGHT = HEADER_H + rowsTotalHeight + FOOTER_H;
 
   return new ImageResponse(
     (
@@ -226,8 +272,42 @@ export async function GET(req: Request) {
               fontSize: 22,
               color: "rgba(236,225,196,0.75)",
               alignItems: "center",
+              flexWrap: "wrap",
             }}
           >
+            {recordText && (
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "6px 14px",
+                  borderRadius: 999,
+                  background: "rgba(46,139,87,0.22)",
+                  border: "1px solid rgba(168,230,184,0.30)",
+                }}
+              >
+                <span
+                  style={{
+                    color: "#a8e6b8",
+                    fontWeight: 800,
+                    letterSpacing: 1,
+                    display: "flex",
+                  }}
+                >
+                  {recordText}
+                </span>
+                <span
+                  style={{
+                    color: "rgba(236,225,196,0.65)",
+                    fontSize: 18,
+                    display: "flex",
+                  }}
+                >
+                  team
+                </span>
+              </span>
+            )}
             <span style={{ display: "flex", gap: 8 }}>
               <span style={{ color: "#e0be6b", fontWeight: 700 }}>
                 {formatPoints(totalPoints)}
@@ -327,6 +407,7 @@ export async function GET(req: Request) {
               if (row.mvp)
                 earnedPatches.push({ key: "mvp", count: row.mvp, tint: PATCH_FILES.mvp.tint });
 
+              const thisRowH = rowHeightFor(row);
               return (
                 <div
                   key={row.playerId}
@@ -334,7 +415,8 @@ export async function GET(req: Request) {
                     display: "flex",
                     alignItems: "center",
                     gap: 22,
-                    padding: "18px 56px",
+                    padding: "22px 56px",
+                    height: thisRowH,
                     borderBottom:
                       i < rows.length - 1
                         ? "1px solid rgba(255,255,255,0.06)"
@@ -505,7 +587,7 @@ export async function GET(req: Request) {
                     <div
                       style={{
                         display: "flex",
-                        gap: 10,
+                        gap: 14,
                         alignItems: "center",
                         flexWrap: "wrap",
                       }}
@@ -513,15 +595,14 @@ export async function GET(req: Request) {
                       {earnedPatches.length === 0 ? (
                         <span
                           style={{
-                            fontSize: 16,
-                            color: "rgba(236,225,196,0.45)",
-                            fontStyle: "italic",
+                            fontSize: 18,
+                            color: "rgba(236,225,196,0.42)",
                             display: "flex",
                           }}
                         >
-                          {row.matchesPlayed} match
-                          {row.matchesPlayed === 1 ? "" : "es"} · waiting on a
-                          patch
+                          {row.matchesPlayed > 0
+                            ? `${row.matchesPlayed} match${row.matchesPlayed === 1 ? "" : "es"}`
+                            : "no matches yet"}
                         </span>
                       ) : (
                         earnedPatches.map(({ key, count, tint }) => {
@@ -533,26 +614,27 @@ export async function GET(req: Request) {
                               style={{
                                 display: "flex",
                                 alignItems: "center",
-                                gap: 6,
-                                padding: "4px 10px 4px 4px",
-                                borderRadius: 16,
-                                background: "rgba(255,255,255,0.04)",
-                                border: `1px solid ${tint}55`,
+                                gap: 8,
+                                padding: "6px 14px 6px 6px",
+                                borderRadius: 999,
+                                background: "rgba(255,255,255,0.06)",
+                                border: `1px solid ${tint}66`,
                               }}
                             >
                               <img
                                 src={src}
-                                width={32}
-                                height={32}
+                                width={PATCH_PX}
+                                height={PATCH_PX}
                                 alt=""
-                                style={{ width: 32, height: 32 }}
+                                style={{ width: PATCH_PX, height: PATCH_PX }}
                               />
                               {count > 1 && (
                                 <span
                                   style={{
-                                    fontSize: 18,
-                                    fontWeight: 700,
+                                    fontSize: 26,
+                                    fontWeight: 800,
                                     color: tint,
+                                    letterSpacing: -1,
                                     display: "flex",
                                   }}
                                 >
