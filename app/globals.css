@@ -49,6 +49,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: rgba(201, 162, 74, 0.18);
 }
 
 body {
@@ -57,6 +58,31 @@ body {
     radial-gradient(800px 500px at -10% 90%, rgba(201, 162, 74, 0.1), transparent 60%);
   background-attachment: fixed;
   min-height: 100dvh;
+}
+
+/* PWA / installed-app polish — kicks in only when the user has added the
+ * site to their home screen. Suppresses iOS rubber-band pull-to-refresh
+ * and gives the body a felt background so the area behind the status bar
+ * (and any overscroll) matches the brand instead of system black. */
+@media (display-mode: standalone) {
+  html,
+  body {
+    background-color: #0b3326;
+    overscroll-behavior-y: none;
+  }
+  body {
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(46, 139, 87, 0.28), transparent 60%),
+      radial-gradient(800px 500px at -10% 90%, rgba(201, 162, 74, 0.12), transparent 60%),
+      linear-gradient(180deg, #07221a 0%, #070707 30%);
+  }
+  /* Disable text selection on chrome elements so the app feels native. */
+  nav,
+  header,
+  footer {
+    -webkit-user-select: none;
+    user-select: none;
+  }
 }
 
 ::selection {
