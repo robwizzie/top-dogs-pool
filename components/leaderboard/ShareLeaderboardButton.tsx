@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Copy, Download, Loader2, Share2, X } from "lucide-react";
+import { Check, Copy, Download, Share2, X } from "lucide-react";
+import { PoolBall } from "@/components/brand/PoolBall";
 import type { LeaderboardRow } from "@/lib/apa/schemas";
 
 type Props = {
@@ -269,8 +270,11 @@ export function ShareLeaderboardButton({
                 <div className="flex justify-center">
                   <div className="relative w-full max-w-[420px] overflow-hidden rounded-md border border-[var(--border)] bg-[var(--bg-elev)]">
                     {imageStatus === "loading" && (
-                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-[var(--bg-elev)]/85 text-[var(--fg-dim)]">
-                        <Loader2 size={20} className="animate-spin" />
+                      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[var(--bg-elev)]/90 text-[var(--fg-dim)]">
+                        <PoolBall number={8} size={56} spin />
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)]">
+                          Racking the patches…
+                        </span>
                       </div>
                     )}
                     {imageStatus === "error" ? (
