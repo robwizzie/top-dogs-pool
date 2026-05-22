@@ -883,6 +883,42 @@ async function main() {
     }
   }
 
+  // 6a. Post-match level-up bumps. APA can re-rate a player AFTER their
+  // session matches were played — match results still show the old SL, but
+  // the current roster lists the new SL. Detect this for the CURRENT session
+  // and credit the missing level-up(s) so the patch shows up immediately
+  // rather than waiting for the next match to be recorded at the new SL.
+  let postMatchLevelUpStamps = 0;
+  if (currentSessionId !== null) {
+    for (const [k, agg] of aggregations) {
+      if (agg.sessionId !== currentSessionId) continue;
+      const [, playerId] = k.split("::");
+      const memberMeta = memberNumberMeta.get(playerId);
+      const currentSL = memberMeta?.currentSL;
+      if (typeof currentSL !== "number") continue;
+      const endingSL = agg.endingSkillLevel;
+      if (typeof endingSL !== "number") continue;
+      if (currentSL <= endingSL) continue;
+      const bump = currentSL - endingSL;
+      agg.levelUps += bump;
+      agg.points += bump;
+      agg.endingSkillLevel = currentSL;
+      agg.skillLevel = currentSL;
+      const car = careers.get(playerId);
+      if (car) {
+        car.levelUps += bump;
+        car.points += bump;
+        car.skillLevel = currentSL;
+      }
+      postMatchLevelUpStamps += 1;
+    }
+  }
+  if (postMatchLevelUpStamps > 0) {
+    console.log(
+      `→ Post-match level-up bumps: credited ${postMatchLevelUpStamps} player(s) for SL increases announced after their last match`,
+    );
+  }
+
   // 6b. MVP stamping. Walk each cached member's "Teams" page payload
   // (captured via fetchMember) for 1st-place finishes, then mark the
   // matching per-session aggregation. Awards +1 leaderboard point per MVP.

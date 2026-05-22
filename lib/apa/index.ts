@@ -318,6 +318,113 @@ export async function getLeaderboard(
 }
 
 /**
+ * Player rankings as of the START of the scope's most recent week — i.e. the
+ * ranks AFTER last week's matches but BEFORE this week's. Used by the share
+ * card to show who moved up or down. Only meaningful for a single-session
+ * scope (current or otherwise); returns an empty map for "all" or multi-
+ * session selections, where "last week" has no unambiguous definition.
+ */
+export async function getPreviousWeekRanks(
+  sessionScope?: number | "all" | Set<number>,
+): Promise<Map<string, number>> {
+  const empty = new Map<string, number>();
+  if (sessionScope === "all") return empty;
+  const snap = await loadSnapshot();
+
+  let sessionId: number | undefined;
+  if (sessionScope === undefined) {
+    sessionId = snap.currentSession?.id;
+  } else if (typeof sessionScope === "number") {
+    sessionId = sessionScope;
+  } else if (sessionScope.size === 1) {
+    sessionId = [...sessionScope][0];
+  }
+  if (sessionId === undefined) return empty;
+
+  const sessionMatches = Object.values(snap.matches)
+    .filter((m) => m.sessionId === sessionId && m.status === "completed")
+    .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  if (sessionMatches.length === 0) return empty;
+
+  const weeks = new Set<number>();
+  for (const m of sessionMatches) if (typeof m.week === "number") weeks.add(m.week);
+  if (weeks.size < 2) return empty; // can't show deltas before the second week
+  const latestWeek = Math.max(...weeks);
+  const priorMatches = sessionMatches.filter(
+    (m) => typeof m.week === "number" && m.week < latestWeek,
+  );
+
+  type Tally = {
+    playerId: string;
+    points: number;
+    sweeps: number;
+    miniSweeps: number;
+    wins: number;
+    matchesPlayed: number;
+    playerName: string;
+  };
+  const tally = new Map<string, Tally>();
+  const priorMaxSL = new Map<string, number>();
+  const ensure = (pid: string, name: string): Tally => {
+    let t = tally.get(pid);
+    if (!t) {
+      t = {
+        playerId: pid,
+        playerName: name,
+        points: 0,
+        sweeps: 0,
+        miniSweeps: 0,
+        wins: 0,
+        matchesPlayed: 0,
+      };
+      tally.set(pid, t);
+    }
+    return t;
+  };
+  for (const m of priorMatches) {
+    for (const r of m.results) {
+      if (r.playerId.startsWith("ebp:") || r.playerId.startsWith("hidden:")) continue;
+      const t = ensure(r.playerId, r.playerName);
+      t.matchesPlayed += 1;
+      if (r.outcome === "W") t.wins += 1;
+      if (r.sweep) {
+        t.points += 1;
+        t.sweeps += 1;
+      } else if (r.miniSweep) {
+        t.points += 0.5;
+        t.miniSweeps += 1;
+      }
+      if (r.breakAndRun) t.points += 1;
+      if (r.eightOnBreak) t.points += 1;
+      const sl = r.skillLevel;
+      if (typeof sl === "number") {
+        const prior = priorMaxSL.get(r.playerId);
+        if (prior !== undefined && sl > prior) {
+          t.points += sl - prior;
+          priorMaxSL.set(r.playerId, sl);
+        } else if (prior === undefined) {
+          priorMaxSL.set(r.playerId, sl);
+        }
+      }
+    }
+  }
+
+  const sorted = [...tally.values()]
+    .filter((t) => t.matchesPlayed > 0)
+    .sort(
+      (a, b) =>
+        b.points - a.points ||
+        b.sweeps - a.sweeps ||
+        b.miniSweeps - a.miniSweeps ||
+        b.wins - a.wins ||
+        a.playerName.localeCompare(b.playerName),
+    );
+  const ranks = new Map<string, number>();
+  sorted.forEach((t, i) => ranks.set(t.playerId, i + 1));
+  return ranks;
+}
+
+/**
  * Current trailing W/L streak per player, computed across every match in the
  * snapshot (career — not session-scoped). Returns a map keyed by playerId.
  */
@@ -509,6 +616,31 @@ export async function getPatchInstances(
           priorMaxSL.set(r.playerId, sl);
         }
       }
+    }
+  }
+
+  // Roster-bump level-ups. APA sometimes raises a player's SL AFTER the
+  // matches that earned the bump are recorded — the match results still show
+  // the old SL, but the current roster reflects the new one. Credit the
+  // remaining level-up(s) to the current session so the patch shows up right
+  // away instead of waiting for the next match recorded at the new SL.
+  const currentSessionId = snap.currentSession?.id;
+  const currentSessionInScope =
+    currentSessionId !== undefined &&
+    (sessionFilter === null || sessionFilter.has(currentSessionId));
+  if (currentSessionInScope) {
+    for (const profile of Object.values(snap.players)) {
+      const currentSL = profile.currentSkillLevel;
+      if (typeof currentSL !== "number") continue;
+      const prior = priorMaxSL.get(profile.id);
+      if (prior === undefined || currentSL <= prior) continue;
+      for (let lvl = prior + 1; lvl <= currentSL; lvl += 1) {
+        push(profile.id, "level-up", {
+          label: snap.currentSession?.name ?? "Current session",
+          sublabel: `SL${lvl - 1} → SL${lvl}`,
+        });
+      }
+      priorMaxSL.set(profile.id, currentSL);
     }
   }
 
