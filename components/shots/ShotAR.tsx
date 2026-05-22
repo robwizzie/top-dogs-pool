@@ -85,6 +85,11 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     balls: { cb: BallLock; ob: BallLock } | null;
   } | null>(null);
   const [autoDetecting, setAutoDetecting] = useState(false);
+  // Track whether we've already run the initial auto-detect this
+  // calibration cycle so rejecting the candidate doesn't immediately
+  // re-trigger a new attempt. Reset on recalibrate / by the explicit
+  // "Find pockets again" button.
+  const [autoDetectAttempted, setAutoDetectAttempted] = useState(false);
   const [homography, setHomography] = useState<Homography | null>(null);
   const [orientation, setOrientation] = useState<"head" | "foot">("head");
 
@@ -254,6 +259,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     // retry produces a clean slate.
     setCorners([]);
     setCandidate(null);
+    setAutoDetectAttempted(true);
     setAutoDetecting(true);
     setTimeout(() => {
       const frame = captureFrame(video, canvas);
@@ -345,12 +351,15 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     }, 250);
   }, [vidBox.width, vidBox.height, shot.objectBall, orientation]);
 
-  // Run auto-detect once on first camera frame. If it fails, the player
-  // sees the normal "tap each pocket" prompt and proceeds manually.
+  // Run auto-detect once on first camera frame. If it fails OR the
+  // player rejects the candidate, fall back to the manual-tap prompt
+  // without re-attempting — the player can always click the
+  // "Find pockets automatically" button when they're ready.
   useEffect(() => {
     if (!stream || homography || corners.length > 0) return;
     if (vidBox.width === 0) return;
     if (candidate) return;
+    if (autoDetectAttempted) return;
     // 800ms delay so autofocus / auto-exposure has time to settle —
     // running detect on a still-stabilizing frame yields garbage.
     const t = setTimeout(() => tryAutoDetectCorners(), 800);
@@ -361,6 +370,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     homography,
     corners.length,
     candidate,
+    autoDetectAttempted,
     tryAutoDetectCorners,
   ]);
 
@@ -767,6 +777,7 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
     setHomography(null);
     setCandidate(null);
     setAutoDetecting(false);
+    setAutoDetectAttempted(false);
     setAnalysisState({ kind: "idle" });
   }
 
@@ -915,6 +926,17 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
           )}
           xmlns="http://www.w3.org/2000/svg"
         >
+          {/* Big pulsing on-screen target showing where the player
+              should tap NEXT. Only shows during manual calibration —
+              not while the auto-detect candidate is on screen, not
+              after calibration is done. */}
+          {!homography &&
+            !candidate &&
+            !autoDetecting &&
+            corners.length < CORNER_ORDER.length && (
+              <ScreenCornerTarget step={corners.length} vidBox={vidBox} />
+            )}
+
           {/* Tapped corner markers */}
           {corners.map((p, i) => (
             <g key={i}>
@@ -995,8 +1017,12 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
             </g>
           )}
 
-          {/* AR overlay once calibrated */}
-          {overlay && (
+          {/* AR overlay once calibrated. We show the full educational
+              overlay (carom paths, OB path, catalog ball markers) only
+              when the player is NOT in active tracking mode — during
+              tracking those markers conflict with the locked-onto
+              positions of the actual balls and clutter the view. */}
+          {overlay && trackingMode.kind === "off" && (
             <>
               {/* Approach line from CB → ghost ball */}
               <line
@@ -1066,19 +1092,22 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
                 stroke="rgba(224,168,46,0.95)"
                 strokeWidth={2}
               />
-              {/* Target pocket pulse */}
-              {overlay.targetPocket && (
-                <circle
-                  cx={overlay.targetPocket.x}
-                  cy={overlay.targetPocket.y}
-                  r={overlay.ballRadius * 1.8}
-                  fill="none"
-                  stroke="rgba(232,82,72,0.85)"
-                  strokeWidth={2}
-                  strokeDasharray="6 4"
-                />
-              )}
             </>
+          )}
+
+          {/* Target pocket pulse is the one overlay we keep in both
+              static-overlay and tracking modes — players always want
+              to know which pocket they're aiming at. */}
+          {overlay && overlay.targetPocket && (
+            <circle
+              cx={overlay.targetPocket.x}
+              cy={overlay.targetPocket.y}
+              r={overlay.ballRadius * 1.8}
+              fill="none"
+              stroke="rgba(232,82,72,0.85)"
+              strokeWidth={2}
+              strokeDasharray="6 4"
+            />
           )}
         </svg>
 
@@ -1100,8 +1129,8 @@ export function ShotAR({ shot }: { shot: KinisterShot }) {
         {/* Auto-detect confirmation banner — either corners + balls (one
             tap to fully armed) or just corners (one tap to overlay). */}
         {candidate && !homography && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center p-4">
-            <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/60 bg-black/80 px-5 py-4 backdrop-blur-md">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex max-h-[75dvh] justify-center overflow-y-auto overscroll-contain p-3 sm:p-4">
+            <div className="pointer-events-auto w-full max-w-xl rounded-2xl border border-[var(--color-brass)]/60 bg-black/80 px-4 py-3.5 backdrop-blur-md sm:px-5 sm:py-4">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
                 {candidate.balls
                   ? "Found everything — start tracking?"
@@ -1405,7 +1434,7 @@ function CalibrationPrompt({
       <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-white/15 bg-black/75 px-4 py-3.5 backdrop-blur-md sm:px-5 sm:py-4">
         <div className="flex items-center justify-between gap-2">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
-            Calibrate · step {step + 1} of {total}
+            Calibrate · pocket {step + 1} of {total}
           </p>
           <button
             type="button"
@@ -1416,13 +1445,17 @@ function CalibrationPrompt({
             {orientation === "head" ? "Head rail" : "Foot rail"} ⇄ flip
           </button>
         </div>
-        <p className="text-sm leading-snug text-white">
-          Tap the{" "}
-          <span className="font-semibold text-[var(--color-brass-bright)]">
-            {currentLabel}
-          </span>{" "}
-          pocket.
-        </p>
+        <div className="flex items-center gap-3">
+          {/* Mini schematic — current corner highlighted in brass. */}
+          <CornerSchematic step={step} total={total} />
+          <p className="min-w-0 flex-1 text-sm leading-snug text-white">
+            Tap the pocket{" "}
+            <span className="font-semibold text-[var(--color-brass-bright)]">
+              highlighted on your screen
+            </span>{" "}
+            — see the brass target.
+          </p>
+        </div>
         <div className="flex items-center gap-1">
           {Array.from({ length: total }).map((_, i) => (
             <span
@@ -1450,6 +1483,133 @@ function CalibrationPrompt({
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Tiny pool-table icon with the four corner pockets drawn. The pocket
+ * the player is being asked to tap RIGHT NOW glows brass; the rest sit
+ * dim. The corners are positioned to match the on-screen target overlay
+ * (BR → BL → TL → TR) so the schematic, the screen target, and the
+ * real-world tap all match up.
+ */
+function CornerSchematic({ step, total }: { step: number; total: number }) {
+  // Screen-space order: BR, BL, TL, TR (same as CORNER_ORDER intent).
+  const positions: { x: number; y: number }[] = [
+    { x: 66, y: 36 }, // BR
+    { x: 14, y: 36 }, // BL
+    { x: 14, y: 14 }, // TL
+    { x: 66, y: 14 }, // TR
+  ];
+  return (
+    <svg
+      viewBox="0 0 80 50"
+      className="h-11 w-16 shrink-0"
+      aria-hidden
+    >
+      <rect
+        x={6}
+        y={6}
+        width={68}
+        height={38}
+        rx={3}
+        fill="rgba(31,110,61,0.55)"
+        stroke="rgba(201,162,74,0.45)"
+        strokeWidth={1.4}
+      />
+      {positions.slice(0, total).map((p, i) => {
+        const isActive = i === step;
+        const isDone = i < step;
+        return (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={isActive ? 6 : 4}
+            fill={
+              isActive
+                ? "#c9a24a"
+                : isDone
+                  ? "rgba(201,162,74,0.4)"
+                  : "rgba(0,0,0,0.65)"
+            }
+            stroke={isActive ? "#fff8d8" : "rgba(255,255,255,0.4)"}
+            strokeWidth={isActive ? 1.6 : 1}
+            className={isActive ? "animate-pulse" : undefined}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+/**
+ * The big on-screen pulsing target placed at roughly the screen corner
+ * where the next pocket should be tapped. Doesn't constrain the tap
+ * location (the player can tap anywhere) — it's purely a visual hint.
+ */
+function ScreenCornerTarget({
+  step,
+  vidBox,
+}: {
+  step: number;
+  vidBox: { width: number; height: number };
+}) {
+  // Screen-corner positions, same order as the manual-calibration
+  // sequence and the mini schematic.
+  const corners = [
+    { x: vidBox.width * 0.88, y: vidBox.height * 0.82 }, // BR
+    { x: vidBox.width * 0.12, y: vidBox.height * 0.82 }, // BL
+    { x: vidBox.width * 0.12, y: vidBox.height * 0.18 }, // TL
+    { x: vidBox.width * 0.88, y: vidBox.height * 0.18 }, // TR
+  ];
+  const p = corners[step];
+  if (!p) return null;
+  return (
+    <g className="animate-pulse" pointerEvents="none">
+      <circle
+        cx={p.x}
+        cy={p.y}
+        r={36}
+        fill="rgba(201,162,74,0.18)"
+        stroke="rgba(201,162,74,0.95)"
+        strokeWidth={3}
+        strokeDasharray="6 4"
+      />
+      <circle cx={p.x} cy={p.y} r={6} fill="#c9a24a" />
+      <line
+        x1={p.x - 50}
+        y1={p.y}
+        x2={p.x - 18}
+        y2={p.y}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+      <line
+        x1={p.x + 18}
+        y1={p.y}
+        x2={p.x + 50}
+        y2={p.y}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+      <line
+        x1={p.x}
+        y1={p.y - 50}
+        x2={p.x}
+        y2={p.y - 18}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+      <line
+        x1={p.x}
+        y1={p.y + 18}
+        x2={p.x}
+        y2={p.y + 50}
+        stroke="rgba(201,162,74,0.9)"
+        strokeWidth={2}
+      />
+    </g>
   );
 }
 
@@ -1526,7 +1686,12 @@ function CalibratedHud({
     analysisState.kind === "recording" || analysisState.kind === "analyzing";
   const tracking = trackingMode.kind !== "off";
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 p-4">
+    <div
+      // Cap height to the bottom 70% of the viewport so on a small
+      // phone screen the HUD never grows past the visible area. If it
+      // somehow does, the inner content scrolls.
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex max-h-[75dvh] flex-col items-center gap-2 overflow-y-auto overscroll-contain p-3 sm:gap-3 sm:p-4"
+    >
       {/* Tracking result banner (highest priority — show on top) */}
       {trackingMode.kind === "result" && (
         <TrackingResultBanner
