@@ -19,12 +19,19 @@ export const revalidate = 3600;
 
 const WIDTH = 1080;
 const HEADER_H = 320;
-const ROW_H_BASE = 168;
-const ROW_H_TALL = 240; // when patches wrap to a second line
 const FOOTER_H = 104;
 const MAX_ROWS = 12;
-const PATCH_PX = 60;
-const PATCHES_PER_ROW = 6; // ~60px patch + ~26px count + 14 gap ≈ 100px each; 6 fit comfortably in 880px
+
+// Each player row is a two-line layout:
+//   Line 1: rank, avatar, name + SL chip + delta chip, points
+//   Line 2: patches, full-width under the name (indented past rank+avatar)
+// PATCH_PX is intentionally large so the patches are immediately recognizable
+// in a chat preview, and PATCHES_PER_PATCH_ROW reflects how many chips fit
+// at that size given the indented usable width.
+const PATCH_PX = 88;
+const ROW_HEADER_H = 124; // rank + avatar + name block
+const ROW_PATCH_RH = 116; // height contributed by a single line of patches
+const PATCHES_PER_PATCH_ROW = 5;
 
 async function readPublicAsDataUrl(
   relPath: string,
@@ -174,12 +181,17 @@ export async function GET(req: Request) {
     if (r.mvp) n += 1;
     return n;
   }
+  function patchRowsFor(r: (typeof rows)[number]): number {
+    const n = patchKindCount(r);
+    if (n === 0) return 0;
+    return Math.ceil(n / PATCHES_PER_PATCH_ROW);
+  }
   function rowHeightFor(r: (typeof rows)[number]): number {
-    return patchKindCount(r) > PATCHES_PER_ROW ? ROW_H_TALL : ROW_H_BASE;
+    return ROW_HEADER_H + patchRowsFor(r) * ROW_PATCH_RH;
   }
   const rowsTotalHeight = rows.length
     ? rows.reduce((s, r) => s + rowHeightFor(r), 0)
-    : ROW_H_BASE;
+    : ROW_HEADER_H;
   const HEIGHT = HEADER_H + rowsTotalHeight + FOOTER_H;
 
   return new ImageResponse(
@@ -408,145 +420,149 @@ export async function GET(req: Request) {
                 earnedPatches.push({ key: "mvp", count: row.mvp, tint: PATCH_FILES.mvp.tint });
 
               const thisRowH = rowHeightFor(row);
+              const PATCH_INDENT = 72 + 22 + 84 + 22; // rank + gap + avatar + gap
               return (
                 <div
                   key={row.playerId}
                   style={{
                     display: "flex",
-                    alignItems: "center",
-                    gap: 22,
-                    padding: "22px 56px",
+                    flexDirection: "column",
+                    padding: "20px 56px",
                     height: thisRowH,
                     borderBottom:
                       i < rows.length - 1
-                        ? "1px solid rgba(255,255,255,0.06)"
+                        ? "1px solid rgba(255,255,255,0.07)"
                         : "none",
                     background: isPodium
                       ? rank === 1
-                        ? "linear-gradient(90deg, rgba(201,162,74,0.18), transparent 70%)"
-                        : "linear-gradient(90deg, rgba(201,162,74,0.08), transparent 70%)"
+                        ? "linear-gradient(90deg, rgba(201,162,74,0.20), transparent 75%)"
+                        : "linear-gradient(90deg, rgba(201,162,74,0.10), transparent 75%)"
                       : "transparent",
                   }}
                 >
-                  {/* Rank badge */}
-                  {isPodium ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 72,
-                        height: 72,
-                        flexShrink: 0,
-                        borderRadius: 36,
-                        background: PODIUM_STYLES[rank as 1 | 2 | 3].bg,
-                        border: `3px solid ${PODIUM_STYLES[rank as 1 | 2 | 3].ring}`,
-                        color: PODIUM_STYLES[rank as 1 | 2 | 3].text,
-                        fontSize: 42,
-                        fontWeight: 900,
-                        letterSpacing: -1,
-                        boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
-                      }}
-                    >
-                      {rank}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 72,
-                        height: 72,
-                        flexShrink: 0,
-                        color: "rgba(236,225,196,0.55)",
-                        fontSize: 36,
-                        fontWeight: 700,
-                        letterSpacing: -1,
-                      }}
-                    >
-                      {rank}
-                    </div>
-                  )}
-
-                  {/* Avatar */}
-                  {avatar ? (
-                    <img
-                      src={avatar}
-                      width={84}
-                      height={84}
-                      alt=""
-                      style={{
-                        width: 84,
-                        height: 84,
-                        borderRadius: 42,
-                        objectFit: "cover",
-                        flexShrink: 0,
-                        border: "2px solid rgba(201,162,74,0.55)",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 84,
-                        height: 84,
-                        borderRadius: 42,
-                        flexShrink: 0,
-                        background: ballColor,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        border: "2px solid rgba(255,255,255,0.18)",
-                        boxShadow: "inset 0 4px 12px rgba(255,255,255,0.18), inset 0 -8px 14px rgba(0,0,0,0.32)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: 21,
-                          background: "#fff8d8",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 26,
-                          fontWeight: 800,
-                          color: "#1a1a1a",
-                          letterSpacing: -1,
-                        }}
-                      >
-                        {((rank - 1) % 7) + 1}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Name + meta */}
+                  {/* Header line: rank + avatar + name+SL+delta + points */}
                   <div
                     style={{
                       display: "flex",
-                      flexDirection: "column",
-                      flex: 1,
-                      gap: 6,
-                      minWidth: 0,
+                      alignItems: "center",
+                      gap: 22,
                     }}
                   >
+                    {/* Rank badge */}
+                    {isPodium ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 72,
+                          height: 72,
+                          flexShrink: 0,
+                          borderRadius: 36,
+                          background: PODIUM_STYLES[rank as 1 | 2 | 3].bg,
+                          border: `3px solid ${PODIUM_STYLES[rank as 1 | 2 | 3].ring}`,
+                          color: PODIUM_STYLES[rank as 1 | 2 | 3].text,
+                          fontSize: 42,
+                          fontWeight: 900,
+                          letterSpacing: -1,
+                          boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
+                        }}
+                      >
+                        {rank}
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 72,
+                          height: 72,
+                          flexShrink: 0,
+                          color: "rgba(236,225,196,0.55)",
+                          fontSize: 38,
+                          fontWeight: 700,
+                          letterSpacing: -1,
+                        }}
+                      >
+                        {rank}
+                      </div>
+                    )}
+
+                    {/* Avatar */}
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        width={84}
+                        height={84}
+                        alt=""
+                        style={{
+                          width: 84,
+                          height: 84,
+                          borderRadius: 42,
+                          objectFit: "cover",
+                          flexShrink: 0,
+                          border: "2px solid rgba(201,162,74,0.55)",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 84,
+                          height: 84,
+                          borderRadius: 42,
+                          flexShrink: 0,
+                          background: ballColor,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          border: "2px solid rgba(255,255,255,0.18)",
+                          boxShadow:
+                            "inset 0 4px 12px rgba(255,255,255,0.18), inset 0 -8px 14px rgba(0,0,0,0.32)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 42,
+                            height: 42,
+                            borderRadius: 21,
+                            background: "#fff8d8",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 26,
+                            fontWeight: 800,
+                            color: "#1a1a1a",
+                            letterSpacing: -1,
+                          }}
+                        >
+                          {((rank - 1) % 7) + 1}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Name + chips */}
                     <div
                       style={{
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
+                        flex: 1,
+                        minWidth: 0,
+                        overflow: "hidden",
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 32,
+                          fontSize: 38,
                           fontWeight: 700,
                           color: "#fff8d8",
-                          maxWidth: 480,
+                          maxWidth: 460,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                           display: "flex",
+                          letterSpacing: -0.5,
                         }}
                       >
                         {row.playerName}
@@ -554,14 +570,15 @@ export async function GET(req: Request) {
                       {row.skillLevel !== undefined && (
                         <span
                           style={{
-                            fontSize: 16,
+                            fontSize: 17,
                             fontWeight: 700,
-                            padding: "4px 10px",
-                            borderRadius: 12,
+                            padding: "5px 12px",
+                            borderRadius: 14,
                             background: "rgba(201,162,74,0.18)",
                             color: "#e0be6b",
                             letterSpacing: 1,
                             display: "flex",
+                            flexShrink: 0,
                           }}
                         >
                           SL{row.skillLevel}
@@ -570,120 +587,129 @@ export async function GET(req: Request) {
                       {delta && (
                         <span
                           style={{
-                            fontSize: 16,
+                            fontSize: 17,
                             fontWeight: 700,
-                            padding: "4px 10px",
-                            borderRadius: 12,
+                            padding: "5px 12px",
+                            borderRadius: 14,
                             background: delta.bg,
                             color: delta.color,
                             letterSpacing: 0.5,
                             display: "flex",
+                            flexShrink: 0,
                           }}
                         >
                           {delta.text}
                         </span>
                       )}
                     </div>
+
+                    {/* Points */}
                     <div
                       style={{
                         display: "flex",
-                        gap: 14,
-                        alignItems: "center",
-                        flexWrap: "wrap",
+                        flexDirection: "column",
+                        alignItems: "flex-end",
+                        flexShrink: 0,
+                        minWidth: 120,
                       }}
                     >
-                      {earnedPatches.length === 0 ? (
-                        <span
-                          style={{
-                            fontSize: 18,
-                            color: "rgba(236,225,196,0.42)",
-                            display: "flex",
-                          }}
-                        >
-                          {row.matchesPlayed > 0
-                            ? `${row.matchesPlayed} match${row.matchesPlayed === 1 ? "" : "es"}`
-                            : "no matches yet"}
-                        </span>
-                      ) : (
-                        earnedPatches.map(({ key, count, tint }) => {
-                          const src = patchAssets[key];
-                          if (!src) return null;
-                          return (
-                            <div
-                              key={key}
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 8,
-                                padding: "6px 14px 6px 6px",
-                                borderRadius: 999,
-                                background: "rgba(255,255,255,0.06)",
-                                border: `1px solid ${tint}66`,
-                              }}
-                            >
-                              <img
-                                src={src}
-                                width={PATCH_PX}
-                                height={PATCH_PX}
-                                alt=""
-                                style={{ width: PATCH_PX, height: PATCH_PX }}
-                              />
-                              {count > 1 && (
-                                <span
-                                  style={{
-                                    fontSize: 26,
-                                    fontWeight: 800,
-                                    color: tint,
-                                    letterSpacing: -1,
-                                    display: "flex",
-                                  }}
-                                >
-                                  ×{count}
-                                </span>
-                              )}
-                            </div>
-                          );
-                        })
-                      )}
+                      <span
+                        style={{
+                          fontSize: 60,
+                          fontWeight: 800,
+                          lineHeight: 1,
+                          color: isPodium ? "#e0be6b" : "#c9a24a",
+                          letterSpacing: -1.5,
+                          display: "flex",
+                        }}
+                      >
+                        {formatPoints(row.points)}
+                      </span>
+                      <span
+                        style={{
+                          marginTop: 4,
+                          fontSize: 13,
+                          letterSpacing: 3,
+                          color: "rgba(236,225,196,0.5)",
+                          textTransform: "uppercase",
+                          fontWeight: 700,
+                          display: "flex",
+                        }}
+                      >
+                        {row.points === 1 ? "pt" : "pts"}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Points */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-end",
-                      flexShrink: 0,
-                      minWidth: 110,
-                    }}
-                  >
-                    <span
+                  {/* Patches line — full width, indented past rank + avatar */}
+                  {earnedPatches.length > 0 ? (
+                    <div
                       style={{
-                        fontSize: 56,
-                        fontWeight: 800,
-                        lineHeight: 1,
-                        color: isPodium ? "#e0be6b" : "#c9a24a",
-                        letterSpacing: -1,
+                        marginTop: 14,
+                        marginLeft: PATCH_INDENT,
+                        display: "flex",
+                        gap: 14,
+                        flexWrap: "wrap",
+                        alignContent: "flex-start",
+                      }}
+                    >
+                      {earnedPatches.map(({ key, count, tint }) => {
+                        const src = patchAssets[key];
+                        if (!src) return null;
+                        return (
+                          <div
+                            key={key}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                              padding: "6px 18px 6px 6px",
+                              borderRadius: 999,
+                              background: "rgba(255,255,255,0.06)",
+                              border: `1px solid ${tint}66`,
+                              height: PATCH_PX + 12,
+                            }}
+                          >
+                            <img
+                              src={src}
+                              width={PATCH_PX}
+                              height={PATCH_PX}
+                              alt=""
+                              style={{ width: PATCH_PX, height: PATCH_PX }}
+                            />
+                            {count > 1 && (
+                              <span
+                                style={{
+                                  fontSize: 32,
+                                  fontWeight: 800,
+                                  color: tint,
+                                  letterSpacing: -1.5,
+                                  display: "flex",
+                                  lineHeight: 1,
+                                }}
+                              >
+                                ×{count}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        marginTop: 14,
+                        marginLeft: PATCH_INDENT,
+                        fontSize: 18,
+                        color: "rgba(236,225,196,0.42)",
                         display: "flex",
                       }}
                     >
-                      {formatPoints(row.points)}
-                    </span>
-                    <span
-                      style={{
-                        marginTop: 4,
-                        fontSize: 13,
-                        letterSpacing: 3,
-                        color: "rgba(236,225,196,0.5)",
-                        textTransform: "uppercase",
-                        fontWeight: 700,
-                        display: "flex",
-                      }}
-                    >
-                      {row.points === 1 ? "pt" : "pts"}
-                    </span>
-                  </div>
+                      {row.matchesPlayed > 0
+                        ? `${row.matchesPlayed} match${row.matchesPlayed === 1 ? "" : "es"}`
+                        : "no matches yet"}
+                    </div>
+                  )}
                 </div>
               );
             })
