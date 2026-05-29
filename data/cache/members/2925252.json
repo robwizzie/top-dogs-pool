@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-22T13:57:26.880Z",
+  "fetchedAt": "2026-05-29T14:12:43.787Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -44,7 +44,27 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92439909,
+            "team": {
+              "id": 13059258,
+              "name": "What Had Happened Was?",
+              "number": "05306",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1263,6 +1283,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 92439909,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91263332,
             "session": {
               "id": 138,
@@ -2061,11 +2093,11 @@
           {
             "id": 802558764,
             "matchesWon": 262,
-            "matchesPlayed": 556,
+            "matchesPlayed": 558,
             "CLA": 5,
             "defensiveShotAvg": 0.95,
             "matchCountForLastTwoYrs": 171,
-            "lastPlayed": "2026-05-21T00:00:00Z",
+            "lastPlayed": "2026-05-28T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2076,7 +2108,7 @@
             "matchesPlayed": 182,
             "CLA": 0,
             "defensiveShotAvg": 0.64,
-            "matchCountForLastTwoYrs": 70,
+            "matchCountForLastTwoYrs": 68,
             "lastPlayed": "2026-05-18T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -2232,8 +2264,8 @@
         "league": {
           "news": [
             {
-              "id": 54938,
-              "title": "APA Patriotic Shirts Presale Offer",
+              "id": 55121,
+              "title": "2026 Poolplayer Championships Cue Balls Available",
               "__typename": "News"
             },
             {
@@ -2389,14 +2421,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 297375981,
+              "id": 298519299,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-05-15T17:53:53Z",
+              "createdDate": "2026-05-22T15:39:02Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13001466,\"leagueDivisionSessionScheduleMatchId\":50630049,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2466,7 +2498,7 @@
                 },
                 {
                   "__typename": "NineBallLifetimeStatistics",
-                  "skillLevel": 5,
+                  "skillLevel": 4,
                   "CLA": 0
                 }
               ],
@@ -2758,14 +2790,14 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Juice",
-              "matchesPlayed": 1,
+              "matchesPlayed": 2,
               "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 5,
+              "skillLevel": 4,
               "rank": null,
               "team": {
                 "id": 13023047,
@@ -2812,7 +2844,7 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "Juice",
-              "matchesPlayed": 1,
+              "matchesPlayed": 2,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -2826,6 +2858,33 @@
                 "name": "The Office Buds",
                 "division": {
                   "id": 431602,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92439909,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Juice",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13059258,
+                "name": "What Had Happened Was?",
+                "division": {
+                  "id": 431654,
                   "isTournament": false,
                   "__typename": "Division"
                 },

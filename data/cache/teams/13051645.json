@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-18T15:11:03.622Z",
+  "fetchedAt": "2026-05-29T14:08:02.369Z",
   "data": {
     "teamPage": {
       "team": {
@@ -63,10 +63,10 @@
             "id": 92369008,
             "memberNumber": "08209244",
             "displayName": "Paul Thomas III",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -78,10 +78,10 @@
             "id": 92369009,
             "memberNumber": "08211739",
             "displayName": "Michael Hamilton",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -97,7 +97,7 @@
             "matchesPlayed": 0,
             "pa": 0,
             "ppm": 0,
-            "skillLevel": 3,
+            "skillLevel": 2,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3457897,
@@ -109,9 +109,9 @@
             "memberNumber": "08214155",
             "displayName": "Keziah Law",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -124,9 +124,9 @@
             "memberNumber": "08206836",
             "displayName": "Kurt Kreidler",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -138,14 +138,29 @@
             "id": 92382360,
             "memberNumber": "08214567",
             "displayName": "Anthony Carter",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "pa": 0.6666666666666666,
             "ppm": 2,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3466803,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 92435051,
+            "memberNumber": "08204339",
+            "displayName": "Jonathan Torres",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3232447,
               "__typename": "Member"
             }
           }
@@ -157,8 +172,8 @@
       "team": {
         "id": 13051645,
         "sessionBonusPoints": 0,
-        "sessionPoints": 14,
-        "sessionTotalPoints": 14,
+        "sessionPoints": 24,
+        "sessionTotalPoints": 24,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -248,17 +263,34 @@
             "type": "EIGHT",
             "id": 50630046,
             "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/50630046/3175746/3",
+            "status": "COMPLETED",
+            "scoresheet": null,
             "startTime": "2026-05-19T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -276,7 +308,7 @@
             },
             "home": {
               "id": 13022793,
-              "name": "Eight Men Out",
+              "name": "Top Dawgs",
               "number": "06806",
               "isMine": true,
               "__typename": "Team"
@@ -309,12 +341,12 @@
             "type": "EIGHT",
             "id": 50630052,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-05-26T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",
@@ -828,7 +860,7 @@
             },
             "away": {
               "id": 13022793,
-              "name": "Eight Men Out",
+              "name": "Top Dawgs",
               "number": "06806",
               "isMine": true,
               "__typename": "Team"

@@ -1,0 +1,1681 @@
+{
+  "fetchedAt": "2026-05-29T14:16:51.385Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 12894641,
+        "name": "Cue's Your Daddy",
+        "number": "06507",
+        "isTied": false,
+        "standing": 7,
+        "division": {
+          "id": 420213,
+          "name": "Doug Biernacki Memorial",
+          "number": "065",
+          "timeOfPlay": "1900-01-01T11:00:00Z",
+          "nightOfPlay": "Sunday",
+          "format": "8-Ball Open",
+          "state": "CURRENT",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 102500,
+          "name": "South Jersey Billiards",
+          "address": {
+            "id": 73668,
+            "name": "South Jersey Billiards",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 138,
+          "name": "Spring 2026",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 12894641,
+        "name": "Cue's Your Daddy",
+        "number": "06507",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 420213,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 91261338,
+            "memberNumber": "08202623",
+            "displayName": "Bill Gee",
+            "matchesWon": 3,
+            "matchesPlayed": 10,
+            "pa": 0.3,
+            "ppm": 0.9,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2689217,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261339,
+            "memberNumber": "08210367",
+            "displayName": "Christy Mullen",
+            "matchesWon": 3,
+            "matchesPlayed": 8,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2989883,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261342,
+            "memberNumber": "08212511",
+            "displayName": "Michael Raube",
+            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "pa": 0.26666666666666666,
+            "ppm": 0.8,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3125512,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261340,
+            "memberNumber": "08212041",
+            "displayName": "Jim Kelly",
+            "matchesWon": 7,
+            "matchesPlayed": 8,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3077934,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261343,
+            "memberNumber": "08212870",
+            "displayName": "Preem Primo",
+            "matchesWon": 8,
+            "matchesPlayed": 14,
+            "pa": 0.5238095238095238,
+            "ppm": 1.5714285714285714,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3176639,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91261341,
+            "memberNumber": "08212377",
+            "displayName": "Gina Mavuro",
+            "matchesWon": 4,
+            "matchesPlayed": 12,
+            "pa": 0.3611111111111111,
+            "ppm": 1.0833333333333333,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3108512,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91601726,
+            "memberNumber": "08202717",
+            "displayName": "Johnny Burden Jr.",
+            "matchesWon": 5,
+            "matchesPlayed": 15,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2691650,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 91601753,
+            "memberNumber": "08221268",
+            "displayName": "Michael Davidson",
+            "matchesWon": 3,
+            "matchesPlayed": 8,
+            "pa": 0.375,
+            "ppm": 1.125,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 949127,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 12894641,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 191,
+        "sessionTotalPoints": 191,
+        "division": {
+          "id": 420213,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 48489634,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2025-12-28T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894642,
+              "name": "I Don't Know",
+              "number": "06508",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 48489837,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-04T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894642,
+              "name": "I Don't Know",
+              "number": "06508",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 48489981,
+            "isBye": true,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-11T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 87357,
+              "name": "No Match This Week",
+              "address": null,
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894644,
+              "name": "Bye",
+              "number": "06510",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 48488909,
+            "isBye": true,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-18T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894644,
+              "name": "Bye",
+              "number": "06510",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 48489637,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-01-25T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894638,
+              "name": "The Art Of Self Defense",
+              "number": "06504",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 48489840,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-01T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894638,
+              "name": "The Art Of Self Defense",
+              "number": "06504",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 48489989,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-08T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894639,
+              "name": "Who Cares?",
+              "number": "06505",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 48488917,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-15T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894639,
+              "name": "Who Cares?",
+              "number": "06505",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 48489641,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-02-22T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894635,
+              "name": "Drinkin Talls Br8kn Balls",
+              "number": "06501",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 48489844,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-01T11:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894640,
+              "name": "Don't Look Now!",
+              "number": "06506",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 48489991,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-08T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894640,
+              "name": "Don't Look Now!",
+              "number": "06506",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 48488921,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-15T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894636,
+              "name": "Hate Goes On",
+              "number": "06502",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 13,
+            "type": "EIGHT",
+            "id": 48489648,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-22T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 6,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894636,
+              "name": "Hate Goes On",
+              "number": "06502",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 14,
+            "type": "EIGHT",
+            "id": 48489849,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-03-29T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 5,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 16,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894635,
+              "name": "Drinkin Talls Br8kn Balls",
+              "number": "06501",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 15,
+            "type": "EIGHT",
+            "id": 48489997,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-05T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894637,
+              "name": "Barbox Bullies",
+              "number": "06503",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 16,
+            "type": "EIGHT",
+            "id": 48933802,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-12T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894637,
+              "name": "Barbox Bullies",
+              "number": "06503",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 17,
+            "type": "EIGHT",
+            "id": 48933808,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-19T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894643,
+              "name": "I Don't Hate It",
+              "number": "06509",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 18,
+            "type": "EIGHT",
+            "id": 48933813,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-04-26T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894643,
+              "name": "I Don't Hate It",
+              "number": "06509",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 19,
+            "type": "EIGHT",
+            "id": 50439757,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-05-03T11:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": true,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 102500,
+              "name": "South Jersey Billiards",
+              "address": {
+                "id": 73668,
+                "name": "South Jersey Billiards",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894640,
+              "name": "Don't Look Now!",
+              "number": "06506",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894641,
+              "name": "Cue's Your Daddy",
+              "number": "06507",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420213,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}

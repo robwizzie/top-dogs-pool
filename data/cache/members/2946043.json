@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-22T14:00:21.546Z",
+  "fetchedAt": "2026-05-29T14:15:11.182Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -25,6 +25,26 @@
             "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
             "matchesPlayed": 1,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92436511,
+            "team": {
+              "id": 13059258,
+              "name": "What Had Happened Was?",
+              "number": "05306",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -584,6 +604,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 92436511,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91745751,
             "session": {
               "id": 138,
@@ -1085,7 +1117,7 @@
             "matchesPlayed": 187,
             "CLA": 0,
             "defensiveShotAvg": 0.66,
-            "matchCountForLastTwoYrs": 86,
+            "matchCountForLastTwoYrs": 85,
             "lastPlayed": "2026-05-12T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -1253,8 +1285,8 @@
         "league": {
           "news": [
             {
-              "id": 54938,
-              "title": "APA Patriotic Shirts Presale Offer",
+              "id": 55121,
+              "title": "2026 Poolplayer Championships Cue Balls Available",
               "__typename": "News"
             },
             {
@@ -1410,14 +1442,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 297375981,
+              "id": 298519299,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-05-15T17:53:53Z",
+              "createdDate": "2026-05-22T15:39:02Z",
               "typeId": null,
-              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13001466,\"leagueDivisionSessionScheduleMatchId\":50630049,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1793,6 +1825,33 @@
                 "name": "8 Balls for Sale",
                 "division": {
                   "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92436511,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "Must Pay $630",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13059258,
+                "name": "What Had Happened Was?",
+                "division": {
+                  "id": 431654,
                   "isTournament": false,
                   "__typename": "Division"
                 },
