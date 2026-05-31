@@ -1,11 +1,18 @@
 import { ApaFetchError, loadSnapshot } from "./client";
 import {
+  loadTournaments,
+  tournamentPatchInstances,
+  tournamentRowDeltas,
+  type TournamentRowDelta,
+} from "./tournaments";
+import {
   buildOutcomeHistory,
   computeStreaks,
   streakFromHistory,
   type Streak,
 } from "@/lib/streaks";
 import type {
+  ApaSnapshot,
   LeaderboardRow,
   Match,
   Player,
@@ -15,6 +22,82 @@ import type {
   Standing,
   TeamSummary,
 } from "./schemas";
+
+/**
+ * Whether manually-entered tournament results (data/tournaments.json) are folded
+ * into a leaderboard / patch query:
+ *   "exclude" → league only (default — keeps APA-scraped stats pristine)
+ *   "include" → league + tournament games combined
+ *   "only"    → tournament games on their own
+ */
+export type TournamentMode = "exclude" | "include" | "only";
+
+/** Standard leaderboard sort: points, then patch counts, then name. */
+function compareRows(a: LeaderboardRow, b: LeaderboardRow): number {
+  return (
+    b.points - a.points ||
+    b.sweeps - a.sweeps ||
+    b.miniSweeps - a.miniSweeps ||
+    b.wins - a.wins ||
+    a.playerName.localeCompare(b.playerName)
+  );
+}
+
+/** Resolve a leaderboard scope to the session-id set it covers (null = all). */
+function scopeToSessionFilter(
+  snap: ApaSnapshot,
+  sessionScope?: number | "all" | Set<number>,
+): Set<number> | null {
+  if (sessionScope === undefined) {
+    return snap.currentSession ? new Set([snap.currentSession.id]) : null;
+  }
+  if (sessionScope === "all") return null;
+  if (typeof sessionScope === "number") return new Set([sessionScope]);
+  return new Set(sessionScope);
+}
+
+/** Fold tournament row deltas into a set of leaderboard rows (immutably). */
+function mergeTournamentRows(
+  rows: LeaderboardRow[],
+  deltas: Map<string, TournamentRowDelta>,
+): LeaderboardRow[] {
+  if (deltas.size === 0) return rows;
+  const byId = new Map<string, LeaderboardRow>(
+    rows.map((r) => [r.playerId, { ...r }]),
+  );
+  for (const [pid, d] of deltas) {
+    const cur = byId.get(pid);
+    if (cur) {
+      cur.points = Math.round((cur.points + d.points) * 10) / 10;
+      cur.sweeps += d.sweeps;
+      cur.miniSweeps += d.miniSweeps;
+      cur.breakAndRuns += d.breakAndRuns;
+      cur.eightOnBreaks += d.eightOnBreaks;
+      cur.levelUps += d.levelUps;
+      cur.firstWin = Math.max(cur.firstWin, d.firstWin);
+      cur.matchesPlayed += d.matchesPlayed;
+      cur.wins += d.wins;
+      if (typeof d.skillLevel === "number") cur.skillLevel = d.skillLevel;
+    } else {
+      byId.set(pid, {
+        playerId: d.playerId,
+        playerName: d.playerName,
+        points: Math.round(d.points * 10) / 10,
+        sweeps: d.sweeps,
+        miniSweeps: d.miniSweeps,
+        breakAndRuns: d.breakAndRuns,
+        eightOnBreaks: d.eightOnBreaks,
+        levelUps: d.levelUps,
+        firstWin: d.firstWin,
+        mvp: 0,
+        matchesPlayed: d.matchesPlayed,
+        wins: d.wins,
+        skillLevel: d.skillLevel,
+      });
+    }
+  }
+  return [...byId.values()].sort(compareRows);
+}
 
 /** Top-level current-session team summary. Null if no snapshot yet. */
 export async function getTeam(): Promise<TeamSummary | null> {
@@ -84,6 +167,27 @@ export async function getStandings(
 
 export async function getSessions(): Promise<SessionRecord[]> {
   return (await loadSnapshot()).sessions;
+}
+
+/**
+ * Lightweight {id, name} list of every Top Dawgs player we know about — used to
+ * populate pickers (e.g. the tournament-entry form). Sorted by name; hidden
+ * players are excluded.
+ */
+export async function getAllPlayersBrief(): Promise<
+  { id: string; name: string }[]
+> {
+  const snap = await loadSnapshot();
+  const seen = new Map<string, string>();
+  for (const p of Object.values(snap.players)) {
+    if (p.visible !== false) seen.set(p.id, p.name);
+  }
+  for (const p of snap.roster) {
+    if (p.visible !== false && !seen.has(p.id)) seen.set(p.id, p.name);
+  }
+  return [...seen.entries()]
+    .map(([id, name]) => ({ id, name }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function getCurrentSession(): Promise<{
@@ -232,7 +336,7 @@ function toRosterPlayer(profile: PlayerProfile): Player {
  *   Set<number>          → combined across the given sessions (sums points,
  *                          sweeps, mini-sweeps, B&R, 8oB, etc.)
  */
-export async function getLeaderboard(
+async function baseLeaderboard(
   sessionScope?: number | "all" | Set<number>,
 ): Promise<LeaderboardRow[]> {
   const snap = await loadSnapshot();
@@ -315,6 +419,28 @@ export async function getLeaderboard(
         b.wins - a.wins ||
         a.playerName.localeCompare(b.playerName),
     );
+}
+
+/**
+ * Leaderboard for the requested scope, optionally folding in manually-entered
+ * tournament results. `opts.tournaments` controls the mix:
+ *   "exclude" (default) → league only
+ *   "include"           → league + tournament games
+ *   "only"              → tournament games on their own
+ * See {@link baseLeaderboard} for how `sessionScope` is interpreted.
+ */
+export async function getLeaderboard(
+  sessionScope?: number | "all" | Set<number>,
+  opts?: { tournaments?: TournamentMode },
+): Promise<LeaderboardRow[]> {
+  const mode = opts?.tournaments ?? "exclude";
+  const base = mode === "only" ? [] : await baseLeaderboard(sessionScope);
+  if (mode === "exclude") return base;
+
+  const [snap, games] = await Promise.all([loadSnapshot(), loadTournaments()]);
+  const filter = scopeToSessionFilter(snap, sessionScope);
+  const deltas = tournamentRowDeltas(games, filter);
+  return mergeTournamentRows(base, deltas);
 }
 
 /**
@@ -497,7 +623,9 @@ export type PlayerPatchInstances = Partial<
  */
 export async function getPatchInstances(
   scope?: number | "all" | Set<number>,
+  opts?: { tournaments?: TournamentMode },
 ): Promise<Map<string, PlayerPatchInstances>> {
+  const mode = opts?.tournaments ?? "exclude";
   const snap = await loadSnapshot();
 
   // Resolve scope to a session-id set (or null = include all).
@@ -660,7 +788,35 @@ export async function getPatchInstances(
     }
   }
 
+  // Fold in manually-entered tournament patches when requested. "only" drops
+  // the league instances built above and keeps just the tournament ones.
+  if (mode !== "exclude") {
+    if (mode === "only") out.clear();
+    const games = await loadTournaments();
+    const tInstances = tournamentPatchInstances(games, sessionFilter);
+    for (const [pid, bag] of tInstances) {
+      const cur = ensure(pid);
+      for (const [kind, list] of Object.entries(bag) as [
+        PatchInstanceKind,
+        PatchInstance[],
+      ][]) {
+        (cur[kind] ??= []).push(...list);
+      }
+    }
+  }
+
   return out;
 }
 
 export { ApaFetchError };
+export {
+  loadTournaments,
+  loadTournamentFile,
+  writeTournamentFile,
+  tournamentResultPoints,
+} from "./tournaments";
+export type {
+  TournamentGame,
+  TournamentResult,
+  TournamentFile,
+} from "./tournaments";

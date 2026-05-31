@@ -1,7 +1,13 @@
+import Link from "next/link";
+import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
 import { SweepRow } from "@/components/leaderboard/SweepRow";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import { ShareLeaderboardButton } from "@/components/leaderboard/ShareLeaderboardButton";
+import {
+  TournamentToggle,
+  parseTournamentMode,
+} from "@/components/leaderboard/TournamentToggle";
 import {
   getCurrentSession,
   getLeaderboard,
@@ -25,11 +31,12 @@ export const metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ session?: string }>;
+  searchParams: Promise<{ session?: string; tourneys?: string }>;
 };
 
 export default async function LeaderboardPage({ searchParams }: Props) {
-  const { session } = await searchParams;
+  const { session, tourneys } = await searchParams;
+  const tournamentMode = parseTournamentMode(tourneys);
   const [sessions, currentSession] = await Promise.all([
     getSessions(),
     getCurrentSession(),
@@ -37,15 +44,23 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const allIds = sessions.map((s) => s.id);
   const scope = parseSessionScope(session, allIds);
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
+  const leaderScope = scope.kind === "all" ? "all" : selectedIds;
 
   const [rows, history, patchInstances, prevRanks] = await Promise.all([
-    getLeaderboard(scope.kind === "all" ? "all" : selectedIds),
+    getLeaderboard(leaderScope, { tournaments: tournamentMode }),
     getPlayerHistory(),
-    getPatchInstances(scope.kind === "all" ? "all" : selectedIds),
-    getPreviousWeekRanks(scope.kind === "all" ? "all" : selectedIds),
+    getPatchInstances(leaderScope, { tournaments: tournamentMode }),
+    // Week-over-week deltas are league-only; tournament games have no "weeks".
+    getPreviousWeekRanks(leaderScope),
   ]);
   const previousRanks: Record<string, number> = Object.fromEntries(prevRanks);
   const headerLabel = scopeLabel(selectedIds, sessions);
+  const modeSuffix =
+    tournamentMode === "include"
+      ? " + tournaments"
+      : tournamentMode === "only"
+        ? " · tournaments only"
+        : "";
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
   const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
   const totalMini = rows.reduce((s, r) => s + r.miniSweeps, 0);
@@ -57,11 +72,11 @@ export default async function LeaderboardPage({ searchParams }: Props) {
       <PageHeader
         eyebrow="Patches Earned"
         title="Patch Watch"
-        subtitle={`${headerLabel} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini${totalFirstWins > 0 ? ` · ${totalFirstWins} first win${totalFirstWins === 1 ? "" : "s"}` : ""}${totalMvp > 0 ? ` · ${totalMvp} MVP${totalMvp === 1 ? "" : "s"}` : ""}`}
+        subtitle={`${headerLabel}${modeSuffix} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini${totalFirstWins > 0 ? ` · ${totalFirstWins} first win${totalFirstWins === 1 ? "" : "s"}` : ""}${totalMvp > 0 ? ` · ${totalMvp} MVP${totalMvp === 1 ? "" : "s"}` : ""}`}
       />
 
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <SessionPicker
             basePath="/leaderboard"
             sessions={sessions}
@@ -74,11 +89,40 @@ export default async function LeaderboardPage({ searchParams }: Props) {
             previousRanks={previousRanks}
           />
         </div>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <TournamentToggle
+            basePath="/leaderboard"
+            sessionParam={session}
+            mode={tournamentMode}
+          />
+          <Link
+            href="/leaderboard/admin"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--fg-dim)] transition-colors hover:border-[var(--color-brass)] hover:text-[var(--fg)]"
+          >
+            <Plus size={13} />
+            Add tournament results
+          </Link>
+        </div>
 
         {rows.length === 0 ? (
           <p className="surface p-6 text-sm text-[var(--fg-dim)]">
-            No leaderboard data for this selection — pick a session that has
-            played matches.
+            {tournamentMode === "only" ? (
+              <>
+                No tournament results for this selection yet.{" "}
+                <Link
+                  href="/leaderboard/admin"
+                  className="font-semibold text-[var(--color-brass-bright)] hover:underline"
+                >
+                  Add some
+                </Link>
+                .
+              </>
+            ) : (
+              <>
+                No leaderboard data for this selection — pick a session that has
+                played matches.
+              </>
+            )}
           </p>
         ) : (
           <div className="surface divide-y divide-[var(--border)]">
