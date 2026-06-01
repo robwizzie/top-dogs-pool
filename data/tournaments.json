@@ -1,0 +1,4 @@
+{
+  "$comment": "Manually-entered tournament results, folded into the Patch Watch leaderboard at read time (no scraper run needed). Add entries via the gated form at /leaderboard/admin, or edit this file by hand and commit it. Each game's `sessionId` attributes it to a league session so it works with the session picker. Patch points: sweep=1, miniSweep=0.5, each breakAndRun/eightOnBreak/levelUp=1, firstWin=1, plus any bonusPoints. IMPORTANT: commit this file (or mount a volume at /app/data) for entries to survive a redeploy.",
+  "games": []
+}
