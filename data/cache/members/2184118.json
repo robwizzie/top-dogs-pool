@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-22T18:19:19.550Z",
+  "fetchedAt": "2026-06-05T14:02:17.639Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,13 +20,13 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
             "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "miniSlams": 0,
             "rackless": 0,
             "__typename": "EightBallPlayer"
@@ -36,15 +36,15 @@
             "team": {
               "id": 13023196,
               "name": "This One's 4 Bruce!",
-              "number": "05306",
+              "number": "05310",
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
             "eightBallMatchPointsEarned": 4,
             "matchesWon": 2,
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -887,7 +887,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "eightBallBreakAndRuns": 0,
             "rackless": 0,
             "miniSlams": 0,
@@ -895,6 +895,18 @@
           },
           {
             "id": 92157668,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 92436486,
             "session": {
               "id": 139,
               "__typename": "Session"
@@ -1955,12 +1967,12 @@
         "EightBallStats": [
           {
             "id": 801575019,
-            "matchesWon": 175,
-            "matchesPlayed": 339,
+            "matchesWon": 176,
+            "matchesPlayed": 345,
             "CLA": 5,
             "defensiveShotAvg": 3.08,
-            "matchCountForLastTwoYrs": 96,
-            "lastPlayed": "2026-05-21T00:00:00Z",
+            "matchCountForLastTwoYrs": 99,
+            "lastPlayed": "2026-06-02T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1968,11 +1980,11 @@
           {
             "id": 901575019,
             "matchesWon": 294,
-            "matchesPlayed": 589,
+            "matchesPlayed": 591,
             "CLA": 0,
             "defensiveShotAvg": 2.61,
             "matchCountForLastTwoYrs": 69,
-            "lastPlayed": "2026-05-18T00:00:00Z",
+            "lastPlayed": "2026-06-01T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2292,8 +2304,8 @@
         "league": {
           "news": [
             {
-              "id": 54938,
-              "title": "APA Patriotic Shirts Presale Offer",
+              "id": 55135,
+              "title": "NEW Summer T-Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -2446,28 +2458,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 298519299,
+              "id": 299522186,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-05-22T15:39:02Z",
+              "createdDate": "2026-05-29T16:14:10Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13001466,\"leagueDivisionSessionScheduleMatchId\":50630049,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 297375981,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-05-15T17:53:53Z",
-              "typeId": null,
-              "metaData": "{\"reportId\":12953383,\"leagueDivisionSessionScheduleMatchId\":50630046,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13043069,\"leagueDivisionSessionScheduleMatchId\":50630054,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2829,7 +2830,7 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Lazo",
-              "matchesPlayed": 2,
+              "matchesPlayed": 3,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -2878,12 +2879,39 @@
               "__typename": "NineBallPlayer"
             },
             {
+              "id": 92436486,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Lazo",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13023049,
+                "name": "SIXNINE",
+                "division": {
+                  "id": 431638,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
               "id": 92159263,
               "isActive": true,
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Lazo",
-              "matchesPlayed": 2,
+              "matchesPlayed": 3,
               "matchesWon": 2,
               "session": {
                 "id": 139,

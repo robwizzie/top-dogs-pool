@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-29T14:08:33.163Z",
+  "fetchedAt": "2026-06-05T14:01:46.242Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Break 8 Away",
         "number": "06802",
         "isTied": false,
-        "standing": 3,
+        "standing": 5,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -64,9 +64,9 @@
             "memberNumber": "08208777",
             "displayName": "Johnny Fontanez",
             "matchesWon": 1,
-            "matchesPlayed": 2,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesPlayed": 3,
+            "pa": 0.2222222222222222,
+            "ppm": 0.6666666666666666,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -79,9 +79,9 @@
             "memberNumber": "08230234",
             "displayName": "Andrew Duong",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -93,10 +93,10 @@
             "id": 92156408,
             "memberNumber": "08208665",
             "displayName": "Eric Gdanski",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -108,10 +108,10 @@
             "id": 92156403,
             "memberNumber": "08239182",
             "displayName": "Francisco Castillo",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -139,7 +139,7 @@
             "memberNumber": "08208365",
             "displayName": "Don-Jose Sindo",
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022789,
         "sessionBonusPoints": 0,
-        "sessionPoints": 21,
-        "sessionTotalPoints": 21,
+        "sessionPoints": 29,
+        "sessionTotalPoints": 29,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -362,11 +362,28 @@
             "isMine": false,
             "isPaid": null,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -417,12 +434,12 @@
             "type": "EIGHT",
             "id": 50630056,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-02T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

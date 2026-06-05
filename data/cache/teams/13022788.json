@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-29T14:07:47.148Z",
+  "fetchedAt": "2026-06-05T14:01:22.667Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Poolin' and Boolin'",
         "number": "06801",
         "isTied": false,
-        "standing": 5,
+        "standing": 6,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -64,9 +64,9 @@
             "memberNumber": "08211516",
             "displayName": "Ashley Keefe",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 2,
             "__typename": "EightBallPlayer",
             "member": {
@@ -79,10 +79,10 @@
             "memberNumber": "08213663",
             "displayName": "John Howarth",
             "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 3,
+            "matchesPlayed": 3,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
+            "skillLevel": 2,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3318566,
@@ -94,9 +94,9 @@
             "memberNumber": "08211478",
             "displayName": "Charles Blasetto",
             "matchesWon": 1,
-            "matchesPlayed": 3,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesPlayed": 4,
+            "pa": 0.25,
+            "ppm": 0.75,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -105,28 +105,13 @@
             }
           },
           {
-            "id": 92156396,
-            "memberNumber": "08203844",
-            "displayName": "MUST PAY $1985.00!!! Kozachyn",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 5,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3171977,
-              "__typename": "Member"
-            }
-          },
-          {
             "id": 92156401,
             "memberNumber": "08214445",
             "displayName": "Frankie Bonner",
-            "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -150,26 +135,11 @@
             }
           },
           {
-            "id": 92156400,
-            "memberNumber": "08214151",
-            "displayName": "Angelo \"Low\" Torrie",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3412475,
-              "__typename": "Member"
-            }
-          },
-          {
             "id": 92434995,
             "memberNumber": "08202717",
             "displayName": "Johnny Burden Jr.",
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 5,
@@ -187,8 +157,8 @@
       "team": {
         "id": 13022788,
         "sessionBonusPoints": 0,
-        "sessionPoints": 20,
-        "sessionTotalPoints": 20,
+        "sessionPoints": 28,
+        "sessionTotalPoints": 28,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -362,11 +332,28 @@
             "isMine": true,
             "isPaid": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 8,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -417,12 +404,12 @@
             "type": "EIGHT",
             "id": 50630055,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-02T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

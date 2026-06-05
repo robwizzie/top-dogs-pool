@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-29T14:07:54.687Z",
+  "fetchedAt": "2026-06-05T14:01:04.435Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Lights Out",
         "number": "06805",
         "isTied": false,
-        "standing": 5,
+        "standing": 3,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -63,10 +63,10 @@
             "id": 92156427,
             "memberNumber": "08216156",
             "displayName": "The Dude Sears",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -79,10 +79,10 @@
             "memberNumber": "08212513",
             "displayName": "John Kotyk",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
-            "skillLevel": 5,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3136955,
@@ -108,10 +108,10 @@
             "id": 92156429,
             "memberNumber": "08210144",
             "displayName": "Kevin Maiden",
-            "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesWon": 1,
+            "matchesPlayed": 3,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -124,7 +124,7 @@
             "memberNumber": "08213515",
             "displayName": "Jennifer Swanson",
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
@@ -138,10 +138,10 @@
             "id": 92156433,
             "memberNumber": "08212173",
             "displayName": "Robert Caione",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022792,
         "sessionBonusPoints": 0,
-        "sessionPoints": 20,
-        "sessionTotalPoints": 20,
+        "sessionPoints": 32,
+        "sessionTotalPoints": 32,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -222,7 +222,7 @@
               {
                 "homeAway": "AWAY",
                 "points": {
-                  "total": 12,
+                  "total": 8,
                   "__typename": "MatchResultPoints"
                 },
                 "__typename": "MatchResult"
@@ -362,11 +362,28 @@
             "isMine": false,
             "isPaid": null,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 6,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -417,12 +434,12 @@
             "type": "EIGHT",
             "id": 50630057,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-02T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",
