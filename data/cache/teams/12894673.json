@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-05T13:59:35.973Z",
+  "fetchedAt": "2026-06-08T15:57:02.695Z",
   "data": {
     "teamPage": {
       "team": {
@@ -205,6 +205,7 @@
             "startTime": "2025-12-30T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -283,6 +284,7 @@
             "startTime": "2026-01-06T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -361,6 +363,7 @@
             "startTime": "2026-01-13T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -439,6 +442,7 @@
             "startTime": "2026-01-20T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -517,6 +521,7 @@
             "startTime": "2026-01-27T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -595,6 +600,7 @@
             "startTime": "2026-02-03T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -673,6 +679,7 @@
             "startTime": "2026-02-10T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -751,6 +758,7 @@
             "startTime": "2026-02-17T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -829,6 +837,7 @@
             "startTime": "2026-02-24T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -907,6 +916,7 @@
             "startTime": "2026-03-03T19:30:00-05:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -985,6 +995,7 @@
             "startTime": "2026-03-10T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1063,6 +1074,7 @@
             "startTime": "2026-03-17T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1141,6 +1153,7 @@
             "startTime": "2026-03-24T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1215,6 +1228,7 @@
             "startTime": "2026-03-31T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1293,6 +1307,7 @@
             "startTime": "2026-04-07T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1371,6 +1386,7 @@
             "startTime": "2026-04-14T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1449,6 +1465,7 @@
             "startTime": "2026-04-21T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1527,6 +1544,7 @@
             "startTime": "2026-04-28T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
@@ -1605,6 +1623,7 @@
             "startTime": "2026-05-05T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": true,
@@ -1665,6 +1684,164 @@
               "__typename": "League"
             },
             "orderItems": [],
+            "division": {
+              "id": 420216,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 19,
+            "type": "EIGHT",
+            "id": 50487086,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-05-05T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": true,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 4,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 90042,
+              "name": "Wilson's Pub",
+              "address": {
+                "id": 40206,
+                "name": "Wilson's Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894672,
+              "name": "Lights Out",
+              "number": "06805",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894675,
+              "name": "Here We Go!",
+              "number": "06808",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 420216,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 19,
+            "type": "EIGHT",
+            "id": 50487088,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-05-05T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": true,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39644,
+              "name": "Highland Tavern",
+              "address": {
+                "id": 41405,
+                "name": "Highland Tavern",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 12894668,
+              "name": "Nailed It!!",
+              "number": "06803",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 12894671,
+              "name": "8 Balls for Sale",
+              "number": "06804",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
             "division": {
               "id": 420216,
               "scheduleInEdit": false,

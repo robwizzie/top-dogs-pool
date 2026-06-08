@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-29T14:10:07.143Z",
+  "fetchedAt": "2026-06-08T16:03:59.954Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -40,15 +40,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 1,
+            "ppm": 3,
+            "eightBallMatchPointsEarned": 3,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -64,7 +64,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1361,7 +1361,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -1371,7 +1371,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "nineOnSnaps": 0,
+            "nineOnSnaps": 1,
             "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
@@ -2643,12 +2643,12 @@
         "EightBallStats": [
           {
             "id": 802246006,
-            "matchesWon": 258,
-            "matchesPlayed": 505,
+            "matchesWon": 260,
+            "matchesPlayed": 509,
             "CLA": 5,
             "defensiveShotAvg": 1.26,
-            "matchCountForLastTwoYrs": 134,
-            "lastPlayed": "2026-05-26T00:00:00Z",
+            "matchCountForLastTwoYrs": 137,
+            "lastPlayed": "2026-06-02T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2656,11 +2656,11 @@
           {
             "id": 902246006,
             "matchesWon": 249,
-            "matchesPlayed": 492,
+            "matchesPlayed": 494,
             "CLA": 0,
             "defensiveShotAvg": 1.23,
             "matchCountForLastTwoYrs": 104,
-            "lastPlayed": "2026-05-18T00:00:00Z",
+            "lastPlayed": "2026-06-01T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2870,8 +2870,18 @@
         "league": {
           "news": [
             {
-              "id": 55121,
-              "title": "2026 Poolplayer Championships Cue Balls Available",
+              "id": 55430,
+              "title": "Skill level badges removed from My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55135,
+              "title": "NEW Summer T-Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -3027,14 +3037,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 298519299,
+              "id": 300771396,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-05-22T15:39:02Z",
+              "createdDate": "2026-06-05T19:54:16Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13001466,\"leagueDivisionSessionScheduleMatchId\":50630049,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13094565,\"leagueDivisionSessionScheduleMatchId\":50630059,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -3104,7 +3114,7 @@
                 },
                 {
                   "__typename": "NineBallLifetimeStatistics",
-                  "skillLevel": 7,
+                  "skillLevel": 6,
                   "CLA": 0
                 }
               ],
@@ -3394,7 +3404,7 @@
               "id": 92156159,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 6,
+              "rosterPosition": 5,
               "nickName": "Johnny",
               "matchesPlayed": 3,
               "matchesWon": 2,
@@ -3423,8 +3433,8 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "Johnny",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -3450,14 +3460,14 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Johnny",
-              "matchesPlayed": 1,
+              "matchesPlayed": 2,
               "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 7,
+              "skillLevel": 6,
               "rank": null,
               "team": {
                 "id": 13023051,
@@ -3484,7 +3494,7 @@
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 7,
+              "skillLevel": 6,
               "rank": null,
               "team": {
                 "id": 13023157,
@@ -3502,9 +3512,9 @@
               "id": 92434995,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 8,
+              "rosterPosition": 6,
               "nickName": "Johnny",
-              "matchesPlayed": 0,
+              "matchesPlayed": 1,
               "matchesWon": 0,
               "session": {
                 "id": 139,

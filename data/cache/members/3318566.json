@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-29T14:09:03.232Z",
+  "fetchedAt": "2026-06-08T16:03:31.594Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
+            "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -197,6 +197,18 @@
       "alias": {
         "players": [
           {
+            "id": 92446217,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
             "id": 92156399,
             "session": {
               "id": 139,
@@ -347,10 +359,10 @@
           {
             "id": 803137364,
             "matchesWon": 19,
-            "matchesPlayed": 51,
+            "matchesPlayed": 53,
             "CLA": 0,
             "defensiveShotAvg": 0.64,
-            "matchCountForLastTwoYrs": 43,
+            "matchCountForLastTwoYrs": 44,
             "lastPlayed": "2026-05-26T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -362,7 +374,7 @@
             "matchesPlayed": 37,
             "CLA": 0,
             "defensiveShotAvg": 0.97,
-            "matchCountForLastTwoYrs": 20,
+            "matchCountForLastTwoYrs": 19,
             "lastPlayed": "2025-07-14T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -463,8 +475,18 @@
         "league": {
           "news": [
             {
-              "id": 55121,
-              "title": "2026 Poolplayer Championships Cue Balls Available",
+              "id": 55430,
+              "title": "Skill level badges removed from My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55135,
+              "title": "NEW Summer T-Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -620,14 +642,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 298519299,
+              "id": 300771396,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-05-22T15:39:02Z",
+              "createdDate": "2026-06-05T19:54:16Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13001466,\"leagueDivisionSessionScheduleMatchId\":50630049,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13094565,\"leagueDivisionSessionScheduleMatchId\":50630059,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -692,7 +714,7 @@
               "stats": [
                 {
                   "__typename": "EightBallLifetimeStatistics",
-                  "skillLevel": 3,
+                  "skillLevel": 2,
                   "CLA": 0
                 },
                 {
@@ -984,19 +1006,46 @@
           ],
           "currentTeams": [
             {
-              "id": 92156399,
+              "id": 92446217,
               "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
+              "role": "MEMBER",
+              "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 2,
+              "matchesPlayed": 0,
               "matchesWon": 0,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 3,
+              "skillLevel": 2,
+              "rank": null,
+              "team": {
+                "id": 13022638,
+                "name": "Joey Is Wicked Cool",
+                "division": {
+                  "id": 431601,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 92156399,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 3,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 2,
               "rank": null,
               "team": {
                 "id": 13022788,

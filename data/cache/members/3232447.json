@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-29T14:11:36.306Z",
+  "fetchedAt": "2026-06-08T16:03:17.846Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -24,7 +24,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 3,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
+            "eightBallMatchPointsEarned": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -65,6 +65,26 @@
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
             "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 92444288,
+            "team": {
+              "id": 13059258,
+              "name": "What Had Happened Was?",
+              "number": "05306",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 1,
+            "matchesWon": 0,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -692,6 +712,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 92444288,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91790902,
             "session": {
               "id": 138,
@@ -1153,24 +1185,24 @@
         "EightBallStats": [
           {
             "id": 803005312,
-            "matchesWon": 93,
-            "matchesPlayed": 195,
+            "matchesWon": 94,
+            "matchesPlayed": 199,
             "CLA": 0,
-            "defensiveShotAvg": 1.01,
-            "matchCountForLastTwoYrs": 97,
-            "lastPlayed": "2026-05-28T00:00:00Z",
+            "defensiveShotAvg": 1.03,
+            "matchCountForLastTwoYrs": 100,
+            "lastPlayed": "2026-06-04T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903005312,
-            "matchesWon": 72,
-            "matchesPlayed": 124,
+            "matchesWon": 73,
+            "matchesPlayed": 127,
             "CLA": 0,
             "defensiveShotAvg": 1.31,
-            "matchCountForLastTwoYrs": 97,
-            "lastPlayed": "2026-05-18T00:00:00Z",
+            "matchCountForLastTwoYrs": 98,
+            "lastPlayed": "2026-06-02T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1281,8 +1313,18 @@
         "league": {
           "news": [
             {
-              "id": 55121,
-              "title": "2026 Poolplayer Championships Cue Balls Available",
+              "id": 55430,
+              "title": "Skill level badges removed from My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55135,
+              "title": "NEW Summer T-Shirts Presale Offer",
               "__typename": "News"
             },
             {
@@ -1438,14 +1480,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 298519299,
+              "id": 300771396,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-05-22T15:39:02Z",
+              "createdDate": "2026-06-05T19:54:16Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13001466,\"leagueDivisionSessionScheduleMatchId\":50630049,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13094565,\"leagueDivisionSessionScheduleMatchId\":50630059,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1805,9 +1847,9 @@
               "id": 92155391,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 8,
+              "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 5,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -1861,8 +1903,8 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -1888,8 +1930,8 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 2,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -1929,6 +1971,33 @@
                 "name": "The Railhouse",
                 "division": {
                   "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92444288,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 1,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13059258,
+                "name": "What Had Happened Was?",
+                "division": {
+                  "id": 431654,
                   "isTournament": false,
                   "__typename": "Division"
                 },
