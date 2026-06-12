@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-05T14:01:30.548Z",
+  "fetchedAt": "2026-06-12T14:05:59.287Z",
   "data": {
     "teamPage": {
       "team": {
@@ -80,12 +80,30 @@
             "startTime": "2026-05-12T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -141,12 +159,30 @@
             "startTime": "2026-05-19T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -198,12 +234,30 @@
             "startTime": "2026-05-26T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -259,12 +313,30 @@
             "startTime": "2026-06-02T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -315,12 +387,13 @@
             "type": "EIGHT",
             "id": 50630061,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-09T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
-            "isScored": false,
+            "isTournament": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",
@@ -377,6 +450,7 @@
             "startTime": "2026-06-16T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -438,6 +512,7 @@
             "startTime": "2026-06-23T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -495,6 +570,7 @@
             "startTime": "2026-06-30T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -556,6 +632,7 @@
             "startTime": "2026-07-07T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -613,6 +690,7 @@
             "startTime": "2026-07-14T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -670,6 +748,7 @@
             "startTime": "2026-07-21T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -731,6 +810,7 @@
             "startTime": "2026-07-28T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -788,6 +868,7 @@
             "startTime": "2026-08-04T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -845,6 +926,7 @@
             "startTime": "2026-08-11T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -906,6 +988,7 @@
             "startTime": "2026-08-18T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
@@ -963,6 +1046,7 @@
             "startTime": "2026-08-25T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": true,
@@ -1003,6 +1087,7 @@
             "startTime": "2026-09-01T19:30:00-04:00",
             "isMine": true,
             "isPaid": null,
+            "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": true,
