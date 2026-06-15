@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-12T14:04:14.740Z",
+  "fetchedAt": "2026-06-15T17:28:19.268Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Top Dawgs",
         "number": "06806",
         "isTied": false,
-        "standing": 7,
+        "standing": 3,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -94,9 +94,9 @@
             "memberNumber": "08203833",
             "displayName": "Peter Johnson V",
             "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.8333333333333334,
-            "ppm": 2.5,
+            "matchesPlayed": 3,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -108,10 +108,10 @@
             "id": 92156441,
             "memberNumber": "08203907",
             "displayName": "Robert Wiscount",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -124,9 +124,9 @@
             "memberNumber": "08203835",
             "displayName": "Meghan Johnson",
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "matchesPlayed": 2,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -154,9 +154,9 @@
             "memberNumber": "08203845",
             "displayName": "Greg Carpenter",
             "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
+            "matchesPlayed": 4,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -169,10 +169,10 @@
             "memberNumber": "08214528",
             "displayName": "Jake McNamee",
             "matchesWon": 1,
-            "matchesPlayed": 3,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
-            "skillLevel": 3,
+            "matchesPlayed": 4,
+            "pa": 0.25,
+            "ppm": 0.75,
+            "skillLevel": 2,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3472740,
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022793,
         "sessionBonusPoints": 0,
-        "sessionPoints": 37,
-        "sessionTotalPoints": 37,
+        "sessionPoints": 58,
+        "sessionTotalPoints": 58,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -523,11 +523,28 @@
             "isPaid": false,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -579,7 +596,7 @@
             "id": 50630064,
             "isBye": false,
             "status": "UNPLAYED",
-            "scoresheet": null,
+            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/50630064/3175746/3",
             "startTime": "2026-06-16T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
