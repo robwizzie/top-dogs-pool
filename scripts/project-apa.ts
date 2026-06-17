@@ -2098,7 +2098,12 @@ async function main() {
     opponentPlayers,
   };
 
-  await writeFile(resolve("data/apa.json"), JSON.stringify(out_, null, 2));
+  // Minified, not pretty-printed: this file is generated data, never edited
+  // by hand, and gets traced into every Vercel function bundle that reads it.
+  // Dropping the indentation whitespace cuts it ~40% (≈5MB → ≈2.9MB), which
+  // means less to ship per function instance and less to read/parse per cold
+  // start (Fluid Origin Transfer + Active CPU).
+  await writeFile(resolve("data/apa.json"), JSON.stringify(out_));
   const lbCurrent = leaderboards[String(currentSessionId)] ?? [];
   console.log(
     `→ wrote data/apa.json` +
