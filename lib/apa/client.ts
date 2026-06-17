@@ -40,13 +40,25 @@ let cached: { mtime: number; data: ApaSnapshot } | null = null;
 /**
  * Load data/apa.json. Cached in-process by mtime — Next.js may call this
  * many times per render and the file rarely changes.
+ *
+ * The snapshot is the committed output of our own scraper/projection
+ * (`npm run sync`), so its shape is already guaranteed and every schema
+ * default is materialized into the file. Running a full Zod `.parse()` over
+ * the multi-MB object on every cold function instance is therefore pure CPU
+ * waste — on Vercel's Fluid Compute it shows up directly as Active CPU. We
+ * skip validation in production and keep it in dev/preview as a safety net
+ * that catches a malformed or hand-edited file before it ships.
  */
 export async function loadSnapshot(): Promise<ApaSnapshot> {
   try {
     const s = await stat(SNAPSHOT_PATH);
     if (cached && cached.mtime === s.mtimeMs) return cached.data;
     const raw = await readFile(SNAPSHOT_PATH, "utf8");
-    const parsed = ApaSnapshot.parse(JSON.parse(raw));
+    const json = JSON.parse(raw);
+    const parsed =
+      process.env.NODE_ENV === "production"
+        ? (json as ApaSnapshot)
+        : ApaSnapshot.parse(json);
     cached = { mtime: s.mtimeMs, data: parsed };
     return parsed;
   } catch (err) {
