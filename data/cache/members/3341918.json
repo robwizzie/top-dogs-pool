@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:35:50.830Z",
+  "fetchedAt": "2026-06-26T13:54:28.808Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3167012,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.4166666666666667,
-            "ppm": 1.25,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 1,
-            "matchesPlayed": 4,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 2,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -328,12 +328,12 @@
         "EightBallStats": [
           {
             "id": 803167012,
-            "matchesWon": 37,
-            "matchesPlayed": 88,
+            "matchesWon": 38,
+            "matchesPlayed": 89,
             "CLA": 0,
-            "defensiveShotAvg": 1.39,
+            "defensiveShotAvg": 1.37,
             "matchCountForLastTwoYrs": 74,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "lastPlayed": "2026-06-16T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -434,8 +434,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -548,6 +548,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -596,14 +602,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -686,6 +692,33 @@
         "alias": {
           "id": 3167012,
           "pastTeams": [
+            {
+              "id": 91261543,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Joe Rogan",
+              "matchesPlayed": 16,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 17,
+              "team": {
+                "id": 12894668,
+                "name": "Nailed It!!",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90961898,
               "isActive": true,
@@ -854,10 +887,10 @@
               "id": 92156418,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 6,
+              "rosterPosition": 5,
               "nickName": "Joe Rogan",
-              "matchesPlayed": 4,
-              "matchesWon": 1,
+              "matchesPlayed": 5,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -870,33 +903,6 @@
                 "name": "Nailed It!!",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261543,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Joe Rogan",
-              "matchesPlayed": 16,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 17,
-              "team": {
-                "id": 12894668,
-                "name": "Nailed It!!",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

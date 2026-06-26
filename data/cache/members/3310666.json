@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:34:53.554Z",
+  "fetchedAt": "2026-06-26T13:53:27.323Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3127930,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -377,12 +377,12 @@
         "EightBallStats": [
           {
             "id": 803127930,
-            "matchesWon": 48,
-            "matchesPlayed": 102,
+            "matchesWon": 49,
+            "matchesPlayed": 103,
             "CLA": 0,
             "defensiveShotAvg": 0.34,
             "matchCountForLastTwoYrs": 69,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -494,8 +494,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -608,6 +608,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -656,14 +662,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -747,6 +753,33 @@
         "alias": {
           "id": 3127930,
           "pastTeams": [
+            {
+              "id": 91261566,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 13,
+              "team": {
+                "id": 12894671,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90959870,
               "isActive": true,
@@ -985,33 +1018,6 @@
                 "name": "8 Balls for Sale",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261566,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 13,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 13,
-              "team": {
-                "id": 12894671,
-                "name": "8 Balls for Sale",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-19T14:07:58.256Z",
+  "fetchedAt": "2026-06-26T13:46:26.651Z",
   "data": {
     "teamPage": {
       "team": {
@@ -469,11 +469,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -524,13 +541,13 @@
             "type": "EIGHT",
             "id": 50630071,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-23T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:35:29.016Z",
+  "fetchedAt": "2026-06-26T13:54:00.306Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2891584,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
             "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -794,12 +794,12 @@
         "EightBallStats": [
           {
             "id": 802891584,
-            "matchesWon": 92,
-            "matchesPlayed": 191,
+            "matchesWon": 93,
+            "matchesPlayed": 193,
             "CLA": 0,
-            "defensiveShotAvg": 1.7,
-            "matchCountForLastTwoYrs": 78,
-            "lastPlayed": "2026-05-28T00:00:00Z",
+            "defensiveShotAvg": 1.68,
+            "matchCountForLastTwoYrs": 80,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -944,8 +944,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1058,6 +1058,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1106,14 +1112,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1196,6 +1202,60 @@
         "alias": {
           "id": 2891584,
           "pastTeams": [
+            {
+              "id": 91261010,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Chris",
+              "matchesPlayed": 10,
+              "matchesWon": 3,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 8,
+              "team": {
+                "id": 12894595,
+                "name": "Bank Shot Brigade",
+                "division": {
+                  "id": 420209,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261541,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Chris",
+              "matchesPlayed": 11,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 3,
+              "team": {
+                "id": 12894668,
+                "name": "Nailed It!!",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90961896,
               "isActive": true,
@@ -1411,60 +1471,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 86522603,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": "Chris",
-              "matchesPlayed": 12,
-              "matchesWon": 8,
-              "session": {
-                "id": 129,
-                "name": "Summer 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 4,
-              "team": {
-                "id": 12240384,
-                "name": "Better Safe Than Sorry",
-                "division": {
-                  "id": 362297,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 86001328,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": "Chris",
-              "matchesPlayed": 9,
-              "matchesWon": 3,
-              "session": {
-                "id": 125,
-                "name": "Spring 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 24,
-              "team": {
-                "id": 12167277,
-                "name": "Better Safe Than Sorry",
-                "division": {
-                  "id": 355726,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1498,10 +1504,10 @@
             {
               "id": 92156416,
               "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
               "nickName": "Chris",
-              "matchesPlayed": 2,
+              "matchesPlayed": 3,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -1515,60 +1521,6 @@
                 "name": "Nailed It!!",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261010,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Chris",
-              "matchesPlayed": 10,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 8,
-              "team": {
-                "id": 12894595,
-                "name": "Bank Shot Brigade",
-                "division": {
-                  "id": 420209,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261541,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Chris",
-              "matchesPlayed": 11,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 12894668,
-                "name": "Nailed It!!",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:35:07.541Z",
+  "fetchedAt": "2026-06-26T13:53:43.168Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2585003,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -1114,11 +1114,11 @@
           {
             "id": 802585003,
             "matchesWon": 85,
-            "matchesPlayed": 190,
+            "matchesPlayed": 191,
             "CLA": 0,
             "defensiveShotAvg": 0.65,
             "matchCountForLastTwoYrs": 85,
-            "lastPlayed": "2026-06-11T00:00:00Z",
+            "lastPlayed": "2026-06-25T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1285,8 +1285,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1399,6 +1399,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1447,14 +1453,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1538,6 +1544,60 @@
         "alias": {
           "id": 2585003,
           "pastTeams": [
+            {
+              "id": 91745751,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Must Pay $630",
+              "matchesPlayed": 7,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 18,
+              "team": {
+                "id": 12894671,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91264341,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Must Pay $630",
+              "matchesPlayed": 5,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 12,
+              "team": {
+                "id": 12895067,
+                "name": "This One's 4 Bruce!",
+                "division": {
+                  "id": 420256,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90959858,
               "isActive": true,
@@ -1753,60 +1813,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89718964,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Must Pay $630",
-              "matchesPlayed": 8,
-              "matchesWon": 5,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 5,
-              "team": {
-                "id": 12623705,
-                "name": "This One's 4 Bruce!",
-                "division": {
-                  "id": 395958,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88903558,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Must Pay $630",
-              "matchesPlayed": 8,
-              "matchesWon": 2,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 14,
-              "team": {
-                "id": 12576665,
-                "name": "Let's Go Brandon",
-                "division": {
-                  "id": 391955,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1857,60 +1863,6 @@
                 "name": "What Had Happened Was?",
                 "division": {
                   "id": 431654,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91745751,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Must Pay $630",
-              "matchesPlayed": 7,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 18,
-              "team": {
-                "id": 12894671,
-                "name": "8 Balls for Sale",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264341,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Must Pay $630",
-              "matchesPlayed": 5,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 12,
-              "team": {
-                "id": 12895067,
-                "name": "This One's 4 Bruce!",
-                "division": {
-                  "id": 420256,
                   "isTournament": false,
                   "__typename": "Division"
                 },

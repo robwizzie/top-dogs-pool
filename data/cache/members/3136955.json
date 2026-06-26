@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:30:45.571Z",
+  "fetchedAt": "2026-06-26T13:48:49.683Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2869326,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 6,
-            "matchesWon": 2,
-            "matchesPlayed": 3,
+            "pa": 0.75,
+            "ppm": 2.25,
+            "eightBallMatchPointsEarned": 9,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -42,9 +42,9 @@
             },
             "pa": 0.3333333333333333,
             "ppm": 1,
-            "eightBallMatchPointsEarned": 4,
+            "eightBallMatchPointsEarned": 5,
             "matchesWon": 1,
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1134,24 +1134,24 @@
         "EightBallStats": [
           {
             "id": 802869326,
-            "matchesWon": 155,
-            "matchesPlayed": 315,
+            "matchesWon": 157,
+            "matchesPlayed": 318,
             "CLA": 0,
-            "defensiveShotAvg": 1.27,
-            "matchCountForLastTwoYrs": 153,
-            "lastPlayed": "2026-06-11T00:00:00Z",
+            "defensiveShotAvg": 1.26,
+            "matchCountForLastTwoYrs": 154,
+            "lastPlayed": "2026-06-25T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902869326,
-            "matchesWon": 81,
-            "matchesPlayed": 158,
+            "matchesWon": 82,
+            "matchesPlayed": 159,
             "CLA": 0,
-            "defensiveShotAvg": 0.89,
-            "matchCountForLastTwoYrs": 68,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "defensiveShotAvg": 0.9,
+            "matchCountForLastTwoYrs": 67,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1284,8 +1284,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1398,6 +1398,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1446,14 +1452,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1537,6 +1543,87 @@
         "alias": {
           "id": 2869326,
           "pastTeams": [
+            {
+              "id": 91260606,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 11,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 19,
+              "team": {
+                "id": 12894539,
+                "name": "All Pockets Available",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91262790,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 8,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 4,
+              "team": {
+                "id": 12894843,
+                "name": "Let's Go Brandon",
+                "division": {
+                  "id": 420233,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91261572,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 14,
+              "matchesWon": 9,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 2,
+              "team": {
+                "id": 12894672,
+                "name": "Lights Out",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962506,
               "isActive": true,
@@ -1725,87 +1812,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89286602,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 5,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 9,
-              "team": {
-                "id": 12623467,
-                "name": "Let's Go Brandon",
-                "division": {
-                  "id": 395933,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89285426,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 5,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 7,
-              "team": {
-                "id": 12623299,
-                "name": "Lights Out",
-                "division": {
-                  "id": 395915,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88901800,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 12,
-              "team": {
-                "id": 12576431,
-                "name": "All Pockets Available",
-                "division": {
-                  "id": 391925,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1815,8 +1821,8 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -1869,7 +1875,7 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 4,
+              "matchesPlayed": 5,
               "matchesWon": 1,
               "session": {
                 "id": 139,
@@ -1877,93 +1883,12 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022792,
                 "name": "Lights Out",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91260606,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 19,
-              "team": {
-                "id": 12894539,
-                "name": "All Pockets Available",
-                "division": {
-                  "id": 420204,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91262790,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 8,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 4,
-              "team": {
-                "id": 12894843,
-                "name": "Let's Go Brandon",
-                "division": {
-                  "id": 420233,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261572,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 14,
-              "matchesWon": 9,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 2,
-              "team": {
-                "id": 12894672,
-                "name": "Lights Out",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

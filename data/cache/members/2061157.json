@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:34:26.690Z",
+  "fetchedAt": "2026-06-26T13:52:58.512Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 74455,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -1845,7 +1845,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "nineOnSnaps": 0,
+            "nineOnSnaps": 1,
             "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
@@ -3841,7 +3841,7 @@
             "matchesPlayed": 875,
             "CLA": 0,
             "defensiveShotAvg": 1.52,
-            "matchCountForLastTwoYrs": 124,
+            "matchCountForLastTwoYrs": 123,
             "lastPlayed": "2026-05-19T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -3849,12 +3849,12 @@
         "NineBallStats": [
           {
             "id": 900074455,
-            "matchesWon": 610,
-            "matchesPlayed": 1194,
+            "matchesWon": 611,
+            "matchesPlayed": 1196,
             "CLA": 0,
             "defensiveShotAvg": 1.35,
-            "matchCountForLastTwoYrs": 167,
-            "lastPlayed": "2026-06-10T00:00:00Z",
+            "matchCountForLastTwoYrs": 164,
+            "lastPlayed": "2026-06-24T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -4130,8 +4130,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -4244,6 +4244,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -4292,14 +4298,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -4383,6 +4389,114 @@
         "alias": {
           "id": 74455,
           "pastTeams": [
+            {
+              "id": 91261560,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": "Shot",
+              "matchesPlayed": 9,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 14,
+              "team": {
+                "id": 12894671,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261069,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Shot",
+              "matchesPlayed": 10,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 15,
+              "team": {
+                "id": 12894604,
+                "name": "Beer In Hand",
+                "division": {
+                  "id": 420210,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91264104,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Shot",
+              "matchesPlayed": 12,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 15,
+              "team": {
+                "id": 12895031,
+                "name": "Drunkards",
+                "division": {
+                  "id": 420251,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91260728,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Shot",
+              "matchesPlayed": 10,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 7,
+              "team": {
+                "id": 12894556,
+                "name": "Scotty is BENCHED",
+                "division": {
+                  "id": 420205,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 90959864,
               "isActive": true,
@@ -4544,114 +4658,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90217618,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Shot",
-              "matchesPlayed": 12,
-              "matchesWon": 4,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 8,
-              "team": {
-                "id": 12758223,
-                "name": "Drunkards",
-                "division": {
-                  "id": 408222,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90216258,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Shot",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 12758041,
-                "name": "Franklinville VFW II",
-                "division": {
-                  "id": 408203,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90218246,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Shot",
-              "matchesPlayed": 8,
-              "matchesWon": 3,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 8,
-              "team": {
-                "id": 12758303,
-                "name": "Scotty is BENCHED",
-                "division": {
-                  "id": 408176,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89285414,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "Shot",
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 4,
-              "team": {
-                "id": 12623298,
-                "name": "8 Balls for Sale",
-                "division": {
-                  "id": 395915,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -4669,7 +4675,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022791,
                 "name": "8 Balls for Sale",
@@ -4769,8 +4775,8 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "Shot",
-              "matchesPlayed": 3,
-              "matchesWon": 0,
+              "matchesPlayed": 4,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -4783,114 +4789,6 @@
                 "name": "Scotty is BENCHED",
                 "division": {
                   "id": 431603,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261560,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "Shot",
-              "matchesPlayed": 9,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 14,
-              "team": {
-                "id": 12894671,
-                "name": "8 Balls for Sale",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261069,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Shot",
-              "matchesPlayed": 10,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 15,
-              "team": {
-                "id": 12894604,
-                "name": "Beer In Hand",
-                "division": {
-                  "id": 420210,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264104,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Shot",
-              "matchesPlayed": 12,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 15,
-              "team": {
-                "id": 12895031,
-                "name": "Drunkards",
-                "division": {
-                  "id": 420251,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91260728,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Shot",
-              "matchesPlayed": 10,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 7,
-              "team": {
-                "id": 12894556,
-                "name": "Scotty is BENCHED",
-                "division": {
-                  "id": 420205,
                   "isTournament": false,
                   "__typename": "Division"
                 },

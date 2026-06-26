@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:30:00.450Z",
+  "fetchedAt": "2026-06-26T13:52:17.294Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 1186927,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -2008,7 +2008,7 @@
             "matchesPlayed": 337,
             "CLA": 7,
             "defensiveShotAvg": 1.2,
-            "matchCountForLastTwoYrs": 47,
+            "matchCountForLastTwoYrs": 46,
             "lastPlayed": "2026-06-09T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -2253,8 +2253,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -2367,6 +2367,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2415,14 +2421,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2506,6 +2512,33 @@
         "alias": {
           "id": 1186927,
           "pastTeams": [
+            {
+              "id": 91261544,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "Mike$61",
+              "matchesPlayed": 5,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12894669,
+                "name": "The Office",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962716,
               "isActive": true,
@@ -2748,33 +2781,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 78245333,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Mike$61",
-              "matchesPlayed": 4,
-              "matchesWon": 2,
-              "session": {
-                "id": 104,
-                "name": "Spring 2018",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": null,
-              "team": {
-                "id": 11091710,
-                "name": "Stroke-Um",
-                "division": {
-                  "id": 254754,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2798,33 +2804,6 @@
                 "name": "The Office",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261544,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Mike$61",
-              "matchesPlayed": 5,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12894669,
-                "name": "The Office",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

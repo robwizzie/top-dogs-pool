@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:32:23.141Z",
+  "fetchedAt": "2026-06-26T13:50:41.296Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2246006,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 1,
-            "ppm": 3,
-            "eightBallMatchPointsEarned": 3,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
+            "eightBallMatchPointsEarned": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -60,12 +60,12 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "eightBallBreakAndRuns": 0,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 2,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 0,
@@ -1372,7 +1372,7 @@
               "__typename": "Session"
             },
             "nineOnSnaps": 1,
-            "nineBallBreakAndRuns": 0,
+            "nineBallBreakAndRuns": 1,
             "miniSlams": 0,
             "skunks": 0,
             "__typename": "NineBallPlayer"
@@ -1396,7 +1396,7 @@
               "__typename": "Session"
             },
             "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 0,
+            "eightBallBreakAndRuns": 1,
             "rackless": 0,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
@@ -2643,24 +2643,24 @@
         "EightBallStats": [
           {
             "id": 802246006,
-            "matchesWon": 260,
-            "matchesPlayed": 509,
+            "matchesWon": 262,
+            "matchesPlayed": 512,
             "CLA": 5,
-            "defensiveShotAvg": 1.26,
-            "matchCountForLastTwoYrs": 137,
-            "lastPlayed": "2026-06-02T00:00:00Z",
+            "defensiveShotAvg": 1.25,
+            "matchCountForLastTwoYrs": 139,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902246006,
-            "matchesWon": 249,
-            "matchesPlayed": 495,
+            "matchesWon": 250,
+            "matchesPlayed": 497,
             "CLA": 0,
             "defensiveShotAvg": 1.23,
-            "matchCountForLastTwoYrs": 105,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "matchCountForLastTwoYrs": 102,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2870,8 +2870,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -2984,6 +2984,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -3032,14 +3038,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -3123,6 +3129,114 @@
         "alias": {
           "id": 2246006,
           "pastTeams": [
+            {
+              "id": 91601726,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Johnny",
+              "matchesPlayed": 15,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 5,
+              "team": {
+                "id": 12894641,
+                "name": "Cue's Your Daddy",
+                "division": {
+                  "id": 420213,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91264888,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Johnny",
+              "matchesPlayed": 10,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 12,
+              "team": {
+                "id": 12895148,
+                "name": "Duck Around and Find Out",
+                "division": {
+                  "id": 420263,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91260617,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "Johnny",
+              "matchesPlayed": 12,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 15,
+              "team": {
+                "id": 12894541,
+                "name": "OLD LIVES MATTER",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91264098,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": "Johnny",
+              "matchesPlayed": 10,
+              "matchesWon": 3,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 7,
+              "team": {
+                "id": 12895030,
+                "name": "Pocket Rockets",
+                "division": {
+                  "id": 420251,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 90964406,
               "isActive": true,
@@ -3284,114 +3398,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90521527,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Johnny",
-              "matchesPlayed": 8,
-              "matchesWon": 3,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 15,
-              "team": {
-                "id": 12758346,
-                "name": "OLD LIVES MATTER",
-                "division": {
-                  "id": 408175,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90217612,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "Johnny",
-              "matchesPlayed": 5,
-              "matchesWon": 2,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 8,
-              "team": {
-                "id": 12758222,
-                "name": "Pocket Rockets",
-                "division": {
-                  "id": 408222,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90218231,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Johnny",
-              "matchesPlayed": 7,
-              "matchesWon": 1,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 9,
-              "team": {
-                "id": 12758301,
-                "name": "Stroke It!",
-                "division": {
-                  "id": 408204,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89288129,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": "Johnny",
-              "matchesPlayed": 9,
-              "matchesWon": 3,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 11,
-              "team": {
-                "id": 12623702,
-                "name": "A Touch Even More",
-                "division": {
-                  "id": 395958,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -3428,8 +3434,8 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "Johnny",
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 2,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -3455,8 +3461,8 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Johnny",
-              "matchesPlayed": 3,
-              "matchesWon": 1,
+              "matchesPlayed": 4,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -3509,8 +3515,8 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "Johnny",
-              "matchesPlayed": 1,
-              "matchesWon": 0,
+              "matchesPlayed": 2,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -3529,114 +3535,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91601726,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Johnny",
-              "matchesPlayed": 15,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 12894641,
-                "name": "Cue's Your Daddy",
-                "division": {
-                  "id": 420213,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264888,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Johnny",
-              "matchesPlayed": 10,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 12,
-              "team": {
-                "id": 12895148,
-                "name": "Duck Around and Find Out",
-                "division": {
-                  "id": 420263,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91260617,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Johnny",
-              "matchesPlayed": 12,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 15,
-              "team": {
-                "id": 12894541,
-                "name": "OLD LIVES MATTER",
-                "division": {
-                  "id": 420204,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264098,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "Johnny",
-              "matchesPlayed": 10,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 7,
-              "team": {
-                "id": 12895030,
-                "name": "Pocket Rockets",
-                "division": {
-                  "id": 420251,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "__typename": "Alias"

@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:34:04.528Z",
+  "fetchedAt": "2026-06-26T13:47:56.010Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2529028,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.1111111111111111,
-            "ppm": 0.3333333333333333,
+            "pa": 0.08333333333333333,
+            "ppm": 0.25,
             "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1360,12 +1360,12 @@
         "EightBallStats": [
           {
             "id": 802529028,
-            "matchesWon": 182,
-            "matchesPlayed": 359,
+            "matchesWon": 183,
+            "matchesPlayed": 361,
             "CLA": 4,
-            "defensiveShotAvg": 1.54,
+            "defensiveShotAvg": 1.55,
             "matchCountForLastTwoYrs": 62,
-            "lastPlayed": "2026-06-02T00:00:00Z",
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1554,8 +1554,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1668,6 +1668,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1716,14 +1722,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1807,6 +1813,33 @@
         "alias": {
           "id": 2529028,
           "pastTeams": [
+            {
+              "id": 91261604,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Don-Jose",
+              "matchesPlayed": 10,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 1,
+              "team": {
+                "id": 12894676,
+                "name": "Break 8 Away",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962556,
               "isActive": true,
@@ -2049,33 +2082,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 86746227,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Don-Jose",
-              "matchesPlayed": 10,
-              "matchesWon": 1,
-              "session": {
-                "id": 129,
-                "name": "Summer 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 21,
-              "team": {
-                "id": 12274588,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 362297,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2085,7 +2091,7 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "Don-Jose",
-              "matchesPlayed": 3,
+              "matchesPlayed": 4,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -2093,39 +2099,12 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13022789,
                 "name": "Break 8 Away",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261604,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Don-Jose",
-              "matchesPlayed": 10,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 1,
-              "team": {
-                "id": 12894676,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

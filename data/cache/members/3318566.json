@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:31:56.326Z",
+  "fetchedAt": "2026-06-26T13:50:04.151Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3137364,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.1111111111111111,
-            "ppm": 0.3333333333333333,
-            "eightBallMatchPointsEarned": 1,
-            "matchesWon": 0,
-            "matchesPlayed": 3,
+            "pa": 0.25,
+            "ppm": 0.75,
+            "eightBallMatchPointsEarned": 3,
+            "matchesWon": 1,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -358,12 +358,12 @@
         "EightBallStats": [
           {
             "id": 803137364,
-            "matchesWon": 19,
-            "matchesPlayed": 53,
+            "matchesWon": 20,
+            "matchesPlayed": 54,
             "CLA": 0,
-            "defensiveShotAvg": 0.64,
-            "matchCountForLastTwoYrs": 43,
-            "lastPlayed": "2026-05-26T00:00:00Z",
+            "defensiveShotAvg": 0.67,
+            "matchCountForLastTwoYrs": 44,
+            "lastPlayed": "2026-06-16T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -371,11 +371,11 @@
           {
             "id": 903137364,
             "matchesWon": 14,
-            "matchesPlayed": 38,
+            "matchesPlayed": 39,
             "CLA": 0,
-            "defensiveShotAvg": 0.94,
-            "matchCountForLastTwoYrs": 20,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "defensiveShotAvg": 0.97,
+            "matchCountForLastTwoYrs": 21,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -475,8 +475,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -589,6 +589,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -637,14 +643,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -728,6 +734,33 @@
         "alias": {
           "id": 3137364,
           "pastTeams": [
+            {
+              "id": 91574117,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 13,
+              "team": {
+                "id": 12938517,
+                "name": "Poolin' and Boolin'",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90484710,
               "isActive": true,
@@ -970,33 +1003,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 87455384,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 4,
-              "matchesWon": 0,
-              "session": {
-                "id": 130,
-                "name": "Fall 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 1,
-              "rank": 10,
-              "team": {
-                "id": 12311456,
-                "name": "Head Hunters",
-                "division": {
-                  "id": 368575,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1033,8 +1039,8 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 0,
+              "matchesPlayed": 4,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -1047,33 +1053,6 @@
                 "name": "Poolin' and Boolin'",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91574117,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 13,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 13,
-              "team": {
-                "id": 12938517,
-                "name": "Poolin' and Boolin'",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

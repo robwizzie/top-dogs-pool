@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:32:37.742Z",
+  "fetchedAt": "2026-06-26T13:51:05.590Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2952454,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -1036,11 +1036,11 @@
           {
             "id": 802952454,
             "matchesWon": 199,
-            "matchesPlayed": 341,
+            "matchesPlayed": 342,
             "CLA": 0,
-            "defensiveShotAvg": 1.68,
-            "matchCountForLastTwoYrs": 122,
-            "lastPlayed": "2026-06-02T00:00:00Z",
+            "defensiveShotAvg": 1.67,
+            "matchCountForLastTwoYrs": 121,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1048,10 +1048,10 @@
           {
             "id": 902952454,
             "matchesWon": 107,
-            "matchesPlayed": 196,
+            "matchesPlayed": 197,
             "CLA": 0,
             "defensiveShotAvg": 1.58,
-            "matchCountForLastTwoYrs": 84,
+            "matchCountForLastTwoYrs": 86,
             "lastPlayed": "2026-03-29T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -1328,8 +1328,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1442,6 +1442,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1490,14 +1496,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1581,6 +1587,87 @@
         "alias": {
           "id": 2952454,
           "pastTeams": [
+            {
+              "id": 91261048,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 2,
+              "team": {
+                "id": 12894601,
+                "name": "Chalk Is Cheap!!",
+                "division": {
+                  "id": 420210,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261588,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 9,
+              "team": {
+                "id": 12894674,
+                "name": "Keep It Simple Stupid",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91263486,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 1,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 4,
+              "team": {
+                "id": 12894943,
+                "name": "Nein Balls",
+                "division": {
+                  "id": 420242,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 90961672,
               "isActive": true,
@@ -1769,87 +1856,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89284843,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 4,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 4,
-              "team": {
-                "id": 12623217,
-                "name": "Ridin’ With The Dave",
-                "division": {
-                  "id": 395907,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88901046,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 5,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 1,
-              "team": {
-                "id": 12576325,
-                "name": "Chalk Is Cheap!!",
-                "division": {
-                  "id": 391931,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88900703,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 4,
-              "matchesWon": 2,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 12576279,
-                "name": "Nein Balls",
-                "division": {
-                  "id": 391964,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1900,87 +1906,6 @@
                 "name": "Nein Balls",
                 "division": {
                   "id": 431640,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261048,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 2,
-              "team": {
-                "id": 12894601,
-                "name": "Chalk Is Cheap!!",
-                "division": {
-                  "id": 420210,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261588,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 13,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 9,
-              "team": {
-                "id": 12894674,
-                "name": "Keep It Simple Stupid",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263486,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 1,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 4,
-              "team": {
-                "id": 12894943,
-                "name": "Nein Balls",
-                "division": {
-                  "id": 420242,
                   "isTournament": false,
                   "__typename": "Division"
                 },

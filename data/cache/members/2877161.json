@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:35:44.846Z",
+  "fetchedAt": "2026-06-26T13:54:19.924Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2492980,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 2,
-            "matchesPlayed": 3,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1430,12 +1430,12 @@
         "EightBallStats": [
           {
             "id": 802492980,
-            "matchesWon": 129,
-            "matchesPlayed": 298,
+            "matchesWon": 130,
+            "matchesPlayed": 299,
             "CLA": 0,
             "defensiveShotAvg": 1.22,
             "matchCountForLastTwoYrs": 92,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "lastPlayed": "2026-06-16T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1443,11 +1443,11 @@
           {
             "id": 902492980,
             "matchesWon": 141,
-            "matchesPlayed": 276,
+            "matchesPlayed": 277,
             "CLA": 0,
             "defensiveShotAvg": 1.22,
             "matchCountForLastTwoYrs": 77,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "lastPlayed": "2026-06-15T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1635,8 +1635,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1749,6 +1749,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1797,14 +1803,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1888,6 +1894,60 @@
         "alias": {
           "id": 2492980,
           "pastTeams": [
+            {
+              "id": 91261540,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 16,
+              "matchesWon": 10,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 5,
+              "team": {
+                "id": 12894668,
+                "name": "Nailed It!!",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91262839,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 10,
+              "team": {
+                "id": 12894849,
+                "name": "What Would Fred Do??",
+                "division": {
+                  "id": 420233,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 90961895,
               "isActive": true,
@@ -2103,60 +2163,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88901263,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 7,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 1,
-              "team": {
-                "id": 12576352,
-                "name": "Better Safe Than Sorry",
-                "division": {
-                  "id": 391937,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88901824,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 7,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 4,
-              "team": {
-                "id": 12576434,
-                "name": "What Would Fred Do??",
-                "division": {
-                  "id": 391955,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2164,17 +2170,17 @@
               "id": 92156415,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 5,
+              "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022790,
                 "name": "Nailed It!!",
@@ -2193,7 +2199,7 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 4,
               "matchesWon": 1,
               "session": {
                 "id": 139,
@@ -2207,60 +2213,6 @@
                 "name": "What Would Fred Do??",
                 "division": {
                   "id": 431631,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261540,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 16,
-              "matchesWon": 10,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 5,
-              "team": {
-                "id": 12894668,
-                "name": "Nailed It!!",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91262839,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 13,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 10,
-              "team": {
-                "id": 12894849,
-                "name": "What Would Fred Do??",
-                "division": {
-                  "id": 420233,
                   "isTournament": false,
                   "__typename": "Division"
                 },

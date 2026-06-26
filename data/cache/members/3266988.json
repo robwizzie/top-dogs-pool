@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:32:31.010Z",
+  "fetchedAt": "2026-06-26T13:50:55.829Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3128447,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -60,11 +60,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5833333333333334,
-            "ppm": 1.75,
-            "eightBallMatchPointsEarned": 7,
-            "matchesWon": 3,
-            "matchesPlayed": 4,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 4,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -557,12 +557,12 @@
         "EightBallStats": [
           {
             "id": 803128447,
-            "matchesWon": 72,
-            "matchesPlayed": 148,
+            "matchesWon": 73,
+            "matchesPlayed": 150,
             "CLA": 0,
-            "defensiveShotAvg": 1,
-            "matchCountForLastTwoYrs": 190,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "defensiveShotAvg": 0.98,
+            "matchCountForLastTwoYrs": 193,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -573,7 +573,7 @@
             "matchesPlayed": 24,
             "CLA": 0,
             "defensiveShotAvg": 0,
-            "matchCountForLastTwoYrs": 69,
+            "matchCountForLastTwoYrs": 68,
             "lastPlayed": "2023-08-28T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -674,8 +674,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -788,6 +788,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -836,14 +842,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -926,6 +932,87 @@
         "alias": {
           "id": 3128447,
           "pastTeams": [
+            {
+              "id": 91261052,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 3,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 13,
+              "team": {
+                "id": 12894601,
+                "name": "Chalk Is Cheap!!",
+                "division": {
+                  "id": 420210,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91264696,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 17,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 12,
+              "team": {
+                "id": 12895116,
+                "name": "D-Block",
+                "division": {
+                  "id": 420260,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261589,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 3,
+              "team": {
+                "id": 12894674,
+                "name": "Keep It Simple Stupid",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90961676,
               "isActive": true,
@@ -1114,60 +1201,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 87790652,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 1,
-              "session": {
-                "id": 132,
-                "name": "Spring 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 23,
-              "team": {
-                "id": 12417387,
-                "name": "Chalk Is Cheap!!",
-                "division": {
-                  "id": 377831,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 87379975,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 7,
-              "session": {
-                "id": 130,
-                "name": "Fall 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 2,
-              "team": {
-                "id": 12310924,
-                "name": "Chalk Is Cheap!!",
-                "division": {
-                  "id": 368521,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1231,101 +1264,20 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 4,
-              "matchesWon": 3,
+              "matchesPlayed": 5,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022794,
                 "name": "Keep It Simple Stupid",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261052,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 13,
-              "team": {
-                "id": 12894601,
-                "name": "Chalk Is Cheap!!",
-                "division": {
-                  "id": 420210,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264696,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": null,
-              "matchesPlayed": 17,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 12,
-              "team": {
-                "id": 12895116,
-                "name": "D-Block",
-                "division": {
-                  "id": 420260,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261589,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 3,
-              "team": {
-                "id": 12894674,
-                "name": "Keep It Simple Stupid",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

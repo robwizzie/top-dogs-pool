@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:28:02.903Z",
+  "fetchedAt": "2026-06-26T13:44:06.149Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 880078,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,12 +20,12 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "eightBallBreakAndRuns": 1,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "eightBallBreakAndRuns": 2,
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 0,
@@ -938,7 +938,7 @@
               "__typename": "Session"
             },
             "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 1,
+            "eightBallBreakAndRuns": 2,
             "rackless": 0,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
@@ -1501,12 +1501,12 @@
         "EightBallStats": [
           {
             "id": 800880078,
-            "matchesWon": 251,
-            "matchesPlayed": 371,
+            "matchesWon": 253,
+            "matchesPlayed": 373,
             "CLA": 5,
             "defensiveShotAvg": 0.9,
-            "matchCountForLastTwoYrs": 123,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "matchCountForLastTwoYrs": 124,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1767,8 +1767,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1881,6 +1881,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1929,14 +1935,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2020,6 +2026,114 @@
         "alias": {
           "id": 880078,
           "pastTeams": [
+            {
+              "id": 91611165,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 12,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12894589,
+                "name": "Bobby D’s Cue Crew",
+                "division": {
+                  "id": 420208,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261576,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 5,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12894673,
+                "name": "Eight Men Out",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91675509,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12894919,
+                "name": "Franks N Beans",
+                "division": {
+                  "id": 420239,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91766360,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 11,
+              "matchesWon": 9,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 1,
+              "team": {
+                "id": 12894686,
+                "name": "RICO Suave",
+                "division": {
+                  "id": 420217,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962786,
               "isActive": true,
@@ -2181,114 +2295,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89285429,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 5,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": null,
-              "team": {
-                "id": 12623300,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 395915,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89286980,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 6,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12623524,
-                "name": "Franks N Beans",
-                "division": {
-                  "id": 395939,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88903359,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 6,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12576640,
-                "name": "Coming in Hot",
-                "division": {
-                  "id": 391946,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88902108,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 2,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": null,
-              "team": {
-                "id": 12576471,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 391937,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2298,8 +2304,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2366,114 +2372,6 @@
                 "name": "Top Dawgs",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91611165,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": null,
-              "matchesPlayed": 12,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12894589,
-                "name": "Bobby D’s Cue Crew",
-                "division": {
-                  "id": 420208,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261576,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12894673,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91675509,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12894919,
-                "name": "Franks N Beans",
-                "division": {
-                  "id": 420239,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91766360,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 9,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 1,
-              "team": {
-                "id": 12894686,
-                "name": "RICO Suave",
-                "division": {
-                  "id": 420217,
                   "isTournament": false,
                   "__typename": "Division"
                 },

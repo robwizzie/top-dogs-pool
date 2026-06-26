@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:35:00.433Z",
+  "fetchedAt": "2026-06-26T13:53:35.152Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 143361,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -1889,7 +1889,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "nineOnSnaps": 0,
+            "nineOnSnaps": 1,
             "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
@@ -3581,24 +3581,24 @@
         "EightBallStats": [
           {
             "id": 800143361,
-            "matchesWon": 467,
-            "matchesPlayed": 905,
+            "matchesWon": 468,
+            "matchesPlayed": 906,
             "CLA": null,
             "defensiveShotAvg": 0.59,
-            "matchCountForLastTwoYrs": 69,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "matchCountForLastTwoYrs": 70,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 900143361,
-            "matchesWon": 437,
-            "matchesPlayed": 802,
+            "matchesWon": 438,
+            "matchesPlayed": 804,
             "CLA": 5,
             "defensiveShotAvg": 0.54,
-            "matchCountForLastTwoYrs": 75,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "matchCountForLastTwoYrs": 77,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -3951,8 +3951,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -4065,6 +4065,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -4113,14 +4119,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -4204,6 +4210,60 @@
         "alias": {
           "id": 143361,
           "pastTeams": [
+            {
+              "id": 91261561,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Hank",
+              "matchesPlayed": 10,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 9,
+              "team": {
+                "id": 12894671,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91262820,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Hank",
+              "matchesPlayed": 12,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 9,
+              "team": {
+                "id": 12894847,
+                "name": "Untouchables",
+                "division": {
+                  "id": 420233,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 91024227,
               "isActive": true,
@@ -4419,60 +4479,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88467251,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Hank",
-              "matchesPlayed": 10,
-              "matchesWon": 5,
-              "session": {
-                "id": 133,
-                "name": "Summer 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 12514186,
-                "name": "Poke & Choke",
-                "division": {
-                  "id": 386481,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88467237,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Hank",
-              "matchesPlayed": 9,
-              "matchesWon": 3,
-              "session": {
-                "id": 133,
-                "name": "Summer 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 10,
-              "team": {
-                "id": 12514184,
-                "name": "Untouchables",
-                "division": {
-                  "id": 386499,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -4490,7 +4496,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022791,
                 "name": "8 Balls for Sale",
@@ -4509,8 +4515,8 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Hank",
-              "matchesPlayed": 4,
-              "matchesWon": 1,
+              "matchesPlayed": 5,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -4523,60 +4529,6 @@
                 "name": "Untouchables",
                 "division": {
                   "id": 431631,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261561,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Hank",
-              "matchesPlayed": 10,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 9,
-              "team": {
-                "id": 12894671,
-                "name": "8 Balls for Sale",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91262820,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Hank",
-              "matchesPlayed": 12,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 9,
-              "team": {
-                "id": 12894847,
-                "name": "Untouchables",
-                "division": {
-                  "id": 420233,
                   "isTournament": false,
                   "__typename": "Division"
                 },

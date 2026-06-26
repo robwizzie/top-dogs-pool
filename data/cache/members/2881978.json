@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:31:26.917Z",
+  "fetchedAt": "2026-06-26T13:49:34.715Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2498378,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -22,11 +22,11 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 10,
-            "matchesWon": 4,
-            "matchesPlayed": 5,
+            "eightBallMatchPointsEarned": 12,
+            "matchesWon": 5,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
-            "eightOnBreaks": 1,
+            "eightOnBreaks": 2,
             "miniSlams": 0,
             "rackless": 1,
             "__typename": "EightBallPlayer"
@@ -802,7 +802,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "eightOnBreaks": 1,
+            "eightOnBreaks": 2,
             "eightBallBreakAndRuns": 0,
             "rackless": 1,
             "miniSlams": 0,
@@ -1534,12 +1534,12 @@
         "EightBallStats": [
           {
             "id": 802498378,
-            "matchesWon": 137,
-            "matchesPlayed": 274,
+            "matchesWon": 139,
+            "matchesPlayed": 276,
             "CLA": 0,
             "defensiveShotAvg": 0.38,
-            "matchCountForLastTwoYrs": 5,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "matchCountForLastTwoYrs": 7,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1728,8 +1728,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1842,6 +1842,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1890,14 +1896,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2259,8 +2265,8 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 4,
+              "matchesPlayed": 6,
+              "matchesWon": 5,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",

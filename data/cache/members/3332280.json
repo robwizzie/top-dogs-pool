@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:29:54.361Z",
+  "fetchedAt": "2026-06-26T13:52:09.491Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3155567,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "eightBallMatchPointsEarned": 6,
             "matchesWon": 2,
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -449,11 +449,11 @@
           {
             "id": 803155567,
             "matchesWon": 57,
-            "matchesPlayed": 110,
+            "matchesPlayed": 111,
             "CLA": 3,
             "defensiveShotAvg": 0.97,
             "matchCountForLastTwoYrs": 88,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "lastPlayed": "2026-06-16T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -554,8 +554,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -668,6 +668,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -716,14 +722,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -807,6 +813,60 @@
         "alias": {
           "id": 3155567,
           "pastTeams": [
+            {
+              "id": 91263337,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 11,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 10,
+              "team": {
+                "id": 12894922,
+                "name": "Docksiders",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91261549,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 14,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 3,
+              "team": {
+                "id": 12894669,
+                "name": "The Office",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962801,
               "isActive": true,
@@ -1022,60 +1082,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88902028,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 9,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 1,
-              "team": {
-                "id": 12576460,
-                "name": "The Office",
-                "division": {
-                  "id": 391937,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88568275,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 133,
-                "name": "Summer 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 3,
-              "team": {
-                "id": 12514627,
-                "name": "Docksiders",
-                "division": {
-                  "id": 386506,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1112,7 +1118,7 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 4,
               "matchesWon": 2,
               "session": {
                 "id": 139,
@@ -1126,60 +1132,6 @@
                 "name": "The Office",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263337,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 10,
-              "team": {
-                "id": 12894922,
-                "name": "Docksiders",
-                "division": {
-                  "id": 420240,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261549,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 14,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 3,
-              "team": {
-                "id": 12894669,
-                "name": "The Office",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

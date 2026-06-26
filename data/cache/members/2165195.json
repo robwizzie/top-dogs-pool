@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:36:06.595Z",
+  "fetchedAt": "2026-06-26T13:54:46.348Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 524547,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 2,
-            "matchesPlayed": 3,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -4220,12 +4220,12 @@
         "EightBallStats": [
           {
             "id": 800524547,
-            "matchesWon": 430,
-            "matchesPlayed": 864,
+            "matchesWon": 431,
+            "matchesPlayed": 867,
             "CLA": 5,
             "defensiveShotAvg": 1.28,
-            "matchCountForLastTwoYrs": 99,
-            "lastPlayed": "2026-06-11T00:00:00Z",
+            "matchCountForLastTwoYrs": 100,
+            "lastPlayed": "2026-06-25T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -4233,11 +4233,11 @@
           {
             "id": 900524547,
             "matchesWon": 413,
-            "matchesPlayed": 822,
+            "matchesPlayed": 824,
             "CLA": 0,
             "defensiveShotAvg": 1.41,
-            "matchCountForLastTwoYrs": 148,
-            "lastPlayed": "2026-06-04T00:00:00Z",
+            "matchCountForLastTwoYrs": 150,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -4513,8 +4513,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -4627,6 +4627,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -4675,14 +4681,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -4766,413 +4772,6 @@
         "alias": {
           "id": 524547,
           "pastTeams": [
-            {
-              "id": 90961891,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Fred",
-              "matchesPlayed": 7,
-              "matchesWon": 3,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 8,
-              "team": {
-                "id": 12857982,
-                "name": "#JustinStrong",
-                "division": {
-                  "id": 416962,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90961384,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Fred",
-              "matchesPlayed": 8,
-              "matchesWon": 5,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 12857915,
-                "name": "One More Pool Team",
-                "division": {
-                  "id": 416968,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90961376,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Fred",
-              "matchesPlayed": 7,
-              "matchesWon": 3,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 6,
-              "team": {
-                "id": 12857914,
-                "name": "We Ain't Scared",
-                "division": {
-                  "id": 416947,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90962528,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Fred",
-              "matchesPlayed": 10,
-              "matchesWon": 6,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 4,
-              "team": {
-                "id": 12858072,
-                "name": "What Would Fred Do??",
-                "division": {
-                  "id": 416979,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90514630,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Fred",
-              "matchesPlayed": 5,
-              "matchesWon": 3,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 12758023,
-                "name": "#JustinStrong",
-                "division": {
-                  "id": 408187,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90215626,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Fred",
-              "matchesPlayed": 9,
-              "matchesWon": 5,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 4,
-              "team": {
-                "id": 12757959,
-                "name": "One More Pool Team",
-                "division": {
-                  "id": 408193,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90215618,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Fred",
-              "matchesPlayed": 10,
-              "matchesWon": 3,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 9,
-              "team": {
-                "id": 12757958,
-                "name": "We Ain't Scared",
-                "division": {
-                  "id": 408172,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90216703,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Fred",
-              "matchesPlayed": 12,
-              "matchesWon": 8,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 1,
-              "team": {
-                "id": 12758107,
-                "name": "What Would Fred Do??",
-                "division": {
-                  "id": 408204,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89285801,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Fred",
-              "matchesPlayed": 8,
-              "matchesWon": 3,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 12,
-              "team": {
-                "id": 12623352,
-                "name": "One More Pool Team",
-                "division": {
-                  "id": 395921,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89284256,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Fred",
-              "matchesPlayed": 10,
-              "matchesWon": 6,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 6,
-              "team": {
-                "id": 12623136,
-                "name": "We Ain't Scared",
-                "division": {
-                  "id": 395900,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            }
-          ],
-          "currentTeams": [
-            {
-              "id": 92156411,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Fred",
-              "matchesPlayed": 3,
-              "matchesWon": 2,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13022790,
-                "name": "Nailed It!!",
-                "division": {
-                  "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92156818,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Fred",
-              "matchesPlayed": 3,
-              "matchesWon": 2,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13022845,
-                "name": "One More Pool Team",
-                "division": {
-                  "id": 431620,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92155404,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Fred",
-              "matchesPlayed": 2,
-              "matchesWon": 1,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13022651,
-                "name": "Wanna talk about it?",
-                "division": {
-                  "id": 431602,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92155188,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Fred",
-              "matchesPlayed": 1,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13022621,
-                "name": "We Ain't Scared",
-                "division": {
-                  "id": 431599,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 92157691,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Fred",
-              "matchesPlayed": 3,
-              "matchesWon": 2,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13022968,
-                "name": "What Would Fred Do??",
-                "division": {
-                  "id": 431631,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
             {
               "id": 91261536,
               "isActive": true,
@@ -5328,6 +4927,251 @@
                 "name": "What Would Fred Do??",
                 "division": {
                   "id": 420233,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 90961891,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Fred",
+              "matchesPlayed": 7,
+              "matchesWon": 3,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 8,
+              "team": {
+                "id": 12857982,
+                "name": "#JustinStrong",
+                "division": {
+                  "id": 416962,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90961384,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Fred",
+              "matchesPlayed": 8,
+              "matchesWon": 5,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 3,
+              "team": {
+                "id": 12857915,
+                "name": "One More Pool Team",
+                "division": {
+                  "id": 416968,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 90961376,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "Fred",
+              "matchesPlayed": 7,
+              "matchesWon": 3,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 6,
+              "team": {
+                "id": 12857914,
+                "name": "We Ain't Scared",
+                "division": {
+                  "id": 416947,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 90962528,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Fred",
+              "matchesPlayed": 10,
+              "matchesWon": 6,
+              "session": {
+                "id": 137,
+                "name": "Fall 2025",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 4,
+              "team": {
+                "id": 12858072,
+                "name": "What Would Fred Do??",
+                "division": {
+                  "id": 416979,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            }
+          ],
+          "currentTeams": [
+            {
+              "id": 92156411,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Fred",
+              "matchesPlayed": 3,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13022790,
+                "name": "Nailed It!!",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92156818,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Fred",
+              "matchesPlayed": 4,
+              "matchesWon": 3,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13022845,
+                "name": "One More Pool Team",
+                "division": {
+                  "id": 431620,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92155404,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Fred",
+              "matchesPlayed": 2,
+              "matchesWon": 1,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13022651,
+                "name": "Wanna talk about it?",
+                "division": {
+                  "id": 431602,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92155188,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Fred",
+              "matchesPlayed": 1,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13022621,
+                "name": "We Ain't Scared",
+                "division": {
+                  "id": 431599,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 92157691,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Fred",
+              "matchesPlayed": 4,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13022968,
+                "name": "What Would Fred Do??",
+                "division": {
+                  "id": 431631,
                   "isTournament": false,
                   "__typename": "Division"
                 },

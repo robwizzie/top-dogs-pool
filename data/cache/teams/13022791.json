@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-19T14:08:22.340Z",
+  "fetchedAt": "2026-06-26T13:46:58.753Z",
   "data": {
     "teamPage": {
       "team": {
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022791,
         "sessionBonusPoints": 0,
-        "sessionPoints": 59,
-        "sessionTotalPoints": 59,
+        "sessionPoints": 71,
+        "sessionTotalPoints": 71,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -602,11 +602,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -657,13 +674,13 @@
             "type": "EIGHT",
             "id": 50630073,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-23T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

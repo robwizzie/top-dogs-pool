@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-19T14:07:34.322Z",
+  "fetchedAt": "2026-06-26T13:45:58.728Z",
   "data": {
     "teamPage": {
       "team": {
@@ -79,7 +79,7 @@
             "memberNumber": "08212513",
             "displayName": "John Kotyk",
             "matchesWon": 1,
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "pa": 0.3333333333333333,
             "ppm": 1,
             "skillLevel": 4,
@@ -94,9 +94,9 @@
             "memberNumber": "08208225",
             "displayName": "Mike Hayes",
             "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
+            "matchesPlayed": 3,
+            "pa": 0.2222222222222222,
+            "ppm": 0.6666666666666666,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -124,9 +124,9 @@
             "memberNumber": "08213515",
             "displayName": "Jennifer Swanson",
             "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0,
-            "ppm": 0,
+            "matchesPlayed": 3,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -154,9 +154,9 @@
             "memberNumber": "08240635",
             "displayName": "Em Collins",
             "matchesWon": 1,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesPlayed": 4,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -168,10 +168,10 @@
             "id": 92418657,
             "memberNumber": "08212765",
             "displayName": "Pete Johnson IV",
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022792,
         "sessionBonusPoints": 0,
-        "sessionPoints": 46,
-        "sessionTotalPoints": 46,
+        "sessionPoints": 55,
+        "sessionTotalPoints": 55,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -602,11 +602,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -657,13 +674,13 @@
             "type": "EIGHT",
             "id": 50630071,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-23T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

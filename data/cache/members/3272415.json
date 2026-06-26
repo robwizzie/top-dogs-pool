@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:34:18.818Z",
+  "fetchedAt": "2026-06-26T13:48:11.766Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3061590,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -22,9 +22,9 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "eightBallMatchPointsEarned": 4,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -922,24 +922,24 @@
         "EightBallStats": [
           {
             "id": 803061590,
-            "matchesWon": 130,
-            "matchesPlayed": 210,
+            "matchesWon": 131,
+            "matchesPlayed": 212,
             "CLA": 0,
-            "defensiveShotAvg": 3.39,
-            "matchCountForLastTwoYrs": 97,
-            "lastPlayed": "2026-05-19T00:00:00Z",
+            "defensiveShotAvg": 3.4,
+            "matchCountForLastTwoYrs": 98,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903061590,
-            "matchesWon": 68,
-            "matchesPlayed": 120,
+            "matchesWon": 69,
+            "matchesPlayed": 122,
             "CLA": 0,
-            "defensiveShotAvg": 3.71,
-            "matchCountForLastTwoYrs": 70,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "defensiveShotAvg": 3.7,
+            "matchCountForLastTwoYrs": 72,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1039,8 +1039,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -1153,6 +1153,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1201,14 +1207,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1278,7 +1284,7 @@
                 },
                 {
                   "__typename": "NineBallLifetimeStatistics",
-                  "skillLevel": 8,
+                  "skillLevel": 7,
                   "CLA": 0
                 }
               ],
@@ -1292,6 +1298,60 @@
         "alias": {
           "id": 3061590,
           "pastTeams": [
+            {
+              "id": 91780020,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 1,
+              "team": {
+                "id": 12894676,
+                "name": "Break 8 Away",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91615950,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 7,
+              "matchesWon": 3,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 8,
+              "rank": 3,
+              "team": {
+                "id": 12894926,
+                "name": "Mt. F'em",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 91117196,
               "isActive": true,
@@ -1507,60 +1567,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88903528,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 12,
-              "matchesWon": 8,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 2,
-              "team": {
-                "id": 12576661,
-                "name": "A Touch Even More",
-                "division": {
-                  "id": 391980,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89165732,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 8,
-              "matchesWon": 3,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 4,
-              "team": {
-                "id": 12611084,
-                "name": "All Bust 2 Balls",
-                "division": {
-                  "id": 391962,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1570,8 +1576,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 2,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -1595,76 +1601,22 @@
               "id": 92387200,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 8,
+              "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 4,
               "matchesWon": 0,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 8,
+              "skillLevel": 7,
               "rank": null,
               "team": {
                 "id": 13022963,
                 "name": "Stroke It!",
                 "division": {
                   "id": 431631,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91780020,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 1,
-              "team": {
-                "id": 12894676,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91615950,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 8,
-              "rank": 3,
-              "team": {
-                "id": 12894926,
-                "name": "Mt. F'em",
-                "division": {
-                  "id": 420240,
                   "isTournament": false,
                   "__typename": "Division"
                 },

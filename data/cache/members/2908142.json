@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:30:53.393Z",
+  "fetchedAt": "2026-06-26T13:48:56.500Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2530098,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
-            "eightBallMatchPointsEarned": 1,
+            "pa": 0.2222222222222222,
+            "ppm": 0.6666666666666666,
+            "eightBallMatchPointsEarned": 2,
             "matchesWon": 0,
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1825,12 +1825,12 @@
         "EightBallStats": [
           {
             "id": 802530098,
-            "matchesWon": 226,
-            "matchesPlayed": 423,
+            "matchesWon": 227,
+            "matchesPlayed": 425,
             "CLA": 0,
-            "defensiveShotAvg": 1.47,
-            "matchCountForLastTwoYrs": 94,
-            "lastPlayed": "2026-06-04T00:00:00Z",
+            "defensiveShotAvg": 1.5,
+            "matchCountForLastTwoYrs": 95,
+            "lastPlayed": "2026-06-25T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1841,7 +1841,7 @@
             "matchesPlayed": 328,
             "CLA": 0,
             "defensiveShotAvg": 0.69,
-            "matchCountForLastTwoYrs": 72,
+            "matchCountForLastTwoYrs": 71,
             "lastPlayed": "2026-06-08T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -2019,8 +2019,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -2133,6 +2133,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2181,14 +2187,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2272,6 +2278,87 @@
         "alias": {
           "id": 2530098,
           "pastTeams": [
+            {
+              "id": 91261571,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Mike",
+              "matchesPlayed": 12,
+              "matchesWon": 7,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 5,
+              "team": {
+                "id": 12894672,
+                "name": "Lights Out",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91263342,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Mike",
+              "matchesPlayed": 14,
+              "matchesWon": 9,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 4,
+              "team": {
+                "id": 12894923,
+                "name": "Sinking D's Balls",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91924337,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Mike",
+              "matchesPlayed": 8,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 18,
+              "team": {
+                "id": 12894542,
+                "name": "The Office Buds",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962781,
               "isActive": true,
@@ -2460,87 +2547,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88901798,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Mike",
-              "matchesPlayed": 3,
-              "matchesWon": 2,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 9,
-              "team": {
-                "id": 12576431,
-                "name": "All Pockets Available",
-                "division": {
-                  "id": 391925,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88902104,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Mike",
-              "matchesPlayed": 10,
-              "matchesWon": 7,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 3,
-              "team": {
-                "id": 12576470,
-                "name": "Lights Out",
-                "division": {
-                  "id": 391937,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88902128,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Mike",
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 6,
-              "team": {
-                "id": 12576473,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 391962,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2550,7 +2556,7 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Mike",
-              "matchesPlayed": 2,
+              "matchesPlayed": 3,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -2558,7 +2564,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13022792,
                 "name": "Lights Out",
@@ -2612,93 +2618,12 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 2,
+              "rank": 3,
               "team": {
                 "id": 13022653,
                 "name": "The Office Buds",
                 "division": {
                   "id": 431602,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261571,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Mike",
-              "matchesPlayed": 12,
-              "matchesWon": 7,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 12894672,
-                "name": "Lights Out",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263342,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Mike",
-              "matchesPlayed": 14,
-              "matchesWon": 9,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 4,
-              "team": {
-                "id": 12894923,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 420240,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91924337,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Mike",
-              "matchesPlayed": 8,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 18,
-              "team": {
-                "id": 12894542,
-                "name": "The Office Buds",
-                "division": {
-                  "id": 420204,
                   "isTournament": false,
                   "__typename": "Division"
                 },

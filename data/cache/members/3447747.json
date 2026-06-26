@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:32:10.512Z",
+  "fetchedAt": "2026-06-26T13:50:18.458Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3338316,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5333333333333333,
-            "ppm": 1.6,
-            "eightBallMatchPointsEarned": 8,
-            "matchesWon": 3,
-            "matchesPlayed": 5,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 4,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -130,24 +130,24 @@
         "EightBallStats": [
           {
             "id": 803338316,
-            "matchesWon": 13,
-            "matchesPlayed": 23,
+            "matchesWon": 15,
+            "matchesPlayed": 25,
             "CLA": 0,
-            "defensiveShotAvg": 0.7,
-            "matchCountForLastTwoYrs": 23,
-            "lastPlayed": "2026-06-02T00:00:00Z",
+            "defensiveShotAvg": 1,
+            "matchCountForLastTwoYrs": 25,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903338316,
-            "matchesWon": 12,
-            "matchesPlayed": 22,
+            "matchesWon": 14,
+            "matchesPlayed": 24,
             "CLA": 0,
-            "defensiveShotAvg": 1.9,
-            "matchCountForLastTwoYrs": 22,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "defensiveShotAvg": 2.05,
+            "matchCountForLastTwoYrs": 24,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -214,8 +214,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -328,6 +328,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -376,14 +382,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -474,8 +480,8 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -501,8 +507,8 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 3,
+              "matchesPlayed": 6,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -515,60 +521,6 @@
                 "name": "Poolin' and Boolin'",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91609301,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 17,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 8,
-              "team": {
-                "id": 12894843,
-                "name": "Let's Go Brandon",
-                "division": {
-                  "id": 420233,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91579868,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 15,
-              "matchesWon": 9,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 4,
-              "team": {
-                "id": 12938517,
-                "name": "Poolin' and Boolin'",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

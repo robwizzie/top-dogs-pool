@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:33:57.775Z",
+  "fetchedAt": "2026-06-26T13:47:48.149Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3252670,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -457,24 +457,24 @@
         "EightBallStats": [
           {
             "id": 803252670,
-            "matchesWon": 46,
-            "matchesPlayed": 89,
+            "matchesWon": 48,
+            "matchesPlayed": 91,
             "CLA": 0,
-            "defensiveShotAvg": 0.79,
-            "matchCountForLastTwoYrs": 89,
-            "lastPlayed": "2026-06-09T00:00:00Z",
+            "defensiveShotAvg": 0.81,
+            "matchCountForLastTwoYrs": 91,
+            "lastPlayed": "2026-06-25T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903252670,
-            "matchesWon": 19,
-            "matchesPlayed": 39,
+            "matchesWon": 20,
+            "matchesPlayed": 40,
             "CLA": 0,
-            "defensiveShotAvg": 0.36,
-            "matchCountForLastTwoYrs": 39,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "defensiveShotAvg": 0.38,
+            "matchCountForLastTwoYrs": 40,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -552,8 +552,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -666,6 +666,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -714,14 +720,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -805,6 +811,87 @@
         "alias": {
           "id": 3252670,
           "pastTeams": [
+            {
+              "id": 91261607,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": null,
+              "matchesPlayed": 9,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 11,
+              "team": {
+                "id": 12894676,
+                "name": "Break 8 Away",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91263392,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 14,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 5,
+              "team": {
+                "id": 12894929,
+                "name": "Cue & A",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91260655,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": null,
+              "matchesPlayed": 12,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 17,
+              "team": {
+                "id": 12894545,
+                "name": "Demo-Lition",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962559,
               "isActive": true,
@@ -993,60 +1080,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90359631,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 5,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 8,
-              "team": {
-                "id": 12757778,
-                "name": "Demo-Lition",
-                "division": {
-                  "id": 408175,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89749592,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 8,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 1,
-              "team": {
-                "id": 12623301,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 395915,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1091,7 +1124,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022789,
                 "name": "Break 8 Away",
@@ -1118,93 +1151,12 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022656,
                 "name": "Demo-Lition",
                 "division": {
                   "id": 431602,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261607,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 11,
-              "team": {
-                "id": 12894676,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263392,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 14,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 5,
-              "team": {
-                "id": 12894929,
-                "name": "Cue & A",
-                "division": {
-                  "id": 420240,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91260655,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 12,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 17,
-              "team": {
-                "id": 12894545,
-                "name": "Demo-Lition",
-                "division": {
-                  "id": 420204,
                   "isTournament": false,
                   "__typename": "Division"
                 },

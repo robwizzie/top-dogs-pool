@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-19T14:07:27.038Z",
+  "fetchedAt": "2026-06-26T13:46:46.621Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "The Office",
         "number": "06809",
         "isTied": false,
-        "standing": 4,
+        "standing": 5,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -94,9 +94,9 @@
             "memberNumber": "08213636",
             "displayName": "Michael Spiegel",
             "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 4,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -123,8 +123,8 @@
             "id": 92156462,
             "memberNumber": "08213306",
             "displayName": "Andrew McElrea",
-            "matchesWon": 2,
-            "matchesPlayed": 3,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
             "pa": 0.6666666666666666,
             "ppm": 2,
             "skillLevel": 4,
@@ -138,10 +138,10 @@
             "id": 92156465,
             "memberNumber": "08214208",
             "displayName": "Jeremy Spiegel",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -154,9 +154,9 @@
             "memberNumber": "08213464",
             "displayName": "Christopher Carter",
             "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesPlayed": 4,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -169,10 +169,10 @@
             "memberNumber": "08214536",
             "displayName": "Alyssa Minix",
             "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 3,
+            "matchesPlayed": 3,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
+            "skillLevel": 2,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3458813,
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022796,
         "sessionBonusPoints": 0,
-        "sessionPoints": 55,
-        "sessionTotalPoints": 55,
+        "sessionPoints": 64,
+        "sessionTotalPoints": 64,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -602,11 +602,28 @@
             "isPaid": false,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -657,13 +674,13 @@
             "type": "EIGHT",
             "id": 50630069,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-23T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

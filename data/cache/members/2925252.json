@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:29:47.195Z",
+  "fetchedAt": "2026-06-26T13:52:01.518Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2558764,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -2093,23 +2093,23 @@
           {
             "id": 802558764,
             "matchesWon": 264,
-            "matchesPlayed": 562,
+            "matchesPlayed": 564,
             "CLA": 5,
             "defensiveShotAvg": 0.95,
-            "matchCountForLastTwoYrs": 170,
-            "lastPlayed": "2026-06-11T00:00:00Z",
+            "matchCountForLastTwoYrs": 171,
+            "lastPlayed": "2026-06-25T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902558764,
-            "matchesWon": 91,
-            "matchesPlayed": 183,
+            "matchesWon": 92,
+            "matchesPlayed": 184,
             "CLA": 0,
             "defensiveShotAvg": 0.64,
-            "matchCountForLastTwoYrs": 67,
-            "lastPlayed": "2026-06-01T00:00:00Z",
+            "matchCountForLastTwoYrs": 68,
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2264,8 +2264,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -2378,6 +2378,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2426,14 +2432,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2517,6 +2523,87 @@
         "alias": {
           "id": 2558764,
           "pastTeams": [
+            {
+              "id": 91263332,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Juice",
+              "matchesPlayed": 10,
+              "matchesWon": 2,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 19,
+              "team": {
+                "id": 12894922,
+                "name": "Docksiders",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91261545,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Juice",
+              "matchesPlayed": 11,
+              "matchesWon": 3,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 11,
+              "team": {
+                "id": 12894669,
+                "name": "The Office",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91260627,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "Juice",
+              "matchesPlayed": 12,
+              "matchesWon": 3,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 16,
+              "team": {
+                "id": 12894542,
+                "name": "The Office Buds",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90962796,
               "isActive": true,
@@ -2705,87 +2792,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89288495,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Juice",
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 6,
-              "team": {
-                "id": 12623762,
-                "name": "D-Block",
-                "division": {
-                  "id": 395964,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89287014,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Juice",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 3,
-              "team": {
-                "id": 12623529,
-                "name": "Docksiders",
-                "division": {
-                  "id": 395940,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89285455,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Juice",
-              "matchesPlayed": 8,
-              "matchesWon": 2,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 11,
-              "team": {
-                "id": 12623303,
-                "name": "The Office",
-                "division": {
-                  "id": 395915,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2890,87 +2896,6 @@
                 "name": "What Had Happened Was?",
                 "division": {
                   "id": 431654,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263332,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Juice",
-              "matchesPlayed": 10,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 19,
-              "team": {
-                "id": 12894922,
-                "name": "Docksiders",
-                "division": {
-                  "id": 420240,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261545,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Juice",
-              "matchesPlayed": 11,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 11,
-              "team": {
-                "id": 12894669,
-                "name": "The Office",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91260627,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Juice",
-              "matchesPlayed": 12,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 16,
-              "team": {
-                "id": 12894542,
-                "name": "The Office Buds",
-                "division": {
-                  "id": 420204,
                   "isTournament": false,
                   "__typename": "Division"
                 },

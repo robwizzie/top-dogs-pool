@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:27:56.140Z",
+  "fetchedAt": "2026-06-26T13:43:59.417Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2923158,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.8333333333333334,
-            "ppm": 2.5,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 2,
-            "matchesPlayed": 2,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -672,12 +672,12 @@
         "EightBallStats": [
           {
             "id": 802923158,
-            "matchesWon": 74,
-            "matchesPlayed": 161,
+            "matchesWon": 75,
+            "matchesPlayed": 162,
             "CLA": 0,
             "defensiveShotAvg": 0.95,
             "matchCountForLastTwoYrs": 66,
-            "lastPlayed": "2026-05-26T00:00:00Z",
+            "lastPlayed": "2026-06-16T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -685,11 +685,11 @@
           {
             "id": 902923158,
             "matchesWon": 18,
-            "matchesPlayed": 33,
+            "matchesPlayed": 34,
             "CLA": 0,
-            "defensiveShotAvg": 0.31,
-            "matchCountForLastTwoYrs": 33,
-            "lastPlayed": "2026-05-18T00:00:00Z",
+            "defensiveShotAvg": 0.36,
+            "matchCountForLastTwoYrs": 34,
+            "lastPlayed": "2026-06-15T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -811,8 +811,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -925,6 +925,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -973,14 +979,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1064,6 +1070,60 @@
         "alias": {
           "id": 2923158,
           "pastTeams": [
+            {
+              "id": 91261581,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 10,
+              "team": {
+                "id": 12894673,
+                "name": "Eight Men Out",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91263346,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 11,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 7,
+              "team": {
+                "id": 12894923,
+                "name": "Sinking D's Balls",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 90962791,
               "isActive": true,
@@ -1279,60 +1339,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 87017360,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 8,
-              "matchesWon": 1,
-              "session": {
-                "id": 130,
-                "name": "Fall 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 27,
-              "team": {
-                "id": 12310996,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 368527,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 86523468,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 8,
-              "matchesWon": 4,
-              "session": {
-                "id": 129,
-                "name": "Summer 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 9,
-              "team": {
-                "id": 12240499,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 362297,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1342,7 +1348,7 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 4,
               "matchesWon": 1,
               "session": {
                 "id": 139,
@@ -1369,15 +1375,15 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 2,
-              "matchesWon": 2,
+              "matchesPlayed": 3,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022793,
                 "name": "Top Dawgs",
@@ -1389,60 +1395,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261581,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 13,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 10,
-              "team": {
-                "id": 12894673,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263346,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 7,
-              "team": {
-                "id": 12894923,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 420240,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "__typename": "Alias"

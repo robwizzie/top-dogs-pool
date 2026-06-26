@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:32:50.948Z",
+  "fetchedAt": "2026-06-26T13:51:18.904Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2272364,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5,
-            "ppm": 1.5,
-            "eightBallMatchPointsEarned": 3,
-            "matchesWon": 1,
-            "matchesPlayed": 2,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
+            "eightBallMatchPointsEarned": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -2766,12 +2766,12 @@
         "EightBallStats": [
           {
             "id": 802272364,
-            "matchesWon": 314,
-            "matchesPlayed": 607,
+            "matchesWon": 315,
+            "matchesPlayed": 609,
             "CLA": 0,
-            "defensiveShotAvg": 2.15,
-            "matchCountForLastTwoYrs": 85,
-            "lastPlayed": "2026-06-02T00:00:00Z",
+            "defensiveShotAvg": 2.16,
+            "matchCountForLastTwoYrs": 87,
+            "lastPlayed": "2026-06-23T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2993,8 +2993,8 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -3107,6 +3107,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -3155,14 +3161,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 303299474,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-21T14:40:33Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -3246,6 +3252,60 @@
         "alias": {
           "id": 2272364,
           "pastTeams": [
+            {
+              "id": 91264693,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": "Fred",
+              "matchesPlayed": 12,
+              "matchesWon": 7,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 9,
+              "team": {
+                "id": 12895116,
+                "name": "D-Block",
+                "division": {
+                  "id": 420260,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91261585,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "Fred",
+              "matchesPlayed": 10,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 7,
+              "team": {
+                "id": 12894674,
+                "name": "Keep It Simple Stupid",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90963117,
               "isActive": true,
@@ -3461,60 +3521,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 87017419,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Fred",
-              "matchesPlayed": 1,
-              "matchesWon": 0,
-              "session": {
-                "id": 130,
-                "name": "Fall 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 22,
-              "team": {
-                "id": 12311004,
-                "name": "Boys From The Basement",
-                "division": {
-                  "id": 368527,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 87020579,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "Fred",
-              "matchesPlayed": 7,
-              "matchesWon": 2,
-              "session": {
-                "id": 130,
-                "name": "Fall 2023",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 9,
-              "team": {
-                "id": 12311500,
-                "name": "D-Block",
-                "division": {
-                  "id": 368578,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -3551,74 +3557,20 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": "Fred",
-              "matchesPlayed": 2,
-              "matchesWon": 1,
+              "matchesPlayed": 3,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022794,
                 "name": "Keep It Simple Stupid",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264693,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "Fred",
-              "matchesPlayed": 12,
-              "matchesWon": 7,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 9,
-              "team": {
-                "id": 12895116,
-                "name": "D-Block",
-                "division": {
-                  "id": 420260,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261585,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "Fred",
-              "matchesPlayed": 10,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 7,
-              "team": {
-                "id": 12894674,
-                "name": "Keep It Simple Stupid",
-                "division": {
-                  "id": 420216,
                   "isTournament": false,
                   "__typename": "Division"
                 },

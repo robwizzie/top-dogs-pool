@@ -1,0 +1,243 @@
+{
+  "fetchedAt": "2026-06-26T13:55:14.155Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 13053623,
+        "name": "Chalk and Awe",
+        "number": "07630",
+        "isTied": false,
+        "standing": 1,
+        "division": {
+          "id": 431621,
+          "name": "BU-76",
+          "number": "076",
+          "timeOfPlay": "1900-01-01T19:30:00Z",
+          "nightOfPlay": "Wednesday",
+          "format": "8-Ball Open",
+          "state": "CURRENT",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 39527,
+          "name": "Burlington Private Billiards Club",
+          "address": {
+            "id": 71093,
+            "name": "Burlington Private Billiards Club",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 139,
+          "name": "Summer 2026",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 13053623,
+        "name": "Chalk and Awe",
+        "number": "07630",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 431621,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 13053623,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 15,
+        "sessionTotalPoints": 15,
+        "division": {
+          "id": 431621,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 50104282,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-05-13T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 15,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 7,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39527,
+              "name": "Burlington Private Billiards Club",
+              "address": {
+                "id": 71093,
+                "name": "Burlington Private Billiards Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13053623,
+              "name": "Chalk and Awe",
+              "number": "07630",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13022856,
+              "name": "The Replacements",
+              "number": "07604",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 431621,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-08-26T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 431621,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-02T19:30:00-04:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 431621,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}
