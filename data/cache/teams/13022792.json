@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-26T13:45:58.728Z",
+  "fetchedAt": "2026-07-03T13:36:44.243Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Lights Out",
         "number": "06805",
         "isTied": false,
-        "standing": 8,
+        "standing": 9,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -82,7 +82,7 @@
             "matchesPlayed": 5,
             "pa": 0.3333333333333333,
             "ppm": 1,
-            "skillLevel": 4,
+            "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3136955,
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022792,
         "sessionBonusPoints": 0,
-        "sessionPoints": 55,
-        "sessionTotalPoints": 55,
+        "sessionPoints": 67,
+        "sessionTotalPoints": 67,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -681,11 +681,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -732,13 +749,13 @@
             "type": "EIGHT",
             "id": 50630077,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-30T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-26T13:46:07.179Z",
+  "fetchedAt": "2026-07-03T13:36:51.513Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "The Railhouse",
         "number": "06803",
         "isTied": false,
-        "standing": 9,
+        "standing": 7,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -63,10 +63,10 @@
             "id": 92369008,
             "memberNumber": "08209244",
             "displayName": "Paul Thomas III",
-            "matchesWon": 4,
-            "matchesPlayed": 6,
-            "pa": 0.611111111111111,
-            "ppm": 1.8333333333333333,
+            "matchesWon": 5,
+            "matchesPlayed": 7,
+            "pa": 0.6190476190476191,
+            "ppm": 1.8571428571428572,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -78,10 +78,10 @@
             "id": 92369009,
             "memberNumber": "08211739",
             "displayName": "Michael Hamilton",
-            "matchesWon": 3,
-            "matchesPlayed": 6,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesWon": 4,
+            "matchesPlayed": 7,
+            "pa": 0.4761904761904762,
+            "ppm": 1.4285714285714286,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -93,11 +93,11 @@
             "id": 92369010,
             "memberNumber": "08214531",
             "displayName": "Cody Eldred",
-            "matchesWon": 0,
-            "matchesPlayed": 3,
-            "pa": 0.1111111111111111,
-            "ppm": 0.3333333333333333,
-            "skillLevel": 2,
+            "matchesWon": 1,
+            "matchesPlayed": 4,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3457897,
@@ -123,10 +123,10 @@
             "id": 92369012,
             "memberNumber": "08206836",
             "displayName": "Kurt Kreidler",
-            "matchesWon": 5,
-            "matchesPlayed": 6,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesWon": 6,
+            "matchesPlayed": 7,
+            "pa": 0.7142857142857143,
+            "ppm": 2.142857142857143,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -153,10 +153,10 @@
             "id": 92435051,
             "memberNumber": "08204339",
             "displayName": "Jonathan Torres",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -172,8 +172,8 @@
       "team": {
         "id": 13051645,
         "sessionBonusPoints": 0,
-        "sessionPoints": 52,
-        "sessionTotalPoints": 52,
+        "sessionPoints": 68,
+        "sessionTotalPoints": 68,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -666,11 +666,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 6,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 16,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -721,13 +738,13 @@
             "type": "EIGHT",
             "id": 50630074,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-06-30T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

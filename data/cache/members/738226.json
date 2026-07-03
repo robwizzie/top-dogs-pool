@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-15T17:30:37.760Z",
+  "fetchedAt": "2026-07-03T13:38:04.119Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 706436,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -3663,7 +3663,7 @@
             "matchesPlayed": 1031,
             "CLA": null,
             "defensiveShotAvg": 1.57,
-            "matchCountForLastTwoYrs": 110,
+            "matchCountForLastTwoYrs": 103,
             "lastPlayed": "2026-06-11T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -3671,12 +3671,12 @@
         "NineBallStats": [
           {
             "id": 900706436,
-            "matchesWon": 252,
-            "matchesPlayed": 446,
+            "matchesWon": 253,
+            "matchesPlayed": 449,
             "CLA": null,
             "defensiveShotAvg": 1.13,
             "matchCountForLastTwoYrs": 103,
-            "lastPlayed": "2026-06-08T00:00:00Z",
+            "lastPlayed": "2026-06-22T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -3985,13 +3985,18 @@
         "league": {
           "news": [
             {
-              "id": 55159,
-              "title": "15% Off American Poolplayer T-Shirts",
+              "id": 55855,
+              "title": "15% Off Military Green T-Shirts",
               "__typename": "News"
             },
             {
               "id": 55428,
               "title": "Skill level badges will no longer display on My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -4099,6 +4104,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -4147,14 +4158,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 304133778,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-26T14:21:24Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13274048,\"leagueDivisionSessionScheduleMatchId\":50630078,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -4238,6 +4249,114 @@
         "alias": {
           "id": 706436,
           "pastTeams": [
+            {
+              "id": 91260601,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "The Dude",
+              "matchesPlayed": 10,
+              "matchesWon": 7,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 5,
+              "team": {
+                "id": 12894539,
+                "name": "All Pockets Available",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91262787,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "The Dude",
+              "matchesPlayed": 11,
+              "matchesWon": 5,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 5,
+              "team": {
+                "id": 12894843,
+                "name": "Let's Go Brandon",
+                "division": {
+                  "id": 420233,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91261568,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": "The Dude",
+              "matchesPlayed": 9,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 9,
+              "team": {
+                "id": 12894672,
+                "name": "Lights Out",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91263340,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": "The Dude",
+              "matchesPlayed": 7,
+              "matchesWon": 4,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 5,
+              "team": {
+                "id": 12894923,
+                "name": "Sinking D's Balls",
+                "division": {
+                  "id": 420240,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 90962501,
               "isActive": true,
@@ -4399,114 +4518,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90216978,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "The Dude",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 12758142,
-                "name": "Lights Out",
-                "division": {
-                  "id": 408187,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90217011,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "The Dude",
-              "matchesPlayed": 5,
-              "matchesWon": 3,
-              "session": {
-                "id": 136,
-                "name": "Summer 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 12758146,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 408211,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89286598,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "The Dude",
-              "matchesPlayed": 7,
-              "matchesWon": 2,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 10,
-              "team": {
-                "id": 12623467,
-                "name": "Let's Go Brandon",
-                "division": {
-                  "id": 395933,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89285421,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "The Dude",
-              "matchesPlayed": 13,
-              "matchesWon": 9,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 12623299,
-                "name": "Lights Out",
-                "division": {
-                  "id": 395915,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -4524,7 +4535,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022650,
                 "name": "All Pockets Available",
@@ -4543,8 +4554,8 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "The Dude",
-              "matchesPlayed": 3,
-              "matchesWon": 1,
+              "matchesPlayed": 5,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -4578,7 +4589,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13022792,
                 "name": "Lights Out",
@@ -4597,7 +4608,7 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "The Dude",
-              "matchesPlayed": 2,
+              "matchesPlayed": 3,
               "matchesWon": 1,
               "session": {
                 "id": 139,
@@ -4611,114 +4622,6 @@
                 "name": "Sinking D's Balls",
                 "division": {
                   "id": 431638,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91260601,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "The Dude",
-              "matchesPlayed": 10,
-              "matchesWon": 7,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 12894539,
-                "name": "All Pockets Available",
-                "division": {
-                  "id": 420204,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91262787,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "The Dude",
-              "matchesPlayed": 11,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 5,
-              "team": {
-                "id": 12894843,
-                "name": "Let's Go Brandon",
-                "division": {
-                  "id": 420233,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91261568,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": "The Dude",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 9,
-              "team": {
-                "id": 12894672,
-                "name": "Lights Out",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263340,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "The Dude",
-              "matchesPlayed": 7,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 5,
-              "team": {
-                "id": 12894923,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 420240,
                   "isTournament": false,
                   "__typename": "Division"
                 },

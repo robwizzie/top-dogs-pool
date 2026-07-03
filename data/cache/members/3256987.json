@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-19T14:09:00.499Z",
+  "fetchedAt": "2026-07-03T13:38:32.520Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 3043359,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.39999999999999997,
-            "ppm": 1.2,
-            "eightBallMatchPointsEarned": 6,
-            "matchesWon": 3,
-            "matchesPlayed": 5,
+            "pa": 0.4761904761904762,
+            "ppm": 1.4285714285714286,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 5,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,15 +40,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3333333333333333,
-            "ppm": 1,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 2,
-            "matchesPlayed": 5,
+            "pa": 0.4761904761904762,
+            "ppm": 1.4285714285714286,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 4,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -361,7 +361,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -503,12 +503,12 @@
         "EightBallStats": [
           {
             "id": 803043359,
-            "matchesWon": 70,
-            "matchesPlayed": 125,
+            "matchesWon": 72,
+            "matchesPlayed": 128,
             "CLA": 0,
-            "defensiveShotAvg": 0.84,
-            "matchCountForLastTwoYrs": 66,
-            "lastPlayed": "2026-06-18T00:00:00Z",
+            "defensiveShotAvg": 0.83,
+            "matchCountForLastTwoYrs": 68,
+            "lastPlayed": "2026-06-30T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -631,8 +631,18 @@
         "league": {
           "news": [
             {
+              "id": 55855,
+              "title": "15% Off Military Green T-Shirts",
+              "__typename": "News"
+            },
+            {
               "id": 55428,
               "title": "Skill level badges will no longer display on My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -740,6 +750,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -788,14 +804,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 304133778,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-26T14:21:24Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13274048,\"leagueDivisionSessionScheduleMatchId\":50630078,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -878,6 +894,33 @@
         "alias": {
           "id": 3043359,
           "pastTeams": [
+            {
+              "id": 91260642,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 14,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 9,
+              "team": {
+                "id": 12894544,
+                "name": "Just Here For Shots",
+                "division": {
+                  "id": 420204,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 90959845,
               "isActive": true,
@@ -1120,33 +1163,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 85792290,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": null,
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 124,
-                "name": "Fall 2022",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 11,
-              "team": {
-                "id": 12128779,
-                "name": "#STFUandShoot",
-                "division": {
-                  "id": 351378,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1156,8 +1172,8 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 3,
+              "matchesPlayed": 7,
+              "matchesWon": 5,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -1183,47 +1199,20 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 2,
+              "matchesPlayed": 7,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13051645,
                 "name": "The Railhouse",
                 "division": {
                   "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91260642,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 14,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 9,
-              "team": {
-                "id": 12894544,
-                "name": "Just Here For Shots",
-                "division": {
-                  "id": 420204,
                   "isTournament": false,
                   "__typename": "Division"
                 },

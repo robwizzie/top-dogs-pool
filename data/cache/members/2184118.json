@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-06-19T14:09:08.100Z",
+  "fetchedAt": "2026-07-03T13:37:47.976Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 1575019,
         "league": {
           "id": 890,
-          "currentSessionId": 138,
+          "currentSessionId": 139,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.19999999999999998,
-            "ppm": 0.6,
-            "eightBallMatchPointsEarned": 3,
-            "matchesWon": 1,
-            "matchesPlayed": 5,
+            "pa": 0.2777777777777778,
+            "ppm": 0.8333333333333334,
+            "eightBallMatchPointsEarned": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 1,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 2,
-            "matchesPlayed": 3,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 4,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1967,24 +1967,24 @@
         "EightBallStats": [
           {
             "id": 801575019,
-            "matchesWon": 178,
-            "matchesPlayed": 347,
+            "matchesWon": 181,
+            "matchesPlayed": 350,
             "CLA": 5,
-            "defensiveShotAvg": 3.09,
-            "matchCountForLastTwoYrs": 100,
-            "lastPlayed": "2026-06-18T00:00:00Z",
+            "defensiveShotAvg": 3.08,
+            "matchCountForLastTwoYrs": 94,
+            "lastPlayed": "2026-06-30T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 901575019,
-            "matchesWon": 298,
-            "matchesPlayed": 595,
+            "matchesWon": 300,
+            "matchesPlayed": 597,
             "CLA": 0,
             "defensiveShotAvg": 2.61,
-            "matchCountForLastTwoYrs": 70,
-            "lastPlayed": "2026-06-15T00:00:00Z",
+            "matchCountForLastTwoYrs": 72,
+            "lastPlayed": "2026-06-29T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2304,8 +2304,18 @@
         "league": {
           "news": [
             {
+              "id": 55855,
+              "title": "15% Off Military Green T-Shirts",
+              "__typename": "News"
+            },
+            {
               "id": 55428,
               "title": "Skill level badges will no longer display on My Stats page",
+              "__typename": "News"
+            },
+            {
+              "id": 55788,
+              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -2413,6 +2423,12 @@
             "name": "tbd",
             "active": false,
             "__typename": "Feature"
+          },
+          {
+            "id": 13,
+            "name": "CanUseTabletMode",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2461,14 +2477,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 301807672,
+              "id": 304133778,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-12T15:09:24Z",
+              "createdDate": "2026-06-26T14:21:24Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13136843,\"leagueDivisionSessionScheduleMatchId\":50630064,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13274048,\"leagueDivisionSessionScheduleMatchId\":50630078,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2552,6 +2568,87 @@
         "alias": {
           "id": 1575019,
           "pastTeams": [
+            {
+              "id": 91625079,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Lazo",
+              "matchesPlayed": 14,
+              "matchesWon": 11,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 3,
+              "team": {
+                "id": 12894671,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 420216,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 91262811,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Lazo",
+              "matchesPlayed": 14,
+              "matchesWon": 8,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 3,
+              "team": {
+                "id": 12894846,
+                "name": "Bank Shot Bullies",
+                "division": {
+                  "id": 420233,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 91264337,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Lazo",
+              "matchesPlayed": 11,
+              "matchesWon": 6,
+              "session": {
+                "id": 138,
+                "name": "Spring 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 5,
+              "team": {
+                "id": 12895067,
+                "name": "This One's 4 Bruce!",
+                "division": {
+                  "id": 420256,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 91023858,
               "isActive": true,
@@ -2740,87 +2837,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88902046,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Lazo",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 1,
-              "team": {
-                "id": 12576463,
-                "name": "Bank Shot Bullies",
-                "division": {
-                  "id": 391955,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88903322,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Lazo",
-              "matchesPlayed": 7,
-              "matchesWon": 1,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 9,
-              "team": {
-                "id": 12576635,
-                "name": "This One's 4 Bruce!",
-                "division": {
-                  "id": 391980,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88470228,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Lazo",
-              "matchesPlayed": 10,
-              "matchesWon": 4,
-              "session": {
-                "id": 133,
-                "name": "Summer 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 12514592,
-                "name": "Bank Shot Bullies",
-                "division": {
-                  "id": 386499,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2828,17 +2844,17 @@
               "id": 92156423,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 7,
+              "rosterPosition": 6,
               "nickName": "Lazo",
-              "matchesPlayed": 5,
-              "matchesWon": 1,
+              "matchesPlayed": 6,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 6,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13022791,
                 "name": "8 Balls for Sale",
@@ -2857,8 +2873,8 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Lazo",
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2882,10 +2898,10 @@
               "id": 92436486,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 8,
+              "rosterPosition": 6,
               "nickName": "Lazo",
-              "matchesPlayed": 2,
-              "matchesWon": 1,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2911,8 +2927,8 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Lazo",
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 5,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2925,87 +2941,6 @@
                 "name": "This One's 4 Bruce!",
                 "division": {
                   "id": 431654,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91625079,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Lazo",
-              "matchesPlayed": 14,
-              "matchesWon": 11,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 12894671,
-                "name": "8 Balls for Sale",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91262811,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Lazo",
-              "matchesPlayed": 14,
-              "matchesWon": 8,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 12894846,
-                "name": "Bank Shot Bullies",
-                "division": {
-                  "id": 420233,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91264337,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Lazo",
-              "matchesPlayed": 11,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 5,
-              "team": {
-                "id": 12895067,
-                "name": "This One's 4 Bruce!",
-                "division": {
-                  "id": 420256,
                   "isTournament": false,
                   "__typename": "Division"
                 },
