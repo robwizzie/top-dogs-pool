@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-26T13:49:41.656Z",
+  "fetchedAt": "2026-07-10T15:37:25.225Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.39999999999999997,
-            "ppm": 1.2,
-            "eightBallMatchPointsEarned": 6,
-            "matchesWon": 3,
-            "matchesPlayed": 5,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 4,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -69,12 +69,12 @@
         "EightBallStats": [
           {
             "id": 803361708,
-            "matchesWon": 3,
-            "matchesPlayed": 5,
+            "matchesWon": 4,
+            "matchesPlayed": 6,
             "CLA": 0,
-            "defensiveShotAvg": 0.2,
-            "matchCountForLastTwoYrs": 5,
-            "lastPlayed": "2026-06-16T00:00:00Z",
+            "defensiveShotAvg": 0.17,
+            "matchCountForLastTwoYrs": 6,
+            "lastPlayed": "2026-06-30T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -118,6 +118,15 @@
       }
     },
     "memberTeams": {
+      "RaygunUserTracking": {
+        "viewer": {
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com",
+          "__typename": "Member"
+        }
+      },
       "viewerLeagues": {
         "viewer": {
           "id": 3175746,
@@ -153,8 +162,8 @@
         "league": {
           "news": [
             {
-              "id": 55788,
-              "title": "APA Patriotic T-Shirts Available",
+              "id": 55856,
+              "title": "50% Off APA Trucker Hats",
               "__typename": "News"
             },
             {
@@ -289,15 +298,6 @@
           "__typename": "Member"
         }
       },
-      "RaygunUserTracking": {
-        "viewer": {
-          "id": 3175746,
-          "firstName": "Robert",
-          "lastName": "Wiscount",
-          "emailAddress": "robertwiscount@gmail.com",
-          "__typename": "Member"
-        }
-      },
       "viewerCountryQuery": {
         "viewer": {
           "id": 3175746,
@@ -321,14 +321,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 303299474,
+              "id": 305235337,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-21T14:40:33Z",
+              "createdDate": "2026-07-03T15:26:34Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -418,15 +418,15 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 3,
+              "matchesPlayed": 6,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": null,
+              "rank": 3,
               "team": {
                 "id": 13051645,
                 "name": "The Railhouse",

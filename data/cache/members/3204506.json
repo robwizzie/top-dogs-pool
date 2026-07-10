@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-26T13:54:54.163Z",
+  "fetchedAt": "2026-07-10T15:35:43.599Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -24,7 +24,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -476,12 +476,12 @@
         "EightBallStats": [
           {
             "id": 802971112,
-            "matchesWon": 60,
-            "matchesPlayed": 112,
+            "matchesWon": 61,
+            "matchesPlayed": 113,
             "CLA": 0,
             "defensiveShotAvg": 0.83,
-            "matchCountForLastTwoYrs": 24,
-            "lastPlayed": "2026-06-23T00:00:00Z",
+            "matchCountForLastTwoYrs": 20,
+            "lastPlayed": "2026-07-07T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -505,7 +505,7 @@
         "id": 2971112,
         "member": {
           "id": 3204506,
-          "consecutiveYearsPlayed": 5,
+          "consecutiveYearsPlayed": 6,
           "membershipHistory": [
             {
               "id": 6521368,
@@ -561,6 +561,17 @@
                 "__typename": "League"
               },
               "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7816893,
+              "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
             }
           ],
           "__typename": "Member"
@@ -604,8 +615,8 @@
         "league": {
           "news": [
             {
-              "id": 55788,
-              "title": "APA Patriotic T-Shirts Available",
+              "id": 55856,
+              "title": "50% Off APA Trucker Hats",
               "__typename": "News"
             },
             {
@@ -772,14 +783,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 303299474,
+              "id": 305235337,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-21T14:40:33Z",
+              "createdDate": "2026-07-03T15:26:34Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13239240,\"leagueDivisionSessionScheduleMatchId\":50630072,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1140,7 +1151,7 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 0,
+              "matchesPlayed": 1,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -1148,7 +1159,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": null,
+              "rank": 3,
               "team": {
                 "id": 13022790,
                 "name": "Nailed It!!",

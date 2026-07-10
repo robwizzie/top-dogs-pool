@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-03T13:37:57.147Z",
+  "fetchedAt": "2026-07-10T15:42:27.098Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,12 +20,12 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "eightBallBreakAndRuns": 0,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "eightBallMatchPointsEarned": 2,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3888888888888889,
-            "ppm": 1.1666666666666667,
-            "eightBallMatchPointsEarned": 7,
-            "matchesWon": 2,
-            "matchesPlayed": 6,
+            "pa": 0.4285714285714286,
+            "ppm": 1.2857142857142858,
+            "eightBallMatchPointsEarned": 9,
+            "matchesWon": 3,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1248,7 +1248,7 @@
               "__typename": "Session"
             },
             "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 0,
+            "eightBallBreakAndRuns": 1,
             "rackless": 0,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
@@ -2243,24 +2243,24 @@
         "EightBallStats": [
           {
             "id": 802581128,
-            "matchesWon": 267,
-            "matchesPlayed": 486,
+            "matchesWon": 268,
+            "matchesPlayed": 488,
             "CLA": 0,
-            "defensiveShotAvg": 0.71,
+            "defensiveShotAvg": 0.72,
             "matchCountForLastTwoYrs": 90,
-            "lastPlayed": "2026-07-02T00:00:00Z",
+            "lastPlayed": "2026-07-07T00:00:00Z",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902581128,
-            "matchesWon": 157,
-            "matchesPlayed": 268,
+            "matchesWon": 158,
+            "matchesPlayed": 269,
             "CLA": 0,
             "defensiveShotAvg": 0.64,
             "matchCountForLastTwoYrs": 74,
-            "lastPlayed": "2026-06-15T00:00:00Z",
+            "lastPlayed": "2026-07-06T00:00:00Z",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2426,18 +2426,13 @@
         "league": {
           "news": [
             {
-              "id": 55855,
-              "title": "15% Off Military Green T-Shirts",
+              "id": 55856,
+              "title": "50% Off APA Trucker Hats",
               "__typename": "News"
             },
             {
               "id": 55428,
               "title": "Skill level badges will no longer display on My Stats page",
-              "__typename": "News"
-            },
-            {
-              "id": 55788,
-              "title": "APA Patriotic T-Shirts Available",
               "__typename": "News"
             },
             {
@@ -2599,14 +2594,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 304133778,
+              "id": 305235337,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-06-26T14:21:24Z",
+              "createdDate": "2026-07-03T15:26:34Z",
               "typeId": null,
-              "metaData": "{\"reportId\":13274048,\"leagueDivisionSessionScheduleMatchId\":50630078,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2968,15 +2963,15 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": "Intimidator",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13022791,
                 "name": "8 Balls for Sale",
@@ -2995,15 +2990,15 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Intimidator",
-              "matchesPlayed": 6,
-              "matchesWon": 2,
+              "matchesPlayed": 7,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 4,
+              "rank": 3,
               "team": {
                 "id": 13022648,
                 "name": "Double Tap This!",
@@ -3030,7 +3025,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13022966,
                 "name": "Untouchables",
@@ -3057,7 +3052,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 2,
+              "rank": 5,
               "team": {
                 "id": 13059258,
                 "name": "What Had Happened Was?",
