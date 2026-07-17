@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-10T15:34:00.641Z",
+  "fetchedAt": "2026-07-17T14:43:57.073Z",
   "data": {
     "teamPage": {
       "team": {
@@ -12,7 +12,7 @@
           "id": 431614,
           "name": "Gl-68",
           "number": "068",
-          "timeOfPlay": "1900-01-01T19:30:00Z",
+          "timeOfPlay": "1900-01-01T19:30:00+00:00",
           "nightOfPlay": "Tuesday",
           "format": "8-Ball Open",
           "state": "CURRENT",
@@ -702,11 +702,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -753,13 +770,13 @@
             "type": "EIGHT",
             "id": 50630088,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-07-14T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

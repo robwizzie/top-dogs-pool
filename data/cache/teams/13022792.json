@@ -1,18 +1,18 @@
 {
-  "fetchedAt": "2026-07-10T15:33:33.226Z",
+  "fetchedAt": "2026-07-17T14:43:28.146Z",
   "data": {
     "teamPage": {
       "team": {
         "id": 13022792,
         "name": "Lights Out",
         "number": "06805",
-        "isTied": false,
-        "standing": 9,
+        "isTied": true,
+        "standing": 7,
         "division": {
           "id": 431614,
           "name": "Gl-68",
           "number": "068",
-          "timeOfPlay": "1900-01-01T19:30:00Z",
+          "timeOfPlay": "1900-01-01T19:30:00+00:00",
           "nightOfPlay": "Tuesday",
           "format": "8-Ball Open",
           "state": "CURRENT",
@@ -63,10 +63,10 @@
             "id": 92156427,
             "memberNumber": "08216156",
             "displayName": "The Dude Sears",
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -93,10 +93,10 @@
             "id": 92156430,
             "memberNumber": "08208225",
             "displayName": "Mike Hayes",
-            "matchesWon": 0,
-            "matchesPlayed": 4,
-            "pa": 0.25,
-            "ppm": 0.75,
+            "matchesWon": 1,
+            "matchesPlayed": 5,
+            "pa": 0.39999999999999997,
+            "ppm": 1.2,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -109,7 +109,7 @@
             "memberNumber": "08210144",
             "displayName": "Kevin Maiden",
             "matchesWon": 1,
-            "matchesPlayed": 5,
+            "matchesPlayed": 6,
             "pa": 0.3333333333333333,
             "ppm": 1,
             "skillLevel": 5,
@@ -123,10 +123,10 @@
             "id": 92156434,
             "memberNumber": "08213515",
             "displayName": "Jennifer Swanson",
-            "matchesWon": 0,
-            "matchesPlayed": 3,
-            "pa": 0.1111111111111111,
-            "ppm": 0.3333333333333333,
+            "matchesWon": 1,
+            "matchesPlayed": 4,
+            "pa": 0.25,
+            "ppm": 0.75,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -169,9 +169,9 @@
             "memberNumber": "08212765",
             "displayName": "Pete Johnson IV",
             "matchesWon": 3,
-            "matchesPlayed": 5,
-            "pa": 0.39999999999999997,
-            "ppm": 1.2,
+            "matchesPlayed": 6,
+            "pa": 0.3888888888888889,
+            "ppm": 1.1666666666666667,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022792,
         "sessionBonusPoints": 0,
-        "sessionPoints": 78,
-        "sessionTotalPoints": 78,
+        "sessionPoints": 91,
+        "sessionTotalPoints": 91,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -835,11 +835,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -890,13 +907,13 @@
             "type": "EIGHT",
             "id": 50630086,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-07-14T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",
