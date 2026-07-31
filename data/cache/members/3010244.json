@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-10T15:38:24.109Z",
+  "fetchedAt": "2026-07-31T15:22:29.537Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -60,11 +60,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.25,
-            "ppm": 0.75,
-            "eightBallMatchPointsEarned": 3,
-            "matchesWon": 1,
-            "matchesPlayed": 4,
+            "pa": 0.4285714285714286,
+            "ppm": 1.2857142857142858,
+            "eightBallMatchPointsEarned": 9,
+            "matchesWon": 4,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -80,11 +80,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.26666666666666666,
-            "ppm": 0.8,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 2,
-            "matchesPlayed": 5,
+            "pa": 0.2857142857142857,
+            "ppm": 0.8571428571428571,
+            "eightBallMatchPointsEarned": 6,
+            "matchesWon": 3,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -100,15 +100,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
+            "eightBallMatchPointsEarned": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -1066,7 +1066,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -2036,24 +2036,24 @@
         "EightBallStats": [
           {
             "id": 802672100,
-            "matchesWon": 201,
-            "matchesPlayed": 407,
+            "matchesWon": 206,
+            "matchesPlayed": 413,
             "CLA": 0,
-            "defensiveShotAvg": 1.55,
-            "matchCountForLastTwoYrs": 140,
-            "lastPlayed": "2026-07-08T00:00:00Z",
+            "defensiveShotAvg": 1.54,
+            "matchCountForLastTwoYrs": 144,
+            "lastPlayed": "2026-07-29T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902672100,
-            "matchesWon": 286,
-            "matchesPlayed": 534,
+            "matchesWon": 289,
+            "matchesPlayed": 540,
             "CLA": 5,
-            "defensiveShotAvg": 0.89,
-            "matchCountForLastTwoYrs": 202,
-            "lastPlayed": "2026-07-06T00:00:00Z",
+            "defensiveShotAvg": 0.88,
+            "matchCountForLastTwoYrs": 206,
+            "lastPlayed": "2026-07-27T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2208,8 +2208,8 @@
         "league": {
           "news": [
             {
-              "id": 55856,
-              "title": "50% Off APA Trucker Hats",
+              "id": 56254,
+              "title": "Vegas Event Program",
               "__typename": "News"
             },
             {
@@ -2326,7 +2326,7 @@
           {
             "id": 13,
             "name": "CanUseTabletMode",
-            "active": false,
+            "active": true,
             "__typename": "Feature"
           }
         ]
@@ -2376,14 +2376,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 305235337,
+              "id": 308652079,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-03T15:26:34Z",
+              "createdDate": "2026-07-24T16:46:16+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13464730,\"leagueDivisionSessionScheduleMatchId\":50630094,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2780,7 +2780,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13053623,
                 "name": "Chalk and Awe",
@@ -2799,8 +2799,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 4,
-              "matchesWon": 1,
+              "matchesPlayed": 7,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2826,15 +2826,15 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 2,
+              "matchesPlayed": 7,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": 1,
+              "rank": 13,
               "team": {
                 "id": 13023078,
                 "name": "Clean 'em Up",
@@ -2849,9 +2849,9 @@
             },
             {
               "id": 92158957,
-              "isActive": true,
+              "isActive": false,
               "role": "MEMBER",
-              "rosterPosition": 5,
+              "rosterPosition": null,
               "nickName": null,
               "matchesPlayed": 4,
               "matchesWon": 1,
@@ -2861,7 +2861,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13023148,
                 "name": "Fortnite",
@@ -2880,8 +2880,8 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 3,
+              "matchesPlayed": 6,
+              "matchesWon": 6,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2907,8 +2907,8 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 2,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2934,7 +2934,7 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 6,
               "matchesWon": 2,
               "session": {
                 "id": 139,
@@ -2942,7 +2942,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": 1,
+              "rank": 9,
               "team": {
                 "id": 13022639,
                 "name": "Sinister 8",

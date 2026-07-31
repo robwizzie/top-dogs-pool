@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-10T15:41:00.548Z",
+  "fetchedAt": "2026-07-31T15:28:29.974Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 8,
-            "matchesWon": 3,
-            "matchesPlayed": 4,
+            "pa": 0.5238095238095238,
+            "ppm": 1.5714285714285714,
+            "eightBallMatchPointsEarned": 11,
+            "matchesWon": 4,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -42,11 +42,11 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 2,
-            "matchesPlayed": 2,
+            "eightBallMatchPointsEarned": 6,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "miniSlams": 0,
             "rackless": 0,
             "__typename": "EightBallPlayer"
@@ -301,7 +301,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "eightBallBreakAndRuns": 0,
             "rackless": 0,
             "miniSlams": 0,
@@ -458,23 +458,23 @@
           {
             "id": 803252670,
             "matchesWon": 51,
-            "matchesPlayed": 94,
+            "matchesPlayed": 96,
             "CLA": 0,
-            "defensiveShotAvg": 0.79,
-            "matchCountForLastTwoYrs": 94,
-            "lastPlayed": "2026-07-09T00:00:00Z",
+            "defensiveShotAvg": 0.8,
+            "matchCountForLastTwoYrs": 96,
+            "lastPlayed": "2026-07-21T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903252670,
-            "matchesWon": 22,
-            "matchesPlayed": 44,
+            "matchesWon": 23,
+            "matchesPlayed": 46,
             "CLA": 0,
-            "defensiveShotAvg": 0.36,
-            "matchCountForLastTwoYrs": 44,
-            "lastPlayed": "2026-07-06T00:00:00Z",
+            "defensiveShotAvg": 0.34,
+            "matchCountForLastTwoYrs": 46,
+            "lastPlayed": "2026-07-20T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -552,8 +552,8 @@
         "league": {
           "news": [
             {
-              "id": 55856,
-              "title": "50% Off APA Trucker Hats",
+              "id": 56254,
+              "title": "Vegas Event Program",
               "__typename": "News"
             },
             {
@@ -670,7 +670,7 @@
           {
             "id": 13,
             "name": "CanUseTabletMode",
-            "active": false,
+            "active": true,
             "__typename": "Feature"
           }
         ]
@@ -720,14 +720,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 305235337,
+              "id": 308652079,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-03T15:26:34Z",
+              "createdDate": "2026-07-24T16:46:16+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13464730,\"leagueDivisionSessionScheduleMatchId\":50630094,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -797,7 +797,7 @@
                 },
                 {
                   "__typename": "NineBallLifetimeStatistics",
-                  "skillLevel": 5,
+                  "skillLevel": 4,
                   "CLA": 0
                 }
               ],
@@ -1089,15 +1089,15 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 1,
+              "matchesPlayed": 8,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 5,
-              "rank": null,
+              "skillLevel": 4,
+              "rank": 5,
               "team": {
                 "id": 13023054,
                 "name": "9-Ball Assassins",
@@ -1116,15 +1116,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 4,
-              "matchesWon": 3,
+              "matchesPlayed": 7,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 1,
+              "rank": 3,
               "team": {
                 "id": 13022789,
                 "name": "Break 8 Away",
@@ -1143,15 +1143,15 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 2,
-              "matchesWon": 2,
+              "matchesPlayed": 3,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 1,
+              "rank": 2,
               "team": {
                 "id": 13022656,
                 "name": "Demo-Lition",
