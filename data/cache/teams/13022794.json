@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-31T15:20:47.413Z",
+  "fetchedAt": "2026-08-14T14:17:23.449Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Keep It Simple Stupid",
         "number": "06807",
         "isTied": false,
-        "standing": 6,
+        "standing": 9,
         "division": {
           "id": 431614,
           "name": "Gl-68",
@@ -64,9 +64,9 @@
             "memberNumber": "08213400",
             "displayName": "Todd Graham",
             "matchesWon": 5,
-            "matchesPlayed": 8,
-            "pa": 0.5,
-            "ppm": 1.5,
+            "matchesPlayed": 9,
+            "pa": 0.48148148148148145,
+            "ppm": 1.4444444444444444,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -109,9 +109,9 @@
             "memberNumber": "08203289",
             "displayName": "Fred Veney",
             "matchesWon": 4,
-            "matchesPlayed": 6,
-            "pa": 0.5,
-            "ppm": 1.5,
+            "matchesPlayed": 7,
+            "pa": 0.4285714285714286,
+            "ppm": 1.2857142857142858,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -123,10 +123,10 @@
             "id": 92156443,
             "memberNumber": "08201045",
             "displayName": "Freddy Mills",
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
             "skillLevel": 7,
             "__typename": "EightBallPlayer",
             "member": {
@@ -138,10 +138,10 @@
             "id": 92156446,
             "memberNumber": "08208286",
             "displayName": "Kenny Robinson",
-            "matchesWon": 2,
-            "matchesPlayed": 7,
-            "pa": 0.2857142857142857,
-            "ppm": 0.8571428571428571,
+            "matchesWon": 3,
+            "matchesPlayed": 8,
+            "pa": 0.375,
+            "ppm": 1.125,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -168,10 +168,10 @@
             "id": 92156449,
             "memberNumber": "08213536",
             "displayName": "Stacy Graham",
-            "matchesWon": 1,
-            "matchesPlayed": 4,
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
+            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "pa": 0.26666666666666666,
+            "ppm": 0.8,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -187,8 +187,8 @@
       "team": {
         "id": 13022794,
         "sessionBonusPoints": 0,
-        "sessionPoints": 116,
-        "sessionTotalPoints": 116,
+        "sessionPoints": 128,
+        "sessionTotalPoints": 128,
         "division": {
           "id": 431614,
           "isTournament": false,
@@ -843,7 +843,7 @@
               {
                 "homeAway": "HOME",
                 "points": {
-                  "total": 16,
+                  "total": 12,
                   "__typename": "MatchResultPoints"
                 },
                 "__typename": "MatchResult"
@@ -1072,11 +1072,28 @@
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
-            "isFinalized": false,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": "",
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -1189,13 +1206,13 @@
             "type": "EIGHT",
             "id": 50630104,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-08-11T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
             "isTournament": false,
-            "isScored": false,
+            "isScored": true,
             "isFinalized": false,
             "isPlayoff": false,
             "description": "",

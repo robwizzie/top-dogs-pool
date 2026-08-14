@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-31T15:21:49.088Z",
+  "fetchedAt": "2026-08-14T14:23:28.603Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
+            "pa": 0.16666666666666666,
+            "ppm": 0.5,
+            "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -390,24 +390,24 @@
         "EightBallStats": [
           {
             "id": 803137364,
-            "matchesWon": 22,
-            "matchesPlayed": 57,
+            "matchesWon": 23,
+            "matchesPlayed": 60,
             "CLA": 0,
-            "defensiveShotAvg": 0.63,
-            "matchCountForLastTwoYrs": 45,
-            "lastPlayed": "2026-07-21T00:00:00+00:00",
+            "defensiveShotAvg": 0.6,
+            "matchCountForLastTwoYrs": 47,
+            "lastPlayed": "2026-08-13T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903137364,
-            "matchesWon": 15,
-            "matchesPlayed": 43,
+            "matchesWon": 16,
+            "matchesPlayed": 44,
             "CLA": 0,
-            "defensiveShotAvg": 0.95,
+            "defensiveShotAvg": 0.93,
             "matchCountForLastTwoYrs": 19,
-            "lastPlayed": "2026-07-20T00:00:00+00:00",
+            "lastPlayed": "2026-08-10T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -672,17 +672,39 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 3,
           "notifications": [
             {
-              "id": 308652079,
+              "id": 310937809,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-24T16:46:16+00:00",
+              "createdDate": "2026-08-07T16:38:21+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13464730,\"leagueDivisionSessionScheduleMatchId\":50630094,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13562182,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310934599,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:33:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13562008,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310932114,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:28:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13561843,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1071,7 +1093,7 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 0,
+              "matchesPlayed": 2,
               "matchesWon": 0,
               "session": {
                 "id": 139,
@@ -1079,7 +1101,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 2,
-              "rank": null,
+              "rank": 7,
               "team": {
                 "id": 13022652,
                 "name": "OLD LIVES MATTER",

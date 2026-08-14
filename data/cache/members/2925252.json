@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-31T15:27:02.058Z",
+  "fetchedAt": "2026-08-14T14:24:19.219Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.19047619047619047,
-            "ppm": 0.5714285714285714,
-            "eightBallMatchPointsEarned": 4,
+            "pa": 0.20833333333333334,
+            "ppm": 0.625,
+            "eightBallMatchPointsEarned": 5,
             "matchesWon": 2,
-            "matchesPlayed": 7,
+            "matchesPlayed": 8,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,15 +40,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.14814814814814814,
-            "ppm": 0.4444444444444444,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 1,
-            "matchesPlayed": 9,
+            "pa": 0.24242424242424243,
+            "ppm": 0.7272727272727273,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 2,
+            "matchesPlayed": 11,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -1252,7 +1252,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "nineOnSnaps": 2,
+            "nineOnSnaps": 3,
             "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
@@ -1278,7 +1278,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -2092,24 +2092,24 @@
         "EightBallStats": [
           {
             "id": 802558764,
-            "matchesWon": 266,
-            "matchesPlayed": 578,
+            "matchesWon": 268,
+            "matchesPlayed": 582,
             "CLA": 4,
             "defensiveShotAvg": 0.95,
-            "matchCountForLastTwoYrs": 170,
-            "lastPlayed": "2026-07-28T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 172,
+            "lastPlayed": "2026-08-13T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902558764,
-            "matchesWon": 94,
-            "matchesPlayed": 188,
+            "matchesWon": 95,
+            "matchesPlayed": 189,
             "CLA": 0,
             "defensiveShotAvg": 0.63,
             "matchCountForLastTwoYrs": 67,
-            "lastPlayed": "2026-07-27T00:00:00+00:00",
+            "lastPlayed": "2026-08-10T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2429,17 +2429,39 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 3,
           "notifications": [
             {
-              "id": 308652079,
+              "id": 310937809,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-24T16:46:16+00:00",
+              "createdDate": "2026-08-07T16:38:21+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13464730,\"leagueDivisionSessionScheduleMatchId\":50630094,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13562182,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310934599,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:33:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13562008,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310932114,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:28:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13561843,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2801,8 +2823,8 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Juice",
-              "matchesPlayed": 6,
-              "matchesWon": 3,
+              "matchesPlayed": 7,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2828,7 +2850,7 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "Juice",
-              "matchesPlayed": 7,
+              "matchesPlayed": 8,
               "matchesWon": 2,
               "session": {
                 "id": 139,
@@ -2836,7 +2858,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 11,
+              "rank": 17,
               "team": {
                 "id": 13022796,
                 "name": "The Office",
@@ -2855,15 +2877,15 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "Juice",
-              "matchesPlayed": 9,
-              "matchesWon": 1,
+              "matchesPlayed": 11,
+              "matchesWon": 2,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 10,
+              "rank": 18,
               "team": {
                 "id": 13022653,
                 "name": "The Office Buds",
@@ -2890,7 +2912,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 7,
+              "rank": 9,
               "team": {
                 "id": 13059258,
                 "name": "THIS TEAM QUIT",

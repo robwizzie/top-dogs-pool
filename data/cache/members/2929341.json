@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-10T15:36:20.070Z",
+  "fetchedAt": "2026-08-14T14:21:09.512Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.1111111111111111,
-            "ppm": 0.3333333333333333,
-            "eightBallMatchPointsEarned": 1,
-            "matchesWon": 0,
-            "matchesPlayed": 3,
+            "pa": 0.26666666666666666,
+            "ppm": 0.8,
+            "eightBallMatchPointsEarned": 4,
+            "matchesWon": 1,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -289,24 +289,24 @@
         "EightBallStats": [
           {
             "id": 803215822,
-            "matchesWon": 58,
-            "matchesPlayed": 119,
+            "matchesWon": 59,
+            "matchesPlayed": 121,
             "CLA": 0,
-            "defensiveShotAvg": 2.49,
-            "matchCountForLastTwoYrs": 44,
-            "lastPlayed": "2026-07-07T00:00:00Z",
+            "defensiveShotAvg": 2.53,
+            "matchCountForLastTwoYrs": 46,
+            "lastPlayed": "2026-08-11T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903215822,
-            "matchesWon": 83,
-            "matchesPlayed": 163,
+            "matchesWon": 87,
+            "matchesPlayed": 167,
             "CLA": 0,
-            "defensiveShotAvg": 1.52,
-            "matchCountForLastTwoYrs": 57,
-            "lastPlayed": "2026-07-06T00:00:00Z",
+            "defensiveShotAvg": 1.53,
+            "matchCountForLastTwoYrs": 61,
+            "lastPlayed": "2026-08-10T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -450,8 +450,8 @@
         "league": {
           "news": [
             {
-              "id": 55856,
-              "title": "50% Off APA Trucker Hats",
+              "id": 56254,
+              "title": "Vegas Event Program",
               "__typename": "News"
             },
             {
@@ -568,7 +568,7 @@
           {
             "id": 13,
             "name": "CanUseTabletMode",
-            "active": false,
+            "active": true,
             "__typename": "Feature"
           }
         ]
@@ -615,17 +615,39 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 3,
           "notifications": [
             {
-              "id": 305235337,
+              "id": 310937809,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-03T15:26:34Z",
+              "createdDate": "2026-08-07T16:38:21+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13562182,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310934599,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:33:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13562008,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310932114,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:28:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13561843,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -690,7 +712,7 @@
               "stats": [
                 {
                   "__typename": "EightBallLifetimeStatistics",
-                  "skillLevel": 4,
+                  "skillLevel": 3,
                   "CLA": 0
                 },
                 {
@@ -960,15 +982,15 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 1,
+              "matchesPlayed": 7,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 2,
+              "rank": 4,
               "team": {
                 "id": 13023056,
                 "name": "Chalk to the Hand",
@@ -987,15 +1009,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 0,
+              "matchesPlayed": 5,
+              "matchesWon": 1,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 4,
-              "rank": 5,
+              "skillLevel": 3,
+              "rank": 11,
               "team": {
                 "id": 13022792,
                 "name": "Lights Out",

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-31T15:30:41.912Z",
+  "fetchedAt": "2026-08-14T14:27:55.324Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -328,12 +328,12 @@
         "EightBallStats": [
           {
             "id": 803167012,
-            "matchesWon": 40,
-            "matchesPlayed": 94,
+            "matchesWon": 41,
+            "matchesPlayed": 95,
             "CLA": 0,
             "defensiveShotAvg": 1.39,
-            "matchCountForLastTwoYrs": 76,
-            "lastPlayed": "2026-07-21T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 75,
+            "lastPlayed": "2026-08-11T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -399,6 +399,12 @@
       }
     },
     "memberTeams": {
+      "GenerateAccessTokenMutation": {
+        "generateAccessToken": {
+          "accessToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9seWR1dTRod0xkdHBJTEFsRGVtZi1YYjZNWjhueWg2bC1UdzN6bTRZQnMifQ.eyJjYW5WaWV3TWFnYXppbmUiOnRydWUsInVzZXJUeXBlIjoiTUVNQkVSIiwiYXBwbGljYXRpb25SZWZyZXNoVG9rZW5JZCI6Ijc4MTA3NjYiLCJpYXQiOjE3ODY3MTc2NzIsImV4cCI6MTc4NjcxODU3MiwiaXNzIjoiQVBBIiwic3ViIjoiMjEyNDYwNCJ9.f17qBuFRXDb8vjFF0xNBkYTzRnCFtoV-Q5yRiEW8o1Cm3APgfxju_hi4LiJbQo5LLoeHRahCNMCWxng8ePo0uiG1LxVulL7XxG5fJ-qtQO17PUaqaGOXy2Sjtw82Ep2R_pKGtEI-duPSagmZYx2dJRIGSLVUarflPyqAzB43tIrTfESaGqagA0Z1oxZKlszde1PRVz_sVCe8QFQBhLLsWKXZd8PJYhmAUdWsDm2TAeck_kQp_npykCjYnl79xDvzHzYvWjBSH_KyK3ockecbTadINrda7hlf6cjbFqNLFQvhc6juq-FOsDFSvcj6TuOC_VJa_Xdp3DPvSoWQhdD2tA",
+          "__typename": "AccessTokenPayload"
+        }
+      },
       "viewerLeagues": {
         "viewer": {
           "id": 3175746,
@@ -599,17 +605,39 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 3,
           "notifications": [
             {
-              "id": 308652079,
+              "id": 310937809,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-24T16:46:16+00:00",
+              "createdDate": "2026-08-07T16:38:21+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13464730,\"leagueDivisionSessionScheduleMatchId\":50630094,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13562182,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310934599,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:33:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13562008,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310932114,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:28:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13561843,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],

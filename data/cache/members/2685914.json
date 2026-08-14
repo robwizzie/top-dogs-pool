@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-31T15:30:03.512Z",
+  "fetchedAt": "2026-08-14T14:27:26.027Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -22,11 +22,11 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 14,
-            "matchesWon": 6,
-            "matchesPlayed": 7,
+            "eightBallMatchPointsEarned": 16,
+            "matchesWon": 7,
+            "matchesPlayed": 8,
             "eightBallBreakAndRuns": 4,
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "miniSlams": 0,
             "rackless": 1,
             "__typename": "EightBallPlayer"
@@ -1052,7 +1052,7 @@
               "id": 139,
               "__typename": "Session"
             },
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "eightBallBreakAndRuns": 4,
             "rackless": 1,
             "miniSlams": 0,
@@ -1768,12 +1768,12 @@
         "EightBallStats": [
           {
             "id": 802239694,
-            "matchesWon": 308,
-            "matchesPlayed": 520,
+            "matchesWon": 310,
+            "matchesPlayed": 522,
             "CLA": 3,
-            "defensiveShotAvg": 2.02,
+            "defensiveShotAvg": 2.03,
             "matchCountForLastTwoYrs": 57,
-            "lastPlayed": "2026-07-21T00:00:00+00:00",
+            "lastPlayed": "2026-08-11T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1781,11 +1781,11 @@
           {
             "id": 902239694,
             "matchesWon": 94,
-            "matchesPlayed": 166,
+            "matchesPlayed": 167,
             "CLA": 0,
-            "defensiveShotAvg": 1.93,
-            "matchCountForLastTwoYrs": 46,
-            "lastPlayed": "2026-07-27T00:00:00+00:00",
+            "defensiveShotAvg": 1.95,
+            "matchCountForLastTwoYrs": 47,
+            "lastPlayed": "2026-08-10T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2171,17 +2171,39 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 3,
           "notifications": [
             {
-              "id": 308652079,
+              "id": 310937809,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-24T16:46:16+00:00",
+              "createdDate": "2026-08-07T16:38:21+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13464730,\"leagueDivisionSessionScheduleMatchId\":50630094,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13562182,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310934599,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:33:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13562008,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 310932114,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-08-07T16:28:21+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13561843,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2544,8 +2566,8 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 6,
+              "matchesPlayed": 8,
+              "matchesWon": 7,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
@@ -2571,7 +2593,7 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 4,
+              "matchesPlayed": 5,
               "matchesWon": 2,
               "session": {
                 "id": 139,
