@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-14T14:27:55.324Z",
+  "fetchedAt": "2026-08-28T23:05:43.598Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5,
-            "ppm": 1.5,
-            "eightBallMatchPointsEarned": 12,
-            "matchesWon": 3,
-            "matchesPlayed": 8,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
+            "eightBallMatchPointsEarned": 15,
+            "matchesWon": 4,
+            "matchesPlayed": 9,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -328,12 +328,12 @@
         "EightBallStats": [
           {
             "id": 803167012,
-            "matchesWon": 41,
-            "matchesPlayed": 95,
+            "matchesWon": 42,
+            "matchesPlayed": 96,
             "CLA": 0,
-            "defensiveShotAvg": 1.39,
+            "defensiveShotAvg": 1.38,
             "matchCountForLastTwoYrs": 75,
-            "lastPlayed": "2026-08-11T00:00:00+00:00",
+            "lastPlayed": "2026-08-25T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -399,12 +399,6 @@
       }
     },
     "memberTeams": {
-      "GenerateAccessTokenMutation": {
-        "generateAccessToken": {
-          "accessToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9seWR1dTRod0xkdHBJTEFsRGVtZi1YYjZNWjhueWg2bC1UdzN6bTRZQnMifQ.eyJjYW5WaWV3TWFnYXppbmUiOnRydWUsInVzZXJUeXBlIjoiTUVNQkVSIiwiYXBwbGljYXRpb25SZWZyZXNoVG9rZW5JZCI6Ijc4MTA3NjYiLCJpYXQiOjE3ODY3MTc2NzIsImV4cCI6MTc4NjcxODU3MiwiaXNzIjoiQVBBIiwic3ViIjoiMjEyNDYwNCJ9.f17qBuFRXDb8vjFF0xNBkYTzRnCFtoV-Q5yRiEW8o1Cm3APgfxju_hi4LiJbQo5LLoeHRahCNMCWxng8ePo0uiG1LxVulL7XxG5fJ-qtQO17PUaqaGOXy2Sjtw82Ep2R_pKGtEI-duPSagmZYx2dJRIGSLVUarflPyqAzB43tIrTfESaGqagA0Z1oxZKlszde1PRVz_sVCe8QFQBhLLsWKXZd8PJYhmAUdWsDm2TAeck_kQp_npykCjYnl79xDvzHzYvWjBSH_KyK3ockecbTadINrda7hlf6cjbFqNLFQvhc6juq-FOsDFSvcj6TuOC_VJa_Xdp3DPvSoWQhdD2tA",
-          "__typename": "AccessTokenPayload"
-        }
-      },
       "viewerLeagues": {
         "viewer": {
           "id": 3175746,
@@ -439,11 +433,6 @@
         "feature": false,
         "league": {
           "news": [
-            {
-              "id": 56254,
-              "title": "Vegas Event Program",
-              "__typename": "News"
-            },
             {
               "id": 55428,
               "title": "Skill level badges will no longer display on My Stats page",
@@ -605,39 +594,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 3,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 310937809,
+              "id": 313177810,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-08-07T16:38:21+00:00",
+              "createdDate": "2026-08-21T15:28:29+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13562182,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 310934599,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-08-07T16:33:21+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13562008,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 310932114,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-08-07T16:28:21+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13561843,\"leagueDivisionSessionScheduleMatchId\":50630104,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -917,15 +884,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": "Joe Rogan",
-              "matchesPlayed": 8,
-              "matchesWon": 3,
+              "matchesPlayed": 9,
+              "matchesWon": 4,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": 4,
+              "rank": 3,
               "team": {
                 "id": 13022790,
                 "name": "Nailed It!!",

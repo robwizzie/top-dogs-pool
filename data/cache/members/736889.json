@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-10T15:36:11.189Z",
+  "fetchedAt": "2026-08-28T22:58:42.796Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,15 +20,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3888888888888889,
-            "ppm": 1.1666666666666667,
-            "eightBallMatchPointsEarned": 7,
-            "matchesWon": 3,
-            "matchesPlayed": 6,
-            "eightBallBreakAndRuns": 0,
+            "pa": 0.47222222222222227,
+            "ppm": 1.4166666666666667,
+            "eightBallMatchPointsEarned": 17,
+            "matchesWon": 6,
+            "matchesPlayed": 12,
+            "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 1,
             "miniSlams": 0,
-            "rackless": 1,
+            "rackless": 2,
             "__typename": "EightBallPlayer"
           },
           {
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3333333333333333,
-            "ppm": 1,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 1,
-            "matchesPlayed": 5,
+            "pa": 0.39999999999999997,
+            "ppm": 1.2,
+            "eightBallMatchPointsEarned": 12,
+            "matchesWon": 3,
+            "matchesPlayed": 10,
             "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 2,
             "miniSlams": 0,
@@ -2688,8 +2688,8 @@
               "__typename": "Session"
             },
             "eightOnBreaks": 1,
-            "eightBallBreakAndRuns": 0,
-            "rackless": 1,
+            "eightBallBreakAndRuns": 1,
+            "rackless": 2,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -4775,24 +4775,24 @@
         "EightBallStats": [
           {
             "id": 801325376,
-            "matchesWon": 786,
-            "matchesPlayed": 1398,
+            "matchesWon": 790,
+            "matchesPlayed": 1409,
             "CLA": 0,
-            "defensiveShotAvg": 1.86,
-            "matchCountForLastTwoYrs": 147,
-            "lastPlayed": "2026-07-09T00:00:00Z",
+            "defensiveShotAvg": 1.89,
+            "matchCountForLastTwoYrs": 150,
+            "lastPlayed": "2026-08-27T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 901325376,
-            "matchesWon": 268,
-            "matchesPlayed": 541,
+            "matchesWon": 272,
+            "matchesPlayed": 545,
             "CLA": 0,
             "defensiveShotAvg": 1.02,
-            "matchCountForLastTwoYrs": 77,
-            "lastPlayed": "2026-06-29T00:00:00Z",
+            "matchCountForLastTwoYrs": 76,
+            "lastPlayed": "2026-08-17T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -5211,11 +5211,6 @@
         "league": {
           "news": [
             {
-              "id": 55856,
-              "title": "50% Off APA Trucker Hats",
-              "__typename": "News"
-            },
-            {
               "id": 55428,
               "title": "Skill level badges will no longer display on My Stats page",
               "__typename": "News"
@@ -5329,7 +5324,7 @@
           {
             "id": 13,
             "name": "CanUseTabletMode",
-            "active": false,
+            "active": true,
             "__typename": "Feature"
           }
         ]
@@ -5379,14 +5374,14 @@
           "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 305235337,
+              "id": 313177810,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-07-03T15:26:34Z",
+              "createdDate": "2026-08-21T15:28:29+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13321631,\"leagueDivisionSessionScheduleMatchId\":50630080,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -5748,15 +5743,15 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 3,
+              "matchesPlayed": 12,
+              "matchesWon": 6,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": 1,
+              "rank": 7,
               "team": {
                 "id": 13022650,
                 "name": "All Pockets Available",
@@ -5775,15 +5770,15 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 1,
+              "matchesPlayed": 10,
+              "matchesWon": 3,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": 2,
+              "rank": 5,
               "team": {
                 "id": 13022792,
                 "name": "Lights Out",
@@ -5802,15 +5797,15 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 1,
+              "matchesPlayed": 9,
+              "matchesWon": 5,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 6,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13023048,
                 "name": "Sinking D's Balls",
