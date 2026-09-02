@@ -53,12 +53,50 @@ jobs:
 
       - name: Commit & push if data changed
         run: |
+          set -euo pipefail
+
           if [[ -z "$(git status --porcelain data/cache data/apa.json)" ]]; then
             echo "No data changes — skipping commit."
             exit 0
           fi
+
           git config user.name "apa-scraper-bot"
           git config user.email "apa-scraper-bot@users.noreply.github.com"
-          git add data/cache data/apa.json
-          git commit -m "chore: weekly APA sync ($(date -u +%Y-%m-%d))"
-          git push
+
+          # The scrape runs for several minutes against a SHA fixed at
+          # checkout, so `main` can move underneath us — a PR merges, or this
+          # is a re-run of an older run — and the push is rejected as
+          # non-fast-forward. These files are generated output, not authored
+          # edits, so on a race we replay them onto the new tip instead of
+          # trying to merge single-line JSON.
+          snapshot="$(mktemp -d)"
+          cp -a data/cache "$snapshot/cache"
+          cp -a data/apa.json "$snapshot/apa.json"
+
+          for attempt in 1 2 3 4 5; do
+            git add data/cache data/apa.json
+            git commit -q -m "chore: weekly APA sync ($(date -u +%Y-%m-%d))"
+
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt ${attempt}."
+              exit 0
+            fi
+
+            echo "Push rejected on attempt ${attempt} — replaying onto the current main."
+            git fetch origin main
+            git reset -q --hard FETCH_HEAD
+            # Copy over the new tip rather than replacing the directory, so
+            # any cache entries main picked up meanwhile survive.
+            cp -a "$snapshot/cache/." data/cache/
+            cp -a "$snapshot/apa.json" data/apa.json
+
+            if [[ -z "$(git status --porcelain data/cache data/apa.json)" ]]; then
+              echo "main already carries this data — nothing left to push."
+              exit 0
+            fi
+
+            sleep $(( attempt * 5 ))
+          done
+
+          echo "::error::Could not push the sync commit after 5 attempts."
+          exit 1

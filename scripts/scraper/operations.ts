@@ -12,7 +12,7 @@
  */
 import type { Page } from "playwright";
 import type { ApaCache } from "./cache";
-import type { GraphqlCapture } from "./capture";
+import type { CapturedOp, GraphqlCapture } from "./capture";
 
 const HOST = "https://league.poolplayers.com";
 
@@ -22,8 +22,16 @@ function leagueSlug(teamUrl: string): string {
   return m ? m[1] : "southjersey";
 }
 
-async function navigate(page: Page, url: string) {
-  if (page.url() === url) return;
+async function navigate(
+  page: Page,
+  url: string,
+  opts: { force?: boolean } = {},
+) {
+  // `force` reloads even when we're already sitting on the URL. A full
+  // document load builds a fresh Apollo client, so the route's queries fire
+  // again — without it a retry would no-op and then wait out the timeout on
+  // a query that is never going to be sent.
+  if (!opts.force && page.url() === url) return;
   await page.goto(url, { waitUntil: "networkidle", timeout: 30_000 });
 }
 
@@ -35,50 +43,94 @@ export type TeamCacheEntry = {
   teamSchedule: Record<string, unknown>;
 };
 
+/** The team-tab queries every team entry needs, and the route that fires each. */
+type TeamOp = "teamPage" | "teamRoster" | "teamSchedule";
+
 export async function fetchTeam(
   page: Page,
   capture: GraphqlCapture,
   cache: ApaCache,
   teamId: number,
   slug: string,
+  opts: { attempts?: number } = {},
 ): Promise<TeamCacheEntry> {
   const teamUrl = `${HOST}/${slug}/team/${teamId}`;
-  const startedAt = Date.now();
+  // Default to a single pass — the backfill loops call this hundreds of
+  // times and already treat a failure as skippable. Callers whose failure
+  // aborts the whole scrape (the current team) ask for retries explicitly.
+  const attempts = Math.max(1, opts.attempts ?? 1);
 
   // Visit each tab so the matching query fires. Apollo dedupes on the first
   // visit of a session, so we have to navigate to each route to populate.
-  for (const u of [
-    teamUrl,
-    `${teamUrl}/schedule`,
-    `${teamUrl}/roster`,
-    `${teamUrl}/stats`,
-  ]) {
-    try {
-      await navigate(page, u);
-      await page.waitForTimeout(800);
-    } catch {
-      // Swallow individual tab navigation failures — we'll surface the
-      // missing-data error at the end if a critical query never landed.
+  const tabs: Array<{ op: TeamOp; url: string }> = [
+    { op: "teamPage", url: teamUrl },
+    { op: "teamSchedule", url: `${teamUrl}/schedule` },
+    { op: "teamRoster", url: `${teamUrl}/roster` },
+  ];
+
+  const captured: Partial<Record<TeamOp, CapturedOp>> = {};
+  const missing = () => tabs.filter((t) => !captured[t.op]?.data);
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    // Only revisit the tabs we still need — a retry after a partial capture
+    // shouldn't re-walk the tabs that already landed.
+    const pending = missing();
+    const startedAt = Date.now();
+
+    for (const t of pending) {
+      try {
+        await navigate(page, t.url, { force: attempt > 1 });
+        await page.waitForTimeout(800);
+      } catch {
+        // Swallow individual tab navigation failures — we'll surface the
+        // missing-data error at the end if a critical query never landed.
+      }
+    }
+
+    // Nothing here waits on a /stats query, but visiting it once keeps the
+    // team's stats payloads warm for later operations.
+    if (attempt === 1) {
+      try {
+        await navigate(page, `${teamUrl}/stats`);
+        await page.waitForTimeout(800);
+      } catch {
+        // Non-critical tab.
+      }
+    }
+
+    const results = await Promise.all(
+      pending.map((t) =>
+        capture.waitFor(t.op, { minCapturedAt: startedAt, timeoutMs: 20_000 }),
+      ),
+    );
+    pending.forEach((t, i) => {
+      const op = results[i];
+      if (op?.data) captured[t.op] = op;
+    });
+
+    const stillMissing = missing();
+    if (stillMissing.length === 0) break;
+    if (attempt < attempts) {
+      console.warn(
+        `   ↻ team #${teamId}: no ${stillMissing.map((t) => t.op).join(", ")} ` +
+          `— retrying (attempt ${attempt + 1}/${attempts})`,
+      );
+      await page.waitForTimeout(2_000 * attempt);
     }
   }
 
-  const [teamPageOp, teamRosterOp, teamScheduleOp] = await Promise.all([
-    capture.waitFor("teamPage", { minCapturedAt: startedAt, timeoutMs: 20_000 }),
-    capture.waitFor("teamRoster", { minCapturedAt: startedAt, timeoutMs: 20_000 }),
-    capture.waitFor("teamSchedule", { minCapturedAt: startedAt, timeoutMs: 20_000 }),
-  ]);
-
-  if (!teamPageOp?.data || !teamRosterOp?.data || !teamScheduleOp?.data) {
+  const { teamPage, teamRoster, teamSchedule } = captured;
+  if (!teamPage?.data || !teamRoster?.data || !teamSchedule?.data) {
     throw new Error(
-      `Failed to capture team queries for #${teamId}.  ` +
-        `teamPage=${!!teamPageOp?.data} teamRoster=${!!teamRosterOp?.data} teamSchedule=${!!teamScheduleOp?.data}`,
+      `Failed to capture team queries for #${teamId} after ${attempts} attempt(s).  ` +
+        `teamPage=${!!teamPage?.data} teamRoster=${!!teamRoster?.data} teamSchedule=${!!teamSchedule?.data}`,
     );
   }
 
   const entry: TeamCacheEntry = {
-    teamPage: teamPageOp.data,
-    teamRoster: teamRosterOp.data,
-    teamSchedule: teamScheduleOp.data,
+    teamPage: teamPage.data,
+    teamRoster: teamRoster.data,
+    teamSchedule: teamSchedule.data,
   };
   await cache.write("teams", teamId, entry);
   return entry;

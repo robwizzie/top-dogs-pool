@@ -163,7 +163,11 @@ async function main() {
 
   // 2. Always re-fetch the CURRENT team.
   console.log("==> fetching current team");
-  let currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG);
+  // A miss here aborts the whole scrape, so unlike the backfill loops below
+  // this one retries rather than surfacing a flaky capture as a hard failure.
+  let currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG, {
+    attempts: 3,
+  });
   stats.teamsFetched++;
   let currentSessionId = pickSessionId(currentTeam);
   console.log(
@@ -204,7 +208,9 @@ async function main() {
       );
       TEAM_ID = newestId;
       TEAM_URL_RESOLVED = `https://league.poolplayers.com/${SLUG}/team/${TEAM_ID}`;
-      currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG);
+      currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG, {
+        attempts: 3,
+      });
       stats.teamsFetched++;
       currentSessionId = pickSessionId(currentTeam);
       memberIds = memberIdsFromTeam(currentTeam);
