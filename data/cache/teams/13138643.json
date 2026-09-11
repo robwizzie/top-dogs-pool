@@ -1,0 +1,1083 @@
+{
+  "fetchedAt": "2026-09-11T17:18:31.447Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 13138643,
+        "name": "I Felt That",
+        "number": "00106",
+        "isTied": null,
+        "standing": null,
+        "division": {
+          "id": 441422,
+          "name": "Gl-01",
+          "number": "001",
+          "timeOfPlay": "1900-01-01T12:00:00+00:00",
+          "nightOfPlay": "Sunday",
+          "format": "8-Ball Ladies",
+          "state": "CURRENT",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 116612,
+          "name": "The Bank Bar",
+          "address": {
+            "id": 82140,
+            "name": "The Bank Bar",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 140,
+          "name": "Fall 2026",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 13138643,
+        "name": "I Felt That",
+        "number": "00106",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 441422,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 93019011,
+            "memberNumber": "08211677",
+            "displayName": "Kat Schuler",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3031063,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93112535,
+            "memberNumber": "08214060",
+            "displayName": "Kelsey Gallagher",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3390021,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93019012,
+            "memberNumber": "08213649",
+            "displayName": "Marysol Rosario",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3330995,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93019009,
+            "memberNumber": "08206846",
+            "displayName": "Nichole Lockman",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2878543,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93019013,
+            "memberNumber": "08214225",
+            "displayName": "Vivian Ruiz Rosario",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3408675,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 13138643,
+        "sessionBonusPoints": null,
+        "sessionPoints": null,
+        "sessionTotalPoints": 0,
+        "division": {
+          "id": 441422,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 51957595,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-06T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138603,
+              "name": "Wicked Cue-Tease",
+              "number": "00105",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 51957600,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-13T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138705,
+              "name": "Sweet & Salty",
+              "number": "00103",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 51957603,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-20T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39230,
+              "name": "Paul's Tavern",
+              "address": {
+                "id": 41788,
+                "name": "Paul's Tavern",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138620,
+              "name": "Here We Go Again!!!",
+              "number": "00101",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-27T12:00:00-04:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "No Play",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 51957608,
+            "isBye": true,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-04T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139229,
+              "name": "Bye",
+              "number": "00110",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 51957613,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-11T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39378,
+              "name": "The Other Bar",
+              "address": {
+                "id": 83858,
+                "name": "The Other Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13149523,
+              "name": "The Other Team",
+              "number": "00107",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 51957618,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-18T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39749,
+              "name": "Gloucester VFW Post 3620",
+              "address": {
+                "id": 73672,
+                "name": "Gloucester VFW Post 3620",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13151494,
+              "name": "Nips & Tips",
+              "number": "00109",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 51957626,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-25T12:00:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138621,
+              "name": "Ginger's Choice",
+              "number": "00102",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 51957632,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-01T12:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138706,
+              "name": "Simply Senile",
+              "number": "00104",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 51957634,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-08T12:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39749,
+              "name": "Gloucester VFW Post 3620",
+              "address": {
+                "id": 73672,
+                "name": "Gloucester VFW Post 3620",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138977,
+              "name": "Our BEST Assets",
+              "number": "00108",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 51957640,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-15T12:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138603,
+              "name": "Wicked Cue-Tease",
+              "number": "00105",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 51957645,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-22T12:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39378,
+              "name": "The Other Bar",
+              "address": {
+                "id": 83858,
+                "name": "The Other Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138705,
+              "name": "Sweet & Salty",
+              "number": "00103",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 51957648,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-29T12:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138620,
+              "name": "Here We Go Again!!!",
+              "number": "00101",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 13,
+            "type": "EIGHT",
+            "id": 51957653,
+            "isBye": true,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-06T12:00:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 87357,
+              "name": "No Match This Week",
+              "address": null,
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139229,
+              "name": "Bye",
+              "number": "00110",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138643,
+              "name": "I Felt That",
+              "number": "00106",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-13T12:00:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "Position Week",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-20T12:00:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "Playoff Week",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441422,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}

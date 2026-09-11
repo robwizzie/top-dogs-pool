@@ -1,0 +1,1072 @@
+{
+  "fetchedAt": "2026-09-11T17:14:59.523Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 13139208,
+        "name": "Just Here For Shots",
+        "number": "05306",
+        "isTied": false,
+        "standing": 8,
+        "division": {
+          "id": 441481,
+          "name": "GL-53",
+          "number": "053",
+          "timeOfPlay": "1900-01-01T19:30:00+00:00",
+          "nightOfPlay": "Thursday",
+          "format": "8-Ball Open",
+          "state": "CURRENT",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 116612,
+          "name": "The Bank Bar",
+          "address": {
+            "id": 82140,
+            "name": "The Bank Bar",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 140,
+          "name": "Fall 2026",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 13139208,
+        "name": "Just Here For Shots",
+        "number": "05306",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 441481,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 93023348,
+            "memberNumber": "08213920",
+            "displayName": "Dmian Eichfeld",
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3376485,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93023344,
+            "memberNumber": "08209748",
+            "displayName": "Patrick Bollinger",
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3247851,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93023346,
+            "memberNumber": "08212726",
+            "displayName": "Avery Pippet",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3284397,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93023347,
+            "memberNumber": "08213836",
+            "displayName": "Lawrence Laroche",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3359202,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93023350,
+            "memberNumber": "08214531",
+            "displayName": "Cody Eldred",
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3457897,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93132772,
+            "memberNumber": "08262628",
+            "displayName": "Travis Hornstein",
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3352018,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93132773,
+            "memberNumber": "08214709",
+            "displayName": "Harold Anderson",
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3493691,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 13139208,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 9,
+        "sessionTotalPoints": 9,
+        "division": {
+          "id": 441481,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 52020522,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-09-10T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 13,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 52020527,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-17T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139009,
+              "name": "Chalk Harder",
+              "number": "05303",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 52020530,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-24T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 113653,
+              "name": "Spread Eagle Tavern",
+              "address": {
+                "id": 75396,
+                "name": "Spread Eagle Tavern",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139211,
+              "name": "Calculated Chaos",
+              "number": "05301",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 52020535,
+            "isBye": true,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-01T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139238,
+              "name": "Bye",
+              "number": "05310",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 52020540,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-08T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 57943,
+              "name": "Westville Boat Club",
+              "address": {
+                "id": 41223,
+                "name": "Westville Boat Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138991,
+              "name": "Fun Ghouls 2.0",
+              "number": "05307",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 52020545,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-15T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 106649,
+              "name": "Deptford Elks Lodge #2708",
+              "address": {
+                "id": 1951,
+                "name": "Deptford Elks Lodge #2708",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139181,
+              "name": "Jack's or Better",
+              "number": "05309",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 52020553,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-22T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139212,
+              "name": "Sweep the Leg",
+              "number": "05302",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 52020559,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-29T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139010,
+              "name": "Happy Accidents",
+              "number": "05304",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 52020561,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-05T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 88173,
+              "name": "Zoe's Place",
+              "address": {
+                "id": 31569,
+                "name": "Zoe's Place",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139005,
+              "name": "Back in the Rack",
+              "number": "05308",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 52020567,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-12T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 52020572,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-19T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 88174,
+              "name": "National Park Pub & Grill",
+              "address": {
+                "id": 72204,
+                "name": "National Park Pub & Grill",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139009,
+              "name": "Chalk Harder",
+              "number": "05303",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-26T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "No Play",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 52020575,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-03T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139211,
+              "name": "Calculated Chaos",
+              "number": "05301",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-10T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "Position Week",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-17T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "Playoff Week",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}

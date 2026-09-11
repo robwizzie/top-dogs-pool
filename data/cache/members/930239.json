@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-28T23:03:05.035Z",
+  "fetchedAt": "2026-09-11T17:10:01.153Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -11,6 +11,26 @@
           "__typename": "League"
         },
         "players": [
+          {
+            "id": 93021574,
+            "team": {
+              "id": 13138982,
+              "name": "Break 8 Away",
+              "number": "06802",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 92156408,
             "team": {
@@ -500,6 +520,11 @@
         "id": 2575434,
         "sessions": [
           {
+            "id": 140,
+            "name": "Fall 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 139,
             "name": "Summer 2026",
             "__typename": "Session"
@@ -606,6 +631,18 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 93021574,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 92156408,
             "session": {
@@ -925,11 +962,11 @@
           {
             "id": 802575434,
             "matchesWon": 156,
-            "matchesPlayed": 298,
+            "matchesPlayed": 299,
             "CLA": 4,
-            "defensiveShotAvg": 2.86,
-            "matchCountForLastTwoYrs": 108,
-            "lastPlayed": "2026-08-11T00:00:00+00:00",
+            "defensiveShotAvg": 2.85,
+            "matchCountForLastTwoYrs": 109,
+            "lastPlayed": "2026-09-08T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1283,13 +1320,13 @@
         "league": {
           "news": [
             {
-              "id": 55428,
-              "title": "Skill level badges will no longer display on My Stats page",
+              "id": 4624,
+              "title": "Follow Us on Social Media",
               "__typename": "News"
             },
             {
-              "id": 4624,
-              "title": "Follow Us on Social Media",
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
               "__typename": "News"
             }
           ],
@@ -1398,6 +1435,12 @@
             "name": "CanUseTabletMode",
             "active": true,
             "__typename": "Feature"
+          },
+          {
+            "id": 14,
+            "name": "scorekeeperOfflineOrchestrator",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -1443,17 +1486,72 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 6,
           "notifications": [
             {
-              "id": 313177810,
+              "id": 316733326,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-08-21T15:28:29+00:00",
+              "createdDate": "2026-09-11T14:49:26+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316216455,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-08T18:39:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13779776,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316039778,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-07T20:09:22+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13772610,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822512,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:54:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763850,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822252,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:44:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763833,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315817419,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T21:49:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763562,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1809,6 +1907,33 @@
             }
           ],
           "currentTeams": [
+            {
+              "id": 93021574,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 1,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13138982,
+                "name": "Break 8 Away",
+                "division": {
+                  "id": 441441,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 92156408,
               "isActive": true,

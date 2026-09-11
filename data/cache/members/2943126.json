@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-28T23:05:07.719Z",
+  "fetchedAt": "2026-09-11T17:11:44.799Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -12,6 +12,46 @@
         },
         "players": [
           {
+            "id": 93018775,
+            "team": {
+              "id": 13138612,
+              "name": "8 Balls for Sale",
+              "number": "06804",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 1,
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93018713,
+            "team": {
+              "id": 13138604,
+              "name": "Double Tap This!",
+              "number": "01601",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92481371,
             "team": {
               "id": 13022791,
@@ -20,11 +60,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.4761904761904762,
-            "ppm": 1.4285714285714286,
-            "eightBallMatchPointsEarned": 10,
+            "pa": 0.4583333333333333,
+            "ppm": 1.375,
+            "eightBallMatchPointsEarned": 11,
             "matchesWon": 4,
-            "matchesPlayed": 7,
+            "matchesPlayed": 8,
             "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +80,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.4358974358974359,
-            "ppm": 1.3076923076923077,
-            "eightBallMatchPointsEarned": 17,
-            "matchesWon": 6,
-            "matchesPlayed": 13,
+            "pa": 0.4523809523809524,
+            "ppm": 1.3571428571428572,
+            "eightBallMatchPointsEarned": 19,
+            "matchesWon": 7,
+            "matchesPlayed": 14,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1100,6 +1140,11 @@
         "id": 2581128,
         "sessions": [
           {
+            "id": 140,
+            "name": "Fall 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 139,
             "name": "Summer 2026",
             "__typename": "Session"
@@ -1241,6 +1286,54 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 93018775,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93138105,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 93018713,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93018792,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
           {
             "id": 92481371,
             "session": {
@@ -2244,11 +2337,11 @@
           {
             "id": 802581128,
             "matchesWon": 276,
-            "matchesPlayed": 504,
+            "matchesPlayed": 505,
             "CLA": 0,
-            "defensiveShotAvg": 0.73,
+            "defensiveShotAvg": 0.72,
             "matchCountForLastTwoYrs": 101,
-            "lastPlayed": "2026-08-27T00:00:00+00:00",
+            "lastPlayed": "2026-09-08T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2256,11 +2349,11 @@
           {
             "id": 902581128,
             "matchesWon": 162,
-            "matchesPlayed": 275,
+            "matchesPlayed": 276,
             "CLA": 0,
-            "defensiveShotAvg": 0.65,
-            "matchCountForLastTwoYrs": 75,
-            "lastPlayed": "2026-08-24T00:00:00+00:00",
+            "defensiveShotAvg": 0.66,
+            "matchCountForLastTwoYrs": 76,
+            "lastPlayed": "2026-08-31T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2426,13 +2519,13 @@
         "league": {
           "news": [
             {
-              "id": 55428,
-              "title": "Skill level badges will no longer display on My Stats page",
+              "id": 4624,
+              "title": "Follow Us on Social Media",
               "__typename": "News"
             },
             {
-              "id": 4624,
-              "title": "Follow Us on Social Media",
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
               "__typename": "News"
             }
           ],
@@ -2541,6 +2634,12 @@
             "name": "CanUseTabletMode",
             "active": true,
             "__typename": "Feature"
+          },
+          {
+            "id": 14,
+            "name": "scorekeeperOfflineOrchestrator",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2586,17 +2685,72 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 6,
           "notifications": [
             {
-              "id": 313177810,
+              "id": 316733326,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-08-21T15:28:29+00:00",
+              "createdDate": "2026-09-11T14:49:26+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316216455,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-08T18:39:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13779776,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316039778,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-07T20:09:22+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13772610,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822512,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:54:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763850,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822252,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:44:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763833,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315817419,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T21:49:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763562,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2953,12 +3107,120 @@
           ],
           "currentTeams": [
             {
+              "id": 93018775,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Intimidator",
+              "matchesPlayed": 1,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13138612,
+                "name": "8 Balls for Sale",
+                "division": {
+                  "id": 441441,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93138105,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": "Intimidator",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13152921,
+                "name": "Dead Pool",
+                "division": {
+                  "id": 441465,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93018713,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Intimidator",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13138604,
+                "name": "Double Tap This!",
+                "division": {
+                  "id": 441429,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93018792,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "Intimidator",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13138614,
+                "name": "Untouchables",
+                "division": {
+                  "id": 441458,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
               "id": 92481371,
               "isActive": true,
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": "Intimidator",
-              "matchesPlayed": 7,
+              "matchesPlayed": 8,
               "matchesWon": 4,
               "session": {
                 "id": 139,
@@ -2966,7 +3228,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 7,
+              "rank": 8,
               "team": {
                 "id": 13022791,
                 "name": "8 Balls for Sale",
@@ -2985,15 +3247,15 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Intimidator",
-              "matchesPlayed": 13,
-              "matchesWon": 6,
+              "matchesPlayed": 14,
+              "matchesWon": 7,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 8,
+              "rank": 10,
               "team": {
                 "id": 13022648,
                 "name": "Double Tap This!",
@@ -3039,8 +3301,8 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": "Intimidator",
-              "matchesPlayed": 9,
-              "matchesWon": 5,
+              "matchesPlayed": 10,
+              "matchesWon": 6,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",

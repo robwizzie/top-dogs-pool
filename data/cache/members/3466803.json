@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-28T23:00:19.349Z",
+  "fetchedAt": "2026-09-11T17:04:22.706Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -12,6 +12,26 @@
         },
         "players": [
           {
+            "id": 93018745,
+            "team": {
+              "id": 13138608,
+              "name": "The Railhouse",
+              "number": "06803",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92382360,
             "team": {
               "id": 13051645,
@@ -20,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3636363636363636,
-            "ppm": 1.0909090909090908,
-            "eightBallMatchPointsEarned": 12,
-            "matchesWon": 5,
-            "matchesPlayed": 11,
+            "pa": 0.3888888888888889,
+            "ppm": 1.1666666666666667,
+            "eightBallMatchPointsEarned": 14,
+            "matchesWon": 6,
+            "matchesPlayed": 12,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,6 +60,11 @@
         "id": 3361708,
         "sessions": [
           {
+            "id": 140,
+            "name": "Fall 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 139,
             "name": "Summer 2026",
             "__typename": "Session"
@@ -51,6 +76,18 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 93018745,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 92382360,
             "session": {
@@ -153,13 +190,13 @@
         "league": {
           "news": [
             {
-              "id": 55428,
-              "title": "Skill level badges will no longer display on My Stats page",
+              "id": 4624,
+              "title": "Follow Us on Social Media",
               "__typename": "News"
             },
             {
-              "id": 4624,
-              "title": "Follow Us on Social Media",
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
               "__typename": "News"
             }
           ],
@@ -268,6 +305,12 @@
             "name": "CanUseTabletMode",
             "active": true,
             "__typename": "Feature"
+          },
+          {
+            "id": 14,
+            "name": "scorekeeperOfflineOrchestrator",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -313,17 +356,72 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 6,
           "notifications": [
             {
-              "id": 313177810,
+              "id": 316733326,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-08-21T15:28:29+00:00",
+              "createdDate": "2026-09-11T14:49:26+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316216455,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-08T18:39:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13779776,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316039778,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-07T20:09:22+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13772610,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822512,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:54:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763850,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822252,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:44:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763833,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315817419,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T21:49:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763562,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -408,20 +506,47 @@
           "pastTeams": [],
           "currentTeams": [
             {
+              "id": 93018745,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13138608,
+                "name": "The Railhouse",
+                "division": {
+                  "id": 441441,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
               "id": 92382360,
               "isActive": true,
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 5,
+              "matchesPlayed": 12,
+              "matchesWon": 6,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": 11,
+              "rank": 9,
               "team": {
                 "id": 13051645,
                 "name": "The Railhouse",

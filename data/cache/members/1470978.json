@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-28T22:59:05.735Z",
+  "fetchedAt": "2026-09-11T17:05:42.804Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -12,6 +12,46 @@
         },
         "players": [
           {
+            "id": 93144275,
+            "team": {
+              "id": 13153602,
+              "name": "Demo Dropouts",
+              "number": "01610",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93021939,
+            "team": {
+              "id": 13139029,
+              "name": "Lights Out",
+              "number": "06805",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 1,
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92155445,
             "team": {
               "id": 13022656,
@@ -20,11 +60,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5333333333333333,
-            "ppm": 1.6,
+            "pa": 0.48484848484848486,
+            "ppm": 1.4545454545454546,
             "eightBallMatchPointsEarned": 16,
             "matchesWon": 4,
-            "matchesPlayed": 10,
+            "matchesPlayed": 11,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +80,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.625,
-            "ppm": 1.875,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
             "eightBallMatchPointsEarned": 15,
             "matchesWon": 5,
-            "matchesPlayed": 8,
+            "matchesPlayed": 9,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1180,6 +1220,11 @@
         "id": 1031381,
         "sessions": [
           {
+            "id": 140,
+            "name": "Fall 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 139,
             "name": "Summer 2026",
             "__typename": "Session"
@@ -1336,6 +1381,42 @@
     "getEightBallStats": {
       "alias": {
         "players": [
+          {
+            "id": 93020889,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 93144275,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93021939,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
           {
             "id": 92158282,
             "session": {
@@ -2362,12 +2443,12 @@
         "EightBallStats": [
           {
             "id": 801031381,
-            "matchesWon": 248,
-            "matchesPlayed": 552,
+            "matchesWon": 249,
+            "matchesPlayed": 555,
             "CLA": 0,
-            "defensiveShotAvg": 0.85,
-            "matchCountForLastTwoYrs": 111,
-            "lastPlayed": "2026-08-27T00:00:00+00:00",
+            "defensiveShotAvg": 0.87,
+            "matchCountForLastTwoYrs": 112,
+            "lastPlayed": "2026-09-08T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2375,11 +2456,11 @@
           {
             "id": 901031381,
             "matchesWon": 121,
-            "matchesPlayed": 251,
+            "matchesPlayed": 252,
             "CLA": 0,
             "defensiveShotAvg": 0.4,
             "matchCountForLastTwoYrs": 73,
-            "lastPlayed": "2026-08-24T00:00:00+00:00",
+            "lastPlayed": "2026-08-31T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -2578,13 +2659,13 @@
         "league": {
           "news": [
             {
-              "id": 55428,
-              "title": "Skill level badges will no longer display on My Stats page",
+              "id": 4624,
+              "title": "Follow Us on Social Media",
               "__typename": "News"
             },
             {
-              "id": 4624,
-              "title": "Follow Us on Social Media",
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
               "__typename": "News"
             }
           ],
@@ -2693,6 +2774,12 @@
             "name": "CanUseTabletMode",
             "active": true,
             "__typename": "Feature"
+          },
+          {
+            "id": 14,
+            "name": "scorekeeperOfflineOrchestrator",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2738,17 +2825,72 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 6,
           "notifications": [
             {
-              "id": 313177810,
+              "id": 316733326,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-08-21T15:28:29+00:00",
+              "createdDate": "2026-09-11T14:49:26+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316216455,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-08T18:39:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13779776,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316039778,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-07T20:09:22+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13772610,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822512,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:54:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763850,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315822252,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T22:44:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763833,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 315817419,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-05T21:49:20+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13763562,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -3105,12 +3247,93 @@
           ],
           "currentTeams": [
             {
+              "id": 93020889,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": "Em",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13138888,
+                "name": "9-Ball Assassins",
+                "division": {
+                  "id": 441465,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93144275,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": "Em",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13153602,
+                "name": "Demo Dropouts",
+                "division": {
+                  "id": 441429,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93021939,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Em",
+              "matchesPlayed": 1,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13139029,
+                "name": "Lights Out",
+                "division": {
+                  "id": 441441,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
               "id": 92158282,
               "isActive": true,
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": "Em",
-              "matchesPlayed": 8,
+              "matchesPlayed": 9,
               "matchesWon": 5,
               "session": {
                 "id": 139,
@@ -3118,7 +3341,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": 5,
+              "rank": 8,
               "team": {
                 "id": 13023054,
                 "name": "9-Ball Assassins",
@@ -3137,7 +3360,7 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Em",
-              "matchesPlayed": 10,
+              "matchesPlayed": 11,
               "matchesWon": 4,
               "session": {
                 "id": 139,
@@ -3145,7 +3368,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": 6,
+              "rank": 10,
               "team": {
                 "id": 13022656,
                 "name": "Demo-Lition",
@@ -3164,7 +3387,7 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Em",
-              "matchesPlayed": 8,
+              "matchesPlayed": 9,
               "matchesWon": 5,
               "session": {
                 "id": 139,
@@ -3172,7 +3395,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": 2,
+              "rank": 3,
               "team": {
                 "id": 13022792,
                 "name": "Lights Out",

@@ -1,0 +1,1151 @@
+{
+  "fetchedAt": "2026-09-11T17:16:08.021Z",
+  "data": {
+    "teamPage": {
+      "team": {
+        "id": 13139020,
+        "name": "The Smith's & Company",
+        "number": "05802",
+        "isTied": false,
+        "standing": 2,
+        "division": {
+          "id": 441433,
+          "name": "CA-58",
+          "number": "058",
+          "timeOfPlay": "1900-01-01T19:30:00+00:00",
+          "nightOfPlay": "Tuesday",
+          "format": "8-Ball Open",
+          "state": "CURRENT",
+          "isTournament": false,
+          "tournament": null,
+          "__typename": "Division"
+        },
+        "location": {
+          "id": 93107,
+          "name": "25 Club",
+          "address": {
+            "id": 28715,
+            "name": "25 Club",
+            "__typename": "Address"
+          },
+          "__typename": "HostLocation"
+        },
+        "session": {
+          "id": 140,
+          "name": "Fall 2026",
+          "__typename": "Session"
+        },
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "__typename": "Team"
+      }
+    },
+    "teamRoster": {
+      "team": {
+        "id": 13139020,
+        "name": "The Smith's & Company",
+        "number": "05802",
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 441433,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 93021873,
+            "memberNumber": "08239181",
+            "displayName": "George Smith IV",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1493328,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93021872,
+            "memberNumber": "08239182",
+            "displayName": "Francisco Castillo",
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1338667,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93021875,
+            "memberNumber": "08212030",
+            "displayName": "Jay Grauber",
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737117,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93021876,
+            "memberNumber": "08223087",
+            "displayName": "Andy Smith",
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1848992,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93021877,
+            "memberNumber": "08211046",
+            "displayName": "Evette Cruz",
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2518004,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93132307,
+            "memberNumber": "08200184",
+            "displayName": "Ralph Vazquez",
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2569258,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93132846,
+            "memberNumber": "08211001",
+            "displayName": "Gary Asuncion",
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2517986,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      }
+    },
+    "teamSchedule": {
+      "team": {
+        "id": 13139020,
+        "sessionBonusPoints": 0,
+        "sessionPoints": 11,
+        "sessionTotalPoints": 11,
+        "division": {
+          "id": 441433,
+          "isTournament": false,
+          "__typename": "Division"
+        },
+        "matches": [
+          {
+            "week": 1,
+            "type": "EIGHT",
+            "id": 51767573,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-09-08T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139019,
+              "name": "Bobby D’s Cue Crew",
+              "number": "05801",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 2,
+            "type": "EIGHT",
+            "id": 51767575,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-15T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39636,
+              "name": "Alden Cafe",
+              "address": {
+                "id": 41398,
+                "name": "Alden Cafe",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138881,
+              "name": "8all Night Long",
+              "number": "05804",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 3,
+            "type": "EIGHT",
+            "id": 51767579,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-22T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 78882,
+              "name": "5 West Pub",
+              "address": {
+                "id": 87017,
+                "name": "5 West Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139183,
+              "name": "DAVE!! I KNOW HIM!!",
+              "number": "05803",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 51767582,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-09-29T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138677,
+              "name": "Runnin' Not Rackin'",
+              "number": "05805",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 51767584,
+            "isBye": true,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-06T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139289,
+              "name": "Bye",
+              "number": "05806",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 6,
+            "type": "EIGHT",
+            "id": 51767588,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-13T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139019,
+              "name": "Bobby D’s Cue Crew",
+              "number": "05801",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 51767590,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-20T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138881,
+              "name": "8all Night Long",
+              "number": "05804",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 8,
+            "type": "EIGHT",
+            "id": 51767594,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-27T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139183,
+              "name": "DAVE!! I KNOW HIM!!",
+              "number": "05803",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 51767597,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-03T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39408,
+              "name": "American Legion Post 372",
+              "address": {
+                "id": 73717,
+                "name": "American Legion Post 372",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138677,
+              "name": "Runnin' Not Rackin'",
+              "number": "05805",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 51767599,
+            "isBye": true,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-10T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 87357,
+              "name": "No Match This Week",
+              "address": null,
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139289,
+              "name": "Bye",
+              "number": "05806",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 51767603,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-17T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139019,
+              "name": "Bobby D’s Cue Crew",
+              "number": "05801",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 51767605,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-24T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39636,
+              "name": "Alden Cafe",
+              "address": {
+                "id": 41398,
+                "name": "Alden Cafe",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138881,
+              "name": "8all Night Long",
+              "number": "05804",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 13,
+            "type": "EIGHT",
+            "id": 51767609,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-01T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 78882,
+              "name": "5 West Pub",
+              "address": {
+                "id": 87017,
+                "name": "5 West Pub",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139183,
+              "name": "DAVE!! I KNOW HIM!!",
+              "number": "05803",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 14,
+            "type": "EIGHT",
+            "id": 51767612,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-08T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 93107,
+              "name": "25 Club",
+              "address": {
+                "id": 28715,
+                "name": "25 Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139020,
+              "name": "The Smith's & Company",
+              "number": "05802",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138677,
+              "name": "Runnin' Not Rackin'",
+              "number": "05805",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-15T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": null,
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-22T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": true,
+            "description": "Playoff Week",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441433,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          }
+        ],
+        "__typename": "Team"
+      }
+    }
+  }
+}
