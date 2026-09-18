@@ -117,6 +117,18 @@ export function RackShell({ children }: { children: ReactNode }) {
             </nav>
 
             <div className="flex items-center gap-1 border-l border-[hsl(var(--rack-border))] pl-2">
+              {/* The way out. Rack Up replaces the site's chrome entirely, so
+                  without this the only route back is the browser's back
+                  button. */}
+              <Link
+                href="/"
+                title="Back to Poolmaxxing"
+                className="inline-flex min-h-9 items-center gap-1.5 rounded-[var(--rack-radius)] px-2 text-sm font-semibold text-[hsl(var(--rack-fg-muted))] transition hover:bg-[hsl(var(--rack-fg)/0.06)] hover:text-[hsl(var(--rack-fg))]"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden md:inline">Poolmaxxing</span>
+              </Link>
+
               <Button
                 variant="ghost"
                 size="sm"

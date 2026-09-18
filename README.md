@@ -208,6 +208,23 @@ the shorter race. 9-ball is point-based off the APA 9-ball chart; a rack is 10
 points (8 balls + 2 for the nine). A match will not start if either player is
 missing a skill level for the game being played.
 
+### Its own app
+
+Rack Up does not share the site's chrome. `app/layout.tsx` is the document
+shell and nothing more; the Top Dawgs header, season banner, mobile tab bar,
+footer, cart and command palette live in `app/(site)/layout.tsx`, and `/rack`
+sits outside that group with its own header and footer. Two navbars and two
+design languages on one screen was the thing to avoid.
+
+Route groups don't affect URLs — `app/(site)/roster` is still `/roster`.
+
+Inside the section there's a second split: `app/rack/(app)/` carries the Rack Up
+shell, while `/rack/display/<code>` sits outside it and gets only the theme
+canvas, because a TV scoreboard needs no navigation at all.
+
+`app/not-found.tsx` brings the site header and footer along itself, since it
+renders in the bare root layout.
+
 ### Its own skin
 
 Rack Up is styled as a separate app rather than another page of the team site:

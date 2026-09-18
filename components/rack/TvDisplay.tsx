@@ -7,9 +7,7 @@ import { useRoom } from "@/lib/rack/hooks/useRoom";
 import { hillState, sweepWatch, type MatchState, type PlayerSide } from "@/lib/rack/rules/match";
 import { raceLabel } from "@/lib/rack/rules/race";
 
-/** Covers the site chrome so the whole screen is scoreboard. */
-const OVERLAY =
-  "fixed inset-0 z-50 flex flex-col overflow-hidden bg-[hsl(var(--rack-bg))] p-[3vmin]";
+const SCREEN = "flex min-h-dvh flex-col overflow-hidden p-[3vmin]";
 
 /**
  * The TV view — a read-only scoreboard sized for a screen across the room.
@@ -19,13 +17,8 @@ const OVERLAY =
  * shows, because both are rendering the same `live_state` row.
  *
  * Deliberately chrome-free: no header, no nav, no sign-in. Point a browser at
- * it and walk away.
- *
- * It renders as a fixed, full-viewport overlay rather than an ordinary page.
- * Next.js layouts compose rather than replace, so a nested layout can't opt
- * out of the site header, footer and mobile tab bar; covering them is both
- * simpler and more robust than restructuring every route in the site into a
- * layout group just for this one screen.
+ * it and walk away. It sits outside `app/rack/(app)`, so it gets the theme
+ * canvas and nothing else — no Rack Up header, and no Poolmaxxing one either.
  */
 export function TvDisplay({ code }: { code: string }) {
   const room = useRoom(code, null);
@@ -48,7 +41,7 @@ export function TvDisplay({ code }: { code: string }) {
   const watch = sweepWatch(state);
 
   return (
-    <main className={OVERLAY}>
+    <main className={SCREEN}>
       <header className="flex items-baseline justify-between text-[2.2vmin] uppercase tracking-[0.3em] text-[hsl(var(--rack-accent))]">
         <span>{room.room.name}</span>
         <span>
@@ -158,7 +151,7 @@ function TvSide({
 
 function Splash({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
-    <main className={cn(OVERLAY, "items-center justify-center text-center")}>
+    <main className={cn(SCREEN, "items-center justify-center text-center")}>
       <p className="font-[family-name:var(--rack-font-display)] text-[8vmin] tracking-wide">
         {title}
       </p>

@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import { Lilita_One, Poppins } from "next/font/google";
 import type { ReactNode } from "react";
 import "./rack.css";
-import { RACK_CONFIGURED } from "@/lib/rack/supabase/env";
 import { RACK_NAME, RACK_TAGLINE, RACK_THEME_STORAGE_KEY } from "@/lib/rack/config";
-import { RackShell } from "@/components/rack/RackShell";
-import { SetupNotice } from "@/components/rack/SetupNotice";
 
 // The original's display face. Loaded only for this section, so the rest of
 // the site doesn't pay for it.
@@ -48,10 +45,10 @@ export default function RackLayout({ children }: { children: ReactNode }) {
   return (
     <div
       data-rack
-      className={`rack-canvas ${lilita.variable} ${poppins.variable} -mt-px`}
+      className={`rack-canvas ${lilita.variable} ${poppins.variable} min-h-dvh`}
     >
       <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
-      {RACK_CONFIGURED ? <RackShell>{children}</RackShell> : <SetupNotice />}
+      {children}
     </div>
   );
 }
