@@ -229,11 +229,19 @@ schema is standalone precisely so none of that matters.)
 1. Create a project at [supabase.com/dashboard](https://supabase.com/dashboard)
    (any region near the team; the free tier is plenty).
 
-2. **SQL Editor → New query →** paste all of
+2. Apply
    [`supabase/migrations/20260918000000_rack_up_schema.sql`](supabase/migrations/20260918000000_rack_up_schema.sql)
-   → Run. That creates every table, policy, function, trigger, the avatars
-   bucket and the realtime publication in one go. It is idempotent, so a re-run
-   is harmless.
+   — every table, policy, function, trigger, the avatars bucket and the
+   realtime publication in one go. It is idempotent, so applying it twice is
+   harmless. Either route works:
+
+   - **SQL Editor → New query →** paste the file → Run. Immediate, and the
+     right choice the first time.
+   - **The GitHub integration**, which watches `supabase/migrations/` and
+     applies new files when the configured branch updates. `supabase/config.toml`
+     carries the project ref it needs. Note that it only runs on *pushes to the
+     branch it is configured for* — usually `main` — so on a feature branch the
+     migration lands when the PR merges, not before.
 
 3. **Project Settings → API** → copy the two public values into `.env.local`
    (and into Vercel, scoped to Production, Preview and Development):
