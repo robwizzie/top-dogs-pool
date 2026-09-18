@@ -220,66 +220,61 @@ session cannot move the standings. The link is display-only in both directions.
 
 ### Setup
 
-1. Add the Supabase keys to `.env.local` (both are public — see `.env.example`):
+The section runs on its own Supabase project, created and owned by us. (It
+began life on a Lovable-provisioned backend, which is why the old rack-up repo
+points at a different project — that one lives on infrastructure Lovable
+controls, with no dashboard access, no service-role key and no `pg_dump`. This
+schema is standalone precisely so none of that matters.)
+
+1. Create a project at [supabase.com/dashboard](https://supabase.com/dashboard)
+   (any region near the team; the free tier is plenty).
+
+2. **SQL Editor → New query →** paste all of
+   [`supabase/migrations/20260918000000_rack_up_schema.sql`](supabase/migrations/20260918000000_rack_up_schema.sql)
+   → Run. That creates every table, policy, function, trigger, the avatars
+   bucket and the realtime publication in one go. It is idempotent, so a re-run
+   is harmless.
+
+3. **Project Settings → API** → copy the two public values into `.env.local`
+   (and into Vercel, scoped to Production, Preview and Development):
 
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable / anon key>
    ```
 
    Leave them blank to disable the section; `/rack` then shows a setup notice
-   and the rest of the site is unaffected.
+   and the rest of the site is unaffected. Never add the service-role key —
+   this app does not use it.
 
-2. Apply the migrations in [supabase/migrations](supabase/migrations):
+4. **Authentication → URL Configuration** → set the Site URL to the deployed
+   site and add the preview domains to Redirect URLs, or sign-up confirmation
+   emails will bounce people somewhere unhelpful. For a team this small it is
+   reasonable to turn *Confirm email* off under **Authentication → Providers →
+   Email**, which makes sign-up a single step at the table.
 
-   | Migration | When |
-   | --------- | ---- |
-   | `…_rack_up_v2_core.sql` | Now. Additive — the old Lovable app keeps working alongside it. |
-   | `…_rack_up_v2_lockdown.sql` | **After** the old app is retired. Removes the blanket "any authenticated user can manage X" policies and routes all scoring through the definer functions. |
+That's the whole setup. Realtime needs no clicking — the schema adds the tables
+to the `supabase_realtime` publication itself. To confirm:
 
-   **The backend is a Lovable Cloud project**, not a Supabase project we own.
-   Lovable provisions the Postgres instance on infrastructure it controls, so
-   `supabase.com/dashboard/project/<ref>` returns "You do not have access to
-   this project" and there is no service-role key or direct database URL. That
-   is expected, and it doesn't matter much: it is a normal Supabase instance
-   underneath, reachable over the public API with the anon key above, and
-   Lovable exposes the admin surface we need in its own UI.
+```sql
+select tablename from pg_publication_tables
+ where pubname = 'supabase_realtime' order by tablename;
+```
 
-   To run a migration: open the Lovable project → **More → Cloud → SQL editor**
-   → paste the whole file → Run. Lovable asks for confirmation on `ALTER` and
-   other destructive statements; that's expected here. Both migrations are
-   idempotent, so a re-run is harmless. **More → Cloud → Database** gives a
-   table browser for spot-checking afterwards.
+### Schema notes
 
-   Because there is no `pg_dump` access, the Supabase CLI (`supabase link` /
-   `supabase db push`) is not an option for this project — the SQL editor is
-   the migration path.
+A few things are deliberately *absent* compared with the original app's
+database, and they matter:
 
-3. Confirm Realtime covers `matches`, `match_events`, `rooms`, `room_players`
-   and `tournament_matches`. The core migration adds them to the
-   `supabase_realtime` publication itself, so this is a spot-check rather than
-   a step — without it the TV display won't update live:
-
-   ```sql
-   select tablename from pg_publication_tables
-    where pubname = 'supabase_realtime' order by tablename;
-   ```
-
-4. Add the site's domain to the auth redirect allow-list, or sign-up
-   confirmation emails will bounce users back to the old Lovable app's URL.
-   This lives in Lovable's Cloud settings (users → auth configuration) rather
-   than a Supabase dashboard.
-
-### Owning the backend outright (optional, later)
-
-Staying on Lovable Cloud is fine — nothing in this section depends on Lovable
-beyond it keeping the instance running. If you'd rather own it:
-Lovable's **Cloud → Overview → Advanced settings → Export project data**
-produces a full backup (schema, data, RLS policies, auth users), which can be
-restored into a Supabase project you create. There is no one-click transfer,
-and Lovable's own export path can't carry password hashes, so every account
-has to go through a password reset afterwards. Worth doing deliberately, not
-as part of this change.
+- **No stats triggers.** The old schema updated `player_stats` and
+  `head_to_head` from triggers on `matches.winner_id`. `rack_finalize_match()`
+  does the same job, so keeping both would have counted every win twice. There
+  is exactly one write path for lifetime stats.
+- **No `action_history` / `rack_innings` / `current_player_index`.** Superseded
+  by the `live_state` snapshot and the `match_events` log.
+- **No client write access to `match_events`, `match_players`, `player_stats`
+  or `head_to_head`.** They are written only by the definer functions. That is
+  what stops someone editing their own career record from a browser console.
 
 ### Tests
 
@@ -288,10 +283,11 @@ npm run test:rack            # rules engine + bracket engine (pure, fast)
 ./tests/rack/run-rpc-test.sh # stands up a throwaway Postgres and exercises the SQL
 ```
 
-The RPC test replays the original app's migrations as a baseline, applies these
-on top, and asserts optimistic concurrency, undo, authorisation and that the
-finaliser cannot double-count a win. It needs `postgresql` installed locally and
-the `rack-up` repo checked out alongside this one (override with `RACKUP_DIR`).
+The RPC test stands up an empty Postgres with the Supabase bits stubbed,
+applies `supabase/migrations/` to it, and asserts the signup trigger,
+optimistic concurrency, undo, authorisation, and that the finaliser cannot
+double-count a win. It needs `postgresql` installed locally and nothing else —
+the schema is self-contained.
 
 ## Deploying
 

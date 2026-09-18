@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Check, ExternalLink, Link2 } from "lucide-react";
+import { Check, ExternalLink, Link2, Upload } from "lucide-react";
 import { getSupabaseBrowser } from "@/lib/rack/supabase/browser";
 import { GAME_TYPES, SKILL_RANGE, type GameType } from "@/lib/rack/rules/race";
 import { AuthPanel } from "./AuthPanel";
 import { useSession } from "./RackShell";
-import { Button, Card, ErrorNote, Field, Input, Pill, Spinner } from "./ui";
+import { Avatar, Button, Card, ErrorNote, Field, Input, Pill, Spinner } from "./ui";
 
 type RosterOption = { id: string; name: string };
 
@@ -30,6 +30,7 @@ export function ProfileView() {
   const [roster, setRoster] = useState<RosterOption[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,6 +66,53 @@ export function ProfileView() {
 
   if (loading) return <Spinner />;
   if (!user) return <AuthPanel />;
+
+  /**
+   * Avatars go to the `avatars` bucket under a folder named after the user's
+   * id, which is what the storage policy keys on — so nobody can overwrite
+   * anyone else's picture. The file name carries a timestamp because the
+   * bucket is public and CDN-cached; reusing a path would serve the old image.
+   */
+  async function uploadAvatar(file: File) {
+    if (!supabase || !user) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("That doesn't look like an image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Images need to be under 5 MB.");
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    try {
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${user.id}/${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (uploadError) throw uploadError;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("avatars").getPublicUrl(path);
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("id", user.id);
+      if (updateError) throw updateError;
+
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't upload that image.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function save() {
     if (!supabase || !user) return;
@@ -118,6 +166,31 @@ export function ProfileView() {
 
   return (
     <Card className="space-y-5">
+      <div className="flex items-center gap-4">
+        <Avatar name={profile?.name ?? name ?? "?"} url={profile?.avatar_url} size={64} />
+        <div>
+          <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-card)] px-4 text-sm font-semibold transition hover:border-[var(--color-brass)]">
+            <Upload className="h-4 w-4" />
+            {uploading ? "Uploading…" : "Change photo"}
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              disabled={uploading}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                // Reset the input so picking the same file twice still fires.
+                e.target.value = "";
+                if (file) void uploadAvatar(file);
+              }}
+            />
+          </label>
+          <p className="mt-1 text-xs text-[var(--fg-dim)]">
+            Optional — initials are used otherwise. Under 5 MB.
+          </p>
+        </div>
+      </div>
+
       <Field label="Display name">
         <Input value={name} onChange={(e) => setName(e.target.value)} />
       </Field>

@@ -75,7 +75,6 @@ export function MatchSetupForm({
         .from("matches")
         .insert({
           room_id: roomId,
-          match_type: setup.game,
           game_type: setup.game,
           is_casual: setup.isCasual,
           status: "in_progress",

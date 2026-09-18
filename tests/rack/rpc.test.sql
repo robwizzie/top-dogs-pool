@@ -1,17 +1,21 @@
 \set ON_ERROR_STOP on
 -- Two users, a room, and a match.
-insert into auth.users (id, email) values
-  ('11111111-1111-1111-1111-111111111111','rob@example.com'),
-  ('22222222-2222-2222-2222-222222222222','pete@example.com')
+insert into auth.users (id, email, raw_user_meta_data) values
+  ('11111111-1111-1111-1111-111111111111','rob@example.com','{"name":"Rob"}'::jsonb),
+  ('22222222-2222-2222-2222-222222222222','pete@example.com','{"name":"Pete"}'::jsonb)
 on conflict do nothing;
-insert into public.profiles (id, name, skill_level) values
-  ('11111111-1111-1111-1111-111111111111','Rob',5),
-  ('22222222-2222-2222-2222-222222222222','Pete',7)
-on conflict do nothing;
+-- Profiles are created by the on_auth_user_created trigger, not by hand.
+select 'signup trigger created profiles' as t, count(*) = 2 as ok
+from public.profiles
+where id in ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-2222-222222222222');
+select 'signup trigger used the metadata name' as t, name = 'Rob' as ok
+from public.profiles where id = '11111111-1111-1111-1111-111111111111';
+update public.profiles set skill_level = 5 where id = '11111111-1111-1111-1111-111111111111';
+update public.profiles set skill_level = 7 where id = '22222222-2222-2222-2222-222222222222';
 insert into public.rooms (id, code, name, created_by) values
   ('33333333-3333-3333-3333-333333333333','ABCD','Table 1','11111111-1111-1111-1111-111111111111');
-insert into public.matches (id, room_id, match_type, game_type, player_ids, setup, live_state, version)
-values ('44444444-4444-4444-4444-444444444444','33333333-3333-3333-3333-333333333333','8-ball','8-ball',
+insert into public.matches (id, room_id, game_type, player_ids, setup, live_state, version)
+values ('44444444-4444-4444-4444-444444444444','33333333-3333-3333-3333-333333333333','8-ball',
   array['11111111-1111-1111-1111-111111111111'::uuid,'22222222-2222-2222-2222-222222222222'::uuid],
   '{"game":"8-ball","isCasual":false}'::jsonb,
   '{"status":"in_progress","version":0}'::jsonb, 0);
@@ -21,7 +25,8 @@ set request.jwt.claim.sub = '22222222-2222-2222-2222-222222222222';  -- Pete: a 
 select 'pete can score' as t, public.rack_can_score_match('44444444-4444-4444-4444-444444444444') as ok;
 
 -- A stranger cannot.
-insert into auth.users (id, email) values ('99999999-9999-9999-9999-999999999999','nope@example.com');
+insert into auth.users (id, email, raw_user_meta_data)
+values ('99999999-9999-9999-9999-999999999999','nope@example.com','{"name":"Stranger"}'::jsonb);
 set request.jwt.claim.sub = '99999999-9999-9999-9999-999999999999';
 select 'stranger cannot score' as t, not public.rack_can_score_match('44444444-4444-4444-4444-444444444444') as ok;
 
@@ -78,6 +83,7 @@ select 'rob stats not double counted' as t, matches_played = 1 and wins = 1 and 
 select 'pete stats' as t, matches_played = 1 and losses = 1 as ok
  from public.player_stats where user_id='22222222-2222-2222-2222-222222222222' and game_type='8-ball';
 select 'head to head single row' as t, count(*) = 1 as ok from public.head_to_head;
+select 'only the two players have stats' as t, count(*) = 2 as ok from public.player_stats;
 select 'h2h wins not doubled' as t, (player1_wins + player2_wins) = 1 as ok from public.head_to_head;
 
 -- A stranger cannot append.

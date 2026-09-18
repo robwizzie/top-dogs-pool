@@ -3,19 +3,18 @@
 #
 # The Rack Up write path is Postgres functions, not TypeScript: optimistic
 # concurrency, undo and the once-only finaliser all live in plpgsql. This
-# spins up a local database, replays the Lovable app's own migrations to get a
-# realistic baseline, applies the Rack Up migrations on top, and asserts the
-# functions behave. Every assertion prints `t`; any `f` is a failure.
+# spins up an empty local database with just enough of Supabase stubbed to be
+# realistic, applies supabase/migrations/ to it, and asserts the functions
+# behave. Every assertion prints `t`; any `f` is a failure.
 #
 #   ./tests/rack/run-rpc-test.sh
 #
-# Requires: postgresql-16 (or any 14+), and the rack-up repo checked out
-# alongside this one for the baseline migrations (override with RACKUP_DIR).
+# Requires: postgresql-16 (or any 14+). Nothing else — the schema is
+# self-contained, so this no longer needs the old rack-up repo alongside it.
 set -euo pipefail
 
 PGPORT="${PGPORT:-55433}"
 PGDATA="${PGDATA:-/tmp/rackup-test-pgdata}"
-RACKUP_DIR="${RACKUP_DIR:-../rack-up}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
 PGBIN="$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | tail -1 || echo "")"
@@ -58,6 +57,8 @@ create table storage.buckets (id text primary key, name text, public boolean def
 create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text,
   name text, owner uuid, created_at timestamptz default now());
 alter table storage.objects enable row level security;
+create function storage.foldername(name text) returns text[] language sql immutable as $$
+  select string_to_array(name, '/'); $$;
 -- Roles the migrations GRANT to.
 do $$ begin
   create role anon;          exception when duplicate_object then null; end $$;
@@ -67,16 +68,6 @@ do $$ begin
   create role service_role;  exception when duplicate_object then null; end $$;
 create publication supabase_realtime;
 SQL
-
-# Baseline: the original app's migrations. A few touch Supabase storage
-# internals we don't stub, which is fine — the public tables are what matter.
-if [ -d "$RACKUP_DIR/supabase/migrations" ]; then
-  for f in "$RACKUP_DIR"/supabase/migrations/*.sql; do
-    "${DB[@]}" -q -f "$f" >/dev/null 2>&1 || true
-  done
-else
-  echo "warning: $RACKUP_DIR/supabase/migrations not found; baseline skipped" >&2
-fi
 
 for f in "$REPO"/supabase/migrations/*.sql; do
   echo "applying $(basename "$f")"

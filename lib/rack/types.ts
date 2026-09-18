@@ -37,7 +37,6 @@ export type ProfileRow = {
   preferred_game_type: GameType | null;
   /** APA member number; links to /roster/<id> on the main site. */
   apa_member_id: string | null;
-  favorite_music: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -62,8 +61,7 @@ export type RoomPlayerRow = {
 export type MatchRow = {
   id: string;
   room_id: string;
-  match_type: string;
-  game_type: GameType | null;
+  game_type: GameType;
   is_casual: boolean | null;
   status: "in_progress" | "complete" | "abandoned";
   /** Immutable setup; replaying the event log over it reproduces live_state. */
