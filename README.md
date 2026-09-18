@@ -237,9 +237,49 @@ session cannot move the standings. The link is display-only in both directions.
    | `…_rack_up_v2_core.sql` | Now. Additive — the old Lovable app keeps working alongside it. |
    | `…_rack_up_v2_lockdown.sql` | **After** the old app is retired. Removes the blanket "any authenticated user can manage X" policies and routes all scoring through the definer functions. |
 
-3. In the Supabase dashboard, confirm Realtime is enabled for `matches`,
-   `match_events`, `rooms`, `room_players` and `tournament_matches` (the core
-   migration adds them to the `supabase_realtime` publication).
+   **The backend is a Lovable Cloud project**, not a Supabase project we own.
+   Lovable provisions the Postgres instance on infrastructure it controls, so
+   `supabase.com/dashboard/project/<ref>` returns "You do not have access to
+   this project" and there is no service-role key or direct database URL. That
+   is expected, and it doesn't matter much: it is a normal Supabase instance
+   underneath, reachable over the public API with the anon key above, and
+   Lovable exposes the admin surface we need in its own UI.
+
+   To run a migration: open the Lovable project → **More → Cloud → SQL editor**
+   → paste the whole file → Run. Lovable asks for confirmation on `ALTER` and
+   other destructive statements; that's expected here. Both migrations are
+   idempotent, so a re-run is harmless. **More → Cloud → Database** gives a
+   table browser for spot-checking afterwards.
+
+   Because there is no `pg_dump` access, the Supabase CLI (`supabase link` /
+   `supabase db push`) is not an option for this project — the SQL editor is
+   the migration path.
+
+3. Confirm Realtime covers `matches`, `match_events`, `rooms`, `room_players`
+   and `tournament_matches`. The core migration adds them to the
+   `supabase_realtime` publication itself, so this is a spot-check rather than
+   a step — without it the TV display won't update live:
+
+   ```sql
+   select tablename from pg_publication_tables
+    where pubname = 'supabase_realtime' order by tablename;
+   ```
+
+4. Add the site's domain to the auth redirect allow-list, or sign-up
+   confirmation emails will bounce users back to the old Lovable app's URL.
+   This lives in Lovable's Cloud settings (users → auth configuration) rather
+   than a Supabase dashboard.
+
+### Owning the backend outright (optional, later)
+
+Staying on Lovable Cloud is fine — nothing in this section depends on Lovable
+beyond it keeping the instance running. If you'd rather own it:
+Lovable's **Cloud → Overview → Advanced settings → Export project data**
+produces a full backup (schema, data, RLS policies, auth users), which can be
+restored into a Supabase project you create. There is no one-click transfer,
+and Lovable's own export path can't carry password hashes, so every account
+has to go through a password reset afterwards. Worth doing deliberately, not
+as part of this change.
 
 ### Tests
 
