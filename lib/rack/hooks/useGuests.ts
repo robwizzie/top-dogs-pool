@@ -31,6 +31,20 @@ export type GuestBook = {
   refresh: () => Promise<void>;
 };
 
+/**
+ * Say what went wrong in terms the person reading it can act on.
+ *
+ * `42703` is PostgREST relaying "column does not exist", which for this hook
+ * means one thing: the deploy is ahead of the database. Raw SQL text would
+ * send whoever hit it looking for a bug in the app.
+ */
+function describe(err: { code?: string; message: string }): string {
+  if (err.code === "42703") {
+    return "Guests need a database update that hasn't been applied yet — run the latest migration in supabase/migrations/.";
+  }
+  return err.message;
+}
+
 export function useGuests(ownerId: string | null): GuestBook {
   const supabase = getSupabaseBrowser();
   const [guests, setGuests] = useState<ProfileRow[]>([]);
@@ -48,7 +62,7 @@ export function useGuests(ownerId: string | null): GuestBook {
       .select("*")
       .eq("guest_owner", ownerId)
       .order("name", { ascending: true });
-    if (err) setError(err.message);
+    if (err) setError(describe(err));
     setGuests((data ?? []) as ProfileRow[]);
     setLoading(false);
   }, [supabase, ownerId]);
@@ -77,7 +91,7 @@ export function useGuests(ownerId: string | null): GuestBook {
         .single();
 
       if (err) {
-        setError(err.message);
+        setError(describe(err));
         return null;
       }
       const row = data as ProfileRow;
@@ -102,7 +116,7 @@ export function useGuests(ownerId: string | null): GuestBook {
         })
         .eq("id", id);
       if (err) {
-        setError(err.message);
+        setError(describe(err));
         return false;
       }
       await refresh();
@@ -117,7 +131,7 @@ export function useGuests(ownerId: string | null): GuestBook {
       setError(null);
       const { error: err } = await supabase.from("profiles").delete().eq("id", id);
       if (err) {
-        setError(err.message);
+        setError(describe(err));
         return false;
       }
       setGuests((prev) => prev.filter((g) => g.id !== id));
