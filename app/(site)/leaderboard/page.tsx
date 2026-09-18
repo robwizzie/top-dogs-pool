@@ -4,6 +4,9 @@ import { PageHeader } from "@/components/ui/Section";
 import { SweepRow } from "@/components/leaderboard/SweepRow";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import { ShareLeaderboardButton } from "@/components/leaderboard/ShareLeaderboardButton";
+import { WeekRecap } from "@/components/leaderboard/WeekRecap";
+import { Podium } from "@/components/leaderboard/Podium";
+import { StatTiles, ScoringKey, type Tile } from "@/components/leaderboard/StatTiles";
 import {
   TournamentToggle,
   parseTournamentMode,
@@ -13,9 +16,14 @@ import {
   getLeaderboard,
   getPatchInstances,
   getPlayerHistory,
-  getPreviousWeekRanks,
   getSessions,
 } from "@/lib/apa";
+import {
+  attachCurrentRanks,
+  attachWeekPatches,
+  getWeekRecap,
+} from "@/lib/apa/week";
+import { rankWithTies } from "@/lib/apa/rank";
 import {
   parseSessionScope,
   resolveScope,
@@ -46,14 +54,39 @@ export default async function LeaderboardPage({ searchParams }: Props) {
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
   const leaderScope = scope.kind === "all" ? "all" : selectedIds;
 
-  const [rows, history, patchInstances, prevRanks] = await Promise.all([
+  // "This week" only means something for a single session. Across a multi-select
+  // or All Time there is no shared match night to recap.
+  const recapSessionId =
+    scope.kind !== "all" && selectedIds.size === 1
+      ? [...selectedIds][0]
+      : undefined;
+
+  const [rows, history, patchInstances, recap] = await Promise.all([
     getLeaderboard(leaderScope, { tournaments: tournamentMode }),
     getPlayerHistory(),
     getPatchInstances(leaderScope, { tournaments: tournamentMode }),
-    // Week-over-week deltas are league-only; tournament games have no "weeks".
-    getPreviousWeekRanks(leaderScope),
+    recapSessionId === undefined
+      ? Promise.resolve(null)
+      : getWeekRecap(recapSessionId),
   ]);
-  const previousRanks: Record<string, number> = Object.fromEntries(prevRanks);
+
+  // The week's points come from the same patch instances the season totals
+  // are built from, and the rank movement is arithmetic on the rows actually
+  // on screen — so neither can disagree with the board beneath them. Patches
+  // first: the ranks need to know what was gained.
+  if (recap) {
+    const nameOf = (playerId: string) =>
+      rows.find((r) => r.playerId === playerId)?.playerName ?? playerId;
+    attachWeekPatches(recap, patchInstances, nameOf);
+    attachCurrentRanks(recap, rows);
+  }
+  const weekPatches = recap?.patches ?? [];
+
+  const previousRanks: Record<string, number> = Object.fromEntries(
+    recap ? [...recap.priorRanks] : [],
+  );
+  const rankDeltas = new Map<string, number | null>(recap?.rankDeltas ?? []);
+
   const headerLabel = scopeLabel(selectedIds, sessions);
   const modeSuffix =
     tournamentMode === "include"
@@ -61,22 +94,62 @@ export default async function LeaderboardPage({ searchParams }: Props) {
       : tournamentMode === "only"
         ? " · tournaments only"
         : "";
+
   const totalPoints = rows.reduce((s, r) => s + r.points, 0);
-  const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
-  const totalMini = rows.reduce((s, r) => s + r.miniSweeps, 0);
-  const totalFirstWins = rows.reduce((s, r) => s + r.firstWin, 0);
-  const totalMvp = rows.reduce((s, r) => s + r.mvp, 0);
+  const totalSweeps = rows.reduce((s, r) => s + r.sweeps + r.miniSweeps, 0);
+  const totalFeats = rows.reduce(
+    (s, r) => s + r.breakAndRuns + r.eightOnBreaks,
+    0,
+  );
+  const totalPatches = rows.reduce(
+    (s, r) =>
+      s +
+      r.sweeps +
+      r.miniSweeps +
+      r.breakAndRuns +
+      r.eightOnBreaks +
+      r.levelUps +
+      r.firstWin +
+      r.mvp,
+    0,
+  );
+
+  const weekSweeps = weekPatches.filter(
+    (p) => p.kind === "sweep" || p.kind === "mini-sweep",
+  ).length;
+  const weekFeats = weekPatches.filter(
+    (p) => p.kind === "break-and-run" || p.kind === "8-on-break",
+  ).length;
+
+  const tiles: Tile[] = [
+    {
+      label: "Patch points",
+      value: totalPoints,
+      decimals: totalPoints % 1 === 0 ? 0 : 1,
+      delta: recap?.teamPoints ?? null,
+      accent: "var(--color-brass-bright)",
+    },
+    { label: "Patches", value: totalPatches, delta: weekPatches.length || null },
+    { label: "Sweeps", value: totalSweeps, delta: weekSweeps || null },
+    { label: "Break & runs", value: totalFeats, delta: weekFeats || null },
+  ];
+
+  // Points decide rank; the sort's tiebreakers only decide print order. Three
+  // players on one point are joint first, and the board should say so.
+  const ranked = rankWithTies(rows, (r) => r.points);
+  const rest = ranked.slice(3);
 
   return (
     <>
       <PageHeader
         eyebrow="Patches Earned"
         title="Patch Watch"
-        subtitle={`${headerLabel}${modeSuffix} · ${totalPoints.toFixed(1)} pts · ${totalSweeps} sweep${totalSweeps === 1 ? "" : "s"} · ${totalMini} mini${totalFirstWins > 0 ? ` · ${totalFirstWins} first win${totalFirstWins === 1 ? "" : "s"}` : ""}${totalMvp > 0 ? ` · ${totalMvp} MVP${totalMvp === 1 ? "" : "s"}` : ""}`}
+        subtitle={`${headerLabel}${modeSuffix}`}
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="mx-auto max-w-3xl space-y-5 px-4 py-8 sm:px-6 lg:px-8">
+        {/* --- controls --------------------------------------------------- */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <SessionPicker
             basePath="/leaderboard"
             sessions={sessions}
@@ -89,7 +162,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
             previousRanks={previousRanks}
           />
         </div>
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <TournamentToggle
             basePath="/leaderboard"
             sessionParam={session}
@@ -125,28 +198,44 @@ export default async function LeaderboardPage({ searchParams }: Props) {
             )}
           </p>
         ) : (
-          <div className="surface divide-y divide-[var(--border)]">
-            {rows.map((row, i) => {
-              const h = history.get(row.playerId);
-              return (
-                <SweepRow
-                  key={row.playerId}
-                  row={row}
-                  rank={i + 1}
-                  celebrate={i < 3 && row.points > 0}
-                  streak={h?.streak ?? null}
-                  outcomes={h?.outcomes}
-                  patchInstances={patchInstances.get(row.playerId)}
-                />
-              );
-            })}
-          </div>
+          <>
+            {/* --- the week's news ------------------------------------- */}
+            <WeekRecap recap={recap} patches={weekPatches} />
+
+            {/* --- season totals --------------------------------------- */}
+            <StatTiles tiles={tiles} />
+
+            {/* --- the podium ------------------------------------------ */}
+            <Podium
+              entries={ranked.slice(0, 3)}
+              patchInstances={patchInstances}
+              rankDeltas={rankDeltas}
+            />
+
+            {/* --- everyone else --------------------------------------- */}
+            {rest.length > 0 && (
+              <div className="surface divide-y divide-[var(--border)]">
+                {rest.map(({ row, rank, tied }) => {
+                  const h = history.get(row.playerId);
+                  return (
+                    <SweepRow
+                      key={row.playerId}
+                      row={row}
+                      rank={rank}
+                      tied={tied}
+                      streak={h?.streak ?? null}
+                      outcomes={h?.outcomes}
+                      patchInstances={patchInstances.get(row.playerId)}
+                      rankDelta={rankDeltas.get(row.playerId) ?? null}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
 
-        <div className="surface mt-6 p-5 text-sm text-[var(--fg-dim)]">
-          <h3 className="mb-2 font-semibold text-[var(--fg)]">
-            How points work
-          </h3>
+        <ScoringKey>
           <ul className="space-y-1.5 text-xs">
             <li>
               <strong className="text-[var(--color-pop-bright)]">Sweep</strong> ·
@@ -196,7 +285,7 @@ export default async function LeaderboardPage({ searchParams }: Props) {
               career.
             </li>
           </ul>
-        </div>
+        </ScoringKey>
       </div>
     </>
   );

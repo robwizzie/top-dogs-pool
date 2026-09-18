@@ -1,42 +1,139 @@
+/* eslint-disable @next/next/no-img-element -- Satori renders this route to a
+   PNG on the server; next/image has no meaning inside an ImageResponse. */
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { loadSnapshot } from "@/lib/apa/client";
 import {
   getCurrentSession,
   getLeaderboard,
-  getPreviousWeekRanks,
+  getPatchInstances,
   getSessions,
 } from "@/lib/apa";
+import { rankWithTies } from "@/lib/apa/rank";
+import {
+  attachCurrentRanks,
+  attachWeekPatches,
+  getWeekRecap,
+} from "@/lib/apa/week";
 import {
   parseSessionScope,
   resolveScope,
   scopeLabel,
 } from "@/lib/session-scope";
 
+/**
+ * The weekly share card.
+ *
+ * Rebuilt around one question: what would make someone actually post this in
+ * the group chat on a Tuesday night? Not a season table — they've seen it. The
+ * news is *this week*: the result, what the team put on the board, who earned a
+ * patch, and who's on top now.
+ *
+ * Four things changed from the previous version, all for that reason:
+ *
+ *  · **A share-safe canvas, not a 1080×1924 strip.** The old card grew a row
+ *    per player and ended up near 1:1.8, which chat apps crop to a letterbox or
+ *    shrink until the names are unreadable. The height is now derived from the
+ *    content but clamped to the 1:1 … 4:5 band every messaging app previews
+ *    intact — so it neither ends in dead space nor runs off the bottom in week
+ *    twelve.
+ *  · **The week leads.** The old header read "Fall 2026 · 3.5 pts", which is as
+ *    true in week 12 as in week 2. Now it opens with the match result.
+ *  · **Patches are the hero.** They're the thing the app is named after and the
+ *    thing anyone wants to show off, and the art needs real size to read at
+ *    all — at 54px it was mud. They get a band of their own.
+ *  · **Only people who scored.** The old card listed everyone on 0 pts, which
+ *    filled a third of the image with zeroes.
+ */
+
 export const runtime = "nodejs";
 export const revalidate = 3600;
 
 const WIDTH = 1080;
-const HEADER_H = 320;
-const FOOTER_H = 104;
-const MAX_ROWS = 12;
+/** Square, the tightest crop-safe shape. */
+const HEIGHT_MIN = 1080;
+/** 4:5 — the tallest portrait a feed or chat preview shows whole. */
+const HEIGHT_MAX = 1350;
 
-// Each player row is a two-line layout:
-//   Line 1: rank, avatar, name + SL chip + delta chip, points
-//   Line 2: patches, full-width under the name (indented past rank+avatar)
-// PATCH_PX is intentionally large so the patches are immediately recognizable
-// in a chat preview, and PATCHES_PER_PATCH_ROW reflects how many chips fit
-// at that size given the indented usable width.
-const PATCH_PX = 128;
-const ROW_HEADER_H = 124; // rank + avatar + name block
-const ROW_PATCH_RH = 158; // height contributed by a single line of patches
-// Patches per visual row. At 128px patch + the ×count chip + padding +
-// inter-chip gap, three chips fit reliably even when the counts are big
-// (×27, ×15, etc.). Going higher risks the 4th chip wrapping unexpectedly
-// inside Satori, which would push it into the next player's row.
-const PATCHES_PER_PATCH_ROW = 3;
-const PATCH_CHIP_MIN_W = 232; // gives chips a stable width so flex-wrap is predictable
+const PAD = 52;
+const FOOTER_H = 92;
+const ROW_H = 68;
+const ROW_GAP = 8;
+/**
+ * Leeway in the fit model. Measured against a real render: the model runs a
+ * couple of dozen pixels light across a full card, and being light is the
+ * expensive direction — it clips a row — so it buys that back here.
+ */
+const SAFETY = 28;
+
+/**
+ * Satori's line box for a given font size.
+ *
+ * Not `fontSize * 1.2`: the box is ascent + descent + line gap of the actual
+ * font, which for the default sans comes out around 1.35. Measured off a
+ * rendered card rather than assumed.
+ */
+function line(fontSize: number): number {
+  return Math.ceil(fontSize * 1.35);
+}
+
+const INK = "#070707";
+const CREAM = "#ece1c4";
+const CREAM_DIM = "#b9ad8d";
+const BRASS = "#c9a24a";
+const BRASS_BRIGHT = "#e0be6b";
+const FELT_BRIGHT = "#2e8b57";
+const POP_BRIGHT = "#e85248";
+
+const PODIUM_TONE: Record<1 | 2 | 3, string> = {
+  1: BRASS_BRIGHT,
+  2: "#d6d6e0",
+  3: "#d9974f",
+};
+
+const PATCH_FILES: Record<
+  string,
+  { rel: string; mime: string; label: string }
+> = {
+  sweep: { rel: "patches/sweep.png", mime: "image/png", label: "Sweep" },
+  "mini-sweep": {
+    rel: "patches/mini-sweep.png",
+    mime: "image/png",
+    label: "Mini-sweep",
+  },
+  "break-and-run": {
+    rel: "patches/break-and-run.png",
+    mime: "image/png",
+    label: "Break & run",
+  },
+  "8-on-break": {
+    rel: "patches/8-on-break.png",
+    mime: "image/png",
+    label: "8 on the break",
+  },
+  "level-up": {
+    rel: "patches/level-up.png",
+    mime: "image/png",
+    label: "Level up",
+  },
+  "first-win": {
+    rel: "patches/first-win.png",
+    mime: "image/png",
+    label: "First win",
+  },
+  mvp: { rel: "patches/mvp.svg", mime: "image/svg+xml", label: "MVP" },
+};
+
+const POOL_BALL_COLORS = [
+  "#c9a24a",
+  "#f4c453",
+  "#1e5fad",
+  "#c8362f",
+  "#6b3aa0",
+  "#d97a2b",
+  "#1f6e3d",
+  "#7a2418",
+];
 
 async function readPublicAsDataUrl(
   relPath: string,
@@ -50,65 +147,22 @@ async function readPublicAsDataUrl(
   }
 }
 
-const PATCH_FILES: Record<
-  | "sweep"
-  | "miniSweeps"
-  | "breakAndRuns"
-  | "eightOnBreaks"
-  | "levelUps"
-  | "firstWin"
-  | "mvp",
-  { rel: string; mime: string; label: string; tint: string }
-> = {
-  sweep: { rel: "patches/sweep.png", mime: "image/png", label: "Sweep", tint: "#e85248" },
-  miniSweeps: { rel: "patches/mini-sweep.png", mime: "image/png", label: "Mini", tint: "#e0be6b" },
-  breakAndRuns: { rel: "patches/break-and-run.png", mime: "image/png", label: "B&R", tint: "#2e8b57" },
-  eightOnBreaks: { rel: "patches/8-on-break.png", mime: "image/png", label: "8oB", tint: "#ece1c4" },
-  levelUps: { rel: "patches/level-up.png", mime: "image/png", label: "Level Up", tint: "#f4c453" },
-  firstWin: { rel: "patches/first-win.png", mime: "image/png", label: "First Win", tint: "#1f6e3d" },
-  mvp: { rel: "patches/mvp.svg", mime: "image/svg+xml", label: "MVP", tint: "#4ca0d8" },
-};
-
-const POOL_BALL_COLORS = [
-  null,
-  "#f4c453", // 1 yellow
-  "#1e5fad", // 2 blue
-  "#c8362f", // 3 red
-  "#6b3aa0", // 4 purple
-  "#d97a2b", // 5 orange
-  "#1f6e3d", // 6 green
-  "#7a2418", // 7 maroon
-];
-
-const PODIUM_STYLES: Record<
-  1 | 2 | 3,
-  { bg: string; ring: string; text: string }
-> = {
-  1: { bg: "#e0be6b", ring: "#fff8d8", text: "#3a2607" },
-  2: { bg: "#c8c8d4", ring: "#f0f0f7", text: "#1e1e2a" },
-  3: { bg: "#c2823f", ring: "#e8a96b", text: "#2a1408" },
-};
-
-function formatPoints(n: number): string {
-  const r = Math.round(n * 10) / 10;
-  return Number.isInteger(r) ? r.toString() : r.toFixed(1);
+function fmtPoints(n: number): string {
+  return n % 1 === 0 ? String(n) : n.toFixed(1);
 }
 
-type DeltaTag = { text: string; color: string; bg: string };
-function deltaTag(rank: number, prev: number | undefined, hasPrev: boolean): DeltaTag | null {
-  if (!hasPrev) return null;
-  if (prev === undefined) return { text: "NEW", color: "#ece1c4", bg: "rgba(76,160,216,0.28)" };
-  if (prev === rank) return { text: "HOLD", color: "rgba(236,225,196,0.55)", bg: "rgba(255,255,255,0.06)" };
-  if (prev > rank) return { text: `UP ${prev - rank}`, color: "#a8e6b8", bg: "rgba(46,139,87,0.30)" };
-  return { text: `DOWN ${rank - prev}`, color: "#f1b3a8", bg: "rgba(200,54,47,0.30)" };
+function fmtDate(iso: string | null): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const session = url.searchParams.get("session") ?? undefined;
 
-  const [snap, sessions, currentSession] = await Promise.all([
-    loadSnapshot(),
+  const [sessions, currentSession] = await Promise.all([
     getSessions(),
     getCurrentSession(),
   ]);
@@ -116,88 +170,215 @@ export async function GET(req: Request) {
   const scope = parseSessionScope(session, allIds);
   const selectedIds = resolveScope(scope, allIds, currentSession?.id);
   const label = scopeLabel(selectedIds, sessions);
+  const leaderScope = scope.kind === "all" ? "all" : selectedIds;
 
-  const [allRows, prevRanksMap] = await Promise.all([
-    getLeaderboard(scope.kind === "all" ? "all" : selectedIds),
-    getPreviousWeekRanks(scope.kind === "all" ? "all" : selectedIds),
+  // "This week" only means something for a single session; across a
+  // multi-select or All Time there is no shared match night to recap.
+  const recapSessionId =
+    scope.kind !== "all" && selectedIds.size === 1
+      ? [...selectedIds][0]
+      : undefined;
+
+  const [allRows, patchInstances, recap] = await Promise.all([
+    getLeaderboard(leaderScope),
+    getPatchInstances(leaderScope),
+    recapSessionId === undefined
+      ? Promise.resolve(null)
+      : getWeekRecap(recapSessionId),
   ]);
-  const rows = allRows.slice(0, MAX_ROWS);
-  const hasPrev = prevRanksMap.size > 0;
 
-  // Team record across the scope — count completed matches where teamScore
-  // beats / trails / equals opponentScore. snap.matches is already filtered
-  // to our team during projection, so a session filter is all that's needed.
-  let teamWins = 0;
-  let teamLosses = 0;
-  let teamTies = 0;
-  for (const m of Object.values(snap.matches)) {
-    if (m.status !== "completed") continue;
-    if (m.sessionId === undefined || !selectedIds.has(m.sessionId)) continue;
-    if (m.teamScore === undefined || m.opponentScore === undefined) continue;
-    if (m.teamScore > m.opponentScore) teamWins += 1;
-    else if (m.teamScore < m.opponentScore) teamLosses += 1;
-    else teamTies += 1;
+  if (recap) {
+    attachWeekPatches(
+      recap,
+      patchInstances,
+      (pid) => allRows.find((r) => r.playerId === pid)?.playerName ?? pid,
+    );
+    attachCurrentRanks(recap, allRows);
   }
-  const teamMatches = teamWins + teamLosses + teamTies;
-  const recordText =
-    teamMatches > 0
-      ? teamTies > 0
-        ? `${teamWins}–${teamLosses}–${teamTies}`
-        : `${teamWins}–${teamLosses}`
-      : null;
+  const weekPatches = recap?.patches ?? [];
 
-  // Load all required image assets as data URLs (Satori needs them inline).
-  const patchAssets = Object.fromEntries(
+  const ranked = rankWithTies(allRows, (r) => r.points);
+  const podium = ranked.slice(0, 3);
+  const scorers = ranked.slice(3).filter(({ row }) => row.points > 0);
+
+  /* ---- assets ------------------------------------------------------- */
+  const patchAssets: Record<string, string | null> = Object.fromEntries(
     await Promise.all(
       Object.entries(PATCH_FILES).map(async ([k, v]) => [
         k,
         await readPublicAsDataUrl(v.rel, v.mime),
       ]),
     ),
-  ) as Record<keyof typeof PATCH_FILES, string | null>;
+  );
 
   const profileImages = new Map<string, string>();
-  for (const r of rows) {
-    if (!r.profileImage) continue;
+  for (const { row } of ranked) {
+    if (!row.profileImage) continue;
     const data = await readPublicAsDataUrl(
-      r.profileImage.replace(/^\//, ""),
-      r.profileImage.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg",
+      row.profileImage.replace(/^\//, ""),
+      row.profileImage.toLowerCase().endsWith(".png")
+        ? "image/png"
+        : "image/jpeg",
     );
-    if (data) profileImages.set(r.playerId, data);
+    if (data) profileImages.set(row.playerId, data);
   }
 
-  const totalPoints = rows.reduce((s, r) => s + r.points, 0);
-  const totalSweeps = rows.reduce((s, r) => s + r.sweeps, 0);
-  const totalMini = rows.reduce((s, r) => s + r.miniSweeps, 0);
-  const totalLevelUps = rows.reduce((s, r) => s + r.levelUps, 0);
-  const totalFirstWins = rows.reduce((s, r) => s + r.firstWin, 0);
-  const totalMvp = rows.reduce((s, r) => s + r.mvp, 0);
+  const totalPoints = allRows.reduce((s, r) => s + r.points, 0);
+  const totalPatches = allRows.reduce(
+    (s, r) =>
+      s +
+      r.sweeps +
+      r.miniSweeps +
+      r.breakAndRuns +
+      r.eightOnBreaks +
+      r.levelUps +
+      r.firstWin +
+      r.mvp,
+    0,
+  );
 
-  // Per-row patch counts decide whether that row needs the tall layout
-  // (patches wrap to a second line). Sum heights for the full card height.
-  function patchKindCount(r: (typeof rows)[number]): number {
-    let n = 0;
-    if (r.sweeps) n += 1;
-    if (r.miniSweeps) n += 1;
-    if (r.breakAndRuns) n += 1;
-    if (r.eightOnBreaks) n += 1;
-    if (r.levelUps) n += 1;
-    if (r.firstWin) n += 1;
-    if (r.mvp) n += 1;
-    return n;
-  }
-  function patchRowsFor(r: (typeof rows)[number]): number {
-    const n = patchKindCount(r);
-    if (n === 0) return 0;
-    return Math.ceil(n / PATCHES_PER_PATCH_ROW);
-  }
-  function rowHeightFor(r: (typeof rows)[number]): number {
-    return ROW_HEADER_H + patchRowsFor(r) * ROW_PATCH_RH;
-  }
-  const rowsTotalHeight = rows.length
-    ? rows.reduce((s, r) => s + rowHeightFor(r), 0)
-    : ROW_HEADER_H;
-  const HEIGHT = HEADER_H + rowsTotalHeight + FOOTER_H;
+  /**
+   * Three numbers, and which three depends on whether there's a week to
+   * report. Without one, "patches won: 0" would be a lie of framing (it means
+   * "none this week", but there is no this week) and the season total would
+   * simply repeat the first card.
+   */
+  const stats = recap
+    ? [
+        {
+          v: fmtPoints(recap.teamPoints),
+          l: "points this week",
+          c: BRASS_BRIGHT,
+        },
+        { v: String(weekPatches.length), l: "patches this week", c: CREAM },
+        { v: fmtPoints(totalPoints), l: "season total", c: CREAM },
+      ]
+    : [
+        { v: fmtPoints(totalPoints), l: "patch points", c: BRASS_BRIGHT },
+        { v: String(totalPatches), l: "patches earned", c: CREAM },
+        {
+          v: String(allRows.filter((r) => r.points > 0).length),
+          l: "on the board",
+          c: CREAM,
+        },
+      ];
+  const won =
+    recap?.teamScore != null &&
+    recap?.opponentScore != null &&
+    recap.teamScore > recap.opponentScore;
+  const lost =
+    recap?.teamScore != null &&
+    recap?.opponentScore != null &&
+    recap.teamScore < recap.opponentScore;
+
+  /* ---- fitting ------------------------------------------------------
+   * Satori can't measure, so the canvas is sized from a deliberately
+   * generous model of the blocks above. Over-estimating costs a little
+   * slack above the footer; under-estimating would push the footer off the
+   * bottom, so the list block also carries `flex: 1` + `overflow: hidden`
+   * as a backstop.
+   */
+  const heroPatches = weekPatches.slice(0, 4);
+  const patchArt =
+    heroPatches.length >= 4 ? 132 : heroPatches.length === 3 ? 148 : 160;
+  const patchBandH =
+    heroPatches.length > 0
+      ? line(21) + 12 + patchArt + 8 + line(27) + 2 + line(20)
+      : 0;
+
+  // Tallest podium card, summed from the sizes it is actually built with:
+  // padding, badge, avatar, name, the points figure, and the W-L line.
+  const podiumH =
+    22 + line(20) + 10 + 104 + 10 + line(31) + 2 + line(74) + line(20) + 24;
+
+  const headerH =
+    34 + line(22) + 12 + line(78) + (recap ? 14 + 16 + line(30) : 0);
+  const statsH = 26 + 16 + line(54) + 2 + line(21) + 16;
+
+  const fixedH =
+    8 + // brass rule
+    headerH +
+    statsH +
+    (patchBandH ? 24 + patchBandH : 0) +
+    24 +
+    podiumH +
+    FOOTER_H +
+    SAFETY;
+
+  const listRoom = Math.max(0, HEIGHT_MAX - fixedH - 20);
+  const listRows = Math.max(
+    0,
+    Math.min(scorers.length, Math.floor(listRoom / (ROW_H + ROW_GAP))),
+  );
+  const listed = scorers.slice(0, listRows);
+  const hiddenScorers = scorers.length - listed.length;
+
+  const listH =
+    listed.length > 0 || hiddenScorers > 0
+      ? 20 +
+        listed.length * (ROW_H + ROW_GAP) +
+        (hiddenScorers > 0 ? 36 : 0)
+      : 0;
+
+  const HEIGHT = Math.max(
+    HEIGHT_MIN,
+    Math.min(HEIGHT_MAX, Math.round(fixedH + listH)),
+  );
+
+  const avatar = (playerId: string, seed: number, size: number) => {
+    const src = profileImages.get(playerId);
+    if (src) {
+      return (
+        <img
+          src={src}
+          alt=""
+          width={size}
+          height={size}
+          style={{
+            width: size,
+            height: size,
+            borderRadius: size,
+            objectFit: "cover",
+            objectPosition: "top",
+          }}
+        />
+      );
+    }
+    // No photo: a pool ball, drawn the way one looks — coloured body, white
+    // number patch. A flat disc with a digit on it reads as a placeholder.
+    const patch = Math.round(size * 0.58);
+    return (
+      <div
+        style={{
+          display: "flex",
+          width: size,
+          height: size,
+          borderRadius: size,
+          background: POOL_BALL_COLORS[seed % POOL_BALL_COLORS.length],
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.35)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: patch,
+            height: patch,
+            borderRadius: patch,
+            background: "#f6f1e4",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#101010",
+            fontSize: Math.round(patch * 0.66),
+            fontWeight: 700,
+          }}
+        >
+          {seed}
+        </div>
+      </div>
+    );
+  };
 
   return new ImageResponse(
     (
@@ -207,624 +388,454 @@ export async function GET(req: Request) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background:
-            "linear-gradient(165deg, #07221a 0%, #0b3326 45%, #163f31 100%)",
-          color: "#ece1c4",
+          background: `linear-gradient(160deg, #0d2a20 0%, ${INK} 46%, #10130f 100%)`,
+          color: CREAM,
           fontFamily: "sans-serif",
-          position: "relative",
         }}
       >
-        {/* Brass top accent bar */}
+        {/* brass hairline */}
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 6,
-            background:
-              "linear-gradient(90deg, transparent, #c9a24a 30%, #e0be6b 50%, #c9a24a 70%, transparent)",
+            display: "flex",
+            height: 8,
+            background: `linear-gradient(90deg, ${BRASS}, ${BRASS_BRIGHT}, ${BRASS})`,
           }}
         />
 
-        {/* Header */}
+        {/* ---- header ------------------------------------------------ */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            padding: "44px 56px 28px",
-            borderBottom: "1px solid rgba(201,162,74,0.22)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              fontSize: 18,
-              letterSpacing: 8,
-              textTransform: "uppercase",
-              color: "#c9a24a",
-              fontWeight: 700,
-            }}
-          >
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-                background: "#e0be6b",
-                display: "flex",
-              }}
-            />
-            <span style={{ display: "flex" }}>Top Dawgs · Patch Watch</span>
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-                background: "#e0be6b",
-                display: "flex",
-              }}
-            />
-          </div>
-          <div
-            style={{
-              marginTop: 10,
-              fontSize: 72,
-              fontWeight: 800,
-              lineHeight: 1,
-              color: "#fff8d8",
-              letterSpacing: -2,
-              display: "flex",
-            }}
-          >
-            {label}
-          </div>
-          <div
-            style={{
-              marginTop: 18,
-              display: "flex",
-              gap: 22,
-              fontSize: 22,
-              color: "rgba(236,225,196,0.75)",
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            {recordText && (
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "6px 14px",
-                  borderRadius: 999,
-                  background: "rgba(46,139,87,0.22)",
-                  border: "1px solid rgba(168,230,184,0.30)",
-                }}
-              >
-                <span
-                  style={{
-                    color: "#a8e6b8",
-                    fontWeight: 800,
-                    letterSpacing: 1,
-                    display: "flex",
-                  }}
-                >
-                  {recordText}
-                </span>
-                <span
-                  style={{
-                    color: "rgba(236,225,196,0.65)",
-                    fontSize: 18,
-                    display: "flex",
-                  }}
-                >
-                  team
-                </span>
-              </span>
-            )}
-            <span style={{ display: "flex", gap: 8 }}>
-              <span style={{ color: "#e0be6b", fontWeight: 700 }}>
-                {formatPoints(totalPoints)}
-              </span>
-              pts
-            </span>
-            {totalSweeps > 0 && (
-              <span style={{ display: "flex", gap: 8 }}>
-                <span style={{ color: "#e85248", fontWeight: 700 }}>
-                  {totalSweeps}
-                </span>
-                sweep{totalSweeps === 1 ? "" : "s"}
-              </span>
-            )}
-            {totalMini > 0 && (
-              <span style={{ display: "flex", gap: 8 }}>
-                <span style={{ color: "#e0be6b", fontWeight: 700 }}>
-                  {totalMini}
-                </span>
-                mini
-              </span>
-            )}
-            {totalLevelUps > 0 && (
-              <span style={{ display: "flex", gap: 8 }}>
-                <span style={{ color: "#f4c453", fontWeight: 700 }}>
-                  {totalLevelUps}
-                </span>
-                level-up{totalLevelUps === 1 ? "" : "s"}
-              </span>
-            )}
-            {totalFirstWins > 0 && (
-              <span style={{ display: "flex", gap: 8 }}>
-                <span style={{ color: "#a8e6b8", fontWeight: 700 }}>
-                  {totalFirstWins}
-                </span>
-                first win{totalFirstWins === 1 ? "" : "s"}
-              </span>
-            )}
-            {totalMvp > 0 && (
-              <span style={{ display: "flex", gap: 8 }}>
-                <span style={{ color: "#4ca0d8", fontWeight: 700 }}>
-                  {totalMvp}
-                </span>
-                MVP{totalMvp === 1 ? "" : "s"}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Rows */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            flex: 1,
-            padding: "8px 0",
-          }}
-        >
-          {rows.length === 0 ? (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "rgba(236,225,196,0.6)",
-                fontSize: 24,
-                padding: 40,
-              }}
-            >
-              No leaderboard data for this selection.
-            </div>
-          ) : (
-            rows.map((row, i) => {
-              const rank = i + 1;
-              const isPodium = rank <= 3;
-              const prevRank = prevRanksMap.get(row.playerId);
-              const delta = deltaTag(rank, prevRank, hasPrev);
-              const avatar = profileImages.get(row.playerId);
-              const ballColor = POOL_BALL_COLORS[((rank - 1) % 7) + 1] ?? "#c9a24a";
-              const earnedPatches: Array<{
-                key: keyof typeof PATCH_FILES;
-                count: number;
-                tint: string;
-              }> = [];
-              if (row.sweeps)
-                earnedPatches.push({ key: "sweep", count: row.sweeps, tint: PATCH_FILES.sweep.tint });
-              if (row.miniSweeps)
-                earnedPatches.push({ key: "miniSweeps", count: row.miniSweeps, tint: PATCH_FILES.miniSweeps.tint });
-              if (row.breakAndRuns)
-                earnedPatches.push({ key: "breakAndRuns", count: row.breakAndRuns, tint: PATCH_FILES.breakAndRuns.tint });
-              if (row.eightOnBreaks)
-                earnedPatches.push({ key: "eightOnBreaks", count: row.eightOnBreaks, tint: PATCH_FILES.eightOnBreaks.tint });
-              if (row.levelUps)
-                earnedPatches.push({ key: "levelUps", count: row.levelUps, tint: PATCH_FILES.levelUps.tint });
-              if (row.firstWin)
-                earnedPatches.push({ key: "firstWin", count: row.firstWin, tint: PATCH_FILES.firstWin.tint });
-              if (row.mvp)
-                earnedPatches.push({ key: "mvp", count: row.mvp, tint: PATCH_FILES.mvp.tint });
-
-              const thisRowH = rowHeightFor(row);
-              const PATCH_INDENT = 72 + 22 + 84 + 22; // rank + gap + avatar + gap
-              return (
-                <div
-                  key={row.playerId}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "20px 56px",
-                    height: thisRowH,
-                    // Clip anything that exceeds the computed row height so a
-                    // mis-wrapped patch can never spill into the next player's
-                    // row. The height math above is conservative, so this is
-                    // a defense-in-depth guard rather than a regular truncation.
-                    overflow: "hidden",
-                    borderBottom:
-                      i < rows.length - 1
-                        ? "1px solid rgba(255,255,255,0.07)"
-                        : "none",
-                    background: isPodium
-                      ? rank === 1
-                        ? "linear-gradient(90deg, rgba(201,162,74,0.20), transparent 75%)"
-                        : "linear-gradient(90deg, rgba(201,162,74,0.10), transparent 75%)"
-                      : "transparent",
-                  }}
-                >
-                  {/* Header line: rank + avatar + name+SL+delta + points */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 22,
-                    }}
-                  >
-                    {/* Rank badge */}
-                    {isPodium ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 72,
-                          height: 72,
-                          flexShrink: 0,
-                          borderRadius: 36,
-                          background: PODIUM_STYLES[rank as 1 | 2 | 3].bg,
-                          border: `3px solid ${PODIUM_STYLES[rank as 1 | 2 | 3].ring}`,
-                          color: PODIUM_STYLES[rank as 1 | 2 | 3].text,
-                          fontSize: 42,
-                          fontWeight: 900,
-                          letterSpacing: -1,
-                          boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
-                        }}
-                      >
-                        {rank}
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 72,
-                          height: 72,
-                          flexShrink: 0,
-                          color: "rgba(236,225,196,0.55)",
-                          fontSize: 38,
-                          fontWeight: 700,
-                          letterSpacing: -1,
-                        }}
-                      >
-                        {rank}
-                      </div>
-                    )}
-
-                    {/* Avatar */}
-                    {avatar ? (
-                      <img
-                        src={avatar}
-                        width={84}
-                        height={84}
-                        alt=""
-                        style={{
-                          width: 84,
-                          height: 84,
-                          borderRadius: 42,
-                          objectFit: "cover",
-                          flexShrink: 0,
-                          border: "2px solid rgba(201,162,74,0.55)",
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: 84,
-                          height: 84,
-                          borderRadius: 42,
-                          flexShrink: 0,
-                          background: ballColor,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          border: "2px solid rgba(255,255,255,0.18)",
-                          boxShadow:
-                            "inset 0 4px 12px rgba(255,255,255,0.18), inset 0 -8px 14px rgba(0,0,0,0.32)",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 42,
-                            height: 42,
-                            borderRadius: 21,
-                            background: "#fff8d8",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 26,
-                            fontWeight: 800,
-                            color: "#1a1a1a",
-                            letterSpacing: -1,
-                          }}
-                        >
-                          {((rank - 1) % 7) + 1}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Name + chips */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                        flex: 1,
-                        minWidth: 0,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 38,
-                          fontWeight: 700,
-                          color: "#fff8d8",
-                          maxWidth: 460,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          display: "flex",
-                          letterSpacing: -0.5,
-                        }}
-                      >
-                        {row.playerName}
-                      </span>
-                      {row.skillLevel !== undefined && (
-                        <span
-                          style={{
-                            fontSize: 17,
-                            fontWeight: 700,
-                            padding: "5px 12px",
-                            borderRadius: 14,
-                            background: "rgba(201,162,74,0.18)",
-                            color: "#e0be6b",
-                            letterSpacing: 1,
-                            display: "flex",
-                            flexShrink: 0,
-                          }}
-                        >
-                          SL{row.skillLevel}
-                        </span>
-                      )}
-                      {delta && (
-                        <span
-                          style={{
-                            fontSize: 17,
-                            fontWeight: 700,
-                            padding: "5px 12px",
-                            borderRadius: 14,
-                            background: delta.bg,
-                            color: delta.color,
-                            letterSpacing: 0.5,
-                            display: "flex",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {delta.text}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Points */}
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-end",
-                        flexShrink: 0,
-                        minWidth: 120,
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 60,
-                          fontWeight: 800,
-                          lineHeight: 1,
-                          color: isPodium ? "#e0be6b" : "#c9a24a",
-                          letterSpacing: -1.5,
-                          display: "flex",
-                        }}
-                      >
-                        {formatPoints(row.points)}
-                      </span>
-                      <span
-                        style={{
-                          marginTop: 4,
-                          fontSize: 13,
-                          letterSpacing: 3,
-                          color: "rgba(236,225,196,0.5)",
-                          textTransform: "uppercase",
-                          fontWeight: 700,
-                          display: "flex",
-                        }}
-                      >
-                        {row.points === 1 ? "pt" : "pts"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Patches line — full width, indented past rank + avatar */}
-                  {earnedPatches.length > 0 ? (
-                    <div
-                      style={{
-                        marginTop: 14,
-                        marginLeft: PATCH_INDENT,
-                        display: "flex",
-                        gap: 14,
-                        flexWrap: "wrap",
-                        alignContent: "flex-start",
-                      }}
-                    >
-                      {earnedPatches.map(({ key, count, tint }) => {
-                        const src = patchAssets[key];
-                        if (!src) return null;
-                        return (
-                          <div
-                            key={key}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 10,
-                              padding: "6px 18px 6px 6px",
-                              borderRadius: 999,
-                              background: "rgba(255,255,255,0.06)",
-                              border: `1px solid ${tint}66`,
-                              height: PATCH_PX + 12,
-                              // Stable width keeps the flex-wrap deterministic
-                              // regardless of how big the ×count text is.
-                              width: PATCH_CHIP_MIN_W,
-                              flexShrink: 0,
-                            }}
-                          >
-                            <img
-                              src={src}
-                              width={PATCH_PX}
-                              height={PATCH_PX}
-                              alt=""
-                              style={{ width: PATCH_PX, height: PATCH_PX }}
-                            />
-                            <span
-                              style={{
-                                fontSize: 38,
-                                fontWeight: 800,
-                                color: tint,
-                                letterSpacing: -1.5,
-                                display: "flex",
-                                lineHeight: 1,
-                              }}
-                            >
-                              ×{count}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        marginTop: 14,
-                        marginLeft: PATCH_INDENT,
-                        fontSize: 18,
-                        color: "rgba(236,225,196,0.42)",
-                        display: "flex",
-                      }}
-                    >
-                      {row.matchesPlayed > 0
-                        ? `${row.matchesPlayed} match${row.matchesPlayed === 1 ? "" : "es"}`
-                        : "no matches yet"}
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* Footer */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "26px 56px",
-            borderTop: "1px solid rgba(201,162,74,0.22)",
-            background: "rgba(0,0,0,0.22)",
-            color: "rgba(236,225,196,0.75)",
-            fontSize: 18,
+            padding: `34px ${PAD}px 0 ${PAD}px`,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: 14,
-                background:
-                  "linear-gradient(135deg, #e0be6b 0%, #c9a24a 60%, #8a6a26 100%)",
                 display: "flex",
-                border: "1px solid rgba(255,255,255,0.25)",
+                width: 12,
+                height: 12,
+                borderRadius: 12,
+                background: BRASS,
               }}
             />
-            <span style={{ fontWeight: 700, color: "#fff8d8" }}>
-              topdawgspool.com/leaderboard
-            </span>
-          </div>
-          {hasPrev && (
             <div
               style={{
                 display: "flex",
-                gap: 16,
-                fontSize: 14,
-                letterSpacing: 1.5,
-                textTransform: "uppercase",
-                color: "rgba(236,225,196,0.55)",
-                alignItems: "center",
+                fontSize: 22,
+                letterSpacing: 7,
+                color: BRASS,
+                fontWeight: 700,
               }}
             >
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span
+              TOP DAWGS · PATCH WATCH
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 20,
+              marginTop: 12,
+            }}
+          >
+            <div style={{ display: "flex", fontSize: 78, fontWeight: 800 }}>
+              {recap ? `Week ${recap.week}` : label}
+            </div>
+            {recap && (
+              <div style={{ display: "flex", fontSize: 32, color: CREAM_DIM }}>
+                {label}
+              </div>
+            )}
+          </div>
+
+          {/* the match result — the actual news */}
+          {recap && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginTop: 14,
+              }}
+            >
+              {recap.teamScore != null && recap.opponentScore != null && (
+                <div
                   style={{
-                    color: "#a8e6b8",
-                    fontWeight: 800,
                     display: "flex",
+                    padding: "8px 20px",
+                    borderRadius: 999,
+                    fontSize: 30,
+                    fontWeight: 700,
+                    color: won ? FELT_BRIGHT : lost ? POP_BRIGHT : BRASS_BRIGHT,
+                    background: won
+                      ? "rgba(46,139,87,0.16)"
+                      : lost
+                        ? "rgba(232,82,72,0.14)"
+                        : "rgba(201,162,74,0.16)",
                   }}
                 >
-                  UP
-                </span>
-                moved up
-              </span>
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span
-                  style={{
-                    color: "#f1b3a8",
-                    fontWeight: 800,
-                    display: "flex",
-                  }}
-                >
-                  DOWN
-                </span>
-                moved down
-              </span>
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span style={{ color: "#9dc5ec", fontWeight: 800, display: "flex" }}>
-                  NEW
-                </span>
-                this week
-              </span>
+                  {won ? "Won" : lost ? "Lost" : "Tied"} {recap.teamScore}–
+                  {recap.opponentScore}
+                </div>
+              )}
+              <div style={{ display: "flex", fontSize: 30, color: CREAM_DIM }}>
+                {recap.opponent ? `vs ${recap.opponent}` : ""}
+                {fmtDate(recap.date) ? ` · ${fmtDate(recap.date)}` : ""}
+              </div>
             </div>
           )}
         </div>
+
+        {/* ---- the week's numbers ------------------------------------ */}
+        <div
+          style={{
+            display: "flex",
+            gap: 14,
+            padding: `26px ${PAD}px 0 ${PAD}px`,
+          }}
+        >
+          {stats.map((s) => (
+            <div
+              key={s.l}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 1,
+                padding: "16px 22px",
+                borderRadius: 18,
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(201,162,74,0.18)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 54,
+                  fontWeight: 800,
+                  color: s.c,
+                }}
+              >
+                {s.v}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 21,
+                  color: CREAM_DIM,
+                  letterSpacing: 2,
+                  textTransform: "uppercase",
+                  marginTop: 2,
+                }}
+              >
+                {s.l}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---- patches earned this week ------------------------------
+            The art is dense — at chip size it reads as a smudge, so it gets
+            a band and enough pixels to actually be a trophy. */}
+        {heroPatches.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: `24px ${PAD}px 0 ${PAD}px`,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                fontSize: 21,
+                letterSpacing: 4,
+                color: BRASS,
+                fontWeight: 700,
+                textTransform: "uppercase",
+              }}
+            >
+              Patches earned this week
+              {weekPatches.length > heroPatches.length
+                ? ` · +${weekPatches.length - heroPatches.length} more`
+                : ""}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 22,
+                marginTop: 12,
+              }}
+            >
+              {heroPatches.map((p, i) => (
+                <div
+                  key={`${p.playerId}-${p.kind}-${i}`}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    flex: 1,
+                  }}
+                >
+                  {patchAssets[p.kind] ? (
+                    <img
+                      src={patchAssets[p.kind] as string}
+                      alt=""
+                      width={patchArt}
+                      height={patchArt}
+                      style={{ width: patchArt, height: patchArt }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        width: patchArt,
+                        height: patchArt,
+                      }}
+                    />
+                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      fontSize: 27,
+                      fontWeight: 700,
+                      marginTop: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    {p.playerName}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      fontSize: 20,
+                      color: BRASS_BRIGHT,
+                      letterSpacing: 2,
+                      textTransform: "uppercase",
+                      marginTop: 2,
+                    }}
+                  >
+                    {PATCH_FILES[p.kind]?.label ?? p.kind}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ---- the board --------------------------------------------- */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            overflow: "hidden",
+            padding: `24px ${PAD}px 0 ${PAD}px`,
+          }}
+        >
+          {/* podium — 2 · 1 · 3 */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 14 }}>
+            {[1, 0, 2]
+              .filter((i) => i < podium.length)
+              .map((i) => {
+                const { row, rank, tied } = podium[i];
+                const first = i === 0;
+                const tone = PODIUM_TONE[(Math.min(rank, 3) || 1) as 1 | 2 | 3];
+                return (
+                  <div
+                    key={row.playerId}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      flex: 1,
+                      padding: first ? "22px 14px 24px" : "16px 14px 18px",
+                      borderRadius: 22,
+                      background: first
+                        ? "rgba(201,162,74,0.10)"
+                        : "rgba(255,255,255,0.035)",
+                      border: `1px solid ${first ? "rgba(201,162,74,0.45)" : "rgba(255,255,255,0.10)"}`,
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        fontSize: 20,
+                        letterSpacing: 3,
+                        fontWeight: 800,
+                        color: tone,
+                      }}
+                    >
+                      {tied ? `T${rank}` : `#${rank}`}
+                    </div>
+                    <div style={{ display: "flex", marginTop: 10 }}>
+                      {avatar(row.playerId, i + 1, first ? 104 : 78)}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        fontSize: first ? 31 : 27,
+                        fontWeight: 700,
+                        marginTop: 10,
+                        textAlign: "center",
+                      }}
+                    >
+                      {row.playerName}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        gap: 8,
+                        marginTop: 2,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          fontSize: first ? 74 : 56,
+                          fontWeight: 800,
+                          color: tone,
+                        }}
+                      >
+                        {fmtPoints(row.points)}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          fontSize: 20,
+                          color: CREAM_DIM,
+                        }}
+                      >
+                        {row.points === 1 ? "PT" : "PTS"}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        fontSize: 20,
+                        color: CREAM_DIM,
+                      }}
+                    >
+                      {row.wins}/{row.matchesPlayed} W
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+
+          {/* everyone else who scored */}
+          {(listed.length > 0 || hiddenScorers > 0) && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: ROW_GAP,
+                marginTop: 20,
+              }}
+            >
+              {listed.map(({ row, rank, tied }, i) => (
+                <div
+                  key={row.playerId}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    height: ROW_H,
+                    padding: "0 20px",
+                    borderRadius: 14,
+                    background: "rgba(255,255,255,0.035)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      width: 48,
+                      fontSize: 28,
+                      fontWeight: 700,
+                      color: CREAM_DIM,
+                    }}
+                  >
+                    {tied ? `T${rank}` : rank}
+                  </div>
+                  {avatar(row.playerId, i + 4, 44)}
+                  <div style={{ display: "flex", flex: 1, fontSize: 29 }}>
+                    {row.playerName}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      fontSize: 22,
+                      color: CREAM_DIM,
+                      marginRight: 18,
+                    }}
+                  >
+                    {row.wins}/{row.matchesPlayed} W
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      fontSize: 34,
+                      fontWeight: 800,
+                      color: BRASS_BRIGHT,
+                    }}
+                  >
+                    {fmtPoints(row.points)}
+                  </div>
+                </div>
+              ))}
+              {hiddenScorers > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    fontSize: 22,
+                    color: CREAM_DIM,
+                    paddingLeft: 20,
+                    marginTop: 4,
+                  }}
+                >
+                  +{hiddenScorers} more on the board
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ---- footer ------------------------------------------------ */}
+        <div
+          style={{
+            display: "flex",
+            marginTop: "auto",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: `0 ${PAD}px`,
+            height: FOOTER_H,
+            borderTop: "1px solid rgba(201,162,74,0.18)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                display: "flex",
+                width: 24,
+                height: 24,
+                borderRadius: 24,
+                background: BRASS,
+              }}
+            />
+            <div style={{ display: "flex", fontSize: 24, color: CREAM_DIM }}>
+              poolmaxxing.com/leaderboard
+            </div>
+          </div>
+          <div style={{ display: "flex", fontSize: 22, color: CREAM_DIM }}>
+            Full board, every session
+          </div>
+        </div>
       </div>
     ),
-    {
-      width: WIDTH,
-      height: HEIGHT,
-    },
+    { width: WIDTH, height: HEIGHT },
   );
 }

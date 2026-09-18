@@ -12,7 +12,7 @@
     "scrape:headful": "APA_HEADFUL=1 tsx scripts/scrape-apa.ts",
     "project": "tsx scripts/project-apa.ts",
     "sync": "npm run scrape && npm run project",
-    "test:rack": "tsx tests/rack/match.test.ts && tsx tests/rack/bracket.test.ts && tsx tests/rack/key-guard.test.ts"
+    "test:rack": "tsx tests/rack/match.test.ts && tsx tests/rack/bracket.test.ts && tsx tests/rack/key-guard.test.ts && tsx tests/apa/rank.test.ts && tsx tests/apa/week.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
