@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-28T22:57:42.785Z",
+  "fetchedAt": "2026-09-18T17:03:40.775Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -12,6 +12,26 @@
         },
         "players": [
           {
+            "id": 93021769,
+            "team": {
+              "id": 13139007,
+              "name": "Keep It Simple Stupid",
+              "number": "06808",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92159633,
             "team": {
               "id": 13023247,
@@ -22,11 +42,11 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 5,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 1,
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "miniSlams": 0,
             "rackless": 0,
             "__typename": "EightBallPlayer"
@@ -1220,6 +1240,11 @@
         "id": 2169369,
         "sessions": [
           {
+            "id": 140,
+            "name": "Fall 2026",
+            "__typename": "Session"
+          },
+          {
             "id": 139,
             "name": "Summer 2026",
             "__typename": "Session"
@@ -1437,12 +1462,24 @@
       "alias": {
         "players": [
           {
+            "id": 93021769,
+            "session": {
+              "id": 140,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92159633,
             "session": {
               "id": 139,
               "__typename": "Session"
             },
-            "eightOnBreaks": 0,
+            "eightOnBreaks": 1,
             "eightBallBreakAndRuns": 1,
             "rackless": 0,
             "miniSlams": 0,
@@ -2186,12 +2223,12 @@
         "EightBallStats": [
           {
             "id": 802169369,
-            "matchesWon": 467,
-            "matchesPlayed": 781,
-            "CLA": 0,
-            "defensiveShotAvg": 1.48,
-            "matchCountForLastTwoYrs": 156,
-            "lastPlayed": "2026-08-11T00:00:00+00:00",
+            "matchesWon": 468,
+            "matchesPlayed": 783,
+            "CLA": 7,
+            "defensiveShotAvg": 1.5,
+            "matchCountForLastTwoYrs": 157,
+            "lastPlayed": "2026-09-01T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2202,7 +2239,7 @@
             "matchesPlayed": 68,
             "CLA": 0,
             "defensiveShotAvg": 1.63,
-            "matchCountForLastTwoYrs": 29,
+            "matchCountForLastTwoYrs": 30,
             "lastPlayed": "2023-12-04T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -2435,13 +2472,18 @@
         "league": {
           "news": [
             {
-              "id": 55428,
-              "title": "Skill level badges will no longer display on My Stats page",
+              "id": 57490,
+              "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
             },
             {
               "id": 4624,
               "title": "Follow Us on Social Media",
+              "__typename": "News"
+            },
+            {
+              "id": 55428,
+              "title": "Skill level badges will no longer display on My Stats page",
               "__typename": "News"
             }
           ],
@@ -2550,6 +2592,12 @@
             "name": "CanUseTabletMode",
             "active": true,
             "__typename": "Feature"
+          },
+          {
+            "id": 14,
+            "name": "scorekeeperOfflineOrchestrator",
+            "active": false,
+            "__typename": "Feature"
           }
         ]
       },
@@ -2595,17 +2643,28 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 1,
+          "notificationBellCount": 2,
           "notifications": [
             {
-              "id": 313177810,
+              "id": 317950219,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-08-21T15:28:29+00:00",
+              "createdDate": "2026-09-18T15:34:15+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13650515,\"leagueDivisionSessionScheduleMatchId\":51657482,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
+              "id": 316733326,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-11T14:49:26+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2671,7 +2730,7 @@
                 {
                   "__typename": "EightBallLifetimeStatistics",
                   "skillLevel": 7,
-                  "CLA": 0
+                  "CLA": 7
                 },
                 {
                   "__typename": "NineBallLifetimeStatistics",
@@ -2962,20 +3021,47 @@
           ],
           "currentTeams": [
             {
+              "id": 93021769,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": "Freddy",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": null,
+              "team": {
+                "id": 13139007,
+                "name": "Keep It Simple Stupid",
+                "division": {
+                  "id": 441441,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
               "id": 92159633,
               "isActive": true,
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "Freddy",
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 5,
+              "matchesWon": 5,
               "session": {
                 "id": 139,
                 "name": "Summer 2026",
                 "__typename": "Session"
               },
               "skillLevel": 7,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13023247,
                 "name": "D-Block",

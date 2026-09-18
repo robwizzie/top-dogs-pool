@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T17:03:33.971Z",
+  "fetchedAt": "2026-09-18T17:03:11.389Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Keep It Simple Stupid",
         "number": "06808",
         "isTied": false,
-        "standing": 8,
+        "standing": 7,
         "division": {
           "id": 441441,
           "name": "Gl-68",
@@ -63,10 +63,20 @@
             "id": 93021774,
             "memberNumber": "08213400",
             "displayName": "Todd Graham",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "alias": {
+              "id": 3128447,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -78,10 +88,20 @@
             "id": 93021773,
             "memberNumber": "08212925",
             "displayName": "Steven Gould Jr",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "alias": {
+              "id": 2952454,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -93,6 +113,16 @@
             "id": 93021771,
             "memberNumber": "08207249",
             "displayName": "Frederick Veney Jr",
+            "alias": {
+              "id": 2497001,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 1,
             "pa": 0,
@@ -108,6 +138,16 @@
             "id": 93021770,
             "memberNumber": "08203289",
             "displayName": "Fred Veney",
+            "alias": {
+              "id": 2272364,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 1,
             "pa": 0.3333333333333333,
@@ -123,6 +163,16 @@
             "id": 93021769,
             "memberNumber": "08201045",
             "displayName": "Freddy Mills",
+            "alias": {
+              "id": 2169369,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -138,10 +188,20 @@
             "id": 93021775,
             "memberNumber": "08213536",
             "displayName": "Stacy Graham",
+            "alias": {
+              "id": 3264920,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -153,10 +213,20 @@
             "id": 93127593,
             "memberNumber": "08214552",
             "displayName": "Logan Graham",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "alias": {
+              "id": 3371964,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -168,8 +238,18 @@
             "id": 93127594,
             "memberNumber": "08214684",
             "displayName": "Sherry Goodman",
+            "alias": {
+              "id": 3402340,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 2,
@@ -187,8 +267,8 @@
       "team": {
         "id": 13139007,
         "sessionBonusPoints": 0,
-        "sessionPoints": 7,
-        "sessionTotalPoints": 7,
+        "sessionPoints": 18,
+        "sessionTotalPoints": 18,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -268,6 +348,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -279,18 +360,35 @@
             "type": "EIGHT",
             "id": 51767505,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-15T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -330,6 +428,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -392,6 +491,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -454,6 +554,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -516,6 +617,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -578,6 +680,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -640,6 +743,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -702,6 +806,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -764,6 +869,7 @@
             "orderItems": [],
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -826,6 +932,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -888,6 +995,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -950,6 +1058,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1012,6 +1121,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1074,6 +1184,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1115,6 +1226,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1156,6 +1268,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"

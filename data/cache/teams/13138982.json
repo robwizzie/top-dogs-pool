@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T17:03:12.313Z",
+  "fetchedAt": "2026-09-18T17:02:56.622Z",
   "data": {
     "teamPage": {
       "team": {
@@ -63,10 +63,20 @@
             "id": 93021573,
             "memberNumber": "08208777",
             "displayName": "Johnny Fontanez",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "alias": {
+              "id": 2570386,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -78,8 +88,18 @@
             "id": 93021571,
             "memberNumber": "08230234",
             "displayName": "Andrew Duong",
+            "alias": {
+              "id": 1111230,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
@@ -93,6 +113,16 @@
             "id": 93021574,
             "memberNumber": "08208665",
             "displayName": "Eric Gdanski",
+            "alias": {
+              "id": 2575434,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 1,
             "pa": 0,
@@ -108,8 +138,18 @@
             "id": 93021570,
             "memberNumber": "08239182",
             "displayName": "Francisco Castillo",
+            "alias": {
+              "id": 221723,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 5,
@@ -123,6 +163,16 @@
             "id": 93021577,
             "memberNumber": "08214110",
             "displayName": "Carl Wiley",
+            "alias": {
+              "id": 3252670,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -138,8 +188,18 @@
             "id": 93021572,
             "memberNumber": "08208365",
             "displayName": "Don-Jose Sindo",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "alias": {
+              "id": 2529028,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "pa": 0.6666666666666666,
             "ppm": 2,
             "skillLevel": 4,
@@ -153,10 +213,20 @@
             "id": 93021576,
             "memberNumber": "08212608",
             "displayName": "John Cummings Jr",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "alias": {
+              "id": 3061590,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -168,6 +238,16 @@
             "id": 93021575,
             "memberNumber": "08211468",
             "displayName": "Victoria Gable",
+            "alias": {
+              "id": 2640262,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -187,8 +267,8 @@
       "team": {
         "id": 13138982,
         "sessionBonusPoints": 0,
-        "sessionPoints": 10,
-        "sessionTotalPoints": 10,
+        "sessionPoints": 20,
+        "sessionTotalPoints": 20,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -268,6 +348,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -279,18 +360,35 @@
             "type": "EIGHT",
             "id": 51767506,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-15T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -330,6 +428,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -392,6 +491,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -454,6 +554,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -516,6 +617,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -578,6 +680,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -640,6 +743,7 @@
             "orderItems": [],
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -702,6 +806,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -764,6 +869,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -826,6 +932,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -888,6 +995,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -950,6 +1058,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1012,6 +1121,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1074,6 +1184,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1115,6 +1226,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1156,6 +1268,7 @@
             "orderItems": null,
             "division": {
               "id": 441441,
+              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"

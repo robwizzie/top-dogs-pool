@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T16:59:24.273Z",
+  "fetchedAt": "2026-09-18T17:00:39.569Z",
   "data": {
     "match": {
       "id": 51964762,
@@ -40,162 +40,23 @@
         "__typename": "TimeZone"
       },
       "location": {
-        "id": 39511,
-        "phone": "",
-        "name": "A. C. Club Of Beverly",
+        "id": 106709,
+        "phone": "+18562555204",
+        "name": "The Corner Pocket of Delran",
         "address": {
-          "id": 62767,
-          "name": "A. C. Club Of Beverly",
-          "address1": "725 Broad St.",
-          "address2": "",
-          "city": "Beverly",
-          "zip": "08010",
-          "latitude": 40.0603986,
-          "longitude": -74.920681,
+          "id": 72511,
+          "name": "The Corner Pocket of Delran",
+          "address1": "4000 Route 130 North",
+          "address2": "Suite 12B",
+          "city": "Riverside",
+          "zip": "08075",
+          "latitude": 40.0111518,
+          "longitude": -74.9598811,
           "__typename": "Address"
         },
         "__typename": "HostLocation"
       },
       "home": {
-        "id": 13152260,
-        "name": "BAC in Black",
-        "number": "07808",
-        "isMine": false,
-        "league": {
-          "id": 890,
-          "slug": "southjersey",
-          "__typename": "League"
-        },
-        "division": {
-          "id": 441450,
-          "type": "EIGHT",
-          "__typename": "Division"
-        },
-        "roster": [
-          {
-            "id": 93133238,
-            "memberNumber": "08214359",
-            "displayName": "Brett Evans",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3436255,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93133239,
-            "memberNumber": "08210761",
-            "displayName": "Sam Richards",
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 3,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 2451803,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93133240,
-            "memberNumber": "08231316",
-            "displayName": "Gary Bellaflores",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
-            "skillLevel": 3,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 1412608,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93133241,
-            "memberNumber": "08214345",
-            "displayName": "Kevin Skomsky",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 3,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3433412,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93133243,
-            "memberNumber": "08241907",
-            "displayName": "David Carlin",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 1579441,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93133245,
-            "memberNumber": "08214027",
-            "displayName": "Shawn Degenhardt",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 3,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3383223,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93133247,
-            "memberNumber": "08215468",
-            "displayName": "Patrick Daley",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 7,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 737682,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93136087,
-            "memberNumber": "08211779",
-            "displayName": "Bruce Romberger",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 2571043,
-              "__typename": "Member"
-            }
-          }
-        ],
-        "__typename": "Team"
-      },
-      "away": {
         "id": 13139187,
         "name": "8Ballers",
         "number": "07805",
@@ -215,10 +76,20 @@
             "id": 93023184,
             "memberNumber": "08213922",
             "displayName": "Mike Commisso",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "alias": {
+              "id": 3207820,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -230,10 +101,20 @@
             "id": 93023187,
             "memberNumber": "08214191",
             "displayName": "Antony Williams",
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "alias": {
+              "id": 3284302,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -245,10 +126,20 @@
             "id": 93023185,
             "memberNumber": "08214222",
             "displayName": "Michael Fite",
+            "alias": {
+              "id": 3269871,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -260,6 +151,16 @@
             "id": 93023183,
             "memberNumber": "08204435",
             "displayName": "Stacie Aubrey",
+            "alias": {
+              "id": 2355183,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 0,
             "pa": 0,
@@ -275,6 +176,16 @@
             "id": 93023188,
             "memberNumber": "08214524",
             "displayName": "Jaimie McGuire",
+            "alias": {
+              "id": 3354728,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 1,
             "pa": 0,
@@ -290,10 +201,20 @@
             "id": 93023189,
             "memberNumber": "08295583",
             "displayName": "Scott Revell",
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
+            "alias": {
+              "id": 3358137,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -305,6 +226,16 @@
             "id": 93023190,
             "memberNumber": "08214577",
             "displayName": "Matt McGuire",
+            "alias": {
+              "id": 3379890,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
             "matchesPlayed": 1,
             "pa": 0,
@@ -320,14 +251,243 @@
             "id": 93153852,
             "memberNumber": "08213694",
             "displayName": "Anthony Revell",
+            "alias": {
+              "id": 3404064,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3301503,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 13152260,
+        "name": "BAC in Black",
+        "number": "07808",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 441450,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 93133238,
+            "memberNumber": "08214359",
+            "displayName": "Brett Evans",
+            "alias": {
+              "id": 3322666,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3436255,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93133239,
+            "memberNumber": "08210761",
+            "displayName": "Sam Richards",
+            "alias": {
+              "id": 1886953,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2451803,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93133240,
+            "memberNumber": "08231316",
+            "displayName": "Gary Bellaflores",
+            "alias": {
+              "id": 3110149,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1412608,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93133241,
+            "memberNumber": "08214345",
+            "displayName": "Kevin Skomsky",
+            "alias": {
+              "id": 3317440,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3433412,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93133243,
+            "memberNumber": "08241907",
+            "displayName": "David Carlin",
+            "alias": {
+              "id": 967847,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1579441,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93133245,
+            "memberNumber": "08214027",
+            "displayName": "Shawn Degenhardt",
+            "alias": {
+              "id": 3237106,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3383223,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93133247,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "alias": {
+              "id": 880078,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93136087,
+            "memberNumber": "08211779",
+            "displayName": "Bruce Romberger",
+            "alias": {
+              "id": 2722524,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2571043,
               "__typename": "Member"
             }
           }
