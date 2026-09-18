@@ -48,7 +48,9 @@ export function AdminView() {
         .select("*")
         .eq("status", "pending")
         .order("requested_at", { ascending: true }),
-      supabase.from("profiles").select("*"),
+      // Accounts only. A guest has no login, so they can never hold a roster
+      // claim and listing them here would just be noise.
+      supabase.from("profiles").select("*").eq("is_guest", false),
     ]);
     setClaims((claimRes.data ?? []) as RosterClaimRow[]);
     setPeople((peopleRes.data ?? []) as ProfileRow[]);

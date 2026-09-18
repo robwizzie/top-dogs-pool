@@ -84,7 +84,10 @@ for t in "$HERE"/*.test.sql; do
   if [ -n "${RACK_TEST_VERBOSE:-}" ]; then echo "$out"; fi
   echo "$out" | grep -E "\| [ft]$|NOTICE|ERROR|SHOULD NOT REACH" | sed 's/^ *//'
   if echo "$out" | grep -qE "\| f$"; then failed=1; fi
-  if echo "$out" | grep -q "^ERROR"; then failed=1; fi
+  # psql prefixes errors with "psql:<file>:<line>: ", so an anchored ^ERROR
+  # match misses every one of them — and ON_ERROR_STOP means such an error
+  # aborts the rest of that file, which then reports as a pass.
+  if echo "$out" | grep -qE "(^|:[[:space:]])ERROR:"; then failed=1; fi
   if echo "$out" | grep -q "SHOULD NOT REACH"; then failed=1; fi
 done
 

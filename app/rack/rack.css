@@ -153,7 +153,15 @@
   background-image: var(--rack-page);
   color: hsl(var(--rack-fg));
   font-family: var(--rack-font-sans);
-  min-height: 100%;
+  /* Not `100%`: neither html nor body sets a height, so a percentage resolves
+   * to auto and the canvas stopped at its content — which on a short page (an
+   * empty lobby, a table with two people at it) left a band of the site's own
+   * background showing below Rack Up's footer.
+   *
+   * This file loads after Tailwind's utilities, so a `min-h-dvh` class on the
+   * element would lose to whatever is set here. The canvas owns its own
+   * height. */
+  min-height: 100dvh;
 }
 
 /* --- The wordmark ------------------------------------------------------ */

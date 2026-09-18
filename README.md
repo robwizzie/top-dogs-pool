@@ -208,6 +208,48 @@ the shorter race. 9-ball is point-based off the APA 9-ball chart; a rack is 10
 points (8 balls + 2 for the nine). A match will not start if either player is
 missing a skill level for the game being played.
 
+### Playing someone without an account
+
+One phone is enough. A **guest** is somebody you enter by name and skill level
+so a match can be set up and scored entirely from the host's device — the other
+player never signs up.
+
+A guest is a `profiles` row, not a second kind of player. Every table that
+identifies a player (`match_players`, `player_stats`, `head_to_head`,
+`room_players`, `tournament_players`, `practice_session_players`) references
+`profiles(id)`, so a parallel identity type would have meant a nullable guest
+column and a two-branch join on all six, in every query, forever. One identity
+type leaves all of them — and `rack_finalize_match()` — untouched, which is also
+why a guest accumulates a real record: *Dave is 3–1 against you* needs no new
+code.
+
+The cost is the foreign key from `profiles.id` to `auth.users(id)`, which a
+guest cannot satisfy. It is gone, replaced by an explicit delete trigger that
+does the same cascade. Two columns take its place:
+
+| column | meaning |
+| --- | --- |
+| `is_guest` | has no login |
+| `guest_owner` | the account that entered them, and may edit or remove them |
+
+A check constraint keeps the pair agreeing, RLS confines inserts, updates and
+deletes to guests you own, and the `profiles` guard trigger refuses any client
+update that flips `is_guest` or moves `guest_owner` — so the guest door cannot
+be used to mint an account or to edit somebody else's. `rack_can_score_match()`
+additionally admits a guest's owner, so whoever entered them can score for them
+at a table someone else is hosting.
+
+Guests belong to the account, not the table: you add Dave once and he is there
+every week, with the record he has built up.
+
+### Closing a table
+
+The host can **close** a table — it leaves the tables list and stops accepting
+matches, while every match it hosted, and everyone's record, stays. Deleting is
+separate and rarer: it removes the table and its scoresheets, but lifetime
+totals already settled by `rack_finalize_match()` live in `player_stats` and
+`head_to_head`, which hang off profiles rather than rooms, so they survive.
+
 ### Its own app
 
 Rack Up does not share the site's chrome. `app/layout.tsx` is the document
@@ -288,11 +330,12 @@ schema is standalone precisely so none of that matters.)
 1. Create a project at [supabase.com/dashboard](https://supabase.com/dashboard)
    (any region near the team; the free tier is plenty).
 
-2. Apply
-   [`supabase/migrations/20260918000000_rack_up_schema.sql`](supabase/migrations/20260918000000_rack_up_schema.sql)
-   — every table, policy, function, trigger, the avatars bucket and the
-   realtime publication in one go. It is idempotent, so applying it twice is
-   harmless. Either route works:
+2. Apply everything in
+   [`supabase/migrations/`](supabase/migrations/) in filename order — every
+   table, policy, function, trigger, the avatars bucket and the realtime
+   publication. The first file stands the whole schema up on its own; the
+   later ones add roster claims and guest players. They are idempotent, so
+   applying them twice is harmless. Either route works:
 
    - **SQL Editor → New query →** paste the file → Run. Immediate, and the
      right choice the first time.

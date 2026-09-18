@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { UserPlus } from "lucide-react";
 import { getSupabaseBrowser } from "@/lib/rack/supabase/browser";
 import { buildSetup, initialState, type PlayerSide } from "@/lib/rack/rules/match";
 import { GAME_TYPES, raceLabel, type GameType } from "@/lib/rack/rules/race";
 import { skillFor, type ProfileRow } from "@/lib/rack/types";
 import type { RoomMember } from "@/lib/rack/hooks/useRoom";
+import { AddPlayerPanel } from "./AddPlayerPanel";
 import { Avatar, Button, Card, ErrorNote, Field, Pill } from "./ui";
 
 /**
@@ -15,15 +17,24 @@ import { Avatar, Button, Card, ErrorNote, Field, Pill } from "./ui";
  * charts. The old app showed a race derived from `skillLevel - 1` and only
  * discovered a missing skill level after the insert had already happened,
  * leaving orphaned match rows behind.
+ *
+ * A guest can be added from right here. Sending someone back to the lobby to
+ * fetch a second player, when the thing they are looking at is a picker with
+ * one name in it, is the kind of detour that makes an app feel like paperwork.
  */
 export function MatchSetupForm({
   roomId,
   members,
+  ownerId,
+  onPlayersChanged,
   onStarted,
   onCancel,
 }: {
   roomId: string;
   members: RoomMember[];
+  /** The signed-in account, which is who any guest added here belongs to. */
+  ownerId: string | null;
+  onPlayersChanged: () => Promise<void>;
   onStarted: (matchId: string) => void;
   onCancel: () => void;
 }) {
@@ -33,6 +44,7 @@ export function MatchSetupForm({
   const [playerB, setPlayerB] = useState<string>("");
   const [breaker, setBreaker] = useState<PlayerSide>(0);
   const [isCasual, setIsCasual] = useState(false);
+  const [addingPlayer, setAddingPlayer] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -145,6 +157,28 @@ export function MatchSetupForm({
         onSelect={setPlayerB}
       />
 
+      {ownerId &&
+        (addingPlayer ? (
+          <AddPlayerPanel
+            ownerId={ownerId}
+            roomId={roomId}
+            seatedIds={members.map((m) => m.user_id)}
+            onSeated={onPlayersChanged}
+            onClose={() => setAddingPlayer(false)}
+          />
+        ) : (
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={() => setAddingPlayer(true)}
+          >
+            <UserPlus className="h-4 w-4" />
+            {profiles.length < 2
+              ? "Add whoever you're playing"
+              : "Add another player"}
+          </Button>
+        ))}
+
       {a && b && (
         <Field label="Who breaks first">
           <div className="flex gap-2">
@@ -253,7 +287,10 @@ function PlayerPicker({
             >
               <Avatar name={p.name} url={p.avatar_url} size={36} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold">{p.name}</span>
+                <span className="flex items-center gap-2">
+                  <span className="truncate text-sm font-semibold">{p.name}</span>
+                  {p.is_guest && <Pill tone="accent">guest</Pill>}
+                </span>
                 {skill === null ? (
                   <Pill tone="hot">No {game} SL</Pill>
                 ) : (
@@ -266,7 +303,7 @@ function PlayerPicker({
       </div>
       {profiles.length === 0 && (
         <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
-          Nobody has joined this table yet — share the code.
+          Nobody at this table yet — share the code, or add a guest below.
         </p>
       )}
     </Field>
