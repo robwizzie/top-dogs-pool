@@ -514,9 +514,14 @@ alter table public.tournament_matches
 comment on column public.tournament_matches.bracket_match_id is
   'Stable bracket slot this row records a result for, e.g. "W1-3", "L2-1", "GF".';
 
+-- Deliberately NOT a partial index. An upsert from the client emits
+-- `ON CONFLICT (tournament_id, bracket_match_id)` with no WHERE clause, and
+-- Postgres will not infer a partial index from that — it would fail at
+-- runtime on the first result anyone records. A plain unique index still
+-- tolerates the old app's rows, which have a null bracket_match_id, because
+-- Postgres treats nulls as distinct for uniqueness.
 create unique index if not exists tournament_matches_slot_key
-  on public.tournament_matches (tournament_id, bracket_match_id)
-  where bracket_match_id is not null;
+  on public.tournament_matches (tournament_id, bracket_match_id);
 
 -- ---------------------------------------------------------------------------
 -- 9. Realtime

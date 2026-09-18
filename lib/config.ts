@@ -48,6 +48,7 @@ export const NAV_GROUPS: readonly NavEntry[] = [
       { href: "/clips", label: "Clips" },
     ],
   },
+  { href: "/rack", label: "Rack Up" },
   { href: "/live", label: "Live" },
   { href: "/store", label: "Shop" },
 ] as const;
