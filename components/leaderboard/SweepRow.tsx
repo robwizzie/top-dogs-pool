@@ -7,6 +7,7 @@ import { PoolBall } from "@/components/brand/PoolBall";
 import { PatchTrophyStrip } from "@/components/cards/PatchBadge";
 import { StreakBadge } from "@/components/cards/StreakBadge";
 import { OutcomeBars } from "@/components/leaderboard/OutcomeBars";
+import { MoveArrow } from "@/components/leaderboard/WeekRecap";
 import type { LeaderboardRow } from "@/lib/apa/schemas";
 import type { Streak } from "@/lib/streaks";
 import type { PatchInstance, PatchKind } from "@/components/cards/PatchBadge";
@@ -19,6 +20,8 @@ export function SweepRow({
   streak,
   outcomes,
   patchInstances,
+  rankDelta = null,
+  tied = false,
 }: {
   row: LeaderboardRow;
   rank: number;
@@ -26,6 +29,10 @@ export function SweepRow({
   streak?: Streak | null;
   outcomes?: ("W" | "L")[];
   patchInstances?: Partial<Record<PatchKind, PatchInstance[]>>;
+  /** Places gained (+) or lost (−) since last week. Null when unknown. */
+  rankDelta?: number | null;
+  /** Joint position — shown as "T4" rather than implying a clean placing. */
+  tied?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -64,13 +71,24 @@ export function SweepRow({
     <div
       ref={ref}
       className={cn(
-        "fade-in-up flex items-center gap-3 p-4",
-        rank === 1 && "bg-[var(--color-felt-deep)]/40",
+        // Top-aligned, not centred: a row carrying a patch strip is taller
+        // than the rank and avatar beside it, and centring left the name
+        // floating above them attached to nothing.
+        "fade-in-up flex items-start gap-3 px-4 py-3",
+        "transition-colors hover:bg-[var(--color-felt-deep)]/25",
       )}
       style={{ animationDelay: `${rank * 40}ms` }}
     >
-      <span className="w-8 shrink-0 font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--color-brass-bright)]">
-        {rank}
+      <span className="flex w-9 shrink-0 flex-col items-center">
+        <span className="font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
+          {tied ? `T${rank}` : rank}
+        </span>
+        {rankDelta !== null && rankDelta !== 0 && (
+          <span className="mt-0.5 flex items-center gap-px text-[10px] tabular-nums text-[var(--fg-dim)]">
+            <MoveArrow delta={rankDelta} />
+            {Math.abs(rankDelta)}
+          </span>
+        )}
       </span>
       {row.profileImage ? (
         <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-[var(--color-brass)]/40">
@@ -119,12 +137,12 @@ export function SweepRow({
         </div>
       </div>
       {outcomes && outcomes.length > 0 && (
-        <div className="hidden shrink-0 sm:block">
+        <div className="hidden shrink-0 self-center sm:block">
           <OutcomeBars outcomes={outcomes} />
         </div>
       )}
       <div className="shrink-0 text-right">
-        <p className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--color-brass-bright)]">
+        <p className="font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums text-[var(--color-brass-bright)]">
           {row.points}
         </p>
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
