@@ -1,33 +1,34 @@
 import { RACK_SETUP_HINT } from "@/lib/rack/supabase/env";
-import { PageHeader } from "@/components/ui/Section";
 
 /**
  * Shown instead of the section when Supabase isn't configured. The rest of the
  * site builds and deploys without it, so a missing key should read as a setup
  * step rather than a crash.
+ *
+ * Styled inline rather than with the section's UI kit, because it renders
+ * outside <RackShell> — it is what you get when there is no backend to have a
+ * session with.
  */
 export function SetupNotice() {
   return (
-    <>
-      <PageHeader
-        eyebrow="Rack Up"
-        title="Not connected yet"
-        subtitle="This section needs a Supabase project to store live matches."
-      />
-      <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
-        <div className="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg-card)] p-6">
-          <p className="text-sm text-[var(--fg-dim)]">{RACK_SETUP_HINT}</p>
-          <pre className="mt-4 overflow-x-auto rounded-lg bg-black/40 p-4 text-xs text-[var(--color-cream-dim)]">
+    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+      <div className="rounded-[var(--rack-radius-lg)] border border-[hsl(var(--rack-border))] bg-[hsl(var(--rack-surface))] p-6 shadow-[var(--rack-shadow-md)]">
+        <p className="font-[family-name:var(--rack-font-heading)] text-2xl font-bold">
+          Not connected yet
+        </p>
+        <p className="mt-1 text-sm text-[hsl(var(--rack-fg-muted))]">
+          {RACK_SETUP_HINT}
+        </p>
+        <pre className="mt-4 overflow-x-auto rounded-[var(--rack-radius)] bg-[hsl(var(--rack-bg-soft))] p-4 text-xs text-[hsl(var(--rack-fg-muted))]">
 {`NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>`}
-          </pre>
-          <p className="mt-4 text-xs text-[var(--fg-dim)]">
-            Then apply the migrations in{" "}
-            <code className="text-[var(--color-brass)]">supabase/migrations/</code>{" "}
-            — see the Rack Up section of the README.
-          </p>
-        </div>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...`}
+        </pre>
+        <p className="mt-4 text-xs text-[hsl(var(--rack-fg-muted))]">
+          Then apply{" "}
+          <code className="text-[hsl(var(--rack-primary))]">supabase/migrations/</code>{" "}
+          — see the Rack Up section of the README.
+        </p>
       </div>
-    </>
+    </div>
   );
 }

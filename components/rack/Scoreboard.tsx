@@ -66,9 +66,9 @@ export function Scoreboard({
       </div>
 
       {watch !== null && !done && (
-        <div className="flex items-center justify-center gap-2 rounded-[var(--radius-card)] border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/10 px-4 py-3 text-center">
-          <Flame className="h-4 w-4 text-[var(--color-brass-bright)]" />
-          <span className="text-sm font-semibold tracking-wide text-[var(--color-brass-bright)]">
+        <div className="flex items-center justify-center gap-2 rounded-[var(--rack-radius-lg)] border border-[hsl(var(--rack-accent))]/40 bg-[hsl(var(--rack-accent))]/10 px-4 py-3 text-center">
+          <Flame className="h-4 w-4 text-[hsl(var(--rack-accent))]" />
+          <span className="text-sm font-semibold tracking-wide text-[hsl(var(--rack-accent))]">
             Sweep on the line — {state.players[watch].name} is one away with a shutout
           </span>
         </div>
@@ -102,7 +102,7 @@ export function Scoreboard({
           />
         </>
       ) : (
-        <Card className="text-center text-sm text-[var(--fg-dim)]">
+        <Card className="text-center text-sm text-[hsl(var(--rack-fg-muted))]">
           You&apos;re watching this match. Only the two players and the room host can
           score it.
         </Card>
@@ -116,7 +116,7 @@ export function Scoreboard({
 function ScoreHeader({ state }: { state: MatchState }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 text-center">
-      <Pill tone="brass">{state.game}</Pill>
+      <Pill tone="accent">{state.game}</Pill>
       <Pill>
         {raceLabel(state.game, state.players[0].target, state.players[1].target)}
       </Pill>
@@ -148,29 +148,29 @@ function PlayerPanel({
     <Card
       className={cn(
         "relative overflow-hidden transition",
-        active && "border-[var(--color-brass)] shadow-[var(--shadow-brass)]",
+        active && "border-[hsl(var(--rack-accent))] shadow-[var(--rack-shadow-lg)]",
       )}
     >
       {active && (
-        <span className="absolute inset-x-0 top-0 h-1 bg-[var(--color-brass)]" aria-hidden />
+        <span className="absolute inset-x-0 top-0 h-1 bg-[hsl(var(--rack-accent))]" aria-hidden />
       )}
 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate font-[family-name:var(--font-display)] text-2xl tracking-wide">
+          <p className="truncate font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
             {p.name}
           </p>
-          <p className="text-xs text-[var(--fg-dim)]">
+          <p className="text-xs text-[hsl(var(--rack-fg-muted))]">
             SL {p.skill}
             {breaking && " · breaking"}
             {active && " · at the table"}
           </p>
         </div>
         <div className="text-right">
-          <p className="font-[family-name:var(--font-display)] text-5xl leading-none tracking-wide text-[var(--color-brass-bright)]">
+          <p className="font-[family-name:var(--rack-font-display)] text-5xl leading-none tracking-wide text-[hsl(var(--rack-accent))]">
             {p.score}
           </p>
-          <p className="text-xs text-[var(--fg-dim)]">of {p.target}</p>
+          <p className="text-xs text-[hsl(var(--rack-fg-muted))]">of {p.target}</p>
         </div>
       </div>
 
@@ -180,7 +180,7 @@ function PlayerPanel({
             <Flame className="h-3 w-3" /> Hill–hill
           </Pill>
         ) : onHill ? (
-          <Pill tone="brass">
+          <Pill tone="accent">
             <Mountain className="h-3 w-3" /> On the hill
           </Pill>
         ) : null}
@@ -220,7 +220,7 @@ function EightBallControls({
     const name = state.players[rackWinner].name;
     return (
       <Card>
-        <p className="mb-3 text-center text-sm text-[var(--fg-dim)]">
+        <p className="mb-3 text-center text-sm text-[hsl(var(--rack-fg-muted))]">
           How did {name} win the rack?
         </p>
         <div className="grid gap-2">
@@ -288,8 +288,8 @@ function NineBallControls({
   return (
     <Card>
       <div className="mb-3 flex items-center justify-between text-sm">
-        <span className="text-[var(--fg-dim)]">
-          At the table: <strong className="text-[var(--fg)]">{name}</strong>
+        <span className="text-[hsl(var(--rack-fg-muted))]">
+          At the table: <strong className="text-[hsl(var(--rack-fg))]">{name}</strong>
         </span>
         <Pill>{rackLeft} left in rack</Pill>
       </div>
@@ -390,7 +390,7 @@ function SharedControls({
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-t border-[var(--border)] pt-2">
+      <div className="flex flex-wrap gap-2 border-t border-[hsl(var(--rack-border))] pt-2">
         <Button
           variant="ghost"
           size="sm"
@@ -411,7 +411,7 @@ function SharedControls({
           </Button>
         ) : (
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-xs text-[var(--fg-dim)]">
+            <span className="text-xs text-[hsl(var(--rack-fg-muted))]">
               Forfeit for {state.players[confirmForfeit].name}?
             </span>
             <Button
@@ -446,13 +446,13 @@ function FinalPanel({
 
   return (
     <Card className="text-center">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[hsl(var(--rack-accent))]">
         Final
       </p>
-      <p className="mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide">
+      <p className="mt-1 font-[family-name:var(--rack-font-display)] text-3xl tracking-wide">
         {winner ? `${winner.name} takes it` : "Match over"}
       </p>
-      <p className="mt-1 text-sm text-[var(--fg-dim)]">
+      <p className="mt-1 text-sm text-[hsl(var(--rack-fg-muted))]">
         {state.players[0].score} — {state.players[1].score}
         {state.forfeitedBy !== null &&
           ` · ${state.players[state.forfeitedBy].name} forfeited`}
@@ -471,7 +471,7 @@ function FinalPanel({
       )}
 
       {state.isCasual && (
-        <p className="mt-4 text-xs text-[var(--fg-dim)]">
+        <p className="mt-4 text-xs text-[hsl(var(--rack-fg-muted))]">
           Casual match — not added to lifetime stats.
         </p>
       )}

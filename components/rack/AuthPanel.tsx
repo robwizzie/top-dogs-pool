@@ -69,10 +69,10 @@ export function AuthPanel({ onSignedIn }: { onSignedIn?: () => void }) {
 
   return (
     <Card className="mx-auto w-full max-w-sm">
-      <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+      <h2 className="font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
         {mode === "sign-in" ? "Sign in to score" : "Create an account"}
       </h2>
-      <p className="mt-1 text-sm text-[var(--fg-dim)]">
+      <p className="mt-1 text-sm text-[hsl(var(--rack-fg-muted))]">
         {mode === "sign-in"
           ? "You only need an account to score or join a table. Anyone can watch."
           : "You can set your skill levels and link your APA number afterwards."}
@@ -114,7 +114,7 @@ export function AuthPanel({ onSignedIn }: { onSignedIn?: () => void }) {
 
         <ErrorNote>{error}</ErrorNote>
         {notice && (
-          <p className="rounded-lg border border-[var(--border-strong)] bg-[var(--color-brass)]/10 px-3 py-2 text-sm text-[var(--color-brass-bright)]">
+          <p className="rounded-lg border border-[hsl(var(--rack-border-strong))] bg-[hsl(var(--rack-accent))]/10 px-3 py-2 text-sm text-[hsl(var(--rack-accent))]">
             {notice}
           </p>
         )}
@@ -131,7 +131,7 @@ export function AuthPanel({ onSignedIn }: { onSignedIn?: () => void }) {
           setError(null);
           setNotice(null);
         }}
-        className="mt-4 w-full text-center text-sm text-[var(--fg-dim)] underline underline-offset-4 hover:text-[var(--fg)]"
+        className="mt-4 w-full text-center text-sm text-[hsl(var(--rack-fg-muted))] underline underline-offset-4 hover:text-[hsl(var(--rack-fg))]"
       >
         {mode === "sign-in"
           ? "Need an account? Create one"

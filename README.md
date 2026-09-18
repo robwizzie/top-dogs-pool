@@ -208,11 +208,53 @@ the shorter race. 9-ball is point-based off the APA 9-ball chart; a rack is 10
 points (8 balls + 2 for the nine). A match will not start if either player is
 missing a skill level for the game being played.
 
+### Its own skin
+
+Rack Up is styled as a separate app rather than another page of the team site:
+the retro 8-ball badge, the outlined RackUp wordmark (Lilita One), Poppins
+headings, chalk-blue/coral/gold on warm surfaces, and a light/dark toggle. All
+of it lives in `app/rack/rack.css` under `[data-rack]`, so the section's tokens
+and the site's felt-and-brass ones never touch each other.
+
+The look is the original Lovable app's, kept deliberately. What changed is
+polish: dark mode has depth rather than being flat slate, elevation is a real
+three-step scale, every foreground/background pair clears 4.5:1 contrast (muted
+text on cream was about 3.4:1), and focus states exist.
+
 ### Connection to the league side
 
-A Rack Up profile can be linked to an APA member number
-(`profiles.apa_member_id`, set on `/rack/profile`). Once linked, that player's
-Rack Up record appears on their `/roster/<id>` page.
+A Rack Up profile can be linked to an APA roster player. Once linked, that
+player's Rack Up record appears on their `/roster/<id>` page, **and their roster
+photo and skill level are imported automatically** — nobody retypes what the
+league already knows. `profiles.apa_imported_at` makes that a one-time import,
+so a later manual edit is never silently overwritten; there's a re-sync button
+for when it should be.
+
+**Linking is not self-service.** Anyone can create an account here, so a
+dropdown of roster names would let a stranger — or a team-mate — attach their
+account to someone else's page. Instead:
+
+```
+player  → rack_request_roster_claim(member_id, note)   → pending
+admin   → rack_decide_roster_claim(claim_id, true)     → linked + imported
+```
+
+A trigger on `profiles` refuses any client update that moves `apa_member_id` or
+`is_admin`, so the claim flow isn't something the client can skip by PATCHing
+the column directly. Updates without a JWT — the SQL editor, migrations, the
+service role — pass, which is how the first admin gets promoted.
+
+Unlinking yourself needs no approval: it only ever removes a claim.
+
+**Bootstrap the first admin** in the SQL editor, once:
+
+```sql
+update public.profiles set is_admin = true
+ where id = (select id from auth.users where email = 'you@example.com');
+```
+
+Admins then see an **Admin** tab in the Rack Up header, listing open claims with
+who is asking, which player they say they are, and whatever note they left.
 
 **Rack Up results never touch Patch Watch.** The leaderboard stays sourced from
 APA scoresheets plus hand-entered tournament results, so a casual Tuesday
@@ -301,10 +343,11 @@ npm run test:rack            # rules engine + bracket engine (pure, fast)
 ```
 
 The RPC test stands up an empty Postgres with the Supabase bits stubbed,
-applies `supabase/migrations/` to it, and asserts the signup trigger,
-optimistic concurrency, undo, authorisation, and that the finaliser cannot
-double-count a win. It needs `postgresql` installed locally and nothing else —
-the schema is self-contained.
+applies `supabase/migrations/` to it, then runs every `tests/rack/*.test.sql`.
+Between them they assert the signup trigger, optimistic concurrency, undo,
+scoring authorisation, that the finaliser cannot double-count a win, and that
+roster claims cannot be self-approved or bypassed. It needs `postgresql`
+installed locally and nothing else — the schema is self-contained.
 
 ## Deploying
 

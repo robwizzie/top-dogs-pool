@@ -74,9 +74,20 @@ for f in "$REPO"/supabase/migrations/*.sql; do
   "${DB[@]}" -v ON_ERROR_STOP=1 -q -f "$f"
 done
 
-out="$("${DB[@]}" -f "$HERE/rpc.test.sql" 2>&1)"
-echo "$out" | grep -E "\| [ft]$|NOTICE|ERROR" | sed 's/^ *//'
-if echo "$out" | grep -qE "\| f$"; then echo; echo "RPC TESTS FAILED"; exit 1; fi
-if echo "$out" | grep -q "^ERROR"; then echo; echo "RPC TESTS ERRORED"; exit 1; fi
+failed=0
+for t in "$HERE"/*.test.sql; do
+  echo
+  echo "--- $(basename "$t") ---"
+  # psql exits non-zero on the first error (ON_ERROR_STOP), and `set -e` would
+  # kill the run before the failure could be reported. Capture and carry on.
+  out="$("${DB[@]}" -f "$t" 2>&1)" || true
+  if [ -n "${RACK_TEST_VERBOSE:-}" ]; then echo "$out"; fi
+  echo "$out" | grep -E "\| [ft]$|NOTICE|ERROR|SHOULD NOT REACH" | sed 's/^ *//'
+  if echo "$out" | grep -qE "\| f$"; then failed=1; fi
+  if echo "$out" | grep -q "^ERROR"; then failed=1; fi
+  if echo "$out" | grep -q "SHOULD NOT REACH"; then failed=1; fi
+done
+
 echo
-echo "ALL RPC TESTS PASSED"
+if [ "$failed" -ne 0 ]; then echo "SQL TESTS FAILED"; exit 1; fi
+echo "ALL SQL TESTS PASSED"

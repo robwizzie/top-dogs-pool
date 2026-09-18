@@ -6,7 +6,7 @@ import { Monitor, Target, Trophy, Users } from "lucide-react";
 import { getSupabaseBrowser } from "@/lib/rack/supabase/browser";
 import { useLiveMatch } from "@/lib/rack/hooks/useLiveMatch";
 import { useRoom } from "@/lib/rack/hooks/useRoom";
-import { Avatar, Button, Card, EmptyState, ErrorNote, Pill, Spinner } from "./ui";
+import { Avatar, Button, Card, EmptyState, ErrorNote, Pill, PoolBallLoader } from "./ui";
 import { MatchSetupForm } from "./MatchSetupForm";
 import { Scoreboard } from "./Scoreboard";
 import { TournamentPanel } from "./TournamentPanel";
@@ -40,7 +40,7 @@ export function RoomView({ code }: { code: string }) {
     if (user && room.room && !inRoom && !room.loading) void join();
   }, [user, room.room, room.loading, inRoom, join]);
 
-  if (room.loading || sessionLoading) return <Spinner label="Finding the table" />;
+  if (room.loading || sessionLoading) return <PoolBallLoader label="Finding the table" />;
 
   if (room.error || !room.room) {
     return (
@@ -48,7 +48,7 @@ export function RoomView({ code }: { code: string }) {
         <p>{room.error ?? `No table with code ${code}.`}</p>
         <Link
           href="/rack"
-          className="mt-3 inline-block text-[var(--color-brass)] underline underline-offset-4"
+          className="mt-3 inline-block text-[hsl(var(--rack-accent))] underline underline-offset-4"
         >
           Back to tables
         </Link>
@@ -63,15 +63,15 @@ export function RoomView({ code }: { code: string }) {
     <div className="space-y-4">
       <Card className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[hsl(var(--rack-accent))]">
             Table
           </p>
-          <h1 className="font-[family-name:var(--font-display)] text-3xl tracking-wide">
+          <h1 className="font-[family-name:var(--rack-font-display)] text-3xl tracking-wide">
             {room.room.name}
           </h1>
-          <p className="mt-1 text-sm text-[var(--fg-dim)]">
+          <p className="mt-1 text-sm text-[hsl(var(--rack-fg-muted))]">
             Code{" "}
-            <strong className="tracking-[0.3em] text-[var(--color-brass-bright)]">
+            <strong className="tracking-[0.3em] text-[hsl(var(--rack-accent))]">
               {room.room.code}
             </strong>
             {room.isHost && " · you're hosting"}
@@ -88,11 +88,11 @@ export function RoomView({ code }: { code: string }) {
 
       {!user && (
         <Card className="text-center">
-          <p className="text-sm text-[var(--fg-dim)]">
+          <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
             You&apos;re watching as a guest.{" "}
             <Link
               href="/rack"
-              className="text-[var(--color-brass)] underline underline-offset-4"
+              className="text-[hsl(var(--rack-accent))] underline underline-offset-4"
             >
               Sign in
             </Link>{" "}
@@ -101,7 +101,7 @@ export function RoomView({ code }: { code: string }) {
         </Card>
       )}
 
-      {live.loading && room.room.current_match_id && <Spinner label="Loading the match" />}
+      {live.loading && room.room.current_match_id && <PoolBallLoader label="Loading the match" />}
 
       {activeMatch ? (
         <Scoreboard
@@ -142,13 +142,13 @@ export function RoomView({ code }: { code: string }) {
         <>
           <Card>
             <div className="mb-3 flex items-center gap-2">
-              <Users className="h-4 w-4 text-[var(--color-brass)]" />
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)]">
+              <Users className="h-4 w-4 text-[hsl(var(--rack-accent))]" />
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-[hsl(var(--rack-accent))]">
                 At the table ({room.members.length})
               </h2>
             </div>
             {room.members.length === 0 ? (
-              <p className="text-sm text-[var(--fg-dim)]">
+              <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
                 Nobody yet. Share code{" "}
                 <strong className="tracking-[0.3em]">{room.room.code}</strong>.
               </p>
@@ -193,11 +193,11 @@ export function RoomView({ code }: { code: string }) {
           )}
 
           {!profile && user && (
-            <Card className="text-sm text-[var(--fg-dim)]">
+            <Card className="text-sm text-[hsl(var(--rack-fg-muted))]">
               Set your skill levels on{" "}
               <Link
                 href="/rack/profile"
-                className="text-[var(--color-brass)] underline underline-offset-4"
+                className="text-[hsl(var(--rack-accent))] underline underline-offset-4"
               >
                 your profile
               </Link>{" "}

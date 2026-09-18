@@ -1,19 +1,22 @@
 /**
  * Rack Up section configuration.
  *
- * The section lives at /rack and keeps its own sub-navigation: it is a small
- * app inside the site rather than another content page, so it doesn't belong
- * in the main header's Season/Training grouping.
+ * The section lives at /rack and is styled as its own app rather than another
+ * page of the team site — its own header, palette, type and theme toggle. It
+ * keeps a single entry in the site's main nav and takes over from there.
  */
 
 export const RACK_NAME = "Rack Up";
-export const RACK_TAGLINE = "Live scoring for the table in front of you";
+export const RACK_TAGLINE = "Keeping score on a napkin is so last century";
 
 export const RACK_NAV = [
   { href: "/rack", label: "Tables" },
   { href: "/rack/stats", label: "Stats" },
-  { href: "/rack/profile", label: "Profile" },
 ] as const;
+
+/** Where the light/dark choice is remembered. Read by the inline bootstrap in
+ *  app/rack/layout.tsx, so the name has to stay in sync with it. */
+export const RACK_THEME_STORAGE_KEY = "rackup:theme";
 
 /** Room codes are short, unambiguous and shoutable across a pool hall. */
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no I/O/0/1

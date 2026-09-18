@@ -9,7 +9,7 @@ import { raceLabel } from "@/lib/rack/rules/race";
 
 /** Covers the site chrome so the whole screen is scoreboard. */
 const OVERLAY =
-  "fixed inset-0 z-50 flex flex-col overflow-hidden bg-[var(--color-ink)] p-[3vmin]";
+  "fixed inset-0 z-50 flex flex-col overflow-hidden bg-[hsl(var(--rack-bg))] p-[3vmin]";
 
 /**
  * The TV view — a read-only scoreboard sized for a screen across the room.
@@ -49,7 +49,7 @@ export function TvDisplay({ code }: { code: string }) {
 
   return (
     <main className={OVERLAY}>
-      <header className="flex items-baseline justify-between text-[2.2vmin] uppercase tracking-[0.3em] text-[var(--color-brass)]">
+      <header className="flex items-baseline justify-between text-[2.2vmin] uppercase tracking-[0.3em] text-[hsl(var(--rack-accent))]">
         <span>{room.room.name}</span>
         <span>
           {state.game} · {raceLabel(state.game, state.players[0].target, state.players[1].target)}
@@ -73,18 +73,18 @@ export function TvDisplay({ code }: { code: string }) {
 
       <footer className="flex min-h-[8vmin] items-center justify-center text-center text-[2.6vmin] uppercase tracking-[0.3em]">
         {state.status === "complete" && state.winner !== null ? (
-          <span className="text-[var(--color-brass-bright)]">
+          <span className="text-[hsl(var(--rack-accent))]">
             {state.players[state.winner].name} wins
           </span>
         ) : watch !== null ? (
-          <span className="flex items-center gap-[1.5vmin] text-[var(--color-brass-bright)]">
+          <span className="flex items-center gap-[1.5vmin] text-[hsl(var(--rack-accent))]">
             <Flame className="h-[3vmin] w-[3vmin]" />
             Sweep on the line — {state.players[watch].name}
           </span>
         ) : hill.hillHill ? (
-          <span className="text-[var(--color-pop-bright)]">Hill — hill</span>
+          <span className="text-[hsl(var(--rack-secondary))]">Hill — hill</span>
         ) : (
-          <span className="text-[var(--fg-dim)]">
+          <span className="text-[hsl(var(--rack-fg-muted))]">
             {state.players[state.turn].name} at the table
           </span>
         )}
@@ -112,26 +112,26 @@ function TvSide({
       className={cn(
         "flex h-full flex-col items-center justify-center rounded-[2vmin] border p-[3vmin] transition",
         active
-          ? "border-[var(--color-brass)] bg-[color-mix(in_oklab,var(--color-brass)_10%,transparent)]"
-          : "border-[var(--border)]",
+          ? "border-[hsl(var(--rack-accent))] bg-[color-mix(in_oklab,hsl(var(--rack-accent))_10%,transparent)]"
+          : "border-[hsl(var(--rack-border))]",
       )}
     >
-      <p className="max-w-full truncate font-[family-name:var(--font-display)] text-[6vmin] leading-none tracking-wide">
+      <p className="max-w-full truncate font-[family-name:var(--rack-font-display)] text-[6vmin] leading-none tracking-wide">
         {p.name}
       </p>
-      <p className="mt-[1vmin] text-[2vmin] uppercase tracking-[0.3em] text-[var(--fg-dim)]">
+      <p className="mt-[1vmin] text-[2vmin] uppercase tracking-[0.3em] text-[hsl(var(--rack-fg-muted))]">
         SL {p.skill}
         {state.breaker === side && " · breaking"}
       </p>
 
-      <p className="my-[2vmin] font-[family-name:var(--font-display)] text-[22vmin] leading-none text-[var(--color-brass-bright)]">
+      <p className="my-[2vmin] font-[family-name:var(--rack-font-display)] text-[22vmin] leading-none text-[hsl(var(--rack-accent))]">
         {p.score}
       </p>
-      <p className="text-[2.4vmin] uppercase tracking-[0.3em] text-[var(--fg-dim)]">
+      <p className="text-[2.4vmin] uppercase tracking-[0.3em] text-[hsl(var(--rack-fg-muted))]">
         of {p.target}
       </p>
 
-      <div className="mt-[2vmin] flex flex-wrap justify-center gap-[1.5vmin] text-[1.8vmin] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+      <div className="mt-[2vmin] flex flex-wrap justify-center gap-[1.5vmin] text-[1.8vmin] uppercase tracking-[0.2em] text-[hsl(var(--rack-fg-muted))]">
         <span>{p.innings} inn</span>
         <span>{p.safeties} safe</span>
         <span>{p.timeoutsRemaining} TO</span>
@@ -141,7 +141,7 @@ function TvSide({
         <p
           className={cn(
             "mt-[2vmin] flex items-center gap-[1vmin] text-[2.4vmin] uppercase tracking-[0.3em]",
-            hillHill ? "text-[var(--color-pop-bright)]" : "text-[var(--color-brass-bright)]",
+            hillHill ? "text-[hsl(var(--rack-secondary))]" : "text-[hsl(var(--rack-accent))]",
           )}
         >
           {hillHill ? (
@@ -159,11 +159,11 @@ function TvSide({
 function Splash({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <main className={cn(OVERLAY, "items-center justify-center text-center")}>
-      <p className="font-[family-name:var(--font-display)] text-[8vmin] tracking-wide">
+      <p className="font-[family-name:var(--rack-font-display)] text-[8vmin] tracking-wide">
         {title}
       </p>
       {subtitle && (
-        <p className="mt-[2vmin] text-[2.6vmin] uppercase tracking-[0.3em] text-[var(--fg-dim)]">
+        <p className="mt-[2vmin] text-[2.6vmin] uppercase tracking-[0.3em] text-[hsl(var(--rack-fg-muted))]">
           {subtitle}
         </p>
       )}

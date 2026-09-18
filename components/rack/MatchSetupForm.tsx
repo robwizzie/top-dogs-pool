@@ -105,10 +105,10 @@ export function MatchSetupForm({
   return (
     <Card className="space-y-5">
       <div>
-        <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+        <h2 className="font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
           New match
         </h2>
-        <p className="text-sm text-[var(--fg-dim)]">
+        <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
           Both players need a skill level for the game you pick.
         </p>
       </div>
@@ -167,26 +167,26 @@ export function MatchSetupForm({
           type="checkbox"
           checked={isCasual}
           onChange={(e) => setIsCasual(e.target.checked)}
-          className="h-5 w-5 accent-[var(--color-brass)]"
+          className="h-5 w-5 accent-[hsl(var(--rack-accent))]"
         />
         <span>
           Casual match
-          <span className="block text-xs text-[var(--fg-dim)]">
+          <span className="block text-xs text-[hsl(var(--rack-fg-muted))]">
             Played for fun — kept in history but left out of lifetime stats.
           </span>
         </span>
       </label>
 
       {preview?.ok && (
-        <div className="rounded-xl border border-[var(--border-strong)] bg-black/20 px-4 py-3 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-brass)]">
+        <div className="rounded-xl border border-[hsl(var(--rack-border-strong))] bg-black/20 px-4 py-3 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[hsl(var(--rack-accent))]">
             {raceLabel(
               game,
               preview.setup.players[0].target,
               preview.setup.players[1].target,
             )}
           </p>
-          <p className="mt-1 text-sm text-[var(--fg-dim)]">
+          <p className="mt-1 text-sm text-[hsl(var(--rack-fg-muted))]">
             {preview.setup.players[0].name} (SL {preview.setup.players[0].skill}) breaks
             first vs {preview.setup.players[1].name} (SL {preview.setup.players[1].skill})
           </p>
@@ -244,8 +244,8 @@ function PlayerPicker({
               className={[
                 "flex min-h-14 items-center gap-3 rounded-xl border px-3 text-left transition",
                 isSelected
-                  ? "border-[var(--color-brass)] bg-[var(--color-brass)]/10"
-                  : "border-[var(--border)] hover:border-[var(--border-strong)]",
+                  ? "border-[hsl(var(--rack-accent))] bg-[hsl(var(--rack-accent))]/10"
+                  : "border-[hsl(var(--rack-border))] hover:border-[hsl(var(--rack-border-strong))]",
                 isDisabled && "cursor-not-allowed opacity-30",
               ]
                 .filter(Boolean)
@@ -257,7 +257,7 @@ function PlayerPicker({
                 {skill === null ? (
                   <Pill tone="hot">No {game} SL</Pill>
                 ) : (
-                  <span className="text-xs text-[var(--fg-dim)]">SL {skill}</span>
+                  <span className="text-xs text-[hsl(var(--rack-fg-muted))]">SL {skill}</span>
                 )}
               </span>
             </button>
@@ -265,7 +265,7 @@ function PlayerPicker({
         })}
       </div>
       {profiles.length === 0 && (
-        <p className="text-sm text-[var(--fg-dim)]">
+        <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
           Nobody has joined this table yet — share the code.
         </p>
       )}

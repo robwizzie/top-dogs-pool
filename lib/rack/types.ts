@@ -35,10 +35,46 @@ export type ProfileRow = {
   /** Per-game skill levels, e.g. { "8-ball": 5, "9-ball": 4 }. */
   skill_levels: Partial<Record<GameType, number>> | null;
   preferred_game_type: GameType | null;
-  /** APA member number; links to /roster/<id> on the main site. */
+  /**
+   * APA member number; links to /roster/<id> on the main site.
+   *
+   * Read-only from the client — a database trigger refuses any update that
+   * moves it. It is set only by an admin approving a roster claim.
+   */
   apa_member_id: string | null;
+  /** Can approve roster claims. Also client-read-only. */
+  is_admin: boolean;
+  /** When the roster photo and skill levels were last pulled in. */
+  apa_imported_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type RosterClaimRow = {
+  id: string;
+  user_id: string;
+  apa_member_id: string;
+  status: "pending" | "approved" | "rejected";
+  note: string | null;
+  requested_at: string;
+  decided_at: string | null;
+  decided_by: string | null;
+};
+
+/** A roster player as the claim picker and the importer see them. */
+export type RosterPlayer = {
+  id: string;
+  name: string;
+};
+
+/** What /api/rack/roster/<id> returns — the importable bits of a roster page. */
+export type RosterDetail = {
+  id: string;
+  name: string;
+  skillLevel: number | null;
+  /** Which game that skill level rates, so it lands on the right one. */
+  format: string;
+  profileImage: string | null;
 };
 
 export type RoomRow = {
