@@ -10,6 +10,7 @@ import { StreakBadge } from "@/components/cards/StreakBadge";
 import { PointsBreakdown } from "@/components/cards/PointsBreakdown";
 import { PatchShowcase } from "@/components/cards/PatchBadge";
 import { CareerArc } from "@/components/cards/CareerArc";
+import { RosterRackCard } from "@/components/rack/RosterRackCard";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
 import { parseSessionScope, resolveScope } from "@/lib/session-scope";
@@ -308,6 +309,12 @@ export default async function PlayerPage({ params, searchParams }: Props) {
             />
           </section>
         )}
+
+        {/* Live-scored record from the Rack Up section, if this player has
+            linked an account there. Renders nothing when they haven't. */}
+        <div className="mt-12">
+          <RosterRackCard apaMemberId={playerId} />
+        </div>
 
         {profile && profile.sessions.length > 1 && (
           <section className="mt-12">

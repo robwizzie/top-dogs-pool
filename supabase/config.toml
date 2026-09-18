@@ -1,0 +1,17 @@
+# Supabase project config.
+#
+# Kept deliberately minimal. This file identifies the project for the Supabase
+# CLI and for the GitHub integration, which watches `supabase/migrations/` and
+# applies anything new when the configured branch updates.
+#
+# Resist filling this out with the CLI's full default config. When branching is
+# enabled, settings here are applied to the branch database — so every extra
+# key is another remote setting this repo silently owns and can overwrite.
+# Anything not listed stays as configured in the dashboard.
+#
+# Local development against a Docker Supabase (`supabase start`) is not part of
+# this project's workflow: the section runs against the hosted project, and the
+# SQL is tested by tests/rack/run-rpc-test.sh, which stands up a plain Postgres
+# instead.
+
+project_id = "qtczrlqhioruslhpmtkn"

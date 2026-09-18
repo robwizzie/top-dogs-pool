@@ -102,6 +102,8 @@ Captures every GraphQL request/response on the listed pages → `data/gql-captur
 | `NEXT_PUBLIC_TIKTOK_HANDLE` | optional          | TikTok username for the Live CTA (default `aaronbic`)      |
 | `REVALIDATE_SECRET`         | recommended       | Secret for `POST /api/revalidate` to force a fresh render  |
 | `NEXT_PUBLIC_SITE_URL`      | recommended       | Used by `sitemap.xml` / `robots.txt`                       |
+| `NEXT_PUBLIC_SUPABASE_URL`  | for `/rack`       | Supabase project URL for the Rack Up section (public)      |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | for `/rack` | Supabase publishable key (public). `NEXT_PUBLIC_SUPABASE_ANON_KEY` also accepted. Never the secret key. |
 
 The site renders gracefully when the snapshot hasn't been generated yet —
 empty states everywhere, with a banner pointing the operator at `npm run scrape`.
@@ -166,6 +168,144 @@ The hero logo lives at `public/logo.png` (a styled placeholder). Drop the real
 team logo PNG at `public/logo.png` (overwrite) or change the `src` in
 `components/brand/Logo.tsx` to `/logo.png`.
 
+## Rack Up — live scoring (`/rack`)
+
+A second, interactive half of the site: score a match at the table from your
+phone, run a tournament bracket, log practice drills, and put the scoreboard on
+a TV. It is the old [rack-up](https://github.com/robwizzie/rack-up) Lovable
+project rebuilt in this codebase.
+
+```
+phone (scorer)  ─┐
+phone (scorer)  ─┼─→  rack_append_match_event()  ─→  matches.live_state + match_events
+TV display      ─┘         (compare-and-swap)              │
+                                                           ▼
+                                        realtime ──→ every device re-renders
+```
+
+### How a match is stored
+
+A match is an **immutable setup** plus an **append-only event log**. Current
+state is always `replay(setup, events)` — see
+[lib/rack/rules/match.ts](lib/rack/rules/match.ts). `matches.live_state` caches
+the fold so a spectator or the TV can read the whole scoreboard in one row.
+
+Every tap goes through `rack_append_match_event()`, which compare-and-swaps on
+`matches.version`. If another device scored first, the call returns
+`conflict = true` with the authoritative state rather than overwriting, and the
+client replays on top. Undo truncates the log and re-snapshots, so it is exact
+rather than a hand-written inverse per action.
+
+When a match ends, `rack_finalize_match()` settles it into `match_players`,
+`player_stats` and `head_to_head`, once, guarded by `finalized_at` under a row
+lock.
+
+### Handicaps
+
+8-ball races come from the same chart the leaderboard scores against
+([lib/apa/race.ts](lib/apa/race.ts)) — asymmetric, so the lower skill level gets
+the shorter race. 9-ball is point-based off the APA 9-ball chart; a rack is 10
+points (8 balls + 2 for the nine). A match will not start if either player is
+missing a skill level for the game being played.
+
+### Connection to the league side
+
+A Rack Up profile can be linked to an APA member number
+(`profiles.apa_member_id`, set on `/rack/profile`). Once linked, that player's
+Rack Up record appears on their `/roster/<id>` page.
+
+**Rack Up results never touch Patch Watch.** The leaderboard stays sourced from
+APA scoresheets plus hand-entered tournament results, so a casual Tuesday
+session cannot move the standings. The link is display-only in both directions.
+
+### Setup
+
+The section runs on its own Supabase project, created and owned by us. (It
+began life on a Lovable-provisioned backend, which is why the old rack-up repo
+points at a different project — that one lives on infrastructure Lovable
+controls, with no dashboard access, no service-role key and no `pg_dump`. This
+schema is standalone precisely so none of that matters.)
+
+1. Create a project at [supabase.com/dashboard](https://supabase.com/dashboard)
+   (any region near the team; the free tier is plenty).
+
+2. Apply
+   [`supabase/migrations/20260918000000_rack_up_schema.sql`](supabase/migrations/20260918000000_rack_up_schema.sql)
+   — every table, policy, function, trigger, the avatars bucket and the
+   realtime publication in one go. It is idempotent, so applying it twice is
+   harmless. Either route works:
+
+   - **SQL Editor → New query →** paste the file → Run. Immediate, and the
+     right choice the first time.
+   - **The GitHub integration**, which watches `supabase/migrations/` and
+     applies new files when the configured branch updates. `supabase/config.toml`
+     carries the project ref it needs. Note that it only runs on *pushes to the
+     branch it is configured for* — usually `main` — so on a feature branch the
+     migration lands when the PR merges, not before.
+
+3. **Project Settings → API** → copy into `.env.local`, and into Vercel scoped
+   to Production, Preview and Development:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…
+   ```
+
+   That page lists a **Publishable key** and a **Secret key**. Use the
+   publishable one — it's the renamed anon key, meant to ship to browsers.
+   The secret key (formerly `service_role`) bypasses row-level security, and a
+   `NEXT_PUBLIC_*` value is compiled into the client bundle and served to every
+   visitor, so putting it there would hand the database to anyone who opens the
+   site. `lib/rack/supabase/env.ts` refuses to start on either the
+   `sb_secret_…` prefix or a legacy JWT claiming `service_role`, but treat that
+   as a backstop, not a licence to paste carelessly.
+
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` is still accepted as the variable name for
+   projects created before the rename. Leave both blank to disable the section;
+   `/rack` then shows a setup notice and the rest of the site is unaffected.
+
+4. **Authentication → URL Configuration** → set the Site URL to the deployed
+   site and add the preview domains to Redirect URLs, or sign-up confirmation
+   emails will bounce people somewhere unhelpful. For a team this small it is
+   reasonable to turn *Confirm email* off under **Authentication → Providers →
+   Email**, which makes sign-up a single step at the table.
+
+That's the whole setup. Realtime needs no clicking — the schema adds the tables
+to the `supabase_realtime` publication itself. To confirm:
+
+```sql
+select tablename from pg_publication_tables
+ where pubname = 'supabase_realtime' order by tablename;
+```
+
+### Schema notes
+
+A few things are deliberately *absent* compared with the original app's
+database, and they matter:
+
+- **No stats triggers.** The old schema updated `player_stats` and
+  `head_to_head` from triggers on `matches.winner_id`. `rack_finalize_match()`
+  does the same job, so keeping both would have counted every win twice. There
+  is exactly one write path for lifetime stats.
+- **No `action_history` / `rack_innings` / `current_player_index`.** Superseded
+  by the `live_state` snapshot and the `match_events` log.
+- **No client write access to `match_events`, `match_players`, `player_stats`
+  or `head_to_head`.** They are written only by the definer functions. That is
+  what stops someone editing their own career record from a browser console.
+
+### Tests
+
+```bash
+npm run test:rack            # rules engine + bracket engine (pure, fast)
+./tests/rack/run-rpc-test.sh # stands up a throwaway Postgres and exercises the SQL
+```
+
+The RPC test stands up an empty Postgres with the Supabase bits stubbed,
+applies `supabase/migrations/` to it, and asserts the signup trigger,
+optimistic concurrency, undo, authorisation, and that the finaliser cannot
+double-count a win. It needs `postgresql` installed locally and nothing else —
+the schema is self-contained.
+
 ## Deploying
 
 The Next.js app reads `data/apa.json` at request time, so deployment is plain
@@ -188,4 +328,5 @@ npm run build      # production build
 npm run start      # start prod server
 npm run lint       # eslint
 npm run typecheck  # tsc --noEmit
+npm run test:rack  # Rack Up rules + bracket engines
 ```

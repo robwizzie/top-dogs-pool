@@ -11,9 +11,12 @@
     "scrape": "tsx scripts/scrape-apa.ts",
     "scrape:headful": "APA_HEADFUL=1 tsx scripts/scrape-apa.ts",
     "project": "tsx scripts/project-apa.ts",
-    "sync": "npm run scrape && npm run project"
+    "sync": "npm run scrape && npm run project",
+    "test:rack": "tsx tests/rack/match.test.ts && tsx tests/rack/bracket.test.ts && tsx tests/rack/key-guard.test.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.116.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
