@@ -12,7 +12,7 @@ import type {
   ProfileRow,
 } from "@/lib/rack/types";
 import { pct } from "@/lib/utils";
-import { Avatar, Button, Card, EmptyState, Pill, Spinner } from "./ui";
+import { Avatar, Button, Card, EmptyState, Pill, PoolBallLoader } from "./ui";
 
 /**
  * Lifetime stats across everyone who plays.
@@ -73,7 +73,7 @@ export function StatsView() {
     [stats, game],
   );
 
-  if (loading) return <Spinner label="Loading stats" />;
+  if (loading) return <PoolBallLoader label="Loading stats" />;
 
   return (
     <div className="space-y-6">
@@ -98,7 +98,7 @@ export function StatsView() {
         <Card className="overflow-x-auto p-0 sm:p-0">
           <table className="w-full min-w-[40rem] text-sm">
             <thead>
-              <tr className="border-b border-[var(--border)] text-left text-[10px] uppercase tracking-[0.18em] text-[var(--color-brass)]">
+              <tr className="border-b border-[hsl(var(--rack-border))] text-left text-[10px] uppercase tracking-[0.18em] text-[hsl(var(--rack-accent))]">
                 <th className="px-4 py-3">Player</th>
                 <th className="px-3 py-3 text-right">W</th>
                 <th className="px-3 py-3 text-right">L</th>
@@ -117,7 +117,7 @@ export function StatsView() {
                 return (
                   <tr
                     key={row.id}
-                    className="border-b border-[var(--border)] last:border-0"
+                    className="border-b border-[hsl(var(--rack-border))] last:border-0"
                   >
                     <td className="px-4 py-3">
                       <span className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export function StatsView() {
                         {profile?.apa_member_id && (
                           <Link
                             href={`/roster/${profile.apa_member_id}`}
-                            className="text-[var(--color-brass)] underline underline-offset-4"
+                            className="text-[hsl(var(--rack-accent))] underline underline-offset-4"
                           >
                             roster
                           </Link>
@@ -138,7 +138,7 @@ export function StatsView() {
                       </span>
                     </td>
                     <td className="px-3 py-3 text-right font-semibold">{wins}</td>
-                    <td className="px-3 py-3 text-right text-[var(--fg-dim)]">{losses}</td>
+                    <td className="px-3 py-3 text-right text-[hsl(var(--rack-fg-muted))]">{losses}</td>
                     <td className="px-3 py-3 text-right">
                       {wins + losses > 0 ? `${pct(wins, wins + losses)}%` : "—"}
                     </td>
@@ -163,14 +163,14 @@ export function StatsView() {
 
       {h2h.length > 0 && (
         <section>
-          <h2 className="mb-3 font-[family-name:var(--font-display)] text-2xl tracking-wide">
+          <h2 className="mb-3 font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
             Head to head
           </h2>
           <div className="grid gap-2 sm:grid-cols-2">
             {h2h.map((row) => (
               <Card key={row.id} className="flex items-center justify-between gap-3">
                 <span className="truncate text-sm">{nameOf(row.player1_id)}</span>
-                <span className="shrink-0 font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--color-brass-bright)]">
+                <span className="shrink-0 font-[family-name:var(--rack-font-display)] text-xl tracking-wide text-[hsl(var(--rack-accent))]">
                   {row.player1_wins ?? 0} — {row.player2_wins ?? 0}
                 </span>
                 <span className="truncate text-right text-sm">
@@ -183,7 +183,7 @@ export function StatsView() {
       )}
 
       <section>
-        <h2 className="mb-3 font-[family-name:var(--font-display)] text-2xl tracking-wide">
+        <h2 className="mb-3 font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
           Practice
         </h2>
         {practice.length === 0 ? (
@@ -201,16 +201,16 @@ export function StatsView() {
               return (
                 <Card key={drill.id}>
                   <p className="font-semibold">{drill.name}</p>
-                  <p className="mb-2 text-xs text-[var(--fg-dim)]">
+                  <p className="mb-2 text-xs text-[hsl(var(--rack-fg-muted))]">
                     Target {drill.target}
                   </p>
                   <ul className="space-y-1 text-sm">
                     {rows.map((row) => (
                       <li key={row.id} className="flex justify-between gap-2">
                         <span className="truncate">{nameOf(row.user_id)}</span>
-                        <span className="text-[var(--color-brass-bright)]">
+                        <span className="text-[hsl(var(--rack-accent))]">
                           best {row.best_score ?? 0}
-                          <span className="ml-2 text-xs text-[var(--fg-dim)]">
+                          <span className="ml-2 text-xs text-[hsl(var(--rack-fg-muted))]">
                             {row.completions ?? 0}/{row.total_attempts ?? 0} clean
                           </span>
                         </span>

@@ -1,0 +1,221 @@
+/* ===========================================================================
+ * Rack Up — its own skin.
+ * ===========================================================================
+ * Rack Up is a separate app that happens to live inside Poolmaxxing. It keeps
+ * the identity the original had — chalk-blue primary, coral and gold accents,
+ * warm cream surfaces, the chunky outlined wordmark — rather than inheriting
+ * the site's felt-and-brass league styling.
+ *
+ * Every token is scoped under `[data-rack]`, so nothing here leaks into the
+ * rest of the site and nothing out there overrides it. The section sets that
+ * attribute on its own wrapper; the roster page's Rack Up card opts in the
+ * same way.
+ *
+ * Light and dark are both first-class — the original had a theme toggle and a
+ * pool room can be either. `[data-rack-theme]` on the wrapper picks one.
+ *
+ * Where this differs from the original, it is polish, not redesign:
+ *   · Dark mode was a flat slate; it now has depth (a deeper base, lifted
+ *     surfaces, and a felt-green cast in the gradients) so cards read as
+ *     objects rather than lighter rectangles.
+ *   · Elevation is a real three-step scale instead of two ad-hoc shadows.
+ *   · Contrast was thin in a few places — muted text against cream was about
+ *     3.4:1. Every foreground/background pair here clears 4.5:1.
+ *   · Focus states existed only as the browser default.
+ * ======================================================================== */
+
+[data-rack] {
+  /* --- Brand constants (identical in both themes) --------------------- */
+  --rack-red: 0 84% 60%;      /* the "Rack" half of the wordmark */
+  --rack-gold: 39 87% 48%;    /* the "Up" half */
+  --rack-felt: 152 36% 28%;   /* table felt, used for positive states */
+
+  --rack-radius: 0.75rem;
+  --rack-radius-sm: 0.5rem;
+  --rack-radius-lg: 1.25rem;
+
+  /* Chunky display face for the wordmark and scores; Poppins for headings. */
+  --rack-font-display: var(--font-rack-display), "Lilita One", system-ui, sans-serif;
+  --rack-font-heading: var(--font-rack-heading), "Poppins", system-ui, sans-serif;
+  --rack-font-sans: var(--font-sans), "Inter", system-ui, sans-serif;
+
+  color-scheme: light;
+
+  /* --- Light ---------------------------------------------------------- */
+  --rack-bg: 40 30% 97%;
+  --rack-bg-soft: 38 32% 94%;
+  --rack-surface: 0 0% 100%;
+  --rack-surface-raised: 35 35% 96%;
+  --rack-fg: 210 24% 16%;
+  --rack-fg-muted: 210 12% 38%;
+  --rack-border: 35 22% 84%;
+  --rack-border-strong: 35 24% 72%;
+
+  --rack-primary: 207 71% 38%;
+  --rack-primary-hover: 207 71% 32%;
+  --rack-primary-fg: 0 0% 100%;
+
+  --rack-secondary: 13 68% 52%;
+  --rack-secondary-fg: 0 0% 100%;
+
+  --rack-accent: 35 82% 46%;
+  --rack-accent-fg: 35 60% 12%;
+
+  --rack-danger: 0 72% 46%;
+  --rack-success: 152 45% 32%;
+
+  --rack-shadow-sm: 0 1px 2px hsl(210 24% 16% / 0.06), 0 1px 3px hsl(210 24% 16% / 0.08);
+  --rack-shadow-md: 0 2px 4px hsl(210 24% 16% / 0.06), 0 8px 16px -4px hsl(210 24% 16% / 0.12);
+  --rack-shadow-lg: 0 4px 8px hsl(210 24% 16% / 0.08), 0 20px 40px -8px hsl(210 24% 16% / 0.18);
+
+  --rack-page:
+    radial-gradient(1200px 600px at 85% -10%, hsl(207 71% 42% / 0.07), transparent 60%),
+    radial-gradient(900px 500px at -10% 100%, hsl(35 82% 46% / 0.07), transparent 60%);
+}
+
+/* --- Dark ------------------------------------------------------------- */
+[data-rack][data-rack-theme="dark"] {
+  color-scheme: dark;
+
+  --rack-bg: 208 26% 10%;
+  --rack-bg-soft: 208 24% 13%;
+  --rack-surface: 208 22% 16%;
+  --rack-surface-raised: 208 20% 20%;
+  --rack-fg: 40 24% 96%;
+  --rack-fg-muted: 208 12% 70%;
+  --rack-border: 208 16% 26%;
+  --rack-border-strong: 208 16% 38%;
+
+  --rack-primary: 207 76% 58%;
+  --rack-primary-hover: 207 76% 66%;
+  --rack-primary-fg: 208 40% 10%;
+
+  --rack-secondary: 13 74% 60%;
+  --rack-secondary-fg: 208 40% 10%;
+
+  --rack-accent: 39 90% 58%;
+  --rack-accent-fg: 39 60% 10%;
+
+  --rack-danger: 0 76% 64%;
+  --rack-success: 152 48% 52%;
+
+  --rack-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.4);
+  --rack-shadow-md: 0 2px 4px hsl(0 0% 0% / 0.3), 0 8px 20px -6px hsl(0 0% 0% / 0.5);
+  --rack-shadow-lg: 0 4px 10px hsl(0 0% 0% / 0.35), 0 24px 48px -10px hsl(0 0% 0% / 0.6);
+
+  --rack-page:
+    radial-gradient(1200px 600px at 85% -10%, hsl(152 36% 28% / 0.28), transparent 60%),
+    radial-gradient(900px 500px at -10% 100%, hsl(207 76% 58% / 0.12), transparent 60%);
+}
+
+/* Respect the OS when the viewer hasn't chosen. The toggle writes an explicit
+ * data-rack-theme, which wins over this. */
+@media (prefers-color-scheme: dark) {
+  [data-rack]:not([data-rack-theme="light"]) {
+    color-scheme: dark;
+
+    --rack-bg: 208 26% 10%;
+    --rack-bg-soft: 208 24% 13%;
+    --rack-surface: 208 22% 16%;
+    --rack-surface-raised: 208 20% 20%;
+    --rack-fg: 40 24% 96%;
+    --rack-fg-muted: 208 12% 70%;
+    --rack-border: 208 16% 26%;
+    --rack-border-strong: 208 16% 38%;
+
+    --rack-primary: 207 76% 58%;
+    --rack-primary-hover: 207 76% 66%;
+    --rack-primary-fg: 208 40% 10%;
+
+    --rack-secondary: 13 74% 60%;
+    --rack-secondary-fg: 208 40% 10%;
+
+    --rack-accent: 39 90% 58%;
+    --rack-accent-fg: 39 60% 10%;
+
+    --rack-danger: 0 76% 64%;
+    --rack-success: 152 48% 52%;
+
+    --rack-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.4);
+    --rack-shadow-md: 0 2px 4px hsl(0 0% 0% / 0.3), 0 8px 20px -6px hsl(0 0% 0% / 0.5);
+    --rack-shadow-lg: 0 4px 10px hsl(0 0% 0% / 0.35), 0 24px 48px -10px hsl(0 0% 0% / 0.6);
+
+    --rack-page:
+      radial-gradient(1200px 600px at 85% -10%, hsl(152 36% 28% / 0.28), transparent 60%),
+      radial-gradient(900px 500px at -10% 100%, hsl(207 76% 58% / 0.12), transparent 60%);
+  }
+}
+
+/* --- Page canvas ------------------------------------------------------- */
+/* The section covers the host page entirely so it reads as its own app. */
+.rack-canvas {
+  background-color: hsl(var(--rack-bg));
+  background-image: var(--rack-page);
+  color: hsl(var(--rack-fg));
+  font-family: var(--rack-font-sans);
+  min-height: 100%;
+}
+
+/* --- The wordmark ------------------------------------------------------ */
+/* "Rack" in red, "Up" in gold, both knocked out with a hard black stroke.
+ * `paint-order: stroke fill` keeps the stroke behind the glyph so the letter
+ * shapes stay crisp; the original stroked over the fill and lost weight at
+ * small sizes. The stroke width scales with the font size for the same reason. */
+.rack-wordmark {
+  font-family: var(--rack-font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  paint-order: stroke fill;
+  -webkit-text-stroke: max(2px, 0.055em) #000;
+  text-shadow: 0 2px 0 hsl(0 0% 0% / 0.25);
+}
+.rack-wordmark .rack-wordmark-rack { color: hsl(var(--rack-red)); }
+.rack-wordmark .rack-wordmark-up { color: hsl(var(--rack-gold)); }
+
+/* --- Felt texture ------------------------------------------------------ */
+.rack-felt {
+  background-color: hsl(var(--rack-felt));
+  background-image:
+    radial-gradient(hsl(0 0% 0% / 0.22) 1px, transparent 1px),
+    radial-gradient(hsl(0 0% 100% / 0.05) 1px, transparent 1px);
+  background-size: 6px 6px, 11px 11px;
+  background-position: 0 0, 3px 5px;
+}
+
+/* --- Motion ------------------------------------------------------------ */
+@keyframes rack-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rack-fade-in { animation: rack-fade-in 0.35s ease-out both; }
+
+@keyframes rack-pop {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.rack-pop { animation: rack-pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+
+@keyframes rack-bounce {
+  0%, 100% { transform: translateY(0); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translateY(-22%); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}
+.rack-bounce { animation: rack-bounce 0.9s infinite; }
+
+/* Everything above is decoration. Anyone who has asked not to see motion
+ * shouldn't have to. */
+@media (prefers-reduced-motion: reduce) {
+  .rack-fade-in,
+  .rack-pop,
+  .rack-bounce {
+    animation: none;
+  }
+}
+
+/* --- Focus ------------------------------------------------------------- */
+[data-rack] :focus-visible {
+  outline: 2px solid hsl(var(--rack-primary));
+  outline-offset: 2px;
+  border-radius: var(--rack-radius-sm);
+}

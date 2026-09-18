@@ -1,22 +1,27 @@
-import Link from "next/link";
-import { PoolBall } from "@/components/brand/PoolBall";
+import { CartProvider } from '@/components/store/CartProvider';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import NotFoundContent from './(site)/not-found';
 
+/**
+ * The global 404, for URLs that match no route at all.
+ *
+ * Next.js only renders `app/not-found.tsx` for those, and it renders inside the
+ * root layout — which no longer carries the site chrome, since Rack Up shares
+ * that root. So this brings the header and footer with it, and reuses the same
+ * content as the in-site 404.
+ *
+ * CartProvider comes along because the header's cart button needs it; without
+ * it this page throws during prerender.
+ */
 export default function NotFound() {
-  return (
-    <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 py-20 text-center">
-      <PoolBall number={8} size={120} />
-      <h1 className="mt-8 font-[family-name:var(--font-display)] text-6xl tracking-wide">
-        Scratch.
-      </h1>
-      <p className="mt-3 text-[var(--fg-dim)]">
-        That page is in the pocket — but not the one you wanted. Let&apos;s rack &apos;em up again.
-      </p>
-      <Link
-        href="/"
-        className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--color-brass)] px-5 py-3 text-sm font-semibold text-[var(--color-ink)] hover:bg-[var(--color-brass-bright)]"
-      >
-        Back to the table
-      </Link>
-    </div>
-  );
+	return (
+		<CartProvider>
+			<SiteHeader />
+			<main className='pb-20 md:pb-0'>
+				<NotFoundContent />
+			</main>
+			<SiteFooter />
+		</CartProvider>
+	);
 }

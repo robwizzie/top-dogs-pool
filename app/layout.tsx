@@ -1,17 +1,20 @@
 import type { Metadata, Viewport } from 'next';
 import { Bebas_Neue, Inter } from 'next/font/google';
-import { Suspense } from 'react';
 import './globals.css';
-import { SiteHeader } from '@/components/layout/SiteHeader';
-import { SeasonBanner } from '@/components/layout/SeasonBanner';
-import { MobileTabBar } from '@/components/layout/MobileTabBar';
-import { SiteFooter } from '@/components/layout/SiteFooter';
-import { SessionScopeMemory } from '@/components/layout/SessionScopeMemory';
-import { CommandPaletteShell } from '@/components/ui/CommandPaletteShell';
-import { Toaster } from '@/components/ui/Toaster';
-import { CartProvider } from '@/components/store/CartProvider';
-import { CartDrawer } from '@/components/store/CartDrawer';
 import { TEAM_NAME, TEAM_TAGLINE } from '@/lib/config';
+
+/**
+ * The document shell, and nothing else.
+ *
+ * The site's chrome — header, season banner, footer, mobile tab bar, cart,
+ * command palette — lives in `app/(site)/layout.tsx`, not here. Rack Up is a
+ * separate app that happens to be served from the same domain, and layouts in
+ * the App Router compose rather than replace: anything put here would appear
+ * on top of Rack Up's own header too, which is exactly the mixing of the two
+ * styles we don't want.
+ *
+ * Route groups don't affect URLs, so `app/(site)/roster` is still `/roster`.
+ */
 
 const inter = Inter({
 	subsets: ['latin'],
@@ -73,23 +76,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang='en' data-theme='dark'>
-			<body className={`${inter.variable} ${bebas.variable}`}>
-				<CartProvider>
-					<Suspense fallback={null}>
-						<SessionScopeMemory />
-					</Suspense>
-					<SiteHeader />
-					<SeasonBanner />
-					<main className='pb-20 md:pb-0'>{children}</main>
-					<SiteFooter />
-					<MobileTabBar />
-					<CartDrawer />
-					<Suspense fallback={null}>
-						<CommandPaletteShell />
-					</Suspense>
-					<Toaster />
-				</CartProvider>
-			</body>
+			<body className={`${inter.variable} ${bebas.variable}`}>{children}</body>
 		</html>
 	);
 }

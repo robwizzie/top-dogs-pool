@@ -18,7 +18,7 @@ import {
 import { GAME_TYPES, type GameType } from "@/lib/rack/rules/race";
 import { skillFor, type ProfileRow, type TournamentRow } from "@/lib/rack/types";
 import type { RoomMember } from "@/lib/rack/hooks/useRoom";
-import { Avatar, Button, Card, EmptyState, ErrorNote, Field, Input, Pill, Spinner } from "./ui";
+import { Avatar, Button, Card, EmptyState, ErrorNote, Field, Input, Pill, PoolBallLoader } from "./ui";
 
 /**
  * Tournament runner.
@@ -160,7 +160,7 @@ export function TournamentPanel({
       .eq("id", tournament.id);
   }, [supabase, tournament, resolved]);
 
-  if (loading) return <Spinner label="Loading the bracket" />;
+  if (loading) return <PoolBallLoader label="Loading the bracket" />;
 
   if (!tournament) {
     return (
@@ -191,13 +191,13 @@ export function TournamentPanel({
     <div className="space-y-4">
       <Card className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[hsl(var(--rack-accent))]">
             {tournament.bracket_type === "double" ? "Double elimination" : "Single elimination"}
           </p>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+          <h2 className="font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
             {tournament.name}
           </h2>
-          <p className="text-sm text-[var(--fg-dim)]">
+          <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
             {tournament.game_type} · {resolved.bracket.playerCount} players
           </p>
         </div>
@@ -210,15 +210,15 @@ export function TournamentPanel({
 
       {resolved.champion && (
         <Card className="text-center">
-          <Crown className="mx-auto h-8 w-8 text-[var(--color-brass-bright)]" />
-          <p className="mt-2 font-[family-name:var(--font-display)] text-3xl tracking-wide">
+          <Crown className="mx-auto h-8 w-8 text-[hsl(var(--rack-accent))]" />
+          <p className="mt-2 font-[family-name:var(--rack-font-display)] text-3xl tracking-wide">
             {nameOf(resolved.champion)} wins it
           </p>
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             {[...resolved.placements.entries()]
               .sort((a, b) => a[1] - b[1])
               .map(([id, place]) => (
-                <Pill key={id} tone={place === 1 ? "brass" : "neutral"}>
+                <Pill key={id} tone={place === 1 ? "accent" : "neutral"}>
                   {place === 1 ? "1st" : place === 2 ? "2nd" : "3rd"} · {nameOf(id)}
                 </Pill>
               ))}
@@ -228,18 +228,18 @@ export function TournamentPanel({
 
       {ready.length > 0 && (
         <Card>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)]">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[hsl(var(--rack-accent))]">
             Up next
           </h3>
           <ul className="space-y-2">
             {ready.map((m) => (
               <li
                 key={m.id}
-                className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--border)] px-3 py-2"
+                className="flex flex-wrap items-center gap-2 rounded-xl border border-[hsl(var(--rack-border))] px-3 py-2"
               >
                 <Pill>{m.label}</Pill>
                 <span className="flex-1 text-sm">
-                  {nameOf(m.aId)} <span className="text-[var(--fg-dim)]">vs</span>{" "}
+                  {nameOf(m.aId)} <span className="text-[hsl(var(--rack-fg-muted))]">vs</span>{" "}
                   {nameOf(m.bId)}
                 </span>
                 {isHost && (
@@ -256,7 +256,7 @@ export function TournamentPanel({
             ))}
           </ul>
           {!isHost && (
-            <p className="mt-3 text-xs text-[var(--fg-dim)]">
+            <p className="mt-3 text-xs text-[hsl(var(--rack-fg-muted))]">
               The host records results.
             </p>
           )}
@@ -287,7 +287,7 @@ function BracketBoard({
     <div className="space-y-6">
       {sides.map((side) => (
         <div key={side}>
-          <h3 className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)]">
+          <h3 className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[hsl(var(--rack-accent))]">
             {side === "winners"
               ? resolved.bracket.type === "double"
                 ? "Winners bracket"
@@ -299,7 +299,7 @@ function BracketBoard({
           <div className="flex gap-4 overflow-x-auto pb-2">
             {bracketColumns(resolved, side).map((col) => (
               <div key={col.round} className="min-w-[13rem] shrink-0 space-y-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[hsl(var(--rack-fg-muted))]">
                   {col.label}
                 </p>
                 {col.matches.map((m) => (
@@ -330,15 +330,15 @@ function BracketCell({
       <div
         className={[
           "flex items-center justify-between gap-2 px-2 py-1.5 text-sm",
-          won && "bg-[var(--color-brass)]/12 font-semibold text-[var(--color-brass-bright)]",
-          isBye && "italic text-[var(--fg-dim)]",
+          won && "bg-[hsl(var(--rack-accent))]/12 font-semibold text-[hsl(var(--rack-accent))]",
+          isBye && "italic text-[hsl(var(--rack-fg-muted))]",
         ]
           .filter(Boolean)
           .join(" ")}
       >
         <span className="truncate">{nameOf(id) ?? "—"}</span>
         {id && id !== BYE && (losses.get(id) ?? 0) > 0 && (
-          <span className="shrink-0 text-[10px] text-[var(--fg-dim)]">
+          <span className="shrink-0 text-[10px] text-[hsl(var(--rack-fg-muted))]">
             {losses.get(id)}L
           </span>
         )}
@@ -347,7 +347,7 @@ function BracketCell({
   };
 
   return (
-    <div className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border border-[var(--border)] bg-black/20">
+    <div className="divide-y divide-[hsl(var(--rack-border))] overflow-hidden rounded-lg border border-[hsl(var(--rack-border))] bg-black/20">
       {row(match.aId)}
       {row(match.bId)}
     </div>
@@ -450,7 +450,7 @@ function TournamentSetup({
 
   return (
     <Card className="space-y-5">
-      <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+      <h2 className="font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
         New tournament
       </h2>
 
@@ -505,13 +505,13 @@ function TournamentSetup({
               className={[
                 "flex min-h-12 items-center gap-2 rounded-xl border px-3 text-left text-sm transition",
                 seeded.includes(p.id)
-                  ? "border-[var(--color-brass)] bg-[var(--color-brass)]/10"
-                  : "border-[var(--border)] hover:border-[var(--border-strong)]",
+                  ? "border-[hsl(var(--rack-accent))] bg-[hsl(var(--rack-accent))]/10"
+                  : "border-[hsl(var(--rack-border))] hover:border-[hsl(var(--rack-border-strong))]",
               ].join(" ")}
             >
               <Avatar name={p.name} url={p.avatar_url} size={28} />
               <span className="truncate">{p.name}</span>
-              <span className="ml-auto text-xs text-[var(--fg-dim)]">
+              <span className="ml-auto text-xs text-[hsl(var(--rack-fg-muted))]">
                 SL {skillFor(p, game) ?? "—"}
               </span>
             </button>
@@ -521,17 +521,17 @@ function TournamentSetup({
 
       {seeded.length > 0 && (
         <div>
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)]">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--rack-accent))]">
             Seeding
           </p>
           <ol className="space-y-1">
             {seeded.map((id, i) => (
               <li
                 key={id}
-                className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-2 py-1.5 text-sm"
+                className="flex items-center gap-2 rounded-lg border border-[hsl(var(--rack-border))] px-2 py-1.5 text-sm"
               >
-                <GripVertical className="h-4 w-4 text-[var(--fg-dim)]" />
-                <span className="w-6 text-[var(--color-brass)]">{i + 1}</span>
+                <GripVertical className="h-4 w-4 text-[hsl(var(--rack-fg-muted))]" />
+                <span className="w-6 text-[hsl(var(--rack-accent))]">{i + 1}</span>
                 <span className="flex-1 truncate">
                   {profiles.find((p) => p.id === id)?.name}
                 </span>
@@ -548,7 +548,7 @@ function TournamentSetup({
       )}
 
       {preview && (
-        <p className="text-sm text-[var(--fg-dim)]">
+        <p className="text-sm text-[hsl(var(--rack-fg-muted))]">
           {preview.size - preview.playerCount > 0
             ? `${preview.size - preview.playerCount} bye${preview.size - preview.playerCount === 1 ? "" : "s"} — the top seeds sit out round one.`
             : "No byes — the bracket is full."}{" "}

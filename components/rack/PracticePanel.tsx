@@ -18,7 +18,7 @@ import type {
   ProfileRow,
 } from "@/lib/rack/types";
 import type { RoomMember } from "@/lib/rack/hooks/useRoom";
-import { Avatar, Button, Card, EmptyState, ErrorNote, Field, Pill, Spinner } from "./ui";
+import { Avatar, Button, Card, EmptyState, ErrorNote, Field, Pill, PoolBallLoader } from "./ui";
 
 /**
  * Practice sessions.
@@ -167,7 +167,7 @@ export function PracticePanel({
     onClose();
   }, [supabase, session, scores, onClose]);
 
-  if (loading) return <Spinner label="Loading practice" />;
+  if (loading) return <PoolBallLoader label="Loading practice" />;
 
   if (!session) {
     return (
@@ -187,10 +187,10 @@ export function PracticePanel({
     <div className="space-y-4">
       <Card className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[hsl(var(--rack-accent))]">
             Practice
           </p>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+          <h2 className="font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
             {plan.length} {plan.length === 1 ? "drill" : "drills"}
           </h2>
         </div>
@@ -207,18 +207,18 @@ export function PracticePanel({
         return (
           <Card key={id}>
             <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="font-[family-name:var(--font-display)] text-xl tracking-wide">
+              <h3 className="font-[family-name:var(--rack-font-display)] text-xl tracking-wide">
                 {drill.name}
               </h3>
-              <Pill tone="brass">
+              <Pill tone="accent">
                 target {target} / max {drillMaxScore(drill)}
               </Pill>
             </div>
-            <p className="text-sm text-[var(--fg-dim)]">{drill.instructions}</p>
+            <p className="text-sm text-[hsl(var(--rack-fg-muted))]">{drill.instructions}</p>
 
             <div className="mt-4 space-y-2">
               {scores.length === 0 && (
-                <p className="text-sm text-[var(--fg-dim)]">No players in this session.</p>
+                <p className="text-sm text-[hsl(var(--rack-fg-muted))]">No players in this session.</p>
               )}
               {scores.map((entry) => {
                 const profile = profiles.find((p) => p.id === entry.user_id);
@@ -226,11 +226,11 @@ export function PracticePanel({
                 return (
                   <div
                     key={entry.id}
-                    className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--border)] px-3 py-2"
+                    className="flex flex-wrap items-center gap-2 rounded-xl border border-[hsl(var(--rack-border))] px-3 py-2"
                   >
                     <Avatar name={profile?.name ?? "?"} url={profile?.avatar_url} size={28} />
                     <span className="flex-1 truncate text-sm">{profile?.name ?? "Player"}</span>
-                    <span className="font-[family-name:var(--font-display)] text-xl text-[var(--color-brass-bright)]">
+                    <span className="font-[family-name:var(--rack-font-display)] text-xl text-[hsl(var(--rack-accent))]">
                       {value}
                     </span>
                     <span className="flex gap-1.5">
@@ -349,7 +349,7 @@ function PracticeSetup({
 
   return (
     <Card className="space-y-5">
-      <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
+      <h2 className="font-[family-name:var(--rack-font-display)] text-2xl tracking-wide">
         Practice session
       </h2>
 
@@ -367,19 +367,19 @@ function PracticeSetup({
                 className={[
                   "w-full rounded-xl border px-3 py-3 text-left transition",
                   on
-                    ? "border-[var(--color-brass)] bg-[var(--color-brass)]/10"
-                    : "border-[var(--border)] hover:border-[var(--border-strong)]",
+                    ? "border-[hsl(var(--rack-accent))] bg-[hsl(var(--rack-accent))]/10"
+                    : "border-[hsl(var(--rack-border))] hover:border-[hsl(var(--rack-border-strong))]",
                   tooFewPlayers && "cursor-not-allowed opacity-40",
                 ]
                   .filter(Boolean)
                   .join(" ")}
               >
                 <span className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-[var(--color-brass)]" />
+                  <Target className="h-4 w-4 text-[hsl(var(--rack-accent))]" />
                   <span className="font-semibold">{drill.name}</span>
                   {drill.minPlayers > 1 && <Pill>{drill.minPlayers}+ players</Pill>}
                 </span>
-                <span className="mt-1 block text-sm text-[var(--fg-dim)]">
+                <span className="mt-1 block text-sm text-[hsl(var(--rack-fg-muted))]">
                   {drill.description} · {drill.goal}
                 </span>
               </button>
@@ -398,8 +398,8 @@ function PracticeSetup({
               className={[
                 "flex min-h-12 items-center gap-2 rounded-xl border px-3 text-left text-sm transition",
                 players.includes(p.id)
-                  ? "border-[var(--color-brass)] bg-[var(--color-brass)]/10"
-                  : "border-[var(--border)] hover:border-[var(--border-strong)]",
+                  ? "border-[hsl(var(--rack-accent))] bg-[hsl(var(--rack-accent))]/10"
+                  : "border-[hsl(var(--rack-border))] hover:border-[hsl(var(--rack-border-strong))]",
               ].join(" ")}
             >
               <Avatar name={p.name} url={p.avatar_url} size={28} />
