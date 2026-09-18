@@ -103,7 +103,7 @@ Captures every GraphQL request/response on the listed pages → `data/gql-captur
 | `REVALIDATE_SECRET`         | recommended       | Secret for `POST /api/revalidate` to force a fresh render  |
 | `NEXT_PUBLIC_SITE_URL`      | recommended       | Used by `sitemap.xml` / `robots.txt`                       |
 | `NEXT_PUBLIC_SUPABASE_URL`  | for `/rack`       | Supabase project URL for the Rack Up section (public)      |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | for `/rack`   | Supabase publishable/anon key (public; never the service key) |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | for `/rack` | Supabase publishable key (public). `NEXT_PUBLIC_SUPABASE_ANON_KEY` also accepted. Never the secret key. |
 
 The site renders gracefully when the snapshot hasn't been generated yet —
 empty states everywhere, with a banner pointing the operator at `npm run scrape`.
@@ -243,17 +243,26 @@ schema is standalone precisely so none of that matters.)
      branch it is configured for* — usually `main` — so on a feature branch the
      migration lands when the PR merges, not before.
 
-3. **Project Settings → API** → copy the two public values into `.env.local`
-   (and into Vercel, scoped to Production, Preview and Development):
+3. **Project Settings → API** → copy into `.env.local`, and into Vercel scoped
+   to Production, Preview and Development:
 
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable / anon key>
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…
    ```
 
-   Leave them blank to disable the section; `/rack` then shows a setup notice
-   and the rest of the site is unaffected. Never add the service-role key —
-   this app does not use it.
+   That page lists a **Publishable key** and a **Secret key**. Use the
+   publishable one — it's the renamed anon key, meant to ship to browsers.
+   The secret key (formerly `service_role`) bypasses row-level security, and a
+   `NEXT_PUBLIC_*` value is compiled into the client bundle and served to every
+   visitor, so putting it there would hand the database to anyone who opens the
+   site. `lib/rack/supabase/env.ts` refuses to start on either the
+   `sb_secret_…` prefix or a legacy JWT claiming `service_role`, but treat that
+   as a backstop, not a licence to paste carelessly.
+
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` is still accepted as the variable name for
+   projects created before the rename. Leave both blank to disable the section;
+   `/rack` then shows a setup notice and the rest of the site is unaffected.
 
 4. **Authentication → URL Configuration** → set the Site URL to the deployed
    site and add the preview domains to Redirect URLs, or sign-up confirmation
