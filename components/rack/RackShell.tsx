@@ -72,7 +72,7 @@ export function RackShell({ children }: { children: ReactNode }) {
 
   return (
     <SessionContext.Provider value={session}>
-      <div className="min-h-[70vh]">
+      <div className="flex min-h-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 border-b border-[hsl(var(--rack-border))] bg-[hsl(var(--rack-surface)/0.88)] backdrop-blur-md">
           <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
             <Link
@@ -171,9 +171,11 @@ export function RackShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        {children}
+        {/* Takes the slack on a short page, so the footer lands on the bottom
+            edge rather than halfway up with bare background beneath it. */}
+        <main className="flex-1">{children}</main>
 
-        <footer className="mt-12 border-t border-[hsl(var(--rack-border))] py-6">
+        <footer className="mt-auto border-t border-[hsl(var(--rack-border))] py-6">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 text-sm text-[hsl(var(--rack-fg-muted))] sm:px-6">
             <span className="flex items-center gap-2">
               <Wordmark size="sm" />

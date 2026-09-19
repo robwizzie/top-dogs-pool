@@ -11,7 +11,7 @@ import { RACK_SETUP_HINT } from "@/lib/rack/supabase/env";
  */
 export function SetupNotice() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-4 py-16 sm:px-6">
       <div className="rounded-[var(--rack-radius-lg)] border border-[hsl(var(--rack-border))] bg-[hsl(var(--rack-surface))] p-6 shadow-[var(--rack-shadow-md)]">
         <p className="font-[family-name:var(--rack-font-heading)] text-2xl font-bold">
           Not connected yet

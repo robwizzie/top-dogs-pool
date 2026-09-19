@@ -45,7 +45,10 @@ export default function RackLayout({ children }: { children: ReactNode }) {
   return (
     <div
       data-rack
-      className={`rack-canvas ${lilita.variable} ${poppins.variable} min-h-dvh`}
+      // A column, so whatever is inside can push its footer to the bottom of a
+      // short page. `.rack-canvas` supplies the full-viewport height — it is
+      // loaded after Tailwind's utilities, so a class here would lose to it.
+      className={`rack-canvas ${lilita.variable} ${poppins.variable} flex flex-col`}
     >
       <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       {children}

@@ -51,7 +51,15 @@ export function AdminView() {
       supabase.from("profiles").select("*"),
     ]);
     setClaims((claimRes.data ?? []) as RosterClaimRow[]);
-    setPeople((peopleRes.data ?? []) as ProfileRow[]);
+    // Accounts only: a guest has no login, so they can never hold a roster
+    // claim and listing them here would just be noise. Filtered here rather
+    // than with `.eq("is_guest", false)` so this page still works against a
+    // database that hasn't had the guest migration applied yet — PostgREST
+    // rejects the whole query for an unknown column, which would take the
+    // admin screen down between a deploy and a migration.
+    setPeople(
+      ((peopleRes.data ?? []) as ProfileRow[]).filter((p) => !p.is_guest),
+    );
     setWorking(false);
   }, [supabase]);
 

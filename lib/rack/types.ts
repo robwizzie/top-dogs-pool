@@ -44,6 +44,16 @@ export type ProfileRow = {
   apa_member_id: string | null;
   /** Can approve roster claims. Also client-read-only. */
   is_admin: boolean;
+  /**
+   * Someone entered by name so they can be scored without an account.
+   *
+   * A guest is an ordinary profile — that is what lets them hold a lifetime
+   * record, a head-to-head and a seat at a table without any of those tables
+   * growing a second kind of player.
+   */
+  is_guest: boolean;
+  /** The account that entered this guest and may edit or remove them. */
+  guest_owner: string | null;
   /** When the roster photo and skill levels were last pulled in. */
   apa_imported_at: string | null;
   created_at: string;
@@ -84,6 +94,8 @@ export type RoomRow = {
   created_by: string;
   current_match_id: string | null;
   is_active: boolean | null;
+  /** Set when the host closed the table. The matches it hosted are kept. */
+  closed_at: string | null;
   created_at: string;
 };
 

@@ -127,6 +127,10 @@ export function StatsView() {
                           size={28}
                         />
                         <span className="truncate">{profile?.name ?? "Unknown"}</span>
+                        {/* A guest's record is real, but it belongs to a name
+                            somebody typed rather than to an account — worth
+                            saying next to a win percentage. */}
+                        {profile?.is_guest && <Pill tone="accent">guest</Pill>}
                         {profile?.apa_member_id && (
                           <Link
                             href={`/roster/${profile.apa_member_id}`}
