@@ -6,6 +6,11 @@ import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
+/** Rendered on first request per id, then cached. */
+export function generateStaticParams() {
+  return [];
+}
+
 type Props = {
   params: Promise<{ id: string }>;
 };
