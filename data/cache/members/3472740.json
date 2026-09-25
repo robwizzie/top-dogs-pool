@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T16:59:28.437Z",
+  "fetchedAt": "2026-09-25T17:47:28.951Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 1,
-            "matchesPlayed": 2,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -49,6 +49,26 @@
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93160389,
+            "team": {
+              "id": 13155141,
+              "name": "Top Dawgs",
+              "number": "06806",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
             "__typename": "EightBallPlayer"
           }
         ],
@@ -99,6 +119,18 @@
             "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93160389,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
           }
         ],
         "id": 3371021,
@@ -106,12 +138,12 @@
         "EightBallStats": [
           {
             "id": 803371021,
-            "matchesWon": 4,
-            "matchesPlayed": 11,
+            "matchesWon": 5,
+            "matchesPlayed": 12,
             "CLA": 0,
-            "defensiveShotAvg": 1.27,
-            "matchCountForLastTwoYrs": 11,
-            "lastPlayed": "2026-09-15T00:00:00+00:00",
+            "defensiveShotAvg": 1.17,
+            "matchCountForLastTwoYrs": 12,
+            "lastPlayed": "2026-09-22T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -364,6 +396,17 @@
           "notificationBellCount": 2,
           "notifications": [
             {
+              "id": 319191433,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-25T17:19:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
               "id": 317950219,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
@@ -372,17 +415,6 @@
               "createdDate": "2026-09-18T15:34:15+00:00",
               "typeId": null,
               "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 316733326,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-11T14:49:26+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -472,8 +504,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 2,
-              "matchesWon": 1,
+              "matchesPlayed": 3,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
@@ -514,6 +546,33 @@
                 "division": {
                   "id": 431614,
                   "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160389,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13155141,
+                "name": "Top Dawgs",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
                   "__typename": "Division"
                 },
                 "__typename": "Team"

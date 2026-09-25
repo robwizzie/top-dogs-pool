@@ -1,0 +1,513 @@
+{
+  "fetchedAt": "2026-09-25T17:47:43.463Z",
+  "data": {
+    "match": {
+      "id": 52087962,
+      "isFinalized": false,
+      "isTournament": true,
+      "tableNumber": null,
+      "division": {
+        "id": 442533,
+        "electronicScoringEnabled": true,
+        "__typename": "Division",
+        "scheduleInEdit": false,
+        "type": "EIGHT"
+      },
+      "league": {
+        "id": 890,
+        "esEnabled": true,
+        "__typename": "League",
+        "name": "APA of South Jersey",
+        "currentSessionId": 139,
+        "isElectronicPaymentsEnabled": false,
+        "country": {
+          "id": 1,
+          "__typename": "Country"
+        }
+      },
+      "__typename": "Match",
+      "type": "EIGHT",
+      "startTime": "2026-09-26T14:00:00Z",
+      "week": 1,
+      "isBye": false,
+      "isMine": true,
+      "isScored": false,
+      "scoresheet": null,
+      "isPaid": false,
+      "timeZone": {
+        "id": "169",
+        "name": "America/New_York",
+        "__typename": "TimeZone"
+      },
+      "location": {
+        "id": 112068,
+        "phone": "+16094874400",
+        "name": "The Claridge Hotel",
+        "address": {
+          "id": 72923,
+          "name": "The Claridge Hotel",
+          "address1": "123 South Indiana Avenue",
+          "address2": "",
+          "city": "Atlantic City",
+          "zip": "08401",
+          "latitude": 39.3576432,
+          "longitude": -74.4318772,
+          "__typename": "Address"
+        },
+        "__typename": "HostLocation"
+      },
+      "home": {
+        "id": 13155141,
+        "name": "Top Dawgs",
+        "number": "06806",
+        "isMine": true,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 442533,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 93160388,
+            "memberNumber": "08211481",
+            "displayName": "Aaron Bickford",
+            "alias": {
+              "id": 3037680,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3253364,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160386,
+            "memberNumber": "08203852",
+            "displayName": "Anand Patel",
+            "alias": {
+              "id": 2923158,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3175408,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160383,
+            "memberNumber": "08203833",
+            "displayName": "Peter Johnson V",
+            "alias": {
+              "id": 2915136,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3168689,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160387,
+            "memberNumber": "08203907",
+            "displayName": "Robert Wiscount",
+            "alias": {
+              "id": 2923578,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3175746,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160384,
+            "memberNumber": "08203835",
+            "displayName": "Meghan Johnson",
+            "alias": {
+              "id": 2915214,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3168757,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160382,
+            "memberNumber": "08215468",
+            "displayName": "Patrick Daley",
+            "alias": {
+              "id": 880078,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 7,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737682,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160385,
+            "memberNumber": "08203845",
+            "displayName": "Greg Carpenter",
+            "alias": {
+              "id": 2921805,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3174255,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160389,
+            "memberNumber": "08214528",
+            "displayName": "Jake McNamee",
+            "alias": {
+              "id": 3371021,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3472740,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "away": {
+        "id": 13155180,
+        "name": "Apocalypse",
+        "number": "07905",
+        "isMine": false,
+        "league": {
+          "id": 890,
+          "slug": "southjersey",
+          "__typename": "League"
+        },
+        "division": {
+          "id": 442533,
+          "type": "EIGHT",
+          "__typename": "Division"
+        },
+        "roster": [
+          {
+            "id": 93160695,
+            "memberNumber": "08215371",
+            "displayName": "John Makin",
+            "alias": {
+              "id": 1309137,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737608,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160694,
+            "memberNumber": "08227957",
+            "displayName": "Ryan Clifford",
+            "alias": {
+              "id": 979722,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1127104,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160693,
+            "memberNumber": "08215786",
+            "displayName": "James Bernard IV",
+            "alias": {
+              "id": 590540,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737945,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160696,
+            "memberNumber": "08201643",
+            "displayName": "John Townsend",
+            "alias": {
+              "id": 2164152,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 5,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2621033,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160698,
+            "memberNumber": "08203969",
+            "displayName": "Sherri Howlett",
+            "alias": {
+              "id": 2980475,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3211831,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160692,
+            "memberNumber": "08215619",
+            "displayName": "Kyle Tweed",
+            "alias": {
+              "id": 556442,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 737804,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160697,
+            "memberNumber": "08208580",
+            "displayName": "Michael Janson",
+            "alias": {
+              "id": 2585827,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 2946770,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93160699,
+            "memberNumber": "08244935",
+            "displayName": "Dani Hanko",
+            "alias": {
+              "id": 3215705,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 2,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3184032,
+              "__typename": "Member"
+            }
+          }
+        ],
+        "__typename": "Team"
+      },
+      "session": {
+        "id": 139,
+        "name": "Summer 2026",
+        "year": 2026,
+        "__typename": "Session"
+      },
+      "fees": {
+        "amount": 0,
+        "tax": 0,
+        "total": 0,
+        "__typename": "Fees"
+      },
+      "orderItems": [],
+      "results": []
+    }
+  }
+}

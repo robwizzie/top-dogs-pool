@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T16:57:12.803Z",
+  "fetchedAt": "2026-09-25T17:46:12.828Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -45,6 +45,26 @@
             "eightBallMatchPointsEarned": 8,
             "matchesWon": 3,
             "matchesPlayed": 8,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93160388,
+            "team": {
+              "id": 13155141,
+              "name": "Top Dawgs",
+              "number": "06806",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -376,6 +396,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 93160388,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91261583,
             "session": {
               "id": 138,
@@ -517,7 +549,7 @@
             "matchesPlayed": 164,
             "CLA": 0,
             "defensiveShotAvg": 1.63,
-            "matchCountForLastTwoYrs": 89,
+            "matchCountForLastTwoYrs": 88,
             "lastPlayed": "2026-09-15T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -815,6 +847,17 @@
           "notificationBellCount": 2,
           "notifications": [
             {
+              "id": 319191433,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-25T17:19:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
               "id": 317950219,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
@@ -823,17 +866,6 @@
               "createdDate": "2026-09-18T15:34:15+00:00",
               "typeId": null,
               "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 316733326,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-11T14:49:26+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1236,6 +1268,33 @@
                 "division": {
                   "id": 431614,
                   "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160388,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13155141,
+                "name": "Top Dawgs",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
                   "__typename": "Division"
                 },
                 "__typename": "Team"

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T16:57:21.629Z",
+  "fetchedAt": "2026-09-25T17:46:19.705Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -24,7 +24,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -49,6 +49,26 @@
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 2,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93160383,
+            "team": {
+              "id": 13155141,
+              "name": "Top Dawgs",
+              "number": "06806",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0,
+            "ppm": 0,
+            "eightBallMatchPointsEarned": 0,
+            "matchesWon": 0,
+            "matchesPlayed": 0,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
             "__typename": "EightBallPlayer"
           },
           {
@@ -525,6 +545,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 93160383,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91261579,
             "session": {
               "id": 138,
@@ -867,23 +899,23 @@
           {
             "id": 802915136,
             "matchesWon": 90,
-            "matchesPlayed": 201,
+            "matchesPlayed": 202,
             "CLA": 0,
             "defensiveShotAvg": 1.03,
             "matchCountForLastTwoYrs": 67,
-            "lastPlayed": "2026-09-15T00:00:00+00:00",
+            "lastPlayed": "2026-09-22T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902915136,
-            "matchesWon": 61,
-            "matchesPlayed": 123,
+            "matchesWon": 62,
+            "matchesPlayed": 124,
             "CLA": 0,
             "defensiveShotAvg": 0.67,
-            "matchCountForLastTwoYrs": 57,
-            "lastPlayed": "2026-08-03T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 58,
+            "lastPlayed": "2026-09-21T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1179,6 +1211,17 @@
           "notificationBellCount": 2,
           "notifications": [
             {
+              "id": 319191433,
+              "type": "scoreSheetsReady",
+              "title": "Scoresheets and Stats have been updated!",
+              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
+              "isRead": false,
+              "createdDate": "2026-09-25T17:19:23+00:00",
+              "typeId": null,
+              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "__typename": "Notification"
+            },
+            {
               "id": 317950219,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
@@ -1187,17 +1230,6 @@
               "createdDate": "2026-09-18T15:34:15+00:00",
               "typeId": null,
               "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 316733326,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-11T14:49:26+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1559,8 +1591,8 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
@@ -1586,7 +1618,7 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
-              "matchesPlayed": 1,
+              "matchesPlayed": 2,
               "matchesWon": 0,
               "session": {
                 "id": 140,
@@ -1655,6 +1687,33 @@
                 "division": {
                   "id": 431614,
                   "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160383,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": null,
+              "team": {
+                "id": 13155141,
+                "name": "Top Dawgs",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
                   "__typename": "Division"
                 },
                 "__typename": "Team"
