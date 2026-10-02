@@ -391,6 +391,16 @@ export function teamNumberFromTeam(team: TeamCacheEntry): string | null {
   return typeof n === "string" && n.length > 0 ? n : null;
 }
 
+/**
+ * True when the team belongs to a tournament division (e.g. a session-end
+ * "Tri-Cup"). APA gives those their own team id under the same team number,
+ * so they must not be mistaken for the next regular session.
+ */
+export function isTournamentTeam(team: TeamCacheEntry): boolean {
+  type Page = { team?: { division?: { isTournament?: boolean } } };
+  return (team.teamPage as Page).team?.division?.isTournament === true;
+}
+
 /** Pull `team.division.id` from a cached team's teamPage payload. */
 export function divisionIdFromTeam(team: TeamCacheEntry): number | null {
   type Page = { team?: { division?: { id?: number } } };
