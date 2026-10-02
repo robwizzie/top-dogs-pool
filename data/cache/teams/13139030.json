@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T16:58:54.007Z",
+  "fetchedAt": "2026-10-02T21:07:50.422Z",
   "data": {
     "teamPage": {
       "team": {
@@ -124,7 +124,7 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
@@ -149,9 +149,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesPlayed": 2,
+            "pa": 0.16666666666666666,
+            "ppm": 0.5,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -173,8 +173,8 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "pa": 1,
             "ppm": 3,
             "skillLevel": 3,
@@ -223,10 +223,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.8333333333333334,
-            "ppm": 2.5,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -248,10 +248,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 2,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
             "skillLevel": 2,
             "__typename": "EightBallPlayer",
             "member": {
@@ -267,8 +267,8 @@
       "team": {
         "id": 13139030,
         "sessionBonusPoints": 0,
-        "sessionPoints": 25,
-        "sessionTotalPoints": 25,
+        "sessionPoints": 49,
+        "sessionTotalPoints": 49,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -440,18 +440,35 @@
             "type": "EIGHT",
             "id": 51767507,
             "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/51767507/3175746/3",
+            "status": "COMPLETED",
+            "scoresheet": null,
             "startTime": "2026-09-22T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -503,18 +520,35 @@
             "type": "EIGHT",
             "id": 51767512,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-29T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -567,7 +601,7 @@
             "id": 51767517,
             "isBye": false,
             "status": "UNPLAYED",
-            "scoresheet": null,
+            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/51767517/3175746/3",
             "startTime": "2026-10-06T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,

@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-09-11T17:10:08.506Z",
+  "fetchedAt": "2026-10-02T21:18:47.101Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 221723,
         "league": {
           "id": 890,
-          "currentSessionId": 139,
+          "currentSessionId": 140,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -24,7 +24,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "eightBallMatchPointsEarned": 3,
             "matchesWon": 1,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -60,11 +60,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 1,
-            "ppm": 3,
-            "eightBallMatchPointsEarned": 3,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -80,11 +80,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 4,
+            "matchesWon": 2,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -129,6 +129,26 @@
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93160114,
+            "team": {
+              "id": 13155107,
+              "name": "Is it Cold in Here?",
+              "number": "06001",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 2,
+            "matchesWon": 0,
+            "matchesPlayed": 2,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
             "__typename": "EightBallPlayer"
           },
           {
@@ -2571,7 +2591,19 @@
               "__typename": "Session"
             },
             "nineOnSnaps": 0,
-            "nineBallBreakAndRuns": 1,
+            "nineBallBreakAndRuns": 2,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 93161947,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 1,
+            "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
             "__typename": "NineBallPlayer"
@@ -2589,12 +2621,36 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 93160114,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 92158782,
             "session": {
               "id": 139,
               "__typename": "Session"
             },
             "nineOnSnaps": 1,
+            "nineBallBreakAndRuns": 0,
+            "miniSlams": 0,
+            "skunks": 0,
+            "__typename": "NineBallPlayer"
+          },
+          {
+            "id": 93161760,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "nineOnSnaps": 0,
             "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
@@ -5006,24 +5062,24 @@
         "EightBallStats": [
           {
             "id": 800221723,
-            "matchesWon": 523,
-            "matchesPlayed": 1048,
+            "matchesWon": 527,
+            "matchesPlayed": 1060,
             "CLA": 4,
-            "defensiveShotAvg": 1.59,
-            "matchCountForLastTwoYrs": 246,
-            "lastPlayed": "2026-09-10T00:00:00+00:00",
+            "defensiveShotAvg": 1.61,
+            "matchCountForLastTwoYrs": 251,
+            "lastPlayed": "2026-09-29T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 900221723,
-            "matchesWon": 442,
-            "matchesPlayed": 970,
+            "matchesWon": 448,
+            "matchesPlayed": 981,
             "CLA": 0,
             "defensiveShotAvg": 0.89,
-            "matchCountForLastTwoYrs": 204,
-            "lastPlayed": "2026-08-31T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 205,
+            "lastPlayed": "2026-09-27T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -5321,6 +5377,21 @@
         "league": {
           "news": [
             {
+              "id": 57749,
+              "title": "15% Off American Poolplayer T-shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 57704,
+              "title": "Scorekeeper Tablet Mode Is Available Now",
+              "__typename": "News"
+            },
+            {
+              "id": 57490,
+              "title": "Update Scorekeeper Today!!!",
+              "__typename": "News"
+            },
+            {
               "id": 4624,
               "title": "Follow Us on Social Media",
               "__typename": "News"
@@ -5344,7 +5415,10 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -5487,72 +5561,28 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 6,
+          "notificationBellCount": 2,
           "notifications": [
             {
-              "id": 316733326,
+              "id": 320372185,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-11T14:49:26+00:00",
+              "createdDate": "2026-10-02T20:49:12+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             },
             {
-              "id": 316216455,
+              "id": 319191433,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-08T18:39:23+00:00",
+              "createdDate": "2026-09-25T17:19:23+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13779776,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 316039778,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-07T20:09:22+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13772610,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 315822512,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-05T22:54:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13763850,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 315822252,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-05T22:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13763833,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 315817419,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-05T21:49:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13763562,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -5578,7 +5608,15 @@
           ],
           "membershipExpires": "2026-12-31T23:59:59Z",
           "setting": "890",
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "discount": 0,
+            "year": 2027,
+            "amount": 30,
+            "tax": 0,
+            "total": 30,
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -5636,467 +5674,6 @@
         "alias": {
           "id": 221723,
           "pastTeams": [
-            {
-              "id": 91261600,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 1,
-              "team": {
-                "id": 12894676,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 420216,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91264136,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 11,
-              "team": {
-                "id": 12895035,
-                "name": "DEM9LITI9N CREW",
-                "division": {
-                  "id": 420251,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91264604,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 16,
-              "matchesWon": 6,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 10,
-              "team": {
-                "id": 12895104,
-                "name": "Fire And Ice",
-                "division": {
-                  "id": 420259,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91260991,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 12,
-              "matchesWon": 7,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 1,
-              "team": {
-                "id": 12894593,
-                "name": "Is it Cold in Here?",
-                "division": {
-                  "id": 420209,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263868,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 15,
-              "matchesWon": 9,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 9,
-              "team": {
-                "id": 12894997,
-                "name": "Keep onnn Scratchin",
-                "division": {
-                  "id": 420248,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91260934,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 9,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 1,
-              "team": {
-                "id": 12894585,
-                "name": "The Smith's & Company",
-                "division": {
-                  "id": 420208,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91261320,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 1,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 14,
-              "team": {
-                "id": 12894639,
-                "name": "Who Cares?",
-                "division": {
-                  "id": 420213,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90962552,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 1,
-              "team": {
-                "id": 12858075,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 416962,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90963409,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 6,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 12858184,
-                "name": "DEM9LITI9N CREW",
-                "division": {
-                  "id": 416997,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90963209,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 12,
-              "matchesWon": 4,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 10,
-              "team": {
-                "id": 12858159,
-                "name": "Fire And Ice",
-                "division": {
-                  "id": 417005,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            }
-          ],
-          "currentTeams": [
-            {
-              "id": 93021570,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13138982,
-                "name": "Break 8 Away",
-                "division": {
-                  "id": 441441,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 93022451,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13139094,
-                "name": "DEM9LITI9N CREW",
-                "division": {
-                  "id": 441476,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 93022278,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13139072,
-                "name": "Fire And Ice",
-                "division": {
-                  "id": 441484,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 93021730,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13139002,
-                "name": "Is it Cold in Here?",
-                "division": {
-                  "id": 441434,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 93022546,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13139106,
-                "name": "Keep onnn Scratchin",
-                "division": {
-                  "id": 441473,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 93021872,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13139020,
-                "name": "The Smith's & Company",
-                "division": {
-                  "id": 441433,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 93022729,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 140,
-                "name": "Fall 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13139129,
-                "name": "Who Cares?",
-                "division": {
-                  "id": 441438,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
             {
               "id": 92156403,
               "isActive": true,
@@ -6179,6 +5756,33 @@
               "__typename": "NineBallPlayer"
             },
             {
+              "id": 93161947,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 2,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13155339,
+                "name": "Fire And Ice",
+                "division": {
+                  "id": 442534,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
               "id": 92155787,
               "isActive": true,
               "role": "CO_CAPTAIN",
@@ -6206,6 +5810,33 @@
               "__typename": "EightBallPlayer"
             },
             {
+              "id": 93160114,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 2,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13155107,
+                "name": "Is it Cold in Here?",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
               "id": 92158782,
               "isActive": true,
               "role": "MEMBER",
@@ -6226,6 +5857,33 @@
                 "division": {
                   "id": 431646,
                   "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93161760,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 2,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13155315,
+                "name": "Keep onnn Scratchin",
+                "division": {
+                  "id": 442534,
+                  "isTournament": true,
                   "__typename": "Division"
                 },
                 "__typename": "Team"
@@ -6279,6 +5937,197 @@
                 "name": "Who Cares?",
                 "division": {
                   "id": 431611,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            }
+          ],
+          "currentTeams": [
+            {
+              "id": 93021570,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 3,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13138982,
+                "name": "Break 8 Away",
+                "division": {
+                  "id": 441441,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93022451,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13139094,
+                "name": "DEM9LITI9N CREW",
+                "division": {
+                  "id": 441476,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93022278,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 3,
+              "matchesWon": 1,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13139072,
+                "name": "Fire And Ice",
+                "division": {
+                  "id": 441484,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93021730,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 2,
+              "matchesWon": 1,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13139002,
+                "name": "Is it Cold in Here?",
+                "division": {
+                  "id": 441434,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93022546,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13139106,
+                "name": "Keep onnn Scratchin",
+                "division": {
+                  "id": 441473,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93021872,
+              "isActive": true,
+              "role": "CO_CAPTAIN",
+              "rosterPosition": 2,
+              "nickName": null,
+              "matchesPlayed": 3,
+              "matchesWon": 3,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13139020,
+                "name": "The Smith's & Company",
+                "division": {
+                  "id": 441433,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93022729,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 4,
+              "matchesWon": 2,
+              "session": {
+                "id": 140,
+                "name": "Fall 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13139129,
+                "name": "Who Cares?",
+                "division": {
+                  "id": 441438,
                   "isTournament": false,
                   "__typename": "Division"
                 },

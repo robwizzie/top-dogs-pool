@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-09-11T17:09:22.485Z",
+  "fetchedAt": "2026-10-02T21:17:06.592Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2788151,
         "league": {
           "id": 890,
-          "currentSessionId": 139,
+          "currentSessionId": 140,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -49,6 +49,26 @@
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93161032,
+            "team": {
+              "id": 13155222,
+              "name": "Boys From The Basement",
+              "number": "05707",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 1,
+            "ppm": 3,
+            "eightBallMatchPointsEarned": 6,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -551,6 +571,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 93161032,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 1,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91264859,
             "session": {
               "id": 138,
@@ -832,11 +864,11 @@
         "EightBallStats": [
           {
             "id": 802788151,
-            "matchesWon": 96,
-            "matchesPlayed": 197,
+            "matchesWon": 98,
+            "matchesPlayed": 199,
             "CLA": 0,
             "defensiveShotAvg": 0.63,
-            "matchCountForLastTwoYrs": 43,
+            "matchCountForLastTwoYrs": 41,
             "lastPlayed": "2026-08-25T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -848,7 +880,7 @@
             "matchesPlayed": 28,
             "CLA": 0,
             "defensiveShotAvg": 1,
-            "matchCountForLastTwoYrs": 8,
+            "matchCountForLastTwoYrs": 7,
             "lastPlayed": "2025-03-24T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -993,6 +1025,21 @@
         "league": {
           "news": [
             {
+              "id": 57749,
+              "title": "15% Off American Poolplayer T-shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 57704,
+              "title": "Scorekeeper Tablet Mode Is Available Now",
+              "__typename": "News"
+            },
+            {
+              "id": 57490,
+              "title": "Update Scorekeeper Today!!!",
+              "__typename": "News"
+            },
+            {
               "id": 4624,
               "title": "Follow Us on Social Media",
               "__typename": "News"
@@ -1016,7 +1063,10 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -1159,72 +1209,28 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 6,
+          "notificationBellCount": 2,
           "notifications": [
             {
-              "id": 316733326,
+              "id": 320372185,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-11T14:49:26+00:00",
+              "createdDate": "2026-10-02T20:49:12+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             },
             {
-              "id": 316216455,
+              "id": 319191433,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-08T18:39:23+00:00",
+              "createdDate": "2026-09-25T17:19:23+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13779776,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 316039778,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-07T20:09:22+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13772610,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 315822512,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-05T22:54:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13763850,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 315822252,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-05T22:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13763833,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 315817419,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-05T21:49:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13763562,\"leagueDivisionSessionScheduleMatchId\":51767499,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1250,7 +1256,15 @@
           ],
           "membershipExpires": "2026-12-31T23:59:59Z",
           "setting": "890",
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "discount": 0,
+            "year": 2027,
+            "amount": 30,
+            "tax": 0,
+            "total": 30,
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -1308,6 +1322,60 @@
         "alias": {
           "id": 2788151,
           "pastTeams": [
+            {
+              "id": 92159818,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Jimmy",
+              "matchesPlayed": 7,
+              "matchesWon": 3,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": 8,
+              "team": {
+                "id": 13023274,
+                "name": "Boys From The Basement",
+                "division": {
+                  "id": 431661,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93161032,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "Jimmy",
+              "matchesPlayed": 2,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 3,
+              "rank": null,
+              "team": {
+                "id": 13155222,
+                "name": "Boys From The Basement",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 91264859,
               "isActive": true,
@@ -1523,60 +1591,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88470224,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": "Jimmy",
-              "matchesPlayed": 6,
-              "matchesWon": 4,
-              "session": {
-                "id": 133,
-                "name": "Summer 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 2,
-              "team": {
-                "id": 12514591,
-                "name": "Boys From The Basement",
-                "division": {
-                  "id": 386593,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88011475,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Jimmy",
-              "matchesPlayed": 10,
-              "matchesWon": 8,
-              "session": {
-                "id": 132,
-                "name": "Spring 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 1,
-              "team": {
-                "id": 12416832,
-                "name": "Bank Shot Bullies",
-                "division": {
-                  "id": 377855,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1584,7 +1598,7 @@
               "id": 93021805,
               "isActive": true,
               "role": "MEMBER",
-              "rosterPosition": 6,
+              "rosterPosition": 5,
               "nickName": "Jimmy",
               "matchesPlayed": 0,
               "matchesWon": 0,
@@ -1600,33 +1614,6 @@
                 "name": "Boys From The Basement",
                 "division": {
                   "id": 441441,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92159818,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Jimmy",
-              "matchesPlayed": 7,
-              "matchesWon": 3,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 3,
-              "rank": 8,
-              "team": {
-                "id": 13023274,
-                "name": "Boys From The Basement",
-                "division": {
-                  "id": 431661,
                   "isTournament": false,
                   "__typename": "Division"
                 },

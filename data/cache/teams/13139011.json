@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T17:02:48.513Z",
+  "fetchedAt": "2026-10-02T21:11:05.196Z",
   "data": {
     "teamPage": {
       "team": {
@@ -74,9 +74,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesPlayed": 3,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -85,11 +85,11 @@
             }
           },
           {
-            "id": 93021802,
-            "memberNumber": "08212185",
-            "displayName": "Rich Brown",
+            "id": 93021806,
+            "memberNumber": "08213034",
+            "displayName": "Mike Sori",
             "alias": {
-              "id": 2788142,
+              "id": 2956192,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -98,14 +98,14 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3086049,
+              "id": 3195042,
               "__typename": "Member"
             }
           },
@@ -135,31 +135,6 @@
             }
           },
           {
-            "id": 93021806,
-            "memberNumber": "08213034",
-            "displayName": "Mike Sori",
-            "alias": {
-              "id": 2956192,
-              "league": {
-                "id": 890,
-                "slug": "southjersey",
-                "isMine": true,
-                "__typename": "League"
-              },
-              "__typename": "Alias"
-            },
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3195042,
-              "__typename": "Member"
-            }
-          },
-          {
             "id": 93021803,
             "memberNumber": "08212193",
             "displayName": "Nick Palese",
@@ -174,7 +149,7 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 6,
@@ -223,11 +198,11 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 2,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3031063,
@@ -248,14 +223,39 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesWon": 1,
+            "matchesPlayed": 3,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3228896,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93209694,
+            "memberNumber": "08212608",
+            "displayName": "John Cummings Jr",
+            "alias": {
+              "id": 3061590,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 6,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3272415,
               "__typename": "Member"
             }
           }
@@ -267,8 +267,8 @@
       "team": {
         "id": 13139011,
         "sessionBonusPoints": 0,
-        "sessionPoints": 7,
-        "sessionTotalPoints": 7,
+        "sessionPoints": 38,
+        "sessionTotalPoints": 38,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -280,18 +280,35 @@
             "type": "EIGHT",
             "id": 51767501,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-08T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -419,18 +436,35 @@
             "type": "EIGHT",
             "id": 51767509,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-22T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -482,18 +516,35 @@
             "type": "EIGHT",
             "id": 51767516,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-29T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",

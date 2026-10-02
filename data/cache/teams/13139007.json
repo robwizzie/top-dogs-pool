@@ -1,13 +1,13 @@
 {
-  "fetchedAt": "2026-09-18T17:03:11.389Z",
+  "fetchedAt": "2026-10-02T21:11:33.759Z",
   "data": {
     "teamPage": {
       "team": {
         "id": 13139007,
         "name": "Keep It Simple Stupid",
         "number": "06808",
-        "isTied": false,
-        "standing": 7,
+        "isTied": true,
+        "standing": 4,
         "division": {
           "id": 441441,
           "name": "Gl-68",
@@ -73,10 +73,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -148,10 +148,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -173,10 +173,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
             "skillLevel": 7,
             "__typename": "EightBallPlayer",
             "member": {
@@ -199,9 +199,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 1,
-            "matchesPlayed": 2,
-            "pa": 0.5,
-            "ppm": 1.5,
+            "matchesPlayed": 3,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -224,9 +224,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -267,8 +267,8 @@
       "team": {
         "id": 13139007,
         "sessionBonusPoints": 0,
-        "sessionPoints": 18,
-        "sessionTotalPoints": 18,
+        "sessionPoints": 44,
+        "sessionTotalPoints": 44,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -440,18 +440,35 @@
             "type": "EIGHT",
             "id": 51767511,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-22T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -503,18 +520,35 @@
             "type": "EIGHT",
             "id": 51767516,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-09-29T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 14,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",

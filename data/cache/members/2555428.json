@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-09-18T17:03:34.771Z",
+  "fetchedAt": "2026-10-02T21:20:41.716Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2033169,
         "league": {
           "id": 890,
-          "currentSessionId": 139,
+          "currentSessionId": 140,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -22,9 +22,9 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "eightBallMatchPointsEarned": 4,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 2,
-            "matchesPlayed": 2,
+            "pa": 0.75,
+            "ppm": 2.25,
+            "eightBallMatchPointsEarned": 9,
+            "matchesWon": 4,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -69,6 +69,26 @@
             "eightOnBreaks": 1,
             "miniSlams": 0,
             "rackless": 1,
+            "__typename": "EightBallPlayer"
+          },
+          {
+            "id": 93160014,
+            "team": {
+              "id": 13155094,
+              "name": "Demo-Lition",
+              "number": "01609",
+              "active": true,
+              "__typename": "Team"
+            },
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "eightBallMatchPointsEarned": 2,
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "eightBallBreakAndRuns": 0,
+            "eightOnBreaks": 0,
+            "miniSlams": 0,
+            "rackless": 0,
             "__typename": "EightBallPlayer"
           },
           {
@@ -775,6 +795,18 @@
             "__typename": "EightBallPlayer"
           },
           {
+            "id": 93160014,
+            "session": {
+              "id": 139,
+              "__typename": "Session"
+            },
+            "eightOnBreaks": 0,
+            "eightBallBreakAndRuns": 0,
+            "rackless": 0,
+            "miniSlams": 0,
+            "__typename": "EightBallPlayer"
+          },
+          {
             "id": 91263391,
             "session": {
               "id": 138,
@@ -1320,12 +1352,12 @@
         "EightBallStats": [
           {
             "id": 802033169,
-            "matchesWon": 202,
-            "matchesPlayed": 369,
+            "matchesWon": 206,
+            "matchesPlayed": 373,
             "CLA": 4,
-            "defensiveShotAvg": 1.19,
-            "matchCountForLastTwoYrs": 94,
-            "lastPlayed": "2026-09-17T00:00:00+00:00",
+            "defensiveShotAvg": 1.17,
+            "matchCountForLastTwoYrs": 98,
+            "lastPlayed": "2026-10-01T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1336,7 +1368,7 @@
             "matchesPlayed": 194,
             "CLA": 0,
             "defensiveShotAvg": 1.07,
-            "matchCountForLastTwoYrs": 58,
+            "matchCountForLastTwoYrs": 55,
             "lastPlayed": "2026-08-17T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -1503,6 +1535,16 @@
         "league": {
           "news": [
             {
+              "id": 57749,
+              "title": "15% Off American Poolplayer T-shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 57704,
+              "title": "Scorekeeper Tablet Mode Is Available Now",
+              "__typename": "News"
+            },
+            {
               "id": 57490,
               "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
@@ -1531,7 +1573,10 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -1677,25 +1722,25 @@
           "notificationBellCount": 2,
           "notifications": [
             {
-              "id": 317950219,
+              "id": 320372185,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-18T15:34:15+00:00",
+              "createdDate": "2026-10-02T20:49:12+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             },
             {
-              "id": 316733326,
+              "id": 319191433,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-11T14:49:26+00:00",
+              "createdDate": "2026-09-25T17:19:23+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13800234,\"leagueDivisionSessionScheduleMatchId\":51767504,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1721,7 +1766,15 @@
           ],
           "membershipExpires": "2026-12-31T23:59:59Z",
           "setting": "890",
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "discount": 0,
+            "year": 2027,
+            "amount": 30,
+            "tax": 0,
+            "total": 30,
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -1779,6 +1832,87 @@
         "alias": {
           "id": 2033169,
           "pastTeams": [
+            {
+              "id": 92158285,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": null,
+              "matchesPlayed": 6,
+              "matchesWon": 3,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 5,
+              "team": {
+                "id": 13023054,
+                "name": "9-Ball Assassins",
+                "division": {
+                  "id": 431638,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 92155449,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 13,
+              "matchesWon": 5,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 16,
+              "team": {
+                "id": 13022656,
+                "name": "Demo-Lition",
+                "division": {
+                  "id": 431602,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160014,
+              "isActive": true,
+              "role": "CAPTAIN",
+              "rosterPosition": 1,
+              "nickName": null,
+              "matchesPlayed": 1,
+              "matchesWon": 1,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13155094,
+                "name": "Demo-Lition",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
             {
               "id": 91263391,
               "isActive": true,
@@ -1967,87 +2101,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89287036,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": null,
-              "matchesPlayed": 10,
-              "matchesWon": 6,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 4,
-              "team": {
-                "id": 12623532,
-                "name": "The Miscues",
-                "division": {
-                  "id": 395940,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88899348,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 11,
-              "matchesWon": 8,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 1,
-              "team": {
-                "id": 12576092,
-                "name": "Demo-Lition",
-                "division": {
-                  "id": 391925,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89165751,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": null,
-              "matchesPlayed": 7,
-              "matchesWon": 2,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 7,
-              "team": {
-                "id": 12576066,
-                "name": "The Miscues",
-                "division": {
-                  "id": 391962,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -2057,8 +2110,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 2,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
@@ -2084,8 +2137,8 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 2,
-              "matchesWon": 2,
+              "matchesPlayed": 4,
+              "matchesWon": 4,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
@@ -2098,60 +2151,6 @@
                 "name": "Demo-Lition",
                 "division": {
                   "id": 441429,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92158285,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 3,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 13023054,
-                "name": "9-Ball Assassins",
-                "division": {
-                  "id": 431638,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 92155449,
-              "isActive": true,
-              "role": "CAPTAIN",
-              "rosterPosition": 1,
-              "nickName": null,
-              "matchesPlayed": 13,
-              "matchesWon": 5,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 16,
-              "team": {
-                "id": 13022656,
-                "name": "Demo-Lition",
-                "division": {
-                  "id": 431602,
                   "isTournament": false,
                   "__typename": "Division"
                 },
