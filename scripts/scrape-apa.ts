@@ -48,6 +48,7 @@ import {
   opponentTeamIdsFromMatch,
   teamIdsFromMember,
   teamNumberFromTeam,
+  isTournamentTeam,
   teamsFromMember,
   type DivisionCacheEntry,
   type MatchCacheEntry,
@@ -62,7 +63,7 @@ loadEnv();
 // team via the persistent team `number` (see auto-pivot block in main()).
 const TEAM_URL =
   process.env.APA_TEAM_URL ??
-  "https://league.poolplayers.com/southjersey/team/13022793";
+  "https://league.poolplayers.com/southjersey/team/13139030";
 const USERNAME = process.env.APA_USERNAME;
 const PASSWORD = process.env.APA_PASSWORD;
 const HEADFUL = process.env.APA_HEADFUL === "1";
@@ -194,24 +195,32 @@ async function main() {
   // team forever and never pick up the new session's schedule.
   const ourTeamNumber = teamNumberFromTeam(currentTeam);
   if (ourTeamNumber) {
-    let newestId = TEAM_ID;
+    const candidates = new Set<number>();
     for (const id of memberIds) {
       const m = await cache.read<MemberCacheEntry>("members", id);
       if (!m) continue;
       for (const t of teamsFromMember(m.data)) {
-        if (t.number === ourTeamNumber && t.id > newestId) newestId = t.id;
+        if (t.number === ourTeamNumber && t.id > TEAM_ID) candidates.add(t.id);
       }
     }
-    if (newestId !== TEAM_ID) {
-      console.log(
-        `==> detected newer session: pivoting current team #${TEAM_ID} → #${newestId} (team number ${ourTeamNumber})`,
-      );
-      TEAM_ID = newestId;
-      TEAM_URL_RESOLVED = `https://league.poolplayers.com/${SLUG}/team/${TEAM_ID}`;
-      currentTeam = await fetchTeam(page, capture, cache, TEAM_ID, SLUG, {
+    // Newest first. Tournament teams (a session's Tri-Cup, etc.) share the
+    // team number and get a higher id than the next regular session, so
+    // they are skipped — pivoting onto one showed a 0-0 record site-wide.
+    for (const id of [...candidates].sort((a, b) => b - a)) {
+      const team = await fetchTeam(page, capture, cache, id, SLUG, {
         attempts: 3,
       });
       stats.teamsFetched++;
+      if (isTournamentTeam(team)) {
+        console.log(`   skipping team #${id}: tournament division`);
+        continue;
+      }
+      console.log(
+        `==> detected newer session: pivoting current team #${TEAM_ID} → #${id} (team number ${ourTeamNumber})`,
+      );
+      TEAM_ID = id;
+      TEAM_URL_RESOLVED = `https://league.poolplayers.com/${SLUG}/team/${TEAM_ID}`;
+      currentTeam = team;
       currentSessionId = pickSessionId(currentTeam);
       memberIds = memberIdsFromTeam(currentTeam);
       console.log(
@@ -220,6 +229,7 @@ async function main() {
       console.log("==> ensuring new-session member data is fresh");
       await refreshMembers(memberIds);
       console.log();
+      break;
     }
   }
 
