@@ -139,9 +139,32 @@ async function readPublicAsDataUrl(
   relPath: string,
   mime: string,
 ): Promise<string | null> {
+  const bytes = await readPublicFile(relPath);
+  return bytes ? `data:${mime};base64,${Buffer.from(bytes).toString("base64")}` : null;
+}
+
+/**
+ * Read a file from public/. On Node hosts (Vercel, Docker, `next dev`) that's
+ * the filesystem. Cloudflare Workers have no copy of public/ on disk — it is
+ * uploaded as static assets — so there we go through the Workers `ASSETS`
+ * binding, reached via the request context OpenNext installs on globalThis
+ * (read directly so this file doesn't depend on the Cloudflare adapter).
+ */
+async function readPublicFile(relPath: string): Promise<Uint8Array | null> {
   try {
-    const buf = await readFile(join(process.cwd(), "public", relPath));
-    return `data:${mime};base64,${buf.toString("base64")}`;
+    return await readFile(join(process.cwd(), "public", relPath));
+  } catch {
+    // fall through to the Workers asset binding
+  }
+  try {
+    const ctx = (globalThis as Record<symbol, unknown>)[
+      Symbol.for("__cloudflare-context__")
+    ] as { env?: { ASSETS?: { fetch(url: string): Promise<Response> } } } | undefined;
+    const assets = ctx?.env?.ASSETS;
+    if (!assets) return null;
+    const res = await assets.fetch(`https://assets.local/${relPath}`);
+    if (!res.ok) return null;
+    return new Uint8Array(await res.arrayBuffer());
   } catch {
     return null;
   }

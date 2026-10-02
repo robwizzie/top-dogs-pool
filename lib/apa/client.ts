@@ -1,5 +1,3 @@
-import { readFile, stat } from "node:fs/promises";
-import { resolve } from "node:path";
 import { ApaSnapshot } from "./schemas";
 
 export class ApaFetchError extends Error {
@@ -8,8 +6,6 @@ export class ApaFetchError extends Error {
     this.name = "ApaFetchError";
   }
 }
-
-const SNAPSHOT_PATH = resolve(process.cwd(), "data/apa.json");
 
 const EMPTY_SNAPSHOT: ApaSnapshot = {
   lastUpdated: "1970-01-01T00:00:00.000Z",
@@ -35,37 +31,38 @@ const EMPTY_SNAPSHOT: ApaSnapshot = {
   opponentPlayers: {},
 };
 
-let cached: { mtime: number; data: ApaSnapshot } | null = null;
+let cached: Promise<ApaSnapshot> | null = null;
 
 /**
- * Load data/apa.json. Cached in-process by mtime — Next.js may call this
- * many times per render and the file rarely changes.
+ * The committed data/apa.json snapshot, memoized per process / isolate.
+ *
+ * The file is bundled into the server build instead of being read from disk
+ * at request time: Cloudflare Workers have no filesystem to read it from, and
+ * on every other host (Vercel, Docker, `next dev`) it only ever changes
+ * through a commit + rebuild anyway (the scraper workflow commits
+ * data/apa.json, which triggers a redeploy). It is a dynamic import so the
+ * multi-MB JSON.parse runs on the first call, not whenever a module that
+ * imports this file is loaded — serving a cached page never pays for it.
  *
  * The snapshot is the committed output of our own scraper/projection
  * (`npm run sync`), so its shape is already guaranteed and every schema
  * default is materialized into the file. Running a full Zod `.parse()` over
- * the multi-MB object on every cold function instance is therefore pure CPU
- * waste — on Vercel's Fluid Compute it shows up directly as Active CPU. We
- * skip validation in production and keep it in dev/preview as a safety net
- * that catches a malformed or hand-edited file before it ships.
+ * the multi-MB object on every cold instance is therefore pure CPU waste
+ * (Vercel Active CPU / the Workers CPU-time limit). We skip validation in
+ * production and keep it in dev/preview as a safety net that catches a
+ * malformed or hand-edited file before it ships.
  */
-export async function loadSnapshot(): Promise<ApaSnapshot> {
-  try {
-    const s = await stat(SNAPSHOT_PATH);
-    if (cached && cached.mtime === s.mtimeMs) return cached.data;
-    const raw = await readFile(SNAPSHOT_PATH, "utf8");
-    const json = JSON.parse(raw);
-    const parsed =
-      process.env.NODE_ENV === "production"
+export function loadSnapshot(): Promise<ApaSnapshot> {
+  cached ??= import("@/data/apa.json").then(
+    (mod) => {
+      const json: unknown = mod.default;
+      return process.env.NODE_ENV === "production"
         ? (json as ApaSnapshot)
         : ApaSnapshot.parse(json);
-    cached = { mtime: s.mtimeMs, data: parsed };
-    return parsed;
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") return EMPTY_SNAPSHOT;
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("[apa] failed to load snapshot:", (err as Error).message);
-    }
+    },
+  ).catch((err: unknown) => {
+    console.warn("[apa] failed to load snapshot:", (err as Error).message);
     return EMPTY_SNAPSHOT;
-  }
+  });
+  return cached;
 }

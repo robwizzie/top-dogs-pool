@@ -18,3 +18,9 @@ data/apa-raw-cache.json
 data/login-failure.png
 data/login-*.png
 .claude/
+
+# Cloudflare Workers (OpenNext) build output
+.open-next
+.wrangler
+.dev.vars*
+!.dev.vars.example
