@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-09-25T17:51:06.636Z",
+  "fetchedAt": "2026-10-02T18:19:09.801Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 556442,
         "league": {
           "id": 890,
-          "currentSessionId": 139,
+          "currentSessionId": 140,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -64,7 +64,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -2327,12 +2327,12 @@
         "EightBallStats": [
           {
             "id": 800556442,
-            "matchesWon": 267,
-            "matchesPlayed": 501,
+            "matchesWon": 268,
+            "matchesPlayed": 504,
             "CLA": null,
-            "defensiveShotAvg": 1.32,
-            "matchCountForLastTwoYrs": 75,
-            "lastPlayed": "2026-09-22T00:00:00+00:00",
+            "defensiveShotAvg": 1.31,
+            "matchCountForLastTwoYrs": 77,
+            "lastPlayed": "2026-09-29T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -2343,7 +2343,7 @@
             "matchesPlayed": 727,
             "CLA": null,
             "defensiveShotAvg": 1.02,
-            "matchCountForLastTwoYrs": 73,
+            "matchCountForLastTwoYrs": 70,
             "lastPlayed": "2026-09-17T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -2708,6 +2708,16 @@
         "league": {
           "news": [
             {
+              "id": 57749,
+              "title": "15% Off American Poolplayer T-shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 57704,
+              "title": "Scorekeeper Tablet Mode Is Available Now",
+              "__typename": "News"
+            },
+            {
               "id": 57490,
               "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
@@ -2736,7 +2746,10 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -2879,7 +2892,7 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
               "id": 319191433,
@@ -2890,17 +2903,6 @@
               "createdDate": "2026-09-25T17:19:23+00:00",
               "typeId": null,
               "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 317950219,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-18T15:34:15+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2926,7 +2928,15 @@
           ],
           "membershipExpires": "2026-12-31T23:59:59Z",
           "setting": "890",
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "discount": 0,
+            "year": 2027,
+            "amount": 30,
+            "tax": 0,
+            "total": 30,
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -2984,6 +2994,87 @@
         "alias": {
           "id": 556442,
           "pastTeams": [
+            {
+              "id": 92158193,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Kaboom",
+              "matchesPlayed": 11,
+              "matchesWon": 7,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 2,
+              "team": {
+                "id": 13023042,
+                "name": "Apocalypse",
+                "division": {
+                  "id": 431637,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160692,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Kaboom",
+              "matchesPlayed": 2,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13155180,
+                "name": "Apocalypse",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92158599,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "Kaboom",
+              "matchesPlayed": 7,
+              "matchesWon": 5,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 7,
+              "rank": 2,
+              "team": {
+                "id": 13023098,
+                "name": "Troublemakers",
+                "division": {
+                  "id": 431643,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 91263299,
               "isActive": true,
@@ -3172,87 +3263,6 @@
                 "__typename": "Team"
               },
               "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 89287477,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Kaboom",
-              "matchesPlayed": 13,
-              "matchesWon": 5,
-              "session": {
-                "id": 135,
-                "name": "Spring 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 5,
-              "team": {
-                "id": 12623594,
-                "name": "Troublemakers",
-                "division": {
-                  "id": 395945,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 89156263,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "Kaboom",
-              "matchesPlayed": 12,
-              "matchesWon": 6,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 2,
-              "team": {
-                "id": 12576221,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 391961,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88900971,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Kaboom",
-              "matchesPlayed": 13,
-              "matchesWon": 9,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 2,
-              "team": {
-                "id": 12576315,
-                "name": "Troublemakers",
-                "division": {
-                  "id": 391967,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -3303,87 +3313,6 @@
                 "name": "Troublemakers",
                 "division": {
                   "id": 441470,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 92158193,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Kaboom",
-              "matchesPlayed": 11,
-              "matchesWon": 7,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 2,
-              "team": {
-                "id": 13023042,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 431637,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 93160692,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Kaboom",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": null,
-              "team": {
-                "id": 13155180,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 442533,
-                  "isTournament": true,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92158599,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "Kaboom",
-              "matchesPlayed": 7,
-              "matchesWon": 5,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 7,
-              "rank": 2,
-              "team": {
-                "id": 13023098,
-                "name": "Troublemakers",
-                "division": {
-                  "id": 431643,
                   "isTournament": false,
                   "__typename": "Division"
                 },

@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-09-25T17:50:51.433Z",
+  "fetchedAt": "2026-10-02T18:18:54.513Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2164152,
         "league": {
           "id": 890,
-          "currentSessionId": 139,
+          "currentSessionId": 140,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -124,7 +124,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -160,15 +160,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 0.8333333333333334,
+            "ppm": 2.5,
+            "eightBallMatchPointsEarned": 5,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -1534,7 +1534,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -3512,12 +3512,12 @@
         "EightBallStats": [
           {
             "id": 802164152,
-            "matchesWon": 315,
-            "matchesPlayed": 625,
+            "matchesWon": 318,
+            "matchesPlayed": 630,
             "CLA": 5,
             "defensiveShotAvg": 1.55,
-            "matchCountForLastTwoYrs": 184,
-            "lastPlayed": "2026-09-22T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 186,
+            "lastPlayed": "2026-09-30T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -3525,11 +3525,11 @@
           {
             "id": 902164152,
             "matchesWon": 602,
-            "matchesPlayed": 1197,
+            "matchesPlayed": 1199,
             "CLA": 6,
             "defensiveShotAvg": 1.17,
-            "matchCountForLastTwoYrs": 245,
-            "lastPlayed": "2026-09-24T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 233,
+            "lastPlayed": "2026-10-01T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -3750,6 +3750,16 @@
         "league": {
           "news": [
             {
+              "id": 57749,
+              "title": "15% Off American Poolplayer T-shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 57704,
+              "title": "Scorekeeper Tablet Mode Is Available Now",
+              "__typename": "News"
+            },
+            {
               "id": 57490,
               "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
@@ -3778,7 +3788,10 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -3921,7 +3934,7 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
               "id": 319191433,
@@ -3932,17 +3945,6 @@
               "createdDate": "2026-09-25T17:19:23+00:00",
               "typeId": null,
               "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 317950219,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-18T15:34:15+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -3968,7 +3970,15 @@
           ],
           "membershipExpires": "2026-12-31T23:59:59Z",
           "setting": "890",
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "discount": 0,
+            "year": 2027,
+            "amount": 30,
+            "tax": 0,
+            "total": 30,
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -4027,6 +4037,249 @@
           "id": 2164152,
           "pastTeams": [
             {
+              "id": 92156973,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "JT",
+              "matchesPlayed": 9,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 20,
+              "team": {
+                "id": 13022866,
+                "name": "Altered Reality",
+                "division": {
+                  "id": 431622,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160578,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "JT",
+              "matchesPlayed": 1,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13155165,
+                "name": "Altered Reality",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92158197,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "JT",
+              "matchesPlayed": 9,
+              "matchesWon": 6,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 3,
+              "team": {
+                "id": 13023042,
+                "name": "Apocalypse",
+                "division": {
+                  "id": 431637,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 93160696,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 4,
+              "nickName": "JT",
+              "matchesPlayed": 2,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": null,
+              "team": {
+                "id": 13155180,
+                "name": "Apocalypse",
+                "division": {
+                  "id": 442533,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92159730,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "JT",
+              "matchesPlayed": 7,
+              "matchesWon": 1,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 14,
+              "team": {
+                "id": 13023260,
+                "name": "Bazaar Billiards",
+                "division": {
+                  "id": 431659,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92158689,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 5,
+              "nickName": "JT",
+              "matchesPlayed": 6,
+              "matchesWon": 2,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 3,
+              "team": {
+                "id": 13023111,
+                "name": "Dark Side of the 9",
+                "division": {
+                  "id": 431635,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 92159327,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 3,
+              "nickName": "JT",
+              "matchesPlayed": 7,
+              "matchesWon": 6,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 5,
+              "rank": 3,
+              "team": {
+                "id": 13023205,
+                "name": "Nightmare On Broad St",
+                "division": {
+                  "id": 431655,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92158414,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "JT",
+              "matchesPlayed": 5,
+              "matchesWon": 3,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": 5,
+              "team": {
+                "id": 13023072,
+                "name": "We Prefer Winning!",
+                "division": {
+                  "id": 431640,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
+              "id": 93161676,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 7,
+              "nickName": "JT",
+              "matchesPlayed": 0,
+              "matchesWon": 0,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 6,
+              "rank": null,
+              "team": {
+                "id": 13155304,
+                "name": "We Prefer Winning!",
+                "division": {
+                  "id": 442534,
+                  "isTournament": true,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
+            {
               "id": 91262137,
               "isActive": true,
               "role": "MEMBER",
@@ -4046,249 +4299,6 @@
                 "name": "Altered Reality",
                 "division": {
                   "id": 420224,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263303,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "JT",
-              "matchesPlayed": 5,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 11,
-              "team": {
-                "id": 12894917,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 420239,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91696545,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "JT",
-              "matchesPlayed": 8,
-              "matchesWon": 3,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 13,
-              "team": {
-                "id": 12953774,
-                "name": "Bazaar Billiards",
-                "division": {
-                  "id": 420261,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263775,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "JT",
-              "matchesPlayed": 7,
-              "matchesWon": 2,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 4,
-              "team": {
-                "id": 12894984,
-                "name": "Dark Side of the 9",
-                "division": {
-                  "id": 420247,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 91264393,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "JT",
-              "matchesPlayed": 11,
-              "matchesWon": 5,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 7,
-              "team": {
-                "id": 12895075,
-                "name": "Nightmare On Broad St",
-                "division": {
-                  "id": 420257,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 91263525,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "JT",
-              "matchesPlayed": 5,
-              "matchesWon": 4,
-              "session": {
-                "id": 138,
-                "name": "Spring 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 1,
-              "team": {
-                "id": 12894948,
-                "name": "We Prefer Winning!",
-                "division": {
-                  "id": 420242,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90960946,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "JT",
-              "matchesPlayed": 9,
-              "matchesWon": 4,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 11,
-              "team": {
-                "id": 12857858,
-                "name": "Altered Reality",
-                "division": {
-                  "id": 416970,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90960893,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "JT",
-              "matchesPlayed": 5,
-              "matchesWon": 1,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 8,
-              "team": {
-                "id": 12857851,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 416985,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 90961140,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "JT",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 12857883,
-                "name": "Dark Side of the 9",
-                "division": {
-                  "id": 416993,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 90961044,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "JT",
-              "matchesPlayed": 10,
-              "matchesWon": 3,
-              "session": {
-                "id": 137,
-                "name": "Fall 2025",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 5,
-              "team": {
-                "id": 12857870,
-                "name": "Nightmare On Broad St",
-                "division": {
-                  "id": 417003,
                   "isTournament": false,
                   "__typename": "Division"
                 },
@@ -4481,249 +4491,6 @@
                 "division": {
                   "id": 441467,
                   "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 92156973,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "JT",
-              "matchesPlayed": 9,
-              "matchesWon": 2,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 20,
-              "team": {
-                "id": 13022866,
-                "name": "Altered Reality",
-                "division": {
-                  "id": 431622,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 93160578,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "JT",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13155165,
-                "name": "Altered Reality",
-                "division": {
-                  "id": 442533,
-                  "isTournament": true,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92158197,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "JT",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 13023042,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 431637,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 93160696,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 4,
-              "nickName": "JT",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": null,
-              "team": {
-                "id": 13155180,
-                "name": "Apocalypse",
-                "division": {
-                  "id": 442533,
-                  "isTournament": true,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92159730,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "JT",
-              "matchesPlayed": 7,
-              "matchesWon": 1,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 14,
-              "team": {
-                "id": 13023260,
-                "name": "Bazaar Billiards",
-                "division": {
-                  "id": 431659,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92158689,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 5,
-              "nickName": "JT",
-              "matchesPlayed": 6,
-              "matchesWon": 2,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 3,
-              "team": {
-                "id": 13023111,
-                "name": "Dark Side of the 9",
-                "division": {
-                  "id": 431635,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 92159327,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 3,
-              "nickName": "JT",
-              "matchesPlayed": 7,
-              "matchesWon": 6,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 3,
-              "team": {
-                "id": 13023205,
-                "name": "Nightmare On Broad St",
-                "division": {
-                  "id": 431655,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92158414,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "JT",
-              "matchesPlayed": 5,
-              "matchesWon": 3,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": 5,
-              "team": {
-                "id": 13023072,
-                "name": "We Prefer Winning!",
-                "division": {
-                  "id": 431640,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 93161676,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 7,
-              "nickName": "JT",
-              "matchesPlayed": 0,
-              "matchesWon": 0,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 6,
-              "rank": null,
-              "team": {
-                "id": 13155304,
-                "name": "We Prefer Winning!",
-                "division": {
-                  "id": 442534,
-                  "isTournament": true,
                   "__typename": "Division"
                 },
                 "__typename": "Team"

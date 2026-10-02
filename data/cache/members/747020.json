@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-09-25T17:47:00.578Z",
+  "fetchedAt": "2026-10-02T18:14:34.558Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
         "id": 2915042,
         "league": {
           "id": 890,
-          "currentSessionId": 139,
+          "currentSessionId": 140,
           "slug": "southjersey",
           "__typename": "League"
         },
@@ -834,7 +834,7 @@
             "matchesPlayed": 223,
             "CLA": 4,
             "defensiveShotAvg": 1.78,
-            "matchCountForLastTwoYrs": 51,
+            "matchCountForLastTwoYrs": 50,
             "lastPlayed": "2026-09-22T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
@@ -846,7 +846,7 @@
             "matchesPlayed": 101,
             "CLA": 0,
             "defensiveShotAvg": 0.78,
-            "matchCountForLastTwoYrs": 66,
+            "matchCountForLastTwoYrs": 64,
             "lastPlayed": "2026-09-14T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -859,7 +859,7 @@
         "id": 2915042,
         "member": {
           "id": 747020,
-          "consecutiveYearsPlayed": 6,
+          "consecutiveYearsPlayed": 7,
           "membershipHistory": [
             {
               "id": 568844,
@@ -1102,6 +1102,17 @@
                 "__typename": "League"
               },
               "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7849013,
+              "year": 2027,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
             }
           ],
           "__typename": "Member"
@@ -1145,6 +1156,16 @@
         "league": {
           "news": [
             {
+              "id": 57749,
+              "title": "15% Off American Poolplayer T-shirts",
+              "__typename": "News"
+            },
+            {
+              "id": 57704,
+              "title": "Scorekeeper Tablet Mode Is Available Now",
+              "__typename": "News"
+            },
+            {
               "id": 57490,
               "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
@@ -1173,7 +1194,10 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -1316,7 +1340,7 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
               "id": 319191433,
@@ -1327,17 +1351,6 @@
               "createdDate": "2026-09-25T17:19:23+00:00",
               "typeId": null,
               "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 317950219,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-18T15:34:15+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13849606,\"leagueDivisionSessionScheduleMatchId\":51767507,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1363,7 +1376,15 @@
           ],
           "membershipExpires": "2026-12-31T23:59:59Z",
           "setting": "890",
-          "fee": null,
+          "fee": {
+            "message": "Click Here to Renew Your 2027 Membership!",
+            "discount": 0,
+            "year": 2027,
+            "amount": 30,
+            "tax": 0,
+            "total": 30,
+            "__typename": "MemberFee"
+          },
           "__typename": "Member"
         }
       },
@@ -1421,6 +1442,60 @@
         "alias": {
           "id": 2915042,
           "pastTeams": [
+            {
+              "id": 92418657,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 8,
+              "nickName": "Pete",
+              "matchesPlayed": 8,
+              "matchesWon": 4,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 12,
+              "team": {
+                "id": 13022792,
+                "name": "Lights Out",
+                "division": {
+                  "id": 431614,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "EightBallPlayer"
+            },
+            {
+              "id": 92158237,
+              "isActive": true,
+              "role": "MEMBER",
+              "rosterPosition": 6,
+              "nickName": "Pete",
+              "matchesPlayed": 12,
+              "matchesWon": 3,
+              "session": {
+                "id": 139,
+                "name": "Summer 2026",
+                "__typename": "Session"
+              },
+              "skillLevel": 4,
+              "rank": 13,
+              "team": {
+                "id": 13023048,
+                "name": "Sinking D's Balls",
+                "division": {
+                  "id": 431638,
+                  "isTournament": false,
+                  "__typename": "Division"
+                },
+                "__typename": "Team"
+              },
+              "__typename": "NineBallPlayer"
+            },
             {
               "id": 91261578,
               "isActive": true,
@@ -1636,60 +1711,6 @@
                 "__typename": "Team"
               },
               "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 88902110,
-              "isActive": true,
-              "role": "CO_CAPTAIN",
-              "rosterPosition": 2,
-              "nickName": "Pete",
-              "matchesPlayed": 7,
-              "matchesWon": 2,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 13,
-              "team": {
-                "id": 12576471,
-                "name": "Eight Men Out",
-                "division": {
-                  "id": 391937,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 88902129,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Pete",
-              "matchesPlayed": 9,
-              "matchesWon": 6,
-              "session": {
-                "id": 134,
-                "name": "Fall 2024",
-                "__typename": "Session"
-              },
-              "skillLevel": 5,
-              "rank": 2,
-              "team": {
-                "id": 12576473,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 391962,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
             }
           ],
           "currentTeams": [
@@ -1740,60 +1761,6 @@
                 "name": "Sinking D's Balls",
                 "division": {
                   "id": 441465,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "NineBallPlayer"
-            },
-            {
-              "id": 92418657,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 8,
-              "nickName": "Pete",
-              "matchesPlayed": 8,
-              "matchesWon": 4,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 12,
-              "team": {
-                "id": 13022792,
-                "name": "Lights Out",
-                "division": {
-                  "id": 431614,
-                  "isTournament": false,
-                  "__typename": "Division"
-                },
-                "__typename": "Team"
-              },
-              "__typename": "EightBallPlayer"
-            },
-            {
-              "id": 92158237,
-              "isActive": true,
-              "role": "MEMBER",
-              "rosterPosition": 6,
-              "nickName": "Pete",
-              "matchesPlayed": 12,
-              "matchesWon": 3,
-              "session": {
-                "id": 139,
-                "name": "Summer 2026",
-                "__typename": "Session"
-              },
-              "skillLevel": 4,
-              "rank": 13,
-              "team": {
-                "id": 13023048,
-                "name": "Sinking D's Balls",
-                "division": {
-                  "id": 431638,
                   "isTournament": false,
                   "__typename": "Division"
                 },
