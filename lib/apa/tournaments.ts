@@ -2,6 +2,10 @@ import { readFile, writeFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { z } from "zod";
 import { Format } from "./schemas";
+// Bundled copy, used where there is no filesystem to read (Cloudflare
+// Workers). On Node hosts the file on disk still wins so the admin's runtime
+// writes (Docker / `next dev`) are read back immediately.
+import bundledTournaments from "@/data/tournaments.json";
 import type {
   PatchInstance,
   PatchInstanceKind,
@@ -75,22 +79,43 @@ const TOURNAMENTS_PATH = resolve(process.cwd(), "data/tournaments.json");
 const EMPTY_FILE: TournamentFile = { games: [] };
 
 let cached: { mtime: number; data: TournamentFile } | null = null;
+let bundledParsed: TournamentFile | null = null;
 
-/** Load + validate data/tournaments.json. Cached in-process by mtime. */
+/** The copy of data/tournaments.json baked in at build time. */
+function loadBundled(): TournamentFile {
+  if (!bundledParsed) {
+    try {
+      bundledParsed = TournamentFile.parse(bundledTournaments);
+    } catch (err) {
+      console.warn("[tournaments] bundled copy invalid:", (err as Error).message);
+      bundledParsed = EMPTY_FILE;
+    }
+  }
+  return bundledParsed;
+}
+
+/**
+ * Load + validate data/tournaments.json. Cached in-process by mtime.
+ *
+ * Reads the file on disk when there is one (Node: dev, Docker, Vercel), and
+ * falls back to the build-time bundled copy when there isn't (Cloudflare
+ * Workers, where `node:fs` is a virtual filesystem without our repo in it).
+ */
 export async function loadTournamentFile(): Promise<TournamentFile> {
   try {
     const s = await stat(TOURNAMENTS_PATH);
-    if (cached && cached.mtime === s.mtimeMs) return cached.data;
+    if (cached && cached.mtime === s.mtimeMs) return structuredClone(cached.data);
     const raw = await readFile(TOURNAMENTS_PATH, "utf8");
     const parsed = TournamentFile.parse(JSON.parse(raw));
     cached = { mtime: s.mtimeMs, data: parsed };
-    return parsed;
+    return structuredClone(parsed);
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") return EMPTY_FILE;
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("[tournaments] failed to load:", (err as Error).message);
+    // No file on disk (Workers), or no usable fs at all: use the bundled copy.
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT" && process.env.NODE_ENV !== "production") {
+      console.warn("[tournaments] failed to read from disk:", (err as Error).message);
     }
-    return EMPTY_FILE;
+    // A copy: callers (the admin API) mutate the result before saving.
+    return structuredClone(loadBundled());
   }
 }
 

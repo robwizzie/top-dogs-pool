@@ -411,12 +411,15 @@ installed locally and nothing else — the schema is self-contained.
 
 ## Deploying
 
-The Next.js app reads `data/apa.json` at request time, so deployment is plain
-Vercel (or any Node host). The scraper does **not** run on Vercel — it needs a
-real Chromium and credentials. Two clean options:
+`data/apa.json` is bundled into the server build, so deployment is plain
+Vercel, any Node host (see the Dockerfile), or Cloudflare Workers — see
+[DEPLOY-CLOUDFLARE.md](DEPLOY-CLOUDFLARE.md). Updating the data therefore means
+a commit + redeploy, which every host does automatically on push. The scraper
+does **not** run on the host — it needs a real Chromium and credentials. Two
+clean options:
 
 1. **GitHub Actions cron** that runs `npm run sync` on a Tuesday morning,
-   commits the updated `data/apa.json`, and pushes — Vercel redeploys
+   commits the updated `data/apa.json`, and pushes — the host redeploys
    automatically.
 2. **Local + manual push** — run `npm run sync` on your machine, commit, push.
 
@@ -432,4 +435,6 @@ npm run start      # start prod server
 npm run lint       # eslint
 npm run typecheck  # tsc --noEmit
 npm run test:rack  # Rack Up rules + bracket engines
+npm run preview    # Cloudflare Workers build, served locally in workerd
+npm run deploy     # Cloudflare Workers build + deploy (see DEPLOY-CLOUDFLARE.md)
 ```

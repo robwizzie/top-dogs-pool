@@ -1,0 +1,27 @@
+// Cloudflare Workers config for the OpenNext build (see DEPLOY-CLOUDFLARE.md).
+// Vercel and the Docker image ignore this file.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "top-dogs-pool",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // Runtime variables are managed in the Cloudflare dashboard, not here.
+  // Without this, every deploy would delete the plain-text ones.
+  "keep_vars": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      // Self-reference, used by OpenNext for cache revalidation.
+      // Must match "name" above. See https://opennext.js.org/cloudflare/caching
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "top-dogs-pool"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

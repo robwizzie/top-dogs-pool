@@ -11,12 +11,16 @@ import {
 import { loadSnapshot } from "@/lib/apa/client";
 import { cn, formatDate } from "@/lib/utils";
 import type { Match, Player } from "@/lib/apa/schemas";
+import { prerenderOpponentTeamIds } from "@/lib/prerender";
 
 export const revalidate = 3600;
 
-/** Rendered on first request per id, then cached. */
-export function generateStaticParams() {
-  return [];
+/**
+ * Rendered on first request per id, then cached — except on Cloudflare
+ * Workers, where they are prerendered at build (see lib/prerender.ts).
+ */
+export async function generateStaticParams() {
+  return (await prerenderOpponentTeamIds()).map((teamId) => ({ teamId }));
 }
 
 type Props = {

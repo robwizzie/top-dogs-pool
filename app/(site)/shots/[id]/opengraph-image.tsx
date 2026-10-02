@@ -231,29 +231,31 @@ function ShotDiagramSvg({ shot }: { shot: KinisterShot }) {
           />
         );
       })}
+      {/* PolyLine is called as a plain function, not rendered as
+          <PolyLine/>: Satori (next/og >= 15.5.26) only accepts intrinsic
+          elements inside <svg>. */}
       {/* Approach line */}
-      <PolyLine
-        points={approach}
-        stroke="rgba(236,225,196,0.5)"
-        width={3}
-        dash="3 6"
-      />
+      {PolyLine({
+        points: approach,
+        stroke: "rgba(236,225,196,0.5)",
+        width: 3,
+        dash: "3 6",
+      })}
       {/* CB carom path */}
-      <PolyLine
-        points={cuePoints}
-        stroke="rgba(236,225,196,0.92)"
-        width={3.5}
-        dash="3 6"
-      />
+      {PolyLine({
+        points: cuePoints,
+        stroke: "rgba(236,225,196,0.92)",
+        width: 3.5,
+        dash: "3 6",
+      })}
       {/* OB path */}
-      {obPoints && (
-        <PolyLine
-          points={obPoints}
-          stroke="rgba(224,190,107,0.92)"
-          width={3.5}
-          dash="7 7"
-        />
-      )}
+      {obPoints &&
+        PolyLine({
+          points: obPoints,
+          stroke: "rgba(224,190,107,0.92)",
+          width: 3.5,
+          dash: "7 7",
+        })}
       {/* Object ball */}
       <circle cx={ob.x} cy={ob.y} r={BALL_R} fill="#e0a82e" />
       <circle

@@ -30,6 +30,12 @@ function queryRewrites(source: string, keys: string[]): Rewrite[] {
   return rules;
 }
 
+/**
+ * Set by open-next.config.ts, which is only loaded by `opennextjs-cloudflare`
+ * (the Cloudflare Workers build). Vercel / Docker / `next dev` never see it.
+ */
+const isCloudflareBuild = process.env.NEXT_DEPLOY_TARGET === "cloudflare";
+
 const config: NextConfig = {
   // Emit a self-contained server bundle (.next/standalone) for the Docker image.
   output: "standalone",
@@ -50,6 +56,11 @@ const config: NextConfig = {
     deviceSizes: [640, 828, 1080, 1280, 1920],
     imageSizes: [64, 128, 256, 384],
     formats: ["image/webp"],
+    // Workers have no image optimizer: swap in a pass-through loader there
+    // (see lib/cloudflare-image-loader.ts). Elsewhere, Next's optimizer.
+    ...(isCloudflareBuild
+      ? { loader: "custom" as const, loaderFile: "./lib/cloudflare-image-loader.ts" }
+      : {}),
   },
   async rewrites() {
     return {

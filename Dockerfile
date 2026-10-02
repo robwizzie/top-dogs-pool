@@ -48,8 +48,9 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-# apa.json / players-config.json are read at runtime via process.cwd();
-# the standalone tracer cannot see those, so copy the data dir explicitly.
+# data/apa.json is bundled into the server build. data/tournaments.json is
+# still read (and written by the /leaderboard/admin page) at runtime via
+# process.cwd(), which the standalone tracer cannot see, so copy data/.
 COPY --from=builder --chown=nextjs:nodejs /app/data ./data
 
 USER nextjs
