@@ -1151,8 +1151,15 @@ a.patch-lightbox-instance-link:hover {
 /* Glass card — layered gradient fill, hairline brass top highlight and a
  * soft drop. The border is a masked gradient so it brightens at the top edge
  * like light catching a rail. */
+/* `position` lives in the components layer so Tailwind utilities (which are
+ * in the later utilities layer) can still make a glass card `sticky` or
+ * `absolute`; unlayered, it would silently win over them. */
+@layer components {
+  .pm-glass {
+    position: relative;
+  }
+}
 .pm-glass {
-  position: relative;
   border-radius: 1.25rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012) 40%, rgba(0, 0, 0, 0.12)),

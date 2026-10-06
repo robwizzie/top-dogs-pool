@@ -10,7 +10,6 @@ import {
 import {
   ArrowLeft,
   ArrowRight,
-  CheckCircle2,
   ChevronDown,
   ChevronUp,
   Dog,
@@ -19,6 +18,7 @@ import {
   Plus,
   Search,
   Shuffle,
+  Sparkles,
   X,
 } from "lucide-react";
 import type { Difficulty, KinisterShot } from "@/lib/kinister/shots";
@@ -34,6 +34,17 @@ import {
   type Session as TrackedSession,
 } from "@/lib/kinister/useSession";
 import { showToast } from "@/components/ui/Toaster";
+import { PageHeader } from "@/components/ui/Section";
+import {
+  DifficultyPill,
+  GHOST_PILL,
+  HeaderBackLink,
+  HeaderChip,
+  LampStage,
+  PILL_TOGGLE,
+  PILL_TRACK,
+  PanelLabel,
+} from "./TrainingUI";
 import { cn } from "@/lib/utils";
 
 type Preset = {
@@ -78,14 +89,44 @@ const PRESETS: Preset[] = [
 
 const REP_OPTIONS = [3, 5, 10];
 
-const DIFFICULTY_STYLES: Record<Difficulty, string> = {
-  Foundational:
-    "border-[var(--color-felt-bright)]/40 text-[var(--color-felt-bright)] bg-[var(--color-felt-deep)]/40",
-  Intermediate:
-    "border-[var(--color-brass)]/40 text-[var(--color-brass-bright)] bg-[var(--color-brass)]/10",
-  Advanced:
-    "border-[var(--color-pop)]/40 text-[var(--color-pop-bright)] bg-[var(--color-pop)]/10",
-};
+/**
+ * Page-top hero for the builder. Exported so the page's Suspense fallback
+ * can render the identical header while the runner hydrates.
+ */
+export function DawgDrillHeader({
+  shotCount,
+  repCount,
+}: {
+  shotCount?: number;
+  repCount?: number;
+}) {
+  return (
+    <PageHeader
+      eyebrow="Training · Dawg Drill"
+      title={
+        <>
+          Build a <span className="pm-foil">Dawg Drill</span>
+        </>
+      }
+      subtitle="Pick the shots you want to drill and how many reps you'll take of each. Tap a preset to fill the drill quickly, or build it from scratch — every shot in the catalog is fair game."
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <HeaderBackLink href="/shots">All shots</HeaderBackLink>
+        <HeaderChip>
+          <Dog size={13} className="text-[var(--color-brass-bright)]" />
+          <span className="font-[family-name:var(--font-display)] text-base leading-none tracking-wide text-[var(--color-brass-bright)]">
+            {shotCount ?? 0}
+          </span>
+          shots ·
+          <span className="font-[family-name:var(--font-display)] text-base leading-none tracking-wide text-[var(--color-brass-bright)]">
+            {repCount ?? 0}
+          </span>
+          reps queued
+        </HeaderChip>
+      </div>
+    </PageHeader>
+  );
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const out = [...arr];
@@ -352,40 +393,20 @@ function BuilderView({
 
   return (
     <>
-      <header className="border-b border-[var(--border)] bg-[var(--bg-soft)]">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-          <Link
-            href="/shots"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass-bright)]"
-          >
-            <ArrowLeft size={14} />
-            All Shots
-          </Link>
-          <div className="mt-4 flex items-center gap-3">
-            <Dog
-              size={28}
-              className="text-[var(--color-brass-bright)]"
-            />
-            <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wide sm:text-5xl">
-              Build a Dawg Drill
-            </h1>
-          </div>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--fg-dim)]">
-            Pick the shots you want to drill and how many reps you&apos;ll
-            take of each. Tap a preset to fill the drill quickly, or build
-            it from scratch — every shot in the catalog is fair game.
-          </p>
-        </div>
-      </header>
+      <DawgDrillHeader shotCount={selected.length} repCount={totalAttempts} />
 
-      <div className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-6 px-4 pb-12 pt-4 sm:px-6 sm:pb-16 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8 lg:px-8">
         {resumeCandidate && (
-          <div className="surface flex flex-col gap-3 border-[var(--color-brass)]/55 bg-[var(--color-brass)]/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="pm-glass relative isolate flex flex-col gap-4 overflow-hidden p-5 sm:flex-row sm:items-center sm:justify-between lg:col-span-2">
+            <div
+              className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(70%_120%_at_0%_50%,rgba(224,190,107,0.18),transparent_70%)]"
+              aria-hidden
+            />
             <div className="min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass-bright)]">
                 Resume your drill?
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-[var(--fg)]">
+              <p className="mt-1 text-sm leading-relaxed text-[var(--color-cream)]">
                 You had {resumeCandidate.items.length} shots queued up — on
                 shot{" "}
                 <span className="font-semibold">
@@ -395,19 +416,12 @@ function BuilderView({
                 off?
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={onResume}
-                className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
-              >
+            <div className="flex shrink-0 items-center gap-2">
+              <button type="button" onClick={onResume} className="pm-btn !py-2.5">
                 Resume
+                <ArrowRight size={14} />
               </button>
-              <button
-                type="button"
-                onClick={onDiscardResume}
-                className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
-              >
+              <button type="button" onClick={onDiscardResume} className={GHOST_PILL}>
                 Discard
               </button>
             </div>
@@ -415,196 +429,212 @@ function BuilderView({
         )}
 
         {/* Quick presets + default reps */}
-        <section className="surface p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+        <section className="pm-glass relative isolate overflow-hidden p-5 sm:p-6 lg:col-start-1">
+          <div
+            className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_120%_at_0%_0%,rgba(46,139,87,0.16),transparent_60%)]"
+            aria-hidden
+          />
+          <PanelLabel icon={<Sparkles size={14} className="text-[var(--color-brass-bright)]" />}>
             Quick fill
-          </p>
-          <p className="mt-1 text-xs text-[var(--fg-dim)]">
+          </PanelLabel>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--color-cream)]/55">
             Tap a preset to start fresh with those shots at the default rep
             count below. Replaces whatever you already have — fine-tune
             from there.
           </p>
-          <ul className="mt-3 flex flex-wrap gap-2">
+          <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-5 [&>li:last-child]:col-span-2 sm:[&>li:last-child]:col-span-1">
             {PRESETS.map((p) => (
               <li key={p.id}>
                 <button
                   type="button"
                   onClick={() => applyPreset(p)}
-                  className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:border-[var(--color-brass)]/60 hover:text-[var(--color-brass-bright)]"
+                  className="group flex h-full w-full flex-col items-start gap-1.5 rounded-2xl bg-black/35 px-3.5 py-3 text-left shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] transition-all hover:-translate-y-0.5 hover:bg-[var(--color-brass)]/10 hover:shadow-[inset_0_0_0_1px_rgba(224,190,107,0.45)]"
                   title={p.description}
                 >
-                  <PawPrint size={12} />
-                  {p.label}
+                  <PawPrint size={14} className="text-[var(--color-brass)] transition-colors group-hover:text-[var(--color-brass-bright)]" />
+                  <span className="font-[family-name:var(--font-display)] text-lg leading-none tracking-wide text-[var(--color-cream)]">
+                    {p.label}
+                  </span>
+                  <span className="text-[11px] leading-snug text-[var(--color-cream)]/45">
+                    {p.description}
+                  </span>
                 </button>
               </li>
             ))}
-            {selected.length > 0 && (
-              <li>
-                <button
-                  type="button"
-                  onClick={clearAll}
-                  className="inline-flex items-center gap-1 rounded-full border border-[var(--color-pop)]/40 bg-[var(--color-pop)]/5 px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-pop-bright)] transition-colors hover:bg-[var(--color-pop)]/15"
-                >
-                  <X size={12} />
-                  Clear drill
-                </button>
-              </li>
-            )}
           </ul>
 
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-dim)]">
+          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-[var(--color-cream)]/[0.07] pt-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/45">
               Default reps when adding
             </p>
-            <div
-              className="inline-flex h-8 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold"
-              role="group"
-            >
+            <div className={PILL_TRACK} role="group">
               {REP_OPTIONS.map((r) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => setDefaultReps(r)}
-                  className={cn(
-                    "px-3 transition-colors",
-                    defaultReps === r
-                      ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
-                      : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
-                  )}
+                  data-active={defaultReps === r}
+                  className={cn(PILL_TOGGLE, "tabular-nums")}
                   aria-pressed={defaultReps === r}
                 >
                   {r}×
                 </button>
               ))}
             </div>
+            {selected.length > 0 && (
+              <button
+                type="button"
+                onClick={clearAll}
+                className="ml-auto inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/45 transition-colors hover:text-[var(--color-pop-bright)]"
+              >
+                <X size={12} />
+                Clear drill
+              </button>
+            )}
           </div>
         </section>
 
-        {/* Your drill — selected shots */}
-        <section className="surface p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <PawPrint
-                size={16}
-                className="text-[var(--color-brass-bright)]"
-              />
-              <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-                Your drill
-              </p>
+        {/* Your drill — selected shots: a ticket that rides along on desktop */}
+        {/* .pm-glass forces position:relative, so stickiness lives on a wrapper */}
+        <div className="self-start lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <section className="pm-glass relative isolate overflow-hidden">
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-[radial-gradient(70%_100%_at_50%_0%,rgba(255,226,160,0.12),transparent_70%)]"
+            aria-hidden
+          />
+          <div className="p-5 sm:p-6">
+            <PanelLabel icon={<PawPrint size={14} className="text-[var(--color-brass-bright)]" />}>
+              Your drill
+            </PanelLabel>
+            <div className="pm-rail mt-5 grid grid-cols-2">
+              <span className="pm-diamond left-1/2 top-1/2" aria-hidden />
+              <div className="px-4 py-4 text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-cream)]/50">
+                  Shots
+                </p>
+                <p className="mt-1 font-[family-name:var(--font-display)] text-5xl leading-[0.85] tracking-wide tabular-nums text-[var(--color-cream)]">
+                  {selected.length}
+                </p>
+              </div>
+              <div className="px-4 py-4 text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-cream)]/50">
+                  Total reps
+                </p>
+                <p className="mt-1 font-[family-name:var(--font-display)] text-5xl leading-[0.85] tracking-wide tabular-nums">
+                  <span className={totalAttempts > 0 ? "pm-foil" : "text-[var(--color-cream)]"}>
+                    {totalAttempts}
+                  </span>
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-[var(--fg-dim)]">
-              <span className="font-semibold text-[var(--fg)]">
-                {selected.length}
-              </span>{" "}
-              shots ·{" "}
-              <span className="font-semibold text-[var(--color-brass-bright)]">
-                {totalAttempts}
-              </span>{" "}
-              total reps
-            </p>
+
+            {selected.length === 0 ? (
+              <p className="mt-5 text-sm leading-relaxed text-[var(--color-cream)]/55">
+                <span className="pm-serif mr-1 text-lg text-[var(--color-cream)]/80">
+                  Empty rack.
+                </span>
+                No shots in the drill yet. Use a quick preset or pick shots
+                from the catalog to get started.
+              </p>
+            ) : (
+              <ul className="mt-4 max-h-[min(52vh,30rem)] divide-y divide-[var(--color-cream)]/[0.07] overflow-y-auto pr-1 lg:max-h-[calc(100vh-26rem)]">
+                {selected.map((s) => (
+                  <SelectedRow
+                    key={s.id}
+                    shot={s}
+                    reps={reps[s.id] ?? 0}
+                    onChange={(n) => setRepsFor(s.id, n)}
+                  />
+                ))}
+              </ul>
+            )}
+
+            <button
+              type="button"
+              disabled={selected.length === 0}
+              onClick={start}
+              className="pm-btn mt-5 w-full justify-center disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+            >
+              Start the Dawg Drill
+              <ArrowRight size={14} />
+            </button>
           </div>
-
-          {selected.length === 0 ? (
-            <p className="mt-4 text-sm text-[var(--fg-dim)]">
-              No shots in the drill yet. Use a quick preset above or pick
-              shots from the catalog below to get started.
-            </p>
-          ) : (
-            <ul className="mt-4 divide-y divide-[var(--border)]">
-              {selected.map((s) => (
-                <SelectedRow
-                  key={s.id}
-                  shot={s}
-                  reps={reps[s.id] ?? 0}
-                  onChange={(n) => setRepsFor(s.id, n)}
-                />
-              ))}
-            </ul>
-          )}
-
-          <button
-            type="button"
-            disabled={selected.length === 0}
-            onClick={start}
-            className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-5 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Start the Dawg Drill
-            <ArrowRight size={14} />
-          </button>
         </section>
+        </div>
 
         {/* Catalog — collapse/expand */}
-        <section className="surface overflow-hidden">
+        <section className="pm-glass overflow-hidden lg:col-start-1">
           <button
             type="button"
             onClick={() => setCatalogOpen((o) => !o)}
-            className="flex w-full items-center justify-between gap-3 border-b border-[var(--border)] px-5 py-3 text-left"
+            className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left sm:px-6"
             aria-expanded={catalogOpen}
           >
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
                 Pick more shots
               </p>
-              <p className="mt-0.5 text-xs text-[var(--fg-dim)]">
-                The whole catalog — tap Add to drop one into your drill.
+              <p className="mt-1 font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide text-[var(--color-cream)]">
+                The whole catalog
+              </p>
+              <p className="mt-1 text-xs text-[var(--color-cream)]/50">
+                Tap Add to drop one into your drill.
               </p>
             </div>
-            {catalogOpen ? (
-              <ChevronUp size={16} className="text-[var(--fg-dim)]" />
-            ) : (
-              <ChevronDown size={16} className="text-[var(--fg-dim)]" />
-            )}
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-cream)]/10 bg-black/30 text-[var(--color-cream)]/60">
+              {catalogOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </span>
           </button>
 
           {catalogOpen && (
-            <div className="space-y-3 p-5">
-              <div className="flex items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5">
-                <Search size={14} className="shrink-0 text-[var(--fg-dim)]" />
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Find a shot by name or technique"
-                  className="min-w-0 flex-1 bg-transparent text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:outline-none"
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={() => setQuery("")}
-                    className="text-xs font-semibold text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
+            <div className="space-y-4 border-t border-[var(--color-cream)]/[0.07] p-5 sm:p-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <label className="group flex h-11 min-w-0 flex-1 items-center gap-3 rounded-full bg-black/45 px-4 shadow-[inset_0_1px_3px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.06)] focus-within:shadow-[inset_0_1px_3px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(224,190,107,0.5)]">
+                  <Search size={14} className="shrink-0 text-[var(--color-cream)]/40 group-focus-within:text-[var(--color-brass-bright)]" />
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Find a shot by name or technique"
+                    className="min-w-0 flex-1 bg-transparent text-sm text-[var(--color-cream)] placeholder:text-[var(--color-cream)]/35 focus:outline-none"
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => setQuery("")}
+                      className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/50 transition-colors hover:text-[var(--color-brass-bright)]"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </label>
 
-              <div className="flex flex-wrap gap-2">
-                {(
-                  ["all", "Foundational", "Intermediate", "Advanced"] as const
-                ).map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setDifficulty(d)}
-                    className={cn(
-                      "rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition-colors",
-                      difficulty === d
-                        ? "border-[var(--color-brass)] bg-[var(--color-brass)]/15 text-[var(--color-brass-bright)]"
-                        : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] hover:text-[var(--fg)]",
-                    )}
-                    aria-pressed={difficulty === d}
-                  >
-                    {d === "all" ? "All" : d}
-                  </button>
-                ))}
+                <div className="-mx-1 max-w-full overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className={cn(PILL_TRACK, "w-max")} role="group" aria-label="Difficulty">
+                    {(
+                      ["all", "Foundational", "Intermediate", "Advanced"] as const
+                    ).map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => setDifficulty(d)}
+                        data-active={difficulty === d}
+                        className={PILL_TOGGLE}
+                        aria-pressed={difficulty === d}
+                      >
+                        {d === "all" ? "All" : d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {filteredCatalog.length === 0 ? (
-                <p className="py-6 text-center text-sm text-[var(--fg-dim)]">
+                <p className="py-6 text-center text-sm text-[var(--color-cream)]/55">
                   No shots match those filters.
                 </p>
               ) : (
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
                   {filteredCatalog.map((s) => (
                     <CatalogCard
                       key={s.id}
@@ -634,32 +664,29 @@ function SelectedRow({
   onChange: (n: number) => void;
 }) {
   return (
-    <li className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
-      <div className="w-full overflow-hidden rounded-xl border border-[var(--color-brass)]/40 sm:w-64">
+    <li className="flex items-center gap-3 py-3">
+      <div className="w-20 shrink-0 overflow-hidden rounded-lg">
         <PoolTable shot={shot} preview />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold text-[var(--fg)]">
-          <span className="text-[var(--fg-dim)]">
-            {String(shot.number).padStart(2, "0")} ·{" "}
+        <p className="truncate text-sm font-semibold text-[var(--color-cream)]">
+          <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--color-brass)]">
+            {String(shot.number).padStart(2, "0")}{" "}
           </span>
           {shot.name}
         </p>
-        <p className="mt-0.5 text-[11px] text-[var(--fg-dim)]">
-          {shot.difficulty} · {shot.series}
-        </p>
-      </div>
-      <div className="flex items-center gap-2 sm:shrink-0">
-        <RepStepper value={reps} onChange={onChange} />
-        <button
-          type="button"
-          onClick={() => onChange(0)}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:border-[var(--color-pop)]/40 hover:text-[var(--color-pop-bright)]"
-          aria-label={`Remove ${shot.name} from drill`}
-          title="Remove from drill"
-        >
-          <X size={13} />
-        </button>
+        <div className="mt-1.5 flex items-center gap-1.5">
+          <RepStepper value={reps} onChange={onChange} size="sm" />
+          <button
+            type="button"
+            onClick={() => onChange(0)}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[var(--color-cream)]/40 transition-colors hover:bg-[var(--color-pop)]/10 hover:text-[var(--color-pop-bright)]"
+            aria-label={`Remove ${shot.name} from drill`}
+            title="Remove from drill"
+          >
+            <X size={13} />
+          </button>
+        </div>
       </div>
     </li>
   );
@@ -680,37 +707,24 @@ function CatalogCard({
   return (
     <article
       className={cn(
-        "surface flex flex-col gap-3 overflow-hidden p-3 transition-colors",
-        inDrill && "border-[var(--color-brass)]/55",
+        "relative flex flex-col gap-3 overflow-hidden rounded-2xl bg-black/30 p-2.5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] transition-shadow sm:p-3",
+        inDrill &&
+          "bg-[var(--color-brass)]/[0.07] shadow-[inset_0_0_0_1px_rgba(224,190,107,0.5),0_14px_30px_-18px_rgba(201,162,74,0.7)]",
       )}
     >
-      <div
-        className={cn(
-          "overflow-hidden rounded-xl border",
-          inDrill
-            ? "border-[var(--color-brass)]/45"
-            : "border-[var(--border)]",
-        )}
-      >
+      <div className="overflow-hidden rounded-xl">
         <PoolTable shot={shot} preview />
       </div>
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 px-0.5">
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
             Shot {String(shot.number).padStart(2, "0")}
           </p>
-          <p className="mt-0.5 truncate text-sm font-semibold text-[var(--fg)]">
+          <p className="mt-0.5 truncate font-[family-name:var(--font-display)] text-lg leading-tight tracking-wide text-[var(--color-cream)]">
             {shot.name}
           </p>
         </div>
-        <span
-          className={cn(
-            "shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-            DIFFICULTY_STYLES[shot.difficulty],
-          )}
-        >
-          {shot.difficulty.slice(0, 4)}
-        </span>
+        <DifficultyPill difficulty={shot.difficulty} short className="hidden sm:inline-flex" />
       </div>
       {inDrill ? (
         <RepStepper value={reps} onChange={onChange} fullWidth />
@@ -718,7 +732,7 @@ function CatalogCard({
         <button
           type="button"
           onClick={() => onChange(defaultReps)}
-          className="inline-flex h-9 items-center justify-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:border-[var(--color-brass)]/60 hover:bg-[var(--color-brass)]/10"
+          className="inline-flex h-9 items-center justify-center gap-1 rounded-full border border-[var(--color-brass)]/35 bg-black/30 text-xs font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
           aria-label={`Add ${shot.name} to drill`}
         >
           <Plus size={12} />
@@ -733,15 +747,19 @@ function RepStepper({
   value,
   onChange,
   fullWidth = false,
+  size = "md",
 }: {
   value: number;
   onChange: (n: number) => void;
   fullWidth?: boolean;
+  size?: "sm" | "md";
 }) {
+  const btn = size === "sm" ? "w-7" : "w-9";
   return (
     <div
       className={cn(
-        "inline-flex h-9 items-stretch overflow-hidden rounded-full border border-[var(--color-brass)]/55 bg-[var(--color-brass)]/10",
+        "inline-flex items-stretch overflow-hidden rounded-full bg-black/45 shadow-[inset_0_1px_3px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(224,190,107,0.4)]",
+        size === "sm" ? "h-7" : "h-9",
         fullWidth && "w-full",
       )}
       role="group"
@@ -751,15 +769,19 @@ function RepStepper({
         type="button"
         onClick={() => onChange(value - 1)}
         disabled={value <= 0}
-        className="flex w-9 items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40"
+        className={cn(
+          "flex items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40",
+          btn,
+        )}
         aria-label="Fewer reps"
       >
         <Minus size={13} />
       </button>
       <span
         className={cn(
-          "flex items-center justify-center text-sm font-mono font-semibold text-[var(--color-brass-bright)]",
-          fullWidth ? "flex-1" : "min-w-[2.75rem]",
+          "flex items-center justify-center font-[family-name:var(--font-display)] tracking-wide tabular-nums text-[var(--color-brass-bright)]",
+          size === "sm" ? "text-base" : "text-lg",
+          fullWidth ? "flex-1" : "min-w-[2.5rem]",
         )}
       >
         {value}×
@@ -768,7 +790,10 @@ function RepStepper({
         type="button"
         onClick={() => onChange(value + 1)}
         disabled={value >= 99}
-        className="flex w-9 items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40"
+        className={cn(
+          "flex items-center justify-center text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/20 disabled:cursor-not-allowed disabled:opacity-40",
+          btn,
+        )}
         aria-label="More reps"
       >
         <Plus size={13} />
@@ -799,83 +824,87 @@ function SessionView({
 
   return (
     <>
-      <header className="border-b border-[var(--border)] bg-[var(--bg-soft)]">
-        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6">
-          <div className="flex items-center justify-between gap-3">
+      <PageHeader
+        eyebrow={`Dawg Drill · Shot ${session.index + 1} of ${total} · ${reps} reps`}
+        title={shot.name}
+        subtitle={`Shot ${String(shot.number).padStart(2, "0")} · ${shot.difficulty}`}
+      >
+        <div className="flex max-w-2xl flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/50 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[var(--color-felt-bright)] via-[var(--color-brass)] to-[var(--color-brass-bright)] shadow-[0_0_12px_rgba(224,190,107,0.6)] transition-all"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <span className="font-[family-name:var(--font-display)] text-xl leading-none tracking-wide tabular-nums text-[var(--color-brass-bright)]">
+              {progressPct}%
+            </span>
+          </div>
+          <div>
             <button
               type="button"
               onClick={onFinish}
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-pop-bright)]"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-cream)]/70 backdrop-blur-sm transition-colors hover:border-[var(--color-pop)]/50 hover:text-[var(--color-pop-bright)]"
             >
-              <X size={14} />
+              <X size={13} />
               End the drill
             </button>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
-              {session.index + 1} / {total} · {reps} reps
-            </p>
           </div>
-          <div className="mt-3 h-1 overflow-hidden rounded-full bg-[var(--border)]">
-            <div
-              className="h-full bg-[var(--color-brass-bright)] transition-all"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-          <h1 className="mt-4 font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-4xl">
-            {shot.name}
-          </h1>
-          <p className="mt-1 text-sm text-[var(--fg-dim)]">
-            Shot {String(shot.number).padStart(2, "0")} · {shot.difficulty}
-          </p>
         </div>
-      </header>
+      </PageHeader>
 
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-          <div className="space-y-5">
-            <PoolTable shot={shot} interactive />
+      <div className="mx-auto max-w-7xl px-4 pb-12 pt-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-8">
+          <div className="space-y-6">
+            <LampStage>
+              <PoolTable shot={shot} interactive />
+            </LampStage>
 
             {!shot.sequence && (
-              <div className="surface p-4 text-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
-                  Rack
-                </p>
-                <ul className="mt-2 space-y-1 text-[var(--fg)]">
-                  <li>
-                    <span className="font-semibold">Cue ball:</span>{" "}
-                    {describePosition(shot.cueBall)}
-                  </li>
-                  <li>
-                    <span className="font-semibold">Object ball:</span>{" "}
-                    {describePosition(shot.objectBall)}
-                  </li>
+              <div className="pm-glass p-5 text-sm">
+                <PanelLabel>Rack</PanelLabel>
+                <dl className="mt-3 grid gap-2.5">
+                  <div className="flex gap-3">
+                    <dt className="w-24 shrink-0 text-[10px] font-semibold uppercase tracking-[0.22em] leading-5 text-[var(--color-cream)]/45">
+                      Cue ball
+                    </dt>
+                    <dd className="text-[var(--color-cream)]">{describePosition(shot.cueBall)}</dd>
+                  </div>
+                  <div className="flex gap-3">
+                    <dt className="w-24 shrink-0 text-[10px] font-semibold uppercase tracking-[0.22em] leading-5 text-[var(--color-cream)]/45">
+                      Object ball
+                    </dt>
+                    <dd className="text-[var(--color-cream)]">{describePosition(shot.objectBall)}</dd>
+                  </div>
                   {shot.targetPocket && (
-                    <li>
-                      <span className="font-semibold">Target:</span>{" "}
-                      {pocketLabel(shot.targetPocket)}
-                    </li>
+                    <div className="flex gap-3">
+                      <dt className="w-24 shrink-0 text-[10px] font-semibold uppercase tracking-[0.22em] leading-5 text-[var(--color-cream)]/45">
+                        Target
+                      </dt>
+                      <dd className="text-[var(--color-cream)]">{pocketLabel(shot.targetPocket)}</dd>
+                    </div>
                   )}
-                </ul>
+                </dl>
               </div>
             )}
 
-            <div className="surface p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
-                Hit it
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--fg)]">
+            <div className="pm-glass p-5">
+              <PanelLabel>Hit it</PanelLabel>
+              <p className="mt-2 text-base leading-relaxed text-[var(--color-cream)]">
                 {shot.technique}
               </p>
             </div>
           </div>
 
-          <aside className="space-y-5">
+          <aside className="space-y-4">
             <AttemptTracker shotId={shot.id} />
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => onAdvance(Math.max(0, session.index - 1))}
                 disabled={session.index === 0}
-                className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 text-sm font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex h-12 items-center gap-2 rounded-full border border-[var(--color-cream)]/10 bg-black/30 px-5 text-sm font-semibold tracking-wide text-[var(--color-cream)]/65 transition-colors hover:text-[var(--color-cream)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowLeft size={14} />
                 Previous
@@ -883,28 +912,28 @@ function SessionView({
               <button
                 type="button"
                 onClick={() => onAdvance(session.index + 1)}
-                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
+                className="pm-btn h-12 flex-1 justify-center"
               >
                 {isLast ? "Finish the drill" : "Next shot"}
                 <ArrowRight size={14} />
               </button>
             </div>
-            <Link
-              href={`/shots/${shot.id}`}
-              className="block text-center text-xs font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass-bright)]"
-            >
-              Open full shot detail →
-            </Link>
             <button
               type="button"
               onClick={() =>
                 onAdvance(Math.floor(Math.random() * session.items.length))
               }
-              className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+              className={cn(GHOST_PILL, "w-full")}
             >
               <Shuffle size={12} />
               Jump to a random shot in the drill
             </button>
+            <Link
+              href={`/shots/${shot.id}`}
+              className="block pt-1 text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/45 transition-colors hover:text-[var(--color-brass-bright)]"
+            >
+              Open full shot detail →
+            </Link>
           </aside>
         </div>
       </div>
@@ -1017,32 +1046,46 @@ function Complete({
   );
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-12 sm:py-16">
-      <header className="flex flex-col items-center gap-3 text-center">
-        <CheckCircle2 size={56} className="text-[var(--color-felt-bright)]" />
-        <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wide">
-          Dawg Drill complete
-        </h1>
-        {summary.totalAttempts > 0 ? (
-          <p className="text-[var(--fg)]">
-            <span className="font-[family-name:var(--font-display)] text-3xl text-[var(--color-brass-bright)]">
-              {summary.totalMakes}
-              <span className="text-[var(--fg-dim)]">/{summary.totalAttempts}</span>
+    <>
+    <PageHeader
+      eyebrow="Dawg Drill complete"
+      title={
+        summary.totalAttempts > 0 ? (
+          <>
+            <span className="pm-foil">{summary.totalMakes}</span>
+            <span className="text-[var(--color-cream)]/35">/{summary.totalAttempts}</span>{" "}
+            <span className="pm-serif text-[0.45em] text-[var(--color-cream)]/75">
+              {summary.makePct}% made
             </span>
-            <span className="ml-3 text-sm text-[var(--fg-dim)]">
-              ({summary.makePct}% made)
-            </span>
-          </p>
+          </>
         ) : (
-          <p className="text-sm text-[var(--fg-dim)]">
+          "Drill complete"
+        )
+      }
+      subtitle={
+        summary.totalAttempts > 0 ? (
+          `${session.items.length} shots · ${targetReps} reps planned. Nice work — here's how it went.`
+        ) : (
+          <>
             No reps logged this session — tap{" "}
-            <span className="font-semibold text-[var(--fg)]">Made</span> or{" "}
-            <span className="font-semibold text-[var(--fg)]">Missed</span> on
+            <span className="font-semibold text-[var(--color-cream)]">Made</span> or{" "}
+            <span className="font-semibold text-[var(--color-cream)]">Missed</span> on
             each rep next time and the summary fills in.
-          </p>
-        )}
-      </header>
-
+          </>
+        )
+      }
+    >
+      <div className="flex flex-wrap gap-2.5">
+        <button type="button" onClick={onFinish} className="pm-btn">
+          Build another drill
+          <ArrowRight size={14} />
+        </button>
+        <Link href="/stats" className="inline-flex h-12 items-center gap-2 rounded-full border border-[var(--color-brass)]/40 bg-black/30 px-5 text-sm font-semibold text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10">
+          See your stats
+        </Link>
+      </div>
+    </PageHeader>
+    <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 pb-12 pt-4 sm:pb-16">
       {/* Best / tough callouts */}
       {(best || tough) && (
         <div className="grid gap-3 sm:grid-cols-2">
@@ -1070,13 +1113,11 @@ function Complete({
       )}
 
       {/* Per-shot breakdown */}
-      <section className="surface overflow-hidden">
-        <div className="border-b border-[var(--border)] px-5 py-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Shot-by-shot
-          </p>
+      <section className="pm-glass overflow-hidden">
+        <div className="px-5 pb-2 pt-5">
+          <PanelLabel>Shot-by-shot</PanelLabel>
         </div>
-        <ul className="divide-y divide-[var(--border)]">
+        <ul className="divide-y divide-[var(--color-cream)]/[0.07]">
           {summary.perShot.map((p) => {
             const pct =
               p.attempts > 0
@@ -1116,9 +1157,9 @@ function Complete({
                   </div>
                 </div>
                 {/* Progress bar */}
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--border)]/50">
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/50">
                   <div
-                    className="h-full bg-[var(--color-felt-bright)] transition-all"
+                    className="h-full rounded-full bg-gradient-to-r from-[var(--color-felt-bright)] to-[#5fc48a] transition-all"
                     style={{
                       width:
                         p.target > 0
@@ -1159,7 +1200,7 @@ function Complete({
 
       {/* Lessons learned — the "needs work" highlights pulled together. */}
       {lessonsLearned.length > 0 && (
-        <section className="surface p-5">
+        <section className="pm-glass p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-pop-bright)]">
             What to work on next
           </p>
@@ -1179,22 +1220,8 @@ function Complete({
         </section>
       )}
 
-      <div className="flex flex-wrap justify-center gap-2">
-        <button
-          type="button"
-          onClick={onFinish}
-          className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-5 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
-        >
-          Build another drill
-        </button>
-        <Link
-          href="/stats"
-          className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-5 text-sm font-semibold tracking-wide text-[var(--fg)] transition-colors hover:text-[var(--color-brass-bright)]"
-        >
-          See your stats
-        </Link>
-      </div>
     </div>
+    </>
   );
 }
 
@@ -1214,17 +1241,20 @@ function CalloutCard({
   attempts: number;
 }) {
   const accent =
+    tone === "felt" ? "text-[#5fc48a]" : "text-[var(--color-pop-bright)]";
+  const glow =
     tone === "felt"
-      ? "border-[var(--color-felt-bright)]/45 text-[var(--color-felt-bright)]"
-      : "border-[var(--color-pop)]/45 text-[var(--color-pop-bright)]";
+      ? "bg-[radial-gradient(80%_120%_at_0%_0%,rgba(46,139,87,0.22),transparent_70%)]"
+      : "bg-[radial-gradient(80%_120%_at_0%_0%,rgba(232,82,72,0.18),transparent_70%)]";
   const pct =
     attempts > 0 ? Math.round((makes / attempts) * 100) : 0;
   return (
-    <div className={cn("surface flex flex-col gap-1 border p-4", accent)}>
+    <div className={cn("pm-glass relative isolate flex flex-col gap-1 overflow-hidden p-5", accent)}>
+      <div className={cn("pointer-events-none absolute inset-0 -z-10", glow)} aria-hidden />
       <p className="text-[10px] font-semibold uppercase tracking-[0.32em]">
         {label}
       </p>
-      <p className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--fg)]">
+      <p className="font-[family-name:var(--font-display)] text-2xl leading-[0.95] tracking-wide text-[var(--color-cream)]">
         <span className="text-[var(--fg-dim)]">
           {String(shotNumber).padStart(2, "0")} ·{" "}
         </span>
