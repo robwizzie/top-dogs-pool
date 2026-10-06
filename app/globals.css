@@ -13,7 +13,7 @@
   --color-cream-dim: #b9ad8d;
   --color-ink: #070707;
   --color-ink-soft: #111111;
-  --color-ink-card: #161616;
+  --color-ink-card: #141614;
   --color-six-ball: #1f6e3d;
   --color-pop: #c8362f;
   --color-pop-bright: #e85248;
@@ -134,14 +134,54 @@ body {
   }
 }
 
-/* Utility: card surface */
+/* Utility: card surface.
+ *
+ * The site-wide card. Same visual language as the home page's `.pm-glass`:
+ * a layered dark fill with a hairline border that catches brass light along
+ * the top edge. The border gradient is painted with the padding-box /
+ * border-box background trick rather than a pseudo-element, so `.surface`
+ * never needs `position: relative` (which would fight `sticky`/`absolute`
+ * utilities on the ~200 elements that use it). */
 .surface {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.008) 45%, rgba(0, 0, 0, 0.1)) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(
+      180deg,
+      rgba(224, 190, 107, 0.34),
+      rgba(224, 190, 107, 0.1) 35%,
+      rgba(255, 255, 255, 0.05) 75%,
+      rgba(224, 190, 107, 0.12)
+    ) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 24px 48px -28px rgba(0, 0, 0, 0.85);
 }
-.surface-hover:hover {
-  border-color: var(--border-strong);
+.surface-hover {
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    background 0.35s ease;
+}
+@media (hover: hover) {
+  .surface-hover:hover {
+    transform: translateY(-2px);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012) 45%, rgba(0, 0, 0, 0.1)) padding-box,
+      linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+      linear-gradient(
+        180deg,
+        rgba(224, 190, 107, 0.6),
+        rgba(224, 190, 107, 0.22) 40%,
+        rgba(224, 190, 107, 0.18)
+      ) border-box;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 30px 60px -28px rgba(0, 0, 0, 0.9),
+      0 16px 48px -28px rgba(201, 162, 74, 0.45);
+  }
 }
 
 /* 8-ball spinner */
