@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/Section";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
+import { HeaderRail } from "@/components/season/SeasonKit";
+import { Logo } from "@/components/brand/Logo";
 import {
   getCurrentSession,
   getOpponentTeams,
@@ -96,6 +98,21 @@ export async function StandingsView({ query }: Props) {
       ? `${scopeLabel(selectedIds, sessions)} · showing ${primaryName ?? primaryId}`
       : primaryName ?? scopeLabel(selectedIds, sessions);
   const ours = standings.find((s) => s.isOurs);
+  // Header rail numbers — display only, derived from the table below.
+  const leaderPts = standings.reduce((m, s) => Math.max(m, s.points), 0);
+  const ranked = ours && ours.rank > 0;
+  const chaser = ours
+    ? standings
+        .filter((s) => !s.isOurs)
+        .reduce<Standing | null>((best, s) => (!best || s.points > best.points ? s : best), null)
+    : null;
+  const gap = ours
+    ? ours.points >= leaderPts
+      ? chaser
+        ? ours.points - chaser.points
+        : 0
+      : ours.points - leaderPts
+    : 0;
 
   return (
     <>
@@ -109,10 +126,51 @@ export async function StandingsView({ query }: Props) {
               : `${sessionLabel} · standings open after week 1 · Top Dawgs ${ours.points} pts`
             : `${sessionLabel} · ${standings.length} team${standings.length === 1 ? "" : "s"}`
         }
-      />
+      >
+        {ours && (
+          <HeaderRail
+            cells={[
+              {
+                label: "Top Dawgs",
+                value: ranked ? (
+                  <>
+                    <span className="text-[0.55em] text-[var(--color-cream)]/45">#</span>
+                    {ours.rank}
+                    {ours.isTied ? <span className="text-[0.5em] text-[var(--color-cream)]/45"> T</span> : null}
+                    <span className="text-[0.45em] text-[var(--color-cream)]/40"> of {standings.length}</span>
+                  </>
+                ) : (
+                  "—"
+                ),
+                accent: ranked && ours.rank === 1,
+              },
+              { label: "Points", value: ours.points },
+              {
+                label: ours.points >= leaderPts ? "Lead" : "Behind",
+                value: (
+                  <span
+                    className={
+                      gap > 0
+                        ? "text-[var(--color-felt-bright)]"
+                        : gap < 0
+                          ? "text-[var(--color-pop-bright)]"
+                          : undefined
+                    }
+                  >
+                    {gap > 0 ? "+" : ""}
+                    {gap}
+                  </span>
+                ),
+                note: ours.points >= leaderPts ? "pts over 2nd" : "pts off the top",
+              },
+              { label: "Played", value: ours.matchesPlayed },
+            ]}
+          />
+        )}
+      </PageHeader>
 
-      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-5">
+      <div className="mx-auto max-w-5xl px-4 pb-14 pt-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
           <SessionPicker
             basePath="/standings"
             sessions={sessions}
@@ -123,7 +181,7 @@ export async function StandingsView({ query }: Props) {
         </div>
 
         {standings.length === 0 ? (
-          <p className="surface p-6 text-sm text-[var(--fg-dim)]">
+          <p className="pm-glass p-6 text-sm text-[var(--color-cream)]/60">
             No standings cached for this session yet — run{" "}
             <code className="rounded bg-black/30 px-1.5 py-0.5 text-xs">
               npm run sync
@@ -131,17 +189,20 @@ export async function StandingsView({ query }: Props) {
             .
           </p>
         ) : (
-          <div className="surface overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="pm-glass overflow-hidden p-1.5 sm:p-2">
+            <table className="w-full table-fixed border-separate border-spacing-y-1 text-sm">
               <thead>
-                <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
-                  <th className="px-4 py-3">#</th>
-                  <th className="px-4 py-3">Team</th>
-                  <th className="hidden px-4 py-3 text-right sm:table-cell">
-                    Last
+                <tr className="text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/40">
+                  <th className="w-[3.75rem] px-3 pb-1 pt-3 sm:w-24 sm:px-5">#</th>
+                  <th className="px-2 pb-1 pt-3 sm:px-4">Team</th>
+                  <th className="hidden w-24 whitespace-nowrap px-4 pb-1 pt-3 text-right sm:table-cell">
+                    Last wk
                   </th>
-                  <th className="px-4 py-3 text-right">Played</th>
-                  <th className="px-4 py-3 text-right">Pts</th>
+                  <th className="w-10 px-2 pb-1 pt-3 text-right sm:w-24 sm:px-4">
+                    <span className="sm:hidden">P</span>
+                    <span className="hidden sm:inline">Played</span>
+                  </th>
+                  <th className="w-14 px-3 pb-1 pt-3 text-right sm:w-24 sm:px-5">Pts</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,52 +216,93 @@ export async function StandingsView({ query }: Props) {
                     !s.isOurs &&
                     typeof s.teamId === "number" &&
                     oppTeamIds.has(s.teamId);
+                  const podium = s.rank > 0 && s.rank <= 3;
+                  const share = leaderPts > 0 ? (s.points / leaderPts) * 100 : 0;
                   const teamLabel = (
-                    <>
-                      <span
-                        className={
-                          s.isOurs
-                            ? "rounded-full bg-[var(--color-brass)] px-2 py-0.5 text-[var(--color-ink)]"
-                            : linkable
-                              ? "hover:text-[var(--color-brass)]"
-                              : ""
-                        }
-                      >
-                        {s.team}
-                      </span>
-                      {s.teamNumber && (
-                        <span className="ml-1.5 text-xs text-[var(--fg-dim)]">
-                          ({s.teamNumber})
-                        </span>
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      {s.isOurs && (
+                        <Logo size={32} className="!h-7 !w-7 shrink-0 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] sm:!h-8 sm:!w-8" />
                       )}
-                    </>
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={cn(
+                            "block truncate",
+                            s.isOurs
+                              ? "font-[family-name:var(--font-display)] text-xl leading-none tracking-wide text-[var(--color-cream)] sm:text-2xl"
+                              : "font-medium text-[var(--color-cream)]/90",
+                            linkable && "transition-colors group-hover:text-[var(--color-brass-bright)]",
+                          )}
+                        >
+                          {s.team}
+                          {s.teamNumber && (
+                            <span className="ml-1.5 hidden font-sans text-[11px] font-normal tracking-normal text-[var(--color-cream)]/35 sm:inline">
+                              {s.teamNumber}
+                            </span>
+                          )}
+                        </span>
+                        {/* Lane meter — points as a share of the leader's. */}
+                        <span className="mt-1.5 block h-[3px] w-full max-w-[16rem] overflow-hidden rounded-full bg-white/[0.06]" aria-hidden>
+                          <span
+                            className={cn(
+                              "block h-full rounded-full",
+                              s.isOurs
+                                ? "bg-gradient-to-r from-[var(--color-brass)] to-[var(--color-brass-bright)] shadow-[0_0_8px_rgba(224,190,107,0.6)]"
+                                : "bg-[var(--color-cream)]/25",
+                            )}
+                            style={{ width: `${share}%` }}
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  );
+                  // Row "lane": cells share one rounded background. The first
+                  // and last cells carry the rounding.
+                  const cell = cn(
+                    "py-3 transition-colors",
+                    s.isOurs
+                      ? "bg-[rgba(46,139,87,0.3)] shadow-[inset_0_1px_0_rgba(224,190,107,0.35),inset_0_-1px_0_rgba(224,190,107,0.18)]"
+                      : linkable
+                        ? "bg-white/[0.02] group-hover:bg-white/[0.05]"
+                        : "bg-white/[0.02]",
                   );
                   return (
                     <tr
                       key={`${s.rank}-${s.team}`}
-                      className={cn(
-                        "fade-in-up border-b border-[var(--border)] last:border-0",
-                        s.isOurs && "bg-[var(--color-felt-deep)]/40",
-                        linkable && "transition-colors hover:bg-[var(--bg-soft)]/50",
-                      )}
+                      className={cn("group fade-in-up", s.isOurs && "relative")}
                       style={{ animationDelay: `${idx * 30}ms` }}
                     >
-                      <td className="px-4 py-3 font-[family-name:var(--font-display)] text-2xl tracking-wide tabular-nums">
-                        <span className="inline-flex items-baseline gap-1.5">
-                          {s.rank > 0 ? (
-                            <span>{s.rank}</span>
-                          ) : (
-                            <span className="text-[var(--fg-dim)]">—</span>
-                          )}
-                          {s.isTied && s.rank > 0 && (
-                            <span className="text-xs text-[var(--fg-dim)]">
-                              T
-                            </span>
-                          )}
-                          <RankDelta delta={delta} />
+                      <td
+                        className={cn(
+                          cell,
+                          "rounded-l-2xl px-3 sm:px-5",
+                          s.isOurs &&
+                            "shadow-[inset_3px_0_0_var(--color-brass-bright),inset_0_1px_0_rgba(224,190,107,0.35),inset_0_-1px_0_rgba(224,190,107,0.18)]",
+                        )}
+                      >
+                        <span className="inline-flex items-center gap-1.5">
+                          <span
+                            className={cn(
+                              "font-[family-name:var(--font-display)] text-3xl leading-none tabular-nums sm:text-4xl",
+                              s.isOurs
+                                ? "pm-foil"
+                                : podium
+                                  ? "text-[var(--color-brass-bright)]/80"
+                                  : "text-[var(--color-cream)]/35",
+                            )}
+                          >
+                            {s.rank > 0 ? s.rank : "—"}
+                          </span>
+                          <span className="flex flex-col items-start gap-0.5">
+                            {s.isTied && s.rank > 0 && (
+                              <span className="text-[9px] font-bold leading-none tracking-[0.1em] text-[var(--color-cream)]/40">
+                                T
+                              </span>
+                            )}
+                            <RankDelta delta={delta} />
+                          </span>
                         </span>
                       </td>
-                      <td className="px-4 py-3 font-medium">
+                      <td className={cn(cell, "px-2 sm:px-4")}>
                         {linkable ? (
                           <Link
                             href={`/opponents/${s.teamId}`}
@@ -212,13 +314,19 @@ export async function StandingsView({ query }: Props) {
                           teamLabel
                         )}
                       </td>
-                      <td className="hidden px-4 py-3 text-right tabular-nums text-[var(--fg-dim)] sm:table-cell">
+                      <td className={cn(cell, "hidden px-4 text-right tabular-nums text-[var(--color-cream)]/45 sm:table-cell")}>
                         {s.pointsLastWeek ?? "—"}
                       </td>
-                      <td className="px-4 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                      <td className={cn(cell, "px-2 text-right tabular-nums text-[var(--color-cream)]/45 sm:px-4")}>
                         {s.matchesPlayed}
                       </td>
-                      <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-xl tracking-wide tabular-nums text-[var(--color-brass-bright)]">
+                      <td
+                        className={cn(
+                          cell,
+                          "rounded-r-2xl px-3 text-right font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums sm:px-5 sm:text-3xl",
+                          s.isOurs ? "text-[var(--color-brass-bright)]" : "text-[var(--color-cream)]/85",
+                        )}
+                      >
                         {s.points}
                       </td>
                     </tr>
@@ -229,13 +337,14 @@ export async function StandingsView({ query }: Props) {
           </div>
         )}
 
-        <div className="surface mt-6 p-5 text-sm text-[var(--fg-dim)]">
-          <h3 className="mb-2 font-semibold text-[var(--fg)]">
-            How standings work
-          </h3>
-          <p className="text-xs">
+        <div className="mt-6 flex items-start gap-3 rounded-2xl border border-[var(--color-cream)]/[0.07] bg-black/20 p-5 text-xs leading-relaxed text-[var(--color-cream)]/55">
+          <span className="mt-1 h-2 w-2 shrink-0 rotate-45 rounded-[1px] bg-[var(--color-brass-bright)] shadow-[0_0_8px_rgba(224,190,107,0.6)]" aria-hidden />
+          <p>
+            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
+              How standings work
+            </span>
             APA awards each team up to 25 points per match week. Ties in rank
-            are flagged with a small <strong>T</strong>. The{" "}
+            are flagged with a small <strong className="text-[var(--color-cream)]/80">T</strong>. The{" "}
             <span className="text-[var(--color-brass-bright)]">Top Dawgs</span>{" "}
             row is highlighted.
           </p>

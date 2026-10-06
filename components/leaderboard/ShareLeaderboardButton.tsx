@@ -199,7 +199,7 @@ export function ShareLeaderboardButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+        className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--color-brass)]/40 bg-black/30 px-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
         aria-label="Open shareable leaderboard card"
       >
         <Share2 size={13} />

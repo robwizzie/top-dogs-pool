@@ -3,6 +3,9 @@ import { MatchCard } from "@/components/cards/MatchCard";
 import { MatchHistoryEntry } from "@/components/schedule/MatchHistoryEntry";
 import { ScheduleHeatmap } from "@/components/schedule/ScheduleHeatmap";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
+import { HeaderRail } from "@/components/season/SeasonKit";
+import { PointerSheen } from "@/components/home/PointerSheen";
+import { formatDate } from "@/lib/utils";
 import {
   getCurrentSession,
   getSchedule,
@@ -46,8 +49,13 @@ export async function ScheduleView({ query }: Props) {
   const upcoming = schedule
     .filter((m) => m.status === "upcoming" || new Date(m.date).getTime() >= now)
     .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  // A future-dated bye is already in `upcoming`; don't list it under results too.
+  const upcomingIds = new Set(upcoming.map((m) => m.id));
   const past = schedule
-    .filter((m) => m.status === "completed" || m.status === "bye")
+    .filter(
+      (m) =>
+        !upcomingIds.has(m.id) && (m.status === "completed" || m.status === "bye"),
+    )
     .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 
   // Counters for summary header
@@ -67,6 +75,8 @@ export async function ScheduleView({ query }: Props) {
       m.teamScore < m.opponentScore,
   ).length;
   const ties = completedCount - wins - losses;
+  const nextMatch = upcoming.find((m) => m.status !== "bye") ?? null;
+  const winPct = completedCount ? Math.round((wins / completedCount) * 100) : null;
 
   return (
     <>
@@ -78,9 +88,60 @@ export async function ScheduleView({ query }: Props) {
             ? `${sessionLabel} · ${wins}–${losses}${ties ? `–${ties}` : ""} across ${completedCount} match${completedCount === 1 ? "" : "es"}`
             : `${sessionLabel} · ${schedule.length} match${schedule.length === 1 ? "" : "es"}`
         }
-      />
+      >
+        {schedule.length > 0 && (
+          <HeaderRail
+            cells={[
+              {
+                label: "Record",
+                value: completedCount ? (
+                  <>
+                    {wins}
+                    <span className="text-[var(--color-cream)]/30">–</span>
+                    {losses}
+                    {ties ? (
+                      <>
+                        <span className="text-[var(--color-cream)]/30">–</span>
+                        {ties}
+                      </>
+                    ) : null}
+                  </>
+                ) : (
+                  "—"
+                ),
+                accent: completedCount > 0 && wins > losses,
+              },
+              {
+                label: "Win rate",
+                value:
+                  winPct !== null ? (
+                    <>
+                      {winPct}
+                      <span className="text-[0.55em] text-[var(--color-cream)]/45">%</span>
+                    </>
+                  ) : (
+                    "—"
+                  ),
+              },
+              { label: "Played", value: completedCount, note: `of ${schedule.length} on the card` },
+              ...(nextMatch
+                ? [
+                    {
+                      label: "Up next",
+                      value: (
+                        <span className="text-2xl sm:text-[1.7rem]">vs {nextMatch.opponent}</span>
+                      ),
+                      note: formatDate(nextMatch.date),
+                    },
+                  ]
+                : []),
+            ]}
+          />
+        )}
+      </PageHeader>
+      <PointerSheen />
 
-      <div className="mx-auto max-w-7xl px-4 pb-2 pt-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-2 pt-4 sm:px-6 lg:px-8">
         <SessionPicker
           basePath="/schedule"
           sessions={sessions}
@@ -90,7 +151,7 @@ export async function ScheduleView({ query }: Props) {
       </div>
 
       {schedule.length > 0 && (
-        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
           <ScheduleHeatmap matches={schedule} />
         </div>
       )}
@@ -101,7 +162,7 @@ export async function ScheduleView({ query }: Props) {
           title={upcoming.length ? `Next ${upcoming.length}` : "No upcoming matches"}
         >
           {upcoming.length === 0 ? (
-            <p className="surface p-6 text-sm text-[var(--fg-dim)]">
+            <p className="pm-glass p-6 text-sm text-[var(--color-cream)]/60">
               The session is wrapped — recaps below.
             </p>
           ) : (
@@ -119,11 +180,11 @@ export async function ScheduleView({ query }: Props) {
         title={isCurrentOnly ? "Results & Recaps" : "Matches"}
       >
         {past.length === 0 ? (
-          <p className="surface p-6 text-sm text-[var(--fg-dim)]">
+          <p className="pm-glass p-6 text-sm text-[var(--color-cream)]/60">
             No completed matches in this selection yet.
           </p>
         ) : (
-          <ol className="space-y-4">
+          <ol className="space-y-3 sm:space-y-4">
             {past.map((m) => (
               <li key={m.id}>
                 <MatchHistoryEntry match={m} />

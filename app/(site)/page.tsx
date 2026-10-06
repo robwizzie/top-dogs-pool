@@ -30,12 +30,10 @@ import {
 } from "@/lib/research";
 import { matchBreakdown, matchMvp, matchRecap } from "@/lib/recap";
 import { ChalkTalk } from "@/components/cards/ChalkTalk";
-import { formatDate, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
+import { SITE_TIME_ZONE, formatDate, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
 
 export const revalidate = 3600;
 
-/** APA match times are local to South Jersey. */
-const POOL_TZ = "America/New_York";
 
 export default async function HomePage() {
   const [team, roster, leaderboard, standings, lastUpdated, snap] =
@@ -200,13 +198,11 @@ export default async function HomePage() {
 
               <div className="mt-7 flex flex-col items-center gap-4 border-t border-[var(--color-cream)]/10 pt-5 sm:flex-row sm:justify-between">
                 <p className="text-center text-sm text-[var(--color-cream)]/70 sm:text-left">
-                  {/* Match times are Eastern; format there, not in the
-                      server's zone (UTC on the edge). */}
-                  {formatDate(upcoming.date, { timeZone: POOL_TZ })} ·{" "}
+                  {formatDate(upcoming.date)} ·{" "}
                   {new Date(upcoming.date).toLocaleTimeString("en-US", {
                     hour: "numeric",
                     minute: "2-digit",
-                    timeZone: POOL_TZ,
+                    timeZone: SITE_TIME_ZONE,
                   })}
                   {upcoming.location && ` · ${upcoming.location}`}
                 </p>

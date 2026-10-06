@@ -55,12 +55,16 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
       (m) => m.status === "upcoming" || new Date(m.date).getTime() >= now,
     )
     .sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  // A future-dated bye or forfeit already counts as upcoming above; keep the
+  // two lists disjoint so it isn't drawn (and keyed) twice.
+  const upcomingIds = new Set(upcoming.map((m) => m.id));
   const completed = matches
     .filter(
       (m) =>
-        m.status === "completed" ||
-        m.status === "forfeit" ||
-        m.status === "bye",
+        !upcomingIds.has(m.id) &&
+        (m.status === "completed" ||
+          m.status === "forfeit" ||
+          m.status === "bye"),
     )
     .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 
@@ -92,18 +96,22 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
   }
 
   return (
-    <section className="surface overflow-hidden">
+    <section className="pm-glass overflow-hidden">
+      <span
+        className="pointer-events-none absolute inset-px rounded-[inherit] bg-[radial-gradient(60%_80%_at_0%_0%,rgba(46,139,87,0.22),transparent_70%)]"
+        aria-hidden
+      />
       {/* Header — title + summary chips */}
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-soft)] px-6 py-4">
+      <header className="relative flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-cream)]/[0.07] px-5 py-4 sm:px-6">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
             Season ribbon
           </p>
-          <p className="mt-0.5 text-[11px] text-[var(--fg-dim)]">
+          <p className="mt-1 text-[11px] text-[var(--color-cream)]/50">
             Up next on the left · most recent results follow
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+        <div className="flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-[var(--color-cream)]/55">
           <SummaryChip label="Played" value={`${completedReal.length}`} />
           <SummaryChip
             label="Record"
@@ -139,7 +147,7 @@ export function ScheduleHeatmap({ matches }: { matches: Match[] }) {
       </div>
 
       {/* Legend */}
-      <footer className="flex flex-wrap items-center gap-4 border-t border-[var(--border)] bg-[var(--bg-soft)] px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] text-[var(--fg-dim)]">
+      <footer className="relative flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-[var(--color-cream)]/[0.07] bg-black/20 px-5 py-3 text-[10px] uppercase tracking-[0.18em] text-[var(--color-cream)]/45 sm:px-6">
         <Swatch tone="next" label="Next up" />
         <Swatch tone="win" label="Win" />
         <Swatch tone="loss" label="Loss" />
@@ -270,10 +278,10 @@ function SummaryChip({
           ? "text-[var(--color-brass-bright)]"
           : "text-[var(--color-cream)]";
   return (
-    <span className="inline-flex items-baseline gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-2.5 py-1">
+    <span className="inline-flex items-baseline gap-2 rounded-full border border-[var(--color-cream)]/10 bg-black/30 px-3 py-1">
       <span>{label}</span>
       <span
-        className={`font-[family-name:var(--font-display)] text-[13px] tracking-wide tabular-nums ${valueClass}`}
+        className={`font-[family-name:var(--font-display)] text-base leading-none tracking-wide tabular-nums ${valueClass}`}
       >
         {value}
       </span>
@@ -284,7 +292,7 @@ function SummaryChip({
 function Swatch({ tone, label }: { tone: Tone; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className="ribbon-swatch" data-tone={tone} aria-hidden />
+      <span className="ribbon-swatch !h-2 !w-2 !rounded-full" data-tone={tone} aria-hidden />
       {label}
     </span>
   );
