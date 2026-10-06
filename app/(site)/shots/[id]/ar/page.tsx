@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getShot, KINISTER_SHOTS } from "@/lib/kinister/shots";
-import { ShotAR } from "@/components/shots/ShotAR";
+import { ShotAR } from "@/components/shots/ar/ShotAR";
 
 type Params = { id: string };
 
@@ -14,9 +14,9 @@ export function generateStaticParams(): Params[] {
 }
 
 export const metadata = {
-  title: "AR Aim — Top Dogs Pool",
+  title: "AR Shot Trainer — Top Dogs Pool",
   description:
-    "Overlay the ghost ball and aim line on a live camera view of your pool table.",
+    "Track every shot with your phone's camera: make/miss, cut error, and cue-ball position feedback on your own table.",
 };
 
 export default async function ShotARPage({
@@ -44,8 +44,7 @@ export default async function ShotARPage({
             AR view not available for multi-ball drills
           </p>
           <p className="mt-2 text-sm leading-relaxed text-[var(--fg-dim)]">
-            AR Aim overlays the ghost ball for a single cue-ball / object-ball
-            shot. Multi-ball sequences ({shot.name}) don&apos;t have one
+            The AR trainer tracks a single cue-ball / object-ball shot. Multi-ball sequences ({shot.name}) don&apos;t have one
             ghost-ball setup — open the shot detail page to walk through
             the sequence diagrams instead.
           </p>

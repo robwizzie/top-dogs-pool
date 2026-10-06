@@ -1,172 +1,21 @@
-import { sampleColor, type Point } from "./tracking";
+import { computeHomography, applyHomography } from "@/lib/kinister/homography";
+import type { Pt } from "./table";
 
 /**
- * Auto-detection of pool balls on a calibrated table. Avoids dragging in
- * OpenCV.js (~4MB wasm) — we know the felt color from the calibration
- * step, so we can do a simple color-segmentation + connected-components
- * pass to find every non-felt blob of roughly ball-size.
- *
- * Algorithm:
- *   1. Sample the felt color from the center of the calibrated quad.
- *   2. Mask every pixel whose color is "far" from the felt color.
- *   3. Run connected-components (union-find with 4-connectivity).
- *   4. Keep components in the right size range with roughly circular
- *      shape (bounding-box aspect ratio + pixel-fill density).
- *   5. Return centroid + average color of each remaining blob.
- *
- * Returns positions in **canvas-space** (the downsampled processing
- * canvas). Caller converts to display-space via `toDisplaySpace`.
+ * The felt outline we find is the back edge of the cushion cloth, not
+ * the cushion nose that bounds the playing surface (and that the diamond
+ * grid is measured from). A cushion is roughly two inches wide.
+ */
+const CUSHION_DIAMONDS = 0.17;
+
+/**
+ * Auto-detection of the table outline for AR calibration. Avoids dragging
+ * in OpenCV.js (~4MB wasm): the felt is the dominant single-colour region
+ * in any pool-table shot, so a colour mask + connected components +
+ * convex hull gets us the four corners.
  */
 
-export type DetectedBall = {
-  center: Point;
-  color: [number, number, number];
-  /** Pixel area of the blob — used to break ties by relative size. */
-  area: number;
-};
-
-export type DetectOptions = {
-  /** Polygon of the four calibrated table corners in canvas-space. */
-  tableQuad?: [Point, Point, Point, Point];
-  /** Sampled felt color in RGB. If omitted, sampled from quad center. */
-  feltColor?: [number, number, number];
-  /** How different from felt counts as "not felt" — higher = stricter. */
-  colorDistance?: number;
-  /** Min / max blob area in pixels (canvas-space). */
-  minArea?: number;
-  maxArea?: number;
-};
-
-const DEFAULTS = {
-  colorDistance: 70,
-  minArea: 60,
-  maxArea: 1200,
-};
-
-export function detectBalls(
-  image: ImageData,
-  options: DetectOptions = {},
-): DetectedBall[] {
-  const { width, height, data } = image;
-  const tableQuad = options.tableQuad;
-  const colorDistance = options.colorDistance ?? DEFAULTS.colorDistance;
-  const minArea = options.minArea ?? DEFAULTS.minArea;
-  const maxArea = options.maxArea ?? DEFAULTS.maxArea;
-
-  // (1) Establish felt reference. Sample from several spots on the felt
-  // and take the median per channel. Robust to:
-  //   - the foot spot / center marking many tables have
-  //   - uneven lighting (window glare on one side, shadow on the other)
-  //   - chalk smudges or a stray ball that happens to be near center
-  const feltColor = options.feltColor ?? medianFeltSample(image, tableQuad);
-
-  // (2) Mask non-felt pixels inside the table polygon. Pixels outside
-  // the polygon never enter the search, so we don't pick up the rails
-  // or the player's torso.
-  const total = width * height;
-  const mask = new Uint8Array(total);
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (tableQuad && !pointInQuad({ x, y }, tableQuad)) continue;
-      const i = (y * width + x) * 4;
-      const dr = data[i] - feltColor[0];
-      const dg = data[i + 1] - feltColor[1];
-      const db = data[i + 2] - feltColor[2];
-      const dist = Math.sqrt(dr * dr + dg * dg + db * db);
-      if (dist > colorDistance) mask[y * width + x] = 1;
-    }
-  }
-
-  // (3) Connected components (4-connectivity, union-find).
-  const uf = new UnionFind(total);
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const i = y * width + x;
-      if (!mask[i]) continue;
-      if (x > 0 && mask[i - 1]) uf.union(i, i - 1);
-      if (y > 0 && mask[i - width]) uf.union(i, i - width);
-    }
-  }
-
-  // (4) Aggregate stats per root.
-  type Blob = {
-    sumX: number;
-    sumY: number;
-    sumR: number;
-    sumG: number;
-    sumB: number;
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-    count: number;
-  };
-  const blobs = new Map<number, Blob>();
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const i = y * width + x;
-      if (!mask[i]) continue;
-      const root = uf.find(i);
-      let b = blobs.get(root);
-      if (!b) {
-        b = {
-          sumX: 0,
-          sumY: 0,
-          sumR: 0,
-          sumG: 0,
-          sumB: 0,
-          minX: x,
-          minY: y,
-          maxX: x,
-          maxY: y,
-          count: 0,
-        };
-        blobs.set(root, b);
-      }
-      const pi = i * 4;
-      b.sumX += x;
-      b.sumY += y;
-      b.sumR += data[pi];
-      b.sumG += data[pi + 1];
-      b.sumB += data[pi + 2];
-      if (x < b.minX) b.minX = x;
-      if (y < b.minY) b.minY = y;
-      if (x > b.maxX) b.maxX = x;
-      if (y > b.maxY) b.maxY = y;
-      b.count += 1;
-    }
-  }
-
-  // (5) Filter by size + roughly circular geometry.
-  const out: DetectedBall[] = [];
-  for (const b of blobs.values()) {
-    if (b.count < minArea || b.count > maxArea) continue;
-    const w = b.maxX - b.minX + 1;
-    const h = b.maxY - b.minY + 1;
-    if (w < 6 || h < 6) continue;
-    // Aspect ratio close to 1.
-    const aspect = w > h ? w / h : h / w;
-    if (aspect > 1.6) continue;
-    // Fill density — a circle inscribed in its bounding box covers ~78%
-    // of the box. Allow 0.55-0.95 to tolerate motion blur, shadows,
-    // and partial occlusions.
-    const density = b.count / (w * h);
-    if (density < 0.55 || density > 0.98) continue;
-    out.push({
-      center: { x: b.sumX / b.count, y: b.sumY / b.count },
-      color: [
-        Math.round(b.sumR / b.count),
-        Math.round(b.sumG / b.count),
-        Math.round(b.sumB / b.count),
-      ],
-      area: b.count,
-    });
-  }
-
-  // Sort by area descending — bigger blobs first, easier to pick out.
-  out.sort((a, b) => b.area - a.area);
-  return out;
-}
+type Point = Pt;
 
 /**
  * Auto-detect the four corner pockets of the table.
@@ -193,25 +42,57 @@ export function detectBalls(
  * Returns null if no confident table-shaped felt region is found.
  */
 export function detectCornerPockets(image: ImageData): Point[] | null {
+  const outer = detectFeltOutline(image);
+  if (!outer) return null;
+  // Map the outline onto a table expanded by the cushion width, then read
+  // off where the real playing-surface corners fall. Perspective-correct,
+  // and the same for any camera side since the inset is symmetric.
+  const c = CUSHION_DIAMONDS;
+  const inner: [Point, Point, Point, Point] = [
+    { x: 0, y: 0 },
+    { x: 0, y: 4 },
+    { x: 8, y: 4 },
+    { x: 8, y: 0 },
+  ];
+  const expanded = inner.map((p) => ({
+    x: p.x === 0 ? -c : 8 + c,
+    y: p.y === 0 ? -c : 4 + c,
+  })) as [Point, Point, Point, Point];
+  try {
+    const H = computeHomography(expanded, outer as [Point, Point, Point, Point]);
+    return inner.map((p) => applyHomography(H, p));
+  } catch {
+    return outer;
+  }
+}
+
+function detectFeltOutline(image: ImageData): Point[] | null {
   const { width, height } = image;
 
   // (1) Establish felt reference from the whole frame.
   const feltColor = medianFeltSample(image);
 
-  // (2) Mask felt pixels — we use a slightly looser distance than the
-  // ball detector since the table is huge and we want to catch the
-  // whole thing including darker/lighter cloth sections.
+  // (2) Mask felt pixels by chromaticity: same hue as the felt at any
+  // reasonable brightness, so the shaded end of the table and the cushion
+  // cloth count, while a grey floor or a brown rail (close in raw RGB
+  // distance to dark felt) doesn't.
   const total = width * height;
   const mask = new Uint8Array(total);
-  const feltDistance = 90;
+  const [fr, fg, fb] = feltColor;
+  const fn = fr * fr + fg * fg + fb * fb + 1;
+  const fMag = Math.sqrt(fn);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4;
-      const dr = image.data[i] - feltColor[0];
-      const dg = image.data[i + 1] - feltColor[1];
-      const db = image.data[i + 2] - feltColor[2];
-      const dist = Math.sqrt(dr * dr + dg * dg + db * db);
-      if (dist < feltDistance) mask[y * width + x] = 1;
+      const r = image.data[i];
+      const g = image.data[i + 1];
+      const b = image.data[i + 2];
+      const alpha = (r * fr + g * fg + b * fb) / fn;
+      if (alpha < 0.45 || alpha > 1.8) continue;
+      const er = r - alpha * fr;
+      const eg = g - alpha * fg;
+      const eb = b - alpha * fb;
+      if (Math.sqrt(er * er + eg * eg + eb * eb) < 8 + 0.2 * fMag * alpha) mask[y * width + x] = 1;
     }
   }
 
@@ -277,6 +158,10 @@ export function detectCornerPockets(image: ImageData): Point[] | null {
     corners = corners.filter((_, i) => i !== mostColinearIdx);
   }
   if (corners.length !== 4) return null;
+  const fitted = quadFromHull(hull);
+  if (fitted && quadArea(fitted as [Point, Point, Point, Point]) > 0.8 * quadArea(corners as [Point, Point, Point, Point])) {
+    corners = fitted;
+  }
 
   // (7) Final sanity: quad must cover a reasonable fraction of the frame.
   const area = quadArea(corners as [Point, Point, Point, Point]);
@@ -401,46 +286,6 @@ function quadArea(q: [Point, Point, Point, Point]): number {
   );
 }
 
-/**
- * Pick which detected ball is the cue ball (whitest) and which is the
- * object ball (closest to the catalog's projected OB position, of the
- * remaining candidates).
- */
-export function classifyBalls(
-  candidates: DetectedBall[],
-  expectedObCanvas: Point,
-): { cue: DetectedBall | null; ob: DetectedBall | null } {
-  if (candidates.length === 0) return { cue: null, ob: null };
-
-  // Cue ball = the whitest (highest sum of RGB while also being low
-  // chroma — a yellow ball is bright too). Score = brightness − chroma.
-  const scoreWhite = (b: DetectedBall) => {
-    const [r, g, b2] = b.color;
-    const brightness = (r + g + b2) / 3;
-    const max = Math.max(r, g, b2);
-    const min = Math.min(r, g, b2);
-    const chroma = max - min;
-    return brightness - chroma * 2;
-  };
-  const cue = [...candidates].sort((a, b) => scoreWhite(b) - scoreWhite(a))[0];
-  const remaining = candidates.filter((c) => c !== cue);
-  if (remaining.length === 0) return { cue, ob: null };
-
-  // OB = closest to where the catalog says it should be.
-  const ob = remaining.reduce(
-    (best, c) => {
-      const d = Math.hypot(
-        c.center.x - expectedObCanvas.x,
-        c.center.y - expectedObCanvas.y,
-      );
-      return d < best.d ? { c, d } : best;
-    },
-    { c: remaining[0], d: Infinity },
-  ).c;
-
-  return { cue, ob };
-}
-
 // ----- helpers -----
 
 class UnionFind {
@@ -477,45 +322,43 @@ class UnionFind {
 }
 
 /**
- * Sample 9 points spread across the felt and return the median R/G/B
- * per channel. The median is far more robust than the mean to outliers
- * (center spot, chalk smudge, a ball that happens to be near the
- * sample) and to half-lit tables.
+ * Sample 9 points spread around the frame centre and return the median
+ * R/G/B per channel. The median shrugs off the centre spot, a chalk
+ * smudge, a ball near a sample point, and half-lit tables.
  */
-function medianFeltSample(
-  image: ImageData,
-  tableQuad?: [Point, Point, Point, Point],
-): [number, number, number] {
-  const samples: Point[] = [];
-  if (tableQuad) {
-    // Bilinear blend over the quad — 9 interior points at the (¼, ½, ¾)
-    // grid. None at the corners (rails / pockets).
-    const fractions = [0.25, 0.5, 0.75];
-    for (const u of fractions) {
-      for (const v of fractions) {
-        samples.push(bilinear(tableQuad, u, v));
-      }
-    }
-  } else {
-    const cx = image.width / 2;
-    const cy = image.height / 2;
-    const r = Math.min(image.width, image.height) * 0.2;
-    for (const dx of [-r, 0, r]) {
-      for (const dy of [-r, 0, r]) {
-        samples.push({ x: cx + dx, y: cy + dy });
-      }
-    }
-  }
+function medianFeltSample(image: ImageData): [number, number, number] {
+  const cx = image.width / 2;
+  const cy = image.height / 2;
+  const r = Math.min(image.width, image.height) * 0.2;
   const rs: number[] = [];
   const gs: number[] = [];
   const bs: number[] = [];
-  for (const p of samples) {
-    const [r, g, b] = sampleColor(image, p, 8);
-    rs.push(r);
-    gs.push(g);
-    bs.push(b);
+  for (const dx of [-r, 0, r]) {
+    for (const dy of [-r, 0, r]) {
+      const [cr, cg, cb] = meanColor(image, { x: cx + dx, y: cy + dy }, 8);
+      rs.push(cr);
+      gs.push(cg);
+      bs.push(cb);
+    }
   }
   return [median(rs), median(gs), median(bs)];
+}
+
+function meanColor(image: ImageData, c: Point, radius: number): [number, number, number] {
+  let n = 0;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  for (let y = Math.max(0, Math.floor(c.y - radius)); y <= Math.min(image.height - 1, c.y + radius); y++) {
+    for (let x = Math.max(0, Math.floor(c.x - radius)); x <= Math.min(image.width - 1, c.x + radius); x++) {
+      const i = (y * image.width + x) * 4;
+      r += image.data[i];
+      g += image.data[i + 1];
+      b += image.data[i + 2];
+      n++;
+    }
+  }
+  return n ? [r / n, g / n, b / n] : [0, 0, 0];
 }
 
 function median(xs: number[]): number {
@@ -527,37 +370,70 @@ function median(xs: number[]): number {
     : sorted[m];
 }
 
-function bilinear(
-  q: [Point, Point, Point, Point],
-  u: number,
-  v: number,
-): Point {
-  // Quad order is the player's tap order: near-right, near-left,
-  // far-left, far-right. u runs near→far, v runs right→left.
-  const top = { x: lerp(q[0].x, q[1].x, v), y: lerp(q[0].y, q[1].y, v) };
-  const bot = { x: lerp(q[3].x, q[2].x, v), y: lerp(q[3].y, q[2].y, v) };
-  return { x: lerp(top.x, bot.x, u), y: lerp(top.y, bot.y, u) };
-}
-
-function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * t;
-}
-
 /**
- * Point-in-quadrilateral test using the crossing-number algorithm.
- * Quad vertices must be in order (clockwise or counter-clockwise).
+ * The pocket cut-outs chamfer the felt's corners, so its convex hull is
+ * roughly an octagon. Merge consecutive hull edges that run in the same
+ * direction, keep the four longest runs (the rails), fit a line to each
+ * and intersect neighbours — that lands on the true corners of the cloth
+ * rather than on a chamfer.
  */
-function pointInQuad(p: Point, q: [Point, Point, Point, Point]): boolean {
-  let inside = false;
-  for (let i = 0, j = 3; i < 4; j = i++) {
-    const xi = q[i].x;
-    const yi = q[i].y;
-    const xj = q[j].x;
-    const yj = q[j].y;
-    const intersect =
-      yi > p.y !== yj > p.y &&
-      p.x < ((xj - xi) * (p.y - yi)) / (yj - yi + 1e-9) + xi;
-    if (intersect) inside = !inside;
+function quadFromHull(hull: Point[]): Point[] | null {
+  const n = hull.length;
+  if (n < 4) return null;
+  type Run = { pts: Point[]; len: number; dir: number; start: number };
+  const angle = (a: Point, b: Point) => Math.atan2(b.y - a.y, b.x - a.x);
+  const diff = (a: number, b: number) => {
+    let d = Math.abs(a - b) % (2 * Math.PI);
+    if (d > Math.PI) d = 2 * Math.PI - d;
+    return d;
+  };
+  const MAX_TURN = (10 * Math.PI) / 180;
+  // Start at the sharpest turn so no run straddles the starting point.
+  let start = 0;
+  let sharpest = -1;
+  for (let i = 0; i < n; i++) {
+    const t = diff(angle(hull[(i - 1 + n) % n], hull[i]), angle(hull[i], hull[(i + 1) % n]));
+    if (t > sharpest) {
+      sharpest = t;
+      start = i;
+    }
   }
-  return inside;
+  const runs: Run[] = [];
+  let cur: Run | null = null;
+  for (let k = 0; k < n; k++) {
+    const i = (start + k) % n;
+    const a = hull[i];
+    const b = hull[(i + 1) % n];
+    const len = Math.hypot(b.x - a.x, b.y - a.y);
+    const dir = angle(a, b);
+    if (cur && diff(dir, cur.dir) < MAX_TURN) {
+      cur.pts.push(b);
+      // Length-weighted running direction.
+      const total = cur.len + len;
+      const vx = Math.cos(cur.dir) * cur.len + Math.cos(dir) * len;
+      const vy = Math.sin(cur.dir) * cur.len + Math.sin(dir) * len;
+      cur.dir = Math.atan2(vy, vx);
+      cur.len = total;
+    } else {
+      cur = { pts: [a, b], len, dir, start: k };
+      runs.push(cur);
+    }
+  }
+  if (runs.length < 4) return null;
+  const sides = [...runs].sort((a, b) => b.len - a.len).slice(0, 4).sort((a, b) => a.start - b.start);
+  const lines = sides.map((r) => {
+    const a = r.pts[0];
+    const b = r.pts[r.pts.length - 1];
+    return { p: a, d: { x: b.x - a.x, y: b.y - a.y } };
+  });
+  const out: Point[] = [];
+  for (let i = 0; i < 4; i++) {
+    const l1 = lines[(i + 3) % 4];
+    const l2 = lines[i];
+    const den = l1.d.x * l2.d.y - l1.d.y * l2.d.x;
+    if (Math.abs(den) < 1e-6) return null;
+    const t = ((l2.p.x - l1.p.x) * l2.d.y - (l2.p.y - l1.p.y) * l2.d.x) / den;
+    out.push({ x: l1.p.x + l1.d.x * t, y: l1.p.y + l1.d.y * t });
+  }
+  return out;
 }

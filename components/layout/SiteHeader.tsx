@@ -153,11 +153,24 @@ function NavGroupMenu({
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | null>(null);
+  // When the menu was opened by hovering, the click that follows on the
+  // same button must not toggle it shut again. Touch devices also fire
+  // a synthetic mouseenter right before the click, so without this a
+  // tap on the group label opened and closed the menu in one go and the
+  // links (Shots, Dawg Drill…) were unreachable.
+  const openedByHover = useRef(false);
+  // Mirrors `open` without waiting for a re-render: the click can arrive
+  // before React has flushed the hover's state update.
+  const openRef = useRef(open);
+  openRef.current = open;
 
   const childActive = group.items.some((item) => isActive(pathname, item.href));
 
   // Close on route change.
   useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    if (!open) openedByHover.current = false;
+  }, [open]);
 
   // Close on outside click + escape.
   useEffect(() => {
@@ -178,14 +191,34 @@ function NavGroupMenu({
     };
   }, [open]);
 
-  function openNow() {
+  function cancelClose() {
     if (closeTimer.current !== null) {
       window.clearTimeout(closeTimer.current);
       closeTimer.current = null;
     }
+  }
+  function openOnHover(e: React.PointerEvent) {
+    cancelClose();
+    if (e.pointerType !== "mouse") return;
+    if (!openRef.current) openedByHover.current = true;
+    openRef.current = true;
     setOpen(true);
   }
-  function scheduleClose() {
+  function onButtonClick() {
+    cancelClose();
+    if (openedByHover.current) {
+      // Hover already opened it — this click just "commits" the open.
+      openedByHover.current = false;
+      openRef.current = true;
+      setOpen(true);
+      return;
+    }
+    const next = !openRef.current;
+    openRef.current = next;
+    setOpen(next);
+  }
+  function scheduleClose(e: React.PointerEvent) {
+    if (e.pointerType !== "mouse") return;
     if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
     closeTimer.current = window.setTimeout(() => setOpen(false), 120);
   }
@@ -194,12 +227,12 @@ function NavGroupMenu({
     <div
       ref={wrapRef}
       className="relative"
-      onMouseEnter={openNow}
-      onMouseLeave={scheduleClose}
+      onPointerEnter={openOnHover}
+      onPointerLeave={scheduleClose}
     >
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={onButtonClick}
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
