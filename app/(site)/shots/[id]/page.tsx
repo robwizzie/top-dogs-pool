@@ -134,10 +134,10 @@ export default async function ShotDetailPage({
                 <Link
                   href={`/shots/${shot.id}/ar`}
                   className="inline-flex h-8 items-center gap-2 rounded-full border border-[var(--color-brass)]/70 bg-[var(--color-brass)]/10 px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)] hover:text-[var(--color-ink)]"
-                  title="Point your phone at the table and see the ghost ball overlaid live"
+                  title="Prop your phone up at the table — it tracks every attempt and scores your aim and cue-ball position"
                 >
                   <Crosshair size={13} />
-                  AR aim
+                  AR trainer
                 </Link>
               )}
               <Link

@@ -14,6 +14,17 @@ type ShotFeedbackRequest = {
   shotId: string;
   /** Each frame is a data URL: "data:image/jpeg;base64,..." */
   frames: string[];
+  /** What the AR tracker measured for this attempt, if it ran. */
+  metrics?: {
+    verdict?: string;
+    headline?: string;
+    aim?: { errorDeg: number; offsetIn: number; idealCutDeg: number } | null;
+    position?: { error: number; along: number; across: number } | null;
+    rails?: { intended: number; actual: number } | null;
+    speed?: string | null;
+    scratch?: string | null;
+    tableSize?: string;
+  };
 };
 
 type ShotFeedbackResponse =
@@ -97,6 +108,7 @@ export async function POST(req: Request) {
   ]
     .filter(Boolean)
     .join("\n");
+  const measured = describeMetrics(body.metrics);
 
   const systemPrompt = `You are a pool coach reviewing a short clip of a single shot. The frames below were captured in order while the player executed the shot. Use the shot context to judge whether they pulled it off, and call out specific issues you can see (stroke, alignment, contact, speed, follow-through, cue-ball end position, etc.).
 
@@ -105,7 +117,14 @@ Respond with two sections separated by a line:
 2. NOTES — 2-3 sentences of specific, actionable feedback. Mention the player's likely error if you spotted one, or what they did well if it looked clean. No generic pool platitudes.
 
 Shot context:
-${context}`;
+${context}${
+    measured
+      ? `
+
+Ball tracking measured (trust these numbers over what you can see in the frames; use the frames for stroke, stance, bridge and follow-through):
+${measured}`
+      : ""
+  }`;
 
   const parts: object[] = [{ text: systemPrompt }];
   for (const frame of frames) {
@@ -116,7 +135,7 @@ ${context}`;
     });
   }
 
-  const model = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
+  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   try {
@@ -176,4 +195,32 @@ function parseModelReply(raw: string): {
     .replace(/^notes[^\n]*\n?/gi, "")
     .trim();
   return { verdict, summary };
+}
+
+function describeMetrics(m: ShotFeedbackRequest["metrics"]): string {
+  if (!m || typeof m !== "object") return "";
+  const n = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+  const lines: string[] = [];
+  if (typeof m.verdict === "string") lines.push(`Result: ${m.verdict.slice(0, 20)}`);
+  if (m.aim && n(m.aim.errorDeg) !== null) {
+    const e = n(m.aim.errorDeg)!;
+    const straight = (n(m.aim.idealCutDeg) ?? 99) < 1.5;
+    lines.push(
+      straight
+        ? `Object ball left ${Math.abs(e).toFixed(1)}° ${e > 0 ? "left" : "right"} of the pocket line (straight-in shot)`
+        : `Cut error: ${Math.abs(e).toFixed(1)}° ${e > 0 ? "overcut (too thin)" : "undercut (too thick)"}`,
+    );
+    if (n(m.aim.offsetIn) !== null) lines.push(`Object ball line arrived ${n(m.aim.offsetIn)!.toFixed(1)} in off the pocket centre`);
+  }
+  if (m.position && n(m.position.error) !== null) {
+    const along = n(m.position.along) ?? 0;
+    lines.push(
+      `Cue ball finished ${n(m.position.error)!.toFixed(2)} diamonds from the target (${Math.abs(along).toFixed(2)} ${along >= 0 ? "long" : "short"}, ${(n(m.position.across) ?? 0).toFixed(2)} off the line)`,
+    );
+  }
+  if (m.rails && n(m.rails.actual) !== null) lines.push(`Cue ball rails: ${n(m.rails.actual)} (drill path uses ${n(m.rails.intended)})`);
+  if (typeof m.speed === "string") lines.push(`Stroke speed: ${m.speed.slice(0, 12)}`);
+  if (typeof m.scratch === "string") lines.push(`Scratched in pocket ${m.scratch.slice(0, 4)}`);
+  if (typeof m.tableSize === "string") lines.push(`Table: ${m.tableSize.slice(0, 8)}`);
+  return lines.map((l) => `- ${l}`).join("\n");
 }
