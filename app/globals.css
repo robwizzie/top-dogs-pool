@@ -1112,3 +1112,255 @@ a.patch-lightbox-instance-link:hover {
 .animate-pulse-pop {
   animation: pulse-pop 1.6s ease-out infinite;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+ * Refresh layer — "lamp over the felt".
+ *
+ * Additive `pm-*` primitives for the redesigned home page. They sit beside the
+ * older `.surface` system rather than replacing it, so the rest of the site
+ * keeps its current look until each page is migrated.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* Film grain — a static SVG turbulence tile, blended over dark surfaces so
+ * big gradients don't band and flat blacks feel tactile. */
+.pm-grain {
+  position: relative;
+  isolation: isolate;
+}
+.pm-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glass card — layered gradient fill, hairline brass top highlight and a
+ * soft drop. The border is a masked gradient so it brightens at the top edge
+ * like light catching a rail. */
+.pm-glass {
+  position: relative;
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012) 40%, rgba(0, 0, 0, 0.12)),
+    rgba(18, 20, 18, 0.72);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.8),
+    0 12px 24px -16px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+}
+.pm-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(224, 190, 107, 0.45),
+    rgba(224, 190, 107, 0.12) 30%,
+    rgba(255, 255, 255, 0.05) 70%,
+    rgba(224, 190, 107, 0.14)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Interactive glass: lifts and picks up a lamp-light sheen under the cursor
+ * (--mx / --my are set by <Spotlight>; it falls back to top-center). */
+.pm-lift {
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.pm-lift > .pm-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(224, 190, 107, 0.12),
+    transparent 60%
+  );
+}
+@media (hover: hover) {
+  .pm-lift:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 40px 80px -30px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(224, 190, 107, 0.18),
+      0 20px 60px -30px rgba(201, 162, 74, 0.35);
+  }
+  .pm-lift:hover > .pm-sheen {
+    opacity: 1;
+  }
+}
+
+/* Brass foil text — a slow sheen sweeps across the gradient. */
+.pm-foil {
+  background: linear-gradient(
+    100deg,
+    #a8822f 0%,
+    #e0be6b 22%,
+    #fff1c9 38%,
+    #e0be6b 52%,
+    #b38b36 70%,
+    #f2d896 88%,
+    #a8822f 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: pm-foil-sweep 9s ease-in-out infinite;
+}
+@keyframes pm-foil-sweep {
+  0%, 100% { background-position: 100% 0; }
+  50%      { background-position: 0% 0; }
+}
+
+/* Outline display text — cream stroke, hollow fill. */
+.pm-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(236, 225, 196, 0.85);
+}
+
+/* Overhead billiard lamp: a warm cone pooling onto the felt. */
+.pm-lamp {
+  background:
+    radial-gradient(60% 55% at 50% 0%, rgba(255, 226, 160, 0.16), transparent 70%),
+    radial-gradient(45% 40% at 50% 8%, rgba(255, 236, 190, 0.1), transparent 70%);
+}
+@keyframes pm-lamp-flicker {
+  0%, 100% { opacity: 1; }
+  47%      { opacity: 1; }
+  48%      { opacity: 0.86; }
+  50%      { opacity: 1; }
+  73%      { opacity: 0.93; }
+  74%      { opacity: 1; }
+}
+.pm-lamp-flicker {
+  animation: pm-lamp-flicker 7s linear infinite;
+}
+
+/* Felt surface with a diamond-stitched rail border. */
+.pm-felt {
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(46, 139, 87, 0.55), transparent 65%),
+    radial-gradient(rgba(0, 0, 0, 0.22) 1px, transparent 1px) 0 0 / 5px 5px,
+    linear-gradient(180deg, #13402d, #0b2a1e 70%, #08201a);
+}
+
+/* Section header — big index numeral + hairline that runs to the edge. */
+.pm-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(224, 190, 107, 0.5), rgba(224, 190, 107, 0.08) 60%, transparent);
+}
+
+/* Orbiting balls around the hero crest. */
+@keyframes pm-orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes pm-counter-orbit {
+  to { transform: rotate(-360deg); }
+}
+.pm-orbit {
+  animation: pm-orbit 48s linear infinite;
+}
+.pm-orbit > * {
+  animation: pm-counter-orbit 48s linear infinite;
+}
+
+/* Halo ring behind the crest — conic brass sweep, slowly rotating. */
+.pm-halo {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(224, 190, 107, 0.55) 40deg,
+    transparent 110deg,
+    transparent 200deg,
+    rgba(46, 139, 87, 0.6) 250deg,
+    transparent 320deg
+  );
+  -webkit-mask: radial-gradient(closest-side, transparent 96%, #000 97%, #000 99%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 96%, #000 97%, #000 99%, transparent 100%);
+  animation: pm-orbit 18s linear infinite;
+}
+
+/* Infinite ticker. Content is rendered twice; we slide by exactly one copy. */
+@keyframes pm-marquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.pm-marquee {
+  display: flex;
+  width: max-content;
+  animation: pm-marquee 40s linear infinite;
+}
+.pm-marquee-mask {
+  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* Scroll reveal — progressive enhancement via scroll-driven animations.
+ * Browsers without support simply show the content. */
+@supports (animation-timeline: view()) {
+  .pm-reveal {
+    animation: pm-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+  @keyframes pm-reveal {
+    from { opacity: 0; transform: translate3d(0, 28px, 0) scale(0.985); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+
+/* Primary pill button — brass with a gloss highlight. */
+.pm-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.85rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+  background: linear-gradient(180deg, #f0d48a, #c9a24a 55%, #b38b36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 10px 30px -10px rgba(201, 162, 74, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.pm-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 16px 40px -12px rgba(201, 162, 74, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-foil,
+  .pm-orbit,
+  .pm-orbit > *,
+  .pm-halo,
+  .pm-marquee,
+  .pm-lamp-flicker {
+    animation: none !important;
+  }
+}
