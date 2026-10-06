@@ -18,7 +18,7 @@ const DIFFICULTIES: Difficulty[] = [
 /** Active-state colours for the difficulty toggles (felt / brass / pop). */
 const DIFFICULTY_STYLES: Record<Difficulty, string> = {
   Foundational:
-    "data-[active=true]:from-[#5fc48a] data-[active=true]:via-[#2e8b57] data-[active=true]:to-[#1f6e3d] data-[active=true]:text-white data-[active=true]:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_6px_16px_-8px_rgba(46,139,87,0.9)]",
+    "data-[active=true]:from-[var(--color-felt-text)] data-[active=true]:via-[#2e8b57] data-[active=true]:to-[#1f6e3d] data-[active=true]:text-white data-[active=true]:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_6px_16px_-8px_rgba(46,139,87,0.9)]",
   Intermediate: "",
   Advanced:
     "data-[active=true]:from-[#ff8a7f] data-[active=true]:via-[#e85248] data-[active=true]:to-[#c8362f] data-[active=true]:text-white data-[active=true]:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_6px_16px_-8px_rgba(232,82,72,0.9)]",

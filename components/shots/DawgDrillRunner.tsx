@@ -1159,7 +1159,7 @@ function Complete({
                 {/* Progress bar */}
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/50">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-[var(--color-felt-bright)] to-[#5fc48a] transition-all"
+                    className="h-full rounded-full bg-gradient-to-r from-[var(--color-felt-bright)] to-[var(--color-felt-text)] transition-all"
                     style={{
                       width:
                         p.target > 0
@@ -1241,7 +1241,7 @@ function CalloutCard({
   attempts: number;
 }) {
   const accent =
-    tone === "felt" ? "text-[#5fc48a]" : "text-[var(--color-pop-bright)]";
+    tone === "felt" ? "text-[var(--color-felt-text)]" : "text-[var(--color-pop-bright)]";
   const glow =
     tone === "felt"
       ? "bg-[radial-gradient(80%_120%_at_0%_0%,rgba(46,139,87,0.22),transparent_70%)]"

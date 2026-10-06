@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 /** Difficulty → pill colours (felt / brass / pop). */
 export const DIFFICULTY_TONE: Record<Difficulty, string> = {
   Foundational:
-    "border-[var(--color-felt-bright)]/45 bg-[var(--color-felt-bright)]/[0.12] text-[#5fc48a]",
+    "border-[var(--color-felt-bright)]/45 bg-[var(--color-felt-bright)]/[0.12] text-[var(--color-felt-text)]",
   Intermediate:
     "border-[var(--color-brass)]/45 bg-[var(--color-brass)]/[0.12] text-[var(--color-brass-bright)]",
   Advanced:
@@ -73,7 +73,7 @@ export function PanelLabel({
     tone === "pop"
       ? "text-[var(--color-pop-bright)]"
       : tone === "felt"
-        ? "text-[#5fc48a]"
+        ? "text-[var(--color-felt-text)]"
         : tone === "dim"
           ? "text-[var(--color-cream)]/50"
           : "text-[var(--color-brass)]";

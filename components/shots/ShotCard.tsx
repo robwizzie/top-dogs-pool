@@ -48,7 +48,7 @@ export function ShotCard({
         </div>
         {drilled ? (
           <span
-            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-felt-bright)]/50 bg-[var(--color-felt-deep)]/80 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#5fc48a]"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-felt-bright)]/50 bg-[var(--color-felt-deep)]/80 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--color-felt-text)]"
             title="Marked as drilled"
           >
             <CheckCircle2 size={11} />

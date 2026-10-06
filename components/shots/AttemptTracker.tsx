@@ -215,7 +215,7 @@ function Sparkline({
             >
               <div
                 style={{ height: `${makeHeight}%` }}
-                className="rounded-t-[3px] bg-gradient-to-t from-[var(--color-felt-bright)]/70 to-[#5fc48a]"
+                className="rounded-t-[3px] bg-gradient-to-t from-[var(--color-felt-bright)]/70 to-[var(--color-felt-text)]"
               />
               <div
                 style={{ height: `${missHeight}%` }}
@@ -227,7 +227,7 @@ function Sparkline({
       </div>
       <div className="mt-2 flex items-center gap-3 text-[10px] text-[var(--color-cream)]/45">
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm bg-[#5fc48a]" />
+          <span className="inline-block h-2 w-2 rounded-sm bg-[var(--color-felt-text)]" />
           Makes
         </span>
         <span className="inline-flex items-center gap-1">

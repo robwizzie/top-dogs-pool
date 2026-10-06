@@ -357,7 +357,7 @@ function StatTile({
     : accent === "brass"
       ? "text-[var(--color-brass-bright)]"
       : accent === "felt"
-        ? "text-[#5fc48a]"
+        ? "text-[var(--color-felt-text)]"
         : accent === "pop"
           ? "text-[var(--color-pop-bright)]"
           : "text-[var(--color-cream)]";
@@ -455,10 +455,10 @@ function RankList({
   emptyText: string;
 }) {
   const accentText =
-    accent === "felt" ? "text-[#5fc48a]" : "text-[var(--color-pop-bright)]";
+    accent === "felt" ? "text-[var(--color-felt-text)]" : "text-[var(--color-pop-bright)]";
   const bar =
     accent === "felt"
-      ? "bg-gradient-to-r from-[var(--color-felt-bright)] to-[#5fc48a]"
+      ? "bg-gradient-to-r from-[var(--color-felt-bright)] to-[var(--color-felt-text)]"
       : "bg-gradient-to-r from-[var(--color-pop)] to-[var(--color-pop-bright)]";
   return (
     <div className="pm-glass relative isolate overflow-hidden p-5 sm:p-6">
