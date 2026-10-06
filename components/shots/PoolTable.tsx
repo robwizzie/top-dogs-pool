@@ -309,8 +309,8 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
   const ob = toSvg(obPos);
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
-      <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-felt)]">
+    <div className={cn("flex flex-col gap-3", className)}>
+      <div className="relative w-full overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-[var(--shadow-felt)]">
         <svg
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -668,7 +668,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
           <button
             type="button"
             onClick={() => setPlaying((p) => !p)}
-            className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] px-4 text-sm font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)] hover:text-[var(--color-ink)]"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-gradient-to-b from-[#f0d48a] via-[#c9a24a] to-[#b38b36] px-5 text-sm font-semibold tracking-wide text-[var(--color-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_8px_24px_-10px_rgba(201,162,74,0.8)] transition-[filter,transform] hover:-translate-y-px hover:brightness-110"
             aria-label={playing ? "Pause" : "Play"}
           >
             {playing ? <Pause size={14} /> : <Play size={14} />}
@@ -680,7 +680,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
                 type="button"
                 onClick={stepPrev}
                 disabled={progress <= 0}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-cream)]/10 bg-black/40 text-[var(--color-cream)]/60 transition-colors hover:border-[var(--color-brass)]/45 hover:text-[var(--color-brass-bright)] disabled:cursor-not-allowed disabled:opacity-40"
                 aria-label="Step to previous rail"
                 title="Step back to previous rail"
               >
@@ -690,7 +690,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
                 type="button"
                 onClick={stepNext}
                 disabled={progress >= 1}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-cream)]/10 bg-black/40 text-[var(--color-cream)]/60 transition-colors hover:border-[var(--color-brass)]/45 hover:text-[var(--color-brass-bright)] disabled:cursor-not-allowed disabled:opacity-40"
                 aria-label="Step to next rail"
                 title="Step forward to next rail"
               >
@@ -704,14 +704,14 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
               setPlaying(false);
               setProgress(0);
             }}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-cream)]/10 bg-black/40 text-[var(--color-cream)]/60 transition-colors hover:border-[var(--color-brass)]/45 hover:text-[var(--color-brass-bright)]"
             aria-label="Reset"
           >
             <RotateCcw size={14} />
           </button>
           {/* Playback speed toggle */}
           <div
-            className="inline-flex h-9 items-stretch overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-xs font-semibold"
+            className="inline-flex h-10 items-stretch gap-0.5 rounded-full bg-black/45 p-1 text-xs font-semibold shadow-[inset_0_1px_3px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.05)]"
             role="group"
             aria-label="Playback speed"
           >
@@ -721,10 +721,10 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
                 type="button"
                 onClick={() => setSpeed(s)}
                 className={cn(
-                  "px-3 transition-colors",
+                  "rounded-full px-3 tabular-nums transition-colors",
                   speed === s
-                    ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
-                    : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
+                    ? "bg-[var(--color-brass)]/90 text-[var(--color-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
+                    : "text-[var(--color-cream)]/55 hover:text-[var(--color-cream)]",
                 )}
                 aria-pressed={speed === s}
               >
@@ -741,7 +741,7 @@ export function PoolTable({ shot, interactive = false, preview = false, classNam
               setPlaying(false);
               setProgress(Number(e.target.value) / 1000);
             }}
-            className="ml-2 min-w-[8rem] flex-1 accent-[var(--color-brass-bright)]"
+            className="ml-1 h-10 min-w-[8rem] flex-1 cursor-pointer accent-[var(--color-brass-bright)]"
             aria-label="Shot progress"
           />
         </div>
@@ -891,7 +891,7 @@ function EnglishIndicator({ english }: { english: EnglishHit }) {
   const dotY = cy - english.y * HIT_REACH;
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3">
+    <div className="flex items-center gap-4 rounded-2xl bg-black/35 px-4 py-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]">
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
         width={SIZE}

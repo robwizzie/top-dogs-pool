@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Crown, Plus } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
 import { SweepRow } from "@/components/leaderboard/SweepRow";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
@@ -145,40 +145,67 @@ export async function LeaderboardView({ query }: Props) {
         eyebrow="Patches Earned"
         title="Patch Watch"
         subtitle={`${headerLabel}${modeSuffix}`}
-      />
+      >
+        {ranked[0] && ranked[0].row.points > 0 && (
+          <p className="inline-flex max-w-full items-center gap-2.5 rounded-[1.4rem] border border-[var(--color-brass)]/30 bg-black/30 py-1.5 pl-1.5 pr-4 text-sm text-[var(--color-cream)]/75 backdrop-blur-sm">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[linear-gradient(180deg,#f0d48a,#c9a24a_55%,#b38b36)] text-[var(--color-ink)]">
+              <Crown size={14} />
+            </span>
+            <span className="min-w-0">
+              <span className="pm-serif mr-1.5 text-base text-[var(--color-cream)]/60">led by</span>
+              <span className="font-semibold text-[var(--color-cream)]">
+                {ranked
+                  .filter((r) => r.rank === 1)
+                  .map((r) => r.row.playerName)
+                  .join(" & ")}
+              </span>
+              <span className="text-[var(--color-cream)]/45"> · </span>
+              <span className="whitespace-nowrap">
+              <span className="font-[family-name:var(--font-display)] text-lg leading-none tracking-wide text-[var(--color-brass-bright)]">
+                {ranked[0].row.points % 1 === 0 ? ranked[0].row.points : ranked[0].row.points.toFixed(1)}
+              </span>
+              <span className="text-xs text-[var(--color-cream)]/45"> pts</span>
+              </span>
+            </span>
+          </p>
+        )}
+      </PageHeader>
 
-      <div className="mx-auto max-w-3xl space-y-5 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl space-y-6 px-4 pb-14 pt-4 sm:px-6 lg:px-8">
         {/* --- controls --------------------------------------------------- */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="space-y-3">
           <SessionPicker
             basePath="/leaderboard"
             sessions={sessions}
             selectedIds={selectedIds}
           />
-          <ShareLeaderboardButton
-            rows={rows}
-            scopeLabel={headerLabel}
-            sessionParam={session}
-            previousRanks={previousRanks}
-          />
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <TournamentToggle
-            basePath="/leaderboard"
-            sessionParam={session}
-            mode={tournamentMode}
-          />
-          <Link
-            href="/leaderboard/admin"
-            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--fg-dim)] transition-colors hover:border-[var(--color-brass)] hover:text-[var(--fg)]"
-          >
-            <Plus size={13} />
-            Add tournament results
-          </Link>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <TournamentToggle
+              basePath="/leaderboard"
+              sessionParam={session}
+              mode={tournamentMode}
+            />
+            <div className="ml-auto flex items-center gap-2">
+              <Link
+                href="/leaderboard/admin"
+                className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-[var(--color-cream)]/55 transition-colors hover:bg-white/[0.05] hover:text-[var(--color-cream)]"
+              >
+                <Plus size={13} />
+                <span className="hidden sm:inline">Add tournament results</span>
+                <span className="sm:hidden">Tournament</span>
+              </Link>
+              <ShareLeaderboardButton
+                rows={rows}
+                scopeLabel={headerLabel}
+                sessionParam={session}
+                previousRanks={previousRanks}
+              />
+            </div>
+          </div>
         </div>
 
         {rows.length === 0 ? (
-          <p className="surface p-6 text-sm text-[var(--fg-dim)]">
+          <p className="pm-glass p-6 text-sm text-[var(--color-cream)]/60">
             {tournamentMode === "only" ? (
               <>
                 No tournament results for this selection yet.{" "}
@@ -214,7 +241,7 @@ export async function LeaderboardView({ query }: Props) {
 
             {/* --- everyone else --------------------------------------- */}
             {rest.length > 0 && (
-              <div className="surface divide-y divide-[var(--border)]">
+              <div className="pm-glass space-y-0.5 p-1.5 sm:p-2">
                 {rest.map(({ row, rank, tied }) => {
                   const h = history.get(row.playerId);
                   return (

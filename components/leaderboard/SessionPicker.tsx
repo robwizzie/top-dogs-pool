@@ -65,11 +65,21 @@ export function SessionPicker({
   const clearHref = `${basePath}${buildQuery({ [paramName]: undefined })}`;
   const hasMulti = !singleSelect && selectedIds.size > 1;
 
+  const pill =
+    "relative shrink-0 snap-start whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-200";
+  const pillIdle =
+    "text-[var(--color-cream)]/60 hover:bg-white/[0.05] hover:text-[var(--color-cream)]";
+  const pillActive =
+    "bg-[linear-gradient(180deg,#f0d48a,#c9a24a_55%,#b38b36)] font-semibold text-[var(--color-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_6px_18px_-8px_rgba(201,162,74,0.8)]";
+
   return (
-    <div className="surface flex flex-wrap items-center gap-2 p-3">
-      <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+    <div className="pm-glass flex items-center gap-1 overflow-hidden p-1.5 sm:items-start sm:gap-2 sm:p-2">
+      <span className="hidden shrink-0 items-center gap-2 py-1.5 pl-2.5 pr-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-brass)] sm:inline-flex">
+        <span className="h-1.5 w-1.5 rotate-45 rounded-[1px] bg-[var(--color-brass-bright)] shadow-[0_0_8px_rgba(224,190,107,0.7)]" aria-hidden />
         {singleSelect ? "Session" : "Sessions"}
       </span>
+      {/* One scrolling rail on phones (edges fade out), wrapping from sm. */}
+      <div className="-my-1 flex min-w-0 flex-1 snap-x items-center gap-1 overflow-x-auto py-1 pl-1 pr-8 [mask-image:linear-gradient(90deg,#000_88%,transparent)] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none] [&::-webkit-scrollbar]:hidden">
       {sessions.map((s) => {
         const active = selectedIds.has(s.id);
         const href = singleSelect
@@ -80,12 +90,7 @@ export function SessionPicker({
             key={s.id}
             href={href}
             scroll={false}
-            className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-medium tracking-wide transition-colors",
-              active
-                ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
-                : "border border-[var(--border)] text-[var(--fg-dim)] hover:border-[var(--color-brass)] hover:text-[var(--fg)]",
-            )}
+            className={cn(pill, active ? pillActive : pillIdle)}
             aria-pressed={active}
           >
             {s.name}
@@ -100,8 +105,9 @@ export function SessionPicker({
           <ResetSessionScope
             href={allHref}
             className={cn(
-              "cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors",
-              "bg-[var(--color-pop)] text-white",
+              pill,
+              "cursor-pointer font-semibold uppercase tracking-[0.14em]",
+              "bg-[linear-gradient(180deg,#f2665c,#c8362f_60%,#a12a24)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_6px_18px_-8px_rgba(232,82,72,0.8)]",
             )}
           >
             All ✓
@@ -111,8 +117,9 @@ export function SessionPicker({
             href={allHref}
             scroll={false}
             className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors",
-              "border border-[var(--color-pop)]/50 text-[var(--color-pop-bright)] hover:bg-[var(--color-pop)]/15",
+              pill,
+              "font-semibold uppercase tracking-[0.14em]",
+              "border border-[var(--color-pop)]/40 text-[var(--color-pop-bright)] hover:bg-[var(--color-pop)]/15",
             )}
           >
             All
@@ -122,11 +129,15 @@ export function SessionPicker({
       {hasMulti && (
         <ResetSessionScope
           href={clearHref}
-          className="ml-auto cursor-pointer rounded-full px-2.5 py-1 text-[11px] tracking-wide text-[var(--fg-dim)] hover:text-[var(--color-brass)]"
+          className={cn(
+            pill,
+            "cursor-pointer text-[11px] text-[var(--color-cream)]/50 underline-offset-4 hover:text-[var(--color-brass-bright)] hover:underline sm:ml-auto",
+          )}
         >
           Reset
         </ResetSessionScope>
       )}
+      </div>
     </div>
   );
 }

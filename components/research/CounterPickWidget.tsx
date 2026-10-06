@@ -36,7 +36,7 @@ export function CounterPickWidget({
           setPicked(null);
         }}
         placeholder="Type a name…"
-        className="mt-2 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-2 text-sm placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)] focus:outline-none"
+        className="mt-2 w-full rounded-xl border border-white/10 bg-black/30 px-3.5 py-2.5 text-sm text-[var(--color-cream)] transition-colors focus:ring-2 focus:ring-[var(--color-brass)]/25 placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)] focus:outline-none"
       />
 
       <div className="mt-3 flex flex-wrap gap-1.5">

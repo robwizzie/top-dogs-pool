@@ -52,6 +52,7 @@ import { TeamBriefing } from "@/components/research/TeamBriefing";
 import type { CounterPickRow } from "@/lib/research";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { cn, formatDate } from "@/lib/utils";
+import { Chip, ChipRow, SectionHead } from "@/components/research/ScoutUI";
 import {
   parseSessionScope,
   resolveScope,
@@ -327,17 +328,45 @@ export default async function ResearchPage({ searchParams }: Props) {
     <>
       <PageHeader
         eyebrow="Lab"
-        title="Research"
-        subtitle={`${scopeLabel} · ${summary.matchesPlayed} match${summary.matchesPlayed === 1 ? "" : "es"} · ${summary.wins}–${summary.losses} (${summary.winPct}%)`}
-      />
+        title={
+          <>
+            Research
+            <span className="pm-serif ml-3 align-[0.18em] text-[0.42em] tracking-normal text-[var(--color-brass-bright)]/85">
+              the film room
+            </span>
+          </>
+        }
+      >
+        <ChipRow>
+          <Chip tone="brass" className="font-semibold">
+            {scopeLabel}
+          </Chip>
+          <Chip className="tabular-nums">
+            {summary.matchesPlayed} match{summary.matchesPlayed === 1 ? "" : "es"}
+          </Chip>
+          <Chip
+            tone={
+              summary.wins > summary.losses
+                ? "win"
+                : summary.wins < summary.losses
+                  ? "loss"
+                  : "default"
+            }
+            className="font-semibold tabular-nums"
+          >
+            {summary.wins}–{summary.losses} ({summary.winPct}%)
+          </Chip>
+        </ChipRow>
+      </PageHeader>
 
-      <div className="mx-auto max-w-6xl space-y-12 px-4 py-10 sm:px-6 lg:px-8">
-        <SessionPicker
-          basePath="/research"
-          sessions={sessions}
-          selectedIds={selectedIds}
-          preserveQuery={{ tab: tab !== "overview" ? tab : undefined }}
-        />
+      <div className="mx-auto max-w-7xl space-y-14 px-4 pb-16 pt-4 sm:px-6 sm:pt-6 lg:px-8">
+        <div className="space-y-4">
+          <SessionPicker
+            basePath="/research"
+            sessions={sessions}
+            selectedIds={selectedIds}
+            preserveQuery={{ tab: tab !== "overview" ? tab : undefined }}
+          />
 
         <TabNav
           active={tab}
@@ -352,6 +381,7 @@ export default async function ResearchPage({ searchParams }: Props) {
             venues: 5,
           }}
         />
+        </div>
 
         <Section
           title="Throw Advisor"
@@ -456,7 +486,7 @@ export default async function ResearchPage({ searchParams }: Props) {
           forTab="overview"
           activeTab={tab}
         >
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
             <Stat label="Team Win %" value={`${summary.winPct}%`} sub={`${summary.wins}–${summary.losses}`} />
             <Stat label="Player Win %" value={`${summary.playerWinPct}%`} sub={`${summary.totalPlayerWins}/${summary.totalPlayerMatches}`} />
             <Stat label="Sweeps" value={String(summary.totalSweeps)} sub={`+${summary.totalMiniSweeps} mini`} accent />
@@ -578,9 +608,9 @@ export default async function ResearchPage({ searchParams }: Props) {
                 ↳ All {lineups.length} lineups (click to expand)
               </summary>
               <div className="mt-4 surface overflow-hidden">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
                   <thead>
-                    <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                    <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
                       <th className="px-4 py-3">Lineup</th>
                       <th className="px-4 py-3 text-right">GP</th>
                       <th className="px-4 py-3 text-right">W–L</th>
@@ -599,24 +629,24 @@ export default async function ResearchPage({ searchParams }: Props) {
                       .map((row) => (
                         <tr
                           key={row.playerIds.join("+")}
-                          className="border-b border-[var(--border)] last:border-0"
+                          className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                         >
                           <td className="px-4 py-3 text-xs">
                             {row.playerNames.join(" · ")}
                           </td>
-                          <td className="px-4 py-3 text-right tabular-nums">
+                          <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                             {row.matchesPlayed}
                           </td>
-                          <td className="px-4 py-3 text-right tabular-nums">
+                          <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                             {row.wins}–{row.losses}
                           </td>
-                          <td className="px-4 py-3 text-right tabular-nums">
+                          <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                             {row.winPct}%
                           </td>
-                          <td className="px-4 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                          <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                             {row.pointsScored}/{row.pointsConceded}
                           </td>
-                          <td className="px-4 py-3 text-right tabular-nums font-semibold text-[var(--color-brass-bright)]">
+                          <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums font-semibold text-[var(--color-brass-bright)]">
                             {row.individualPoints}
                           </td>
                         </tr>
@@ -656,9 +686,9 @@ export default async function ResearchPage({ searchParams }: Props) {
           activeTab={tab}
         >
           <div className="surface overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
               <thead>
-                <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
                   <th className="px-4 py-3">Player</th>
                   {[1, 2, 3, 4, 5].map((p) => (
                     <th key={p} className="px-3 py-3 text-center">
@@ -674,7 +704,7 @@ export default async function ResearchPage({ searchParams }: Props) {
                   .map((row) => (
                     <tr
                       key={row.playerId}
-                      className="border-b border-[var(--border)] last:border-0"
+                      className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                     >
                       <td className="px-4 py-3">
                         <Link
@@ -755,9 +785,9 @@ export default async function ResearchPage({ searchParams }: Props) {
           activeTab={tab}
         >
           <div className="surface overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
               <thead>
-                <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
                   <th className="px-4 py-3">Player</th>
                   {[2, 3, 4, 5, 6, 7].map((sl) => (
                     <th key={sl} className="px-3 py-3 text-center">
@@ -774,7 +804,7 @@ export default async function ResearchPage({ searchParams }: Props) {
                   .map((row) => (
                     <tr
                       key={row.playerId}
-                      className="border-b border-[var(--border)] last:border-0"
+                      className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                     >
                       <td className="px-4 py-3">
                         <Link
@@ -861,7 +891,7 @@ export default async function ResearchPage({ searchParams }: Props) {
           forTab="players"
           activeTab={tab}
         >
-          <div className="surface divide-y divide-[var(--border)]">
+          <div className="surface divide-y divide-[var(--color-cream)]/[0.07]">
             {form.map((f) => (
               <div
                 key={f.playerId}
@@ -986,9 +1016,9 @@ export default async function ResearchPage({ searchParams }: Props) {
           </div>
 
           <div className="mt-5 surface overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
               <thead>
-                <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
                   <th className="px-4 py-3">Opponent</th>
                   <th className="px-4 py-3 text-right">GP</th>
                   <th className="px-4 py-3 text-right">W–L</th>
@@ -1000,20 +1030,20 @@ export default async function ResearchPage({ searchParams }: Props) {
                 {opponents.map((o) => (
                   <tr
                     key={o.opponent}
-                    className="border-b border-[var(--border)] last:border-0"
+                    className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                   >
                     <td className="px-4 py-3 font-medium">{o.opponent}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">
+                    <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                       {o.matchesPlayed}
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums">
+                    <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                       {o.wins}–{o.losses}
                       {o.ties > 0 && `–${o.ties}`}
                     </td>
                     <td className={cn("px-4 py-3 text-right tabular-nums", winRateClass(o.winPct, o.wins + o.losses))}>
                       {o.winPct}%
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                    <td className="px-4 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                       {o.pointsScored}/{o.pointsConceded}
                     </td>
                   </tr>
@@ -1090,9 +1120,9 @@ export default async function ResearchPage({ searchParams }: Props) {
               Per Player
             </h3>
             <div className="surface overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
                 <thead>
-                  <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                  <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
                     <th className="px-4 py-3">Player</th>
                     <th className="px-3 py-3 text-center">Home W/GP</th>
                     <th className="px-3 py-3 text-center">Home %</th>
@@ -1108,7 +1138,7 @@ export default async function ResearchPage({ searchParams }: Props) {
                     .map((r) => (
                       <tr
                         key={r.playerId}
-                        className="border-b border-[var(--border)] last:border-0"
+                        className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                       >
                         <td className="px-4 py-3">
                           <Link
@@ -1118,13 +1148,13 @@ export default async function ResearchPage({ searchParams }: Props) {
                             {r.playerName}
                           </Link>
                         </td>
-                        <td className="px-3 py-3 text-center tabular-nums text-[var(--fg-dim)]">
+                        <td className="px-3 py-3 text-center font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                           {r.homeWins}/{r.homeMatches}
                         </td>
                         <td className={cn("px-3 py-3 text-center tabular-nums", winRateClass(r.homeWinPct, r.homeMatches))}>
                           {r.homeMatches ? `${r.homeWinPct}%` : "—"}
                         </td>
-                        <td className="px-3 py-3 text-center tabular-nums text-[var(--fg-dim)]">
+                        <td className="px-3 py-3 text-center font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                           {r.awayWins}/{r.awayMatches}
                         </td>
                         <td className={cn("px-3 py-3 text-center tabular-nums", winRateClass(r.awayWinPct, r.awayMatches))}>
@@ -1170,7 +1200,7 @@ export default async function ResearchPage({ searchParams }: Props) {
           forTab="venues"
           activeTab={tab}
         >
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Stat label="Avg games per match" value={String(insights.averageGamesPerMatch)} sub="ours + opponent's per individual match" />
             <Stat label="Forfeit rate" value={`${insights.forfeitPct}%`} sub={`${insights.forfeitMatches} of ${insights.totalIndividualMatches}`} />
             <Stat label="Comeback wins" value={String(insights.comebackWins)} sub="narrow wins after a lost individual" />
@@ -1316,10 +1346,19 @@ function HotColdColumn({
   emptyMsg?: string;
 }) {
   return (
-    <div className="surface p-5">
+    <div className="surface relative overflow-hidden p-5 sm:p-6">
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full",
+          accent === "brass"
+            ? "bg-[radial-gradient(circle,rgba(224,190,107,0.16),transparent_70%)]"
+            : "bg-[radial-gradient(circle,rgba(232,82,72,0.14),transparent_70%)]",
+        )}
+      />
       <h3
         className={cn(
-          "mb-3 font-[family-name:var(--font-display)] text-2xl tracking-wide",
+          "relative mb-2 font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide",
           accent === "brass"
             ? "text-[var(--color-brass-bright)]"
             : "text-[var(--color-pop-bright)]",
@@ -1328,26 +1367,26 @@ function HotColdColumn({
         {heading}
       </h3>
       {rows.length === 0 ? (
-        <p className="text-xs text-[var(--fg-dim)]">{emptyMsg}</p>
+        <p className="relative text-xs text-[var(--color-cream)]/50">{emptyMsg}</p>
       ) : (
-        <ul className="space-y-3">
+        <ul className="relative divide-y divide-[var(--color-cream)]/[0.07]">
           {rows.map((r) => (
             <li
               key={r.playerId}
-              className="flex items-baseline justify-between gap-3"
+              className="flex items-center justify-between gap-3 py-3 last:pb-0"
             >
               <Link
                 href={`/roster/${r.playerId}`}
-                className="font-medium hover:text-[var(--color-brass)]"
+                className="font-semibold text-[var(--color-cream)] transition-colors hover:text-[var(--color-brass-bright)]"
               >
                 {r.playerName}
               </Link>
               <div className="text-right text-xs">
                 <div
                   className={cn(
-                    "font-bold",
+                    "font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums",
                     r.delta > 0
-                      ? "text-[var(--color-felt-bright)]"
+                      ? "text-[var(--color-felt-text)]"
                       : r.delta < 0
                         ? "text-[var(--color-pop-bright)]"
                         : "text-[var(--fg-dim)]",
@@ -1356,7 +1395,7 @@ function HotColdColumn({
                   {r.delta > 0 ? "+" : ""}
                   {r.delta} pts
                 </div>
-                <div className="text-[var(--fg-dim)]">
+                <div className="mt-1 text-[11px] text-[var(--color-cream)]/45">
                   last {r.recentMatches}: {r.recentWinPct}% · base {r.baselineWinPct}%
                 </div>
               </div>
@@ -1382,9 +1421,9 @@ function ChemistryTable({
   }
   return (
     <div className="surface overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+          <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
             <th className="px-4 py-3">Pair</th>
             <th className="px-3 py-3 text-right">Together W–L</th>
             <th className="px-3 py-3 text-right">Win %</th>
@@ -1395,13 +1434,13 @@ function ChemistryTable({
           {rows.map((r) => (
             <tr
               key={r.pair.join("+")}
-              className="border-b border-[var(--border)] last:border-0"
+              className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
             >
               <td className="px-4 py-3 text-sm font-medium">
                 {r.pairNames[0]} <span className="text-[var(--fg-dim)]">+</span>{" "}
                 {r.pairNames[1]}
               </td>
-              <td className="px-3 py-3 text-right tabular-nums">
+              <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                 {r.togetherTeamWins}–{r.togetherTeamLosses}{" "}
                 <span className="text-[var(--fg-dim)]">
                   ({r.togetherMatches})
@@ -1445,9 +1484,9 @@ function SLHistoryTable({
   }
   return (
     <div className="surface overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+          <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
             <th className="px-4 py-3">Player</th>
             {cols.map((sl) => (
               <th key={sl} className="px-3 py-3 text-center">
@@ -1461,7 +1500,7 @@ function SLHistoryTable({
           {rows.map((row) => (
             <tr
               key={row.playerId}
-              className="border-b border-[var(--border)] last:border-0"
+              className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
             >
               <td className="px-4 py-3">
                 <Link
@@ -1787,9 +1826,9 @@ function VenueTable({
   }
   return (
     <div className="surface overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+          <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
             <th className="px-4 py-3">Venue</th>
             <th className="px-3 py-3 text-right">GP</th>
             <th className="px-3 py-3 text-right">Team W–L</th>
@@ -1809,7 +1848,7 @@ function VenueTable({
               <tr
                 key={v.location}
                 className={cn(
-                  "border-b border-[var(--border)] last:border-0",
+                  "border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]",
                   v.isHomeVenue && "bg-[var(--color-felt-deep)]/30",
                 )}
               >
@@ -1821,10 +1860,10 @@ function VenueTable({
                     </span>
                   )}
                 </td>
-                <td className="px-3 py-3 text-right tabular-nums">
+                <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                   {v.teamMatches}
                 </td>
-                <td className="px-3 py-3 text-right tabular-nums">
+                <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                   {v.teamWins}–{v.teamLosses}
                 </td>
                 <td
@@ -1848,7 +1887,7 @@ function VenueTable({
                   {v.averageMargin > 0 ? "+" : ""}
                   {v.averageMargin}
                 </td>
-                <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+                <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                   {v.individualWins}/{v.individualMatches}
                 </td>
                 <td
@@ -1888,9 +1927,9 @@ function PlayerVenueGrid({
 
   return (
     <div className="surface overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+          <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
             <th className="px-4 py-3">Player</th>
             {cols.map((loc) => (
               <th
@@ -1913,7 +1952,7 @@ function PlayerVenueGrid({
           {rows.map((r) => (
             <tr
               key={r.playerId}
-              className="border-b border-[var(--border)] last:border-0"
+              className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
             >
               <td className="px-4 py-3">
                 <Link
@@ -2040,16 +2079,18 @@ function Section({
   activeTab?: TabKey;
 }) {
   if (forTab && activeTab && forTab !== activeTab) return null;
+  const tabLabel = forTab ? TABS.find((t) => t.key === forTab)?.label : undefined;
+  // Skip the eyebrow when it would just repeat the title.
+  const eyebrow =
+    typeof title === "string" &&
+    tabLabel &&
+    title.trim().toLowerCase() === tabLabel.toLowerCase()
+      ? undefined
+      : tabLabel;
   return (
     <section id={anchor} className="scroll-mt-24">
-      <span aria-hidden className="block h-px w-12 bg-gradient-to-r from-[var(--color-brass)] to-transparent" />
-      <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-4xl">
-        {title}
-      </h2>
-      {subtitle && (
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--fg-dim)]">{subtitle}</p>
-      )}
-      <div className="mt-5">{children}</div>
+      <SectionHead eyebrow={eyebrow} title={title} sub={subtitle} />
+      <div className="pm-reveal">{children}</div>
     </section>
   );
 }
@@ -2069,49 +2110,39 @@ function TabNav({
     if (key !== "overview") params.push(`tab=${key}`);
     return params.length ? `/research?${params.join("&")}` : "/research";
   }
+  const activeTab = TABS.find((t) => t.key === active);
   return (
     <nav aria-label="Research tabs">
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-        {TABS.map((t) => {
-          const isActive = t.key === active;
-          const count = counts[t.key];
-          return (
-            <Link
-              key={t.key}
-              href={hrefFor(t.key)}
-              scroll={false}
-              aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "group relative isolate flex flex-col overflow-hidden rounded-2xl border bg-[var(--bg-card)] p-4 transition-all duration-200",
-                isActive
-                  ? "border-[var(--color-brass)] shadow-[0_12px_30px_-12px_rgba(201,162,74,0.35)]"
-                  : "border-[var(--border)] hover:-translate-y-0.5 hover:border-[var(--color-brass)]/50 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.4)]",
-              )}
-            >
-              {/* Soft brass wash for active card — sits under content */}
-              {isActive && (
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(201,162,74,0.18),transparent_60%)]"
-                />
-              )}
-              {/* Top accent bar — brass on active, faint on hover */}
-              <span
-                aria-hidden
+      <div className="pm-glass overflow-hidden p-1.5">
+        <div className="-m-1.5 flex gap-1 overflow-x-auto overscroll-x-contain p-1.5 [scrollbar-width:none] lg:grid lg:grid-cols-7 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
+          {TABS.map((t) => {
+            const isActive = t.key === active;
+            const count = counts[t.key];
+            return (
+              <Link
+                key={t.key}
+                href={hrefFor(t.key)}
+                scroll={false}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "pointer-events-none absolute inset-x-0 top-0 h-[3px] transition-opacity",
+                  "group relative isolate flex min-w-[7.25rem] shrink-0 flex-col items-center gap-1.5 overflow-hidden rounded-[0.95rem] px-3 pb-3 pt-3.5 text-center transition-all duration-200 lg:min-w-0",
                   isActive
-                    ? "bg-gradient-to-r from-[var(--color-brass-dim)] via-[var(--color-brass-bright)] to-[var(--color-brass-dim)] opacity-100"
-                    : "bg-[var(--color-brass)] opacity-0 group-hover:opacity-40",
+                    ? "bg-[linear-gradient(180deg,rgba(224,190,107,0.2),rgba(224,190,107,0.05))] shadow-[inset_0_0_0_1px_rgba(224,190,107,0.55),0_14px_30px_-14px_rgba(201,162,74,0.55)]"
+                    : "hover:bg-white/[0.04]",
                 )}
-              />
-              <div className="flex items-start justify-between gap-2">
+              >
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-brass-bright)] to-transparent"
+                  />
+                )}
                 <span
                   className={cn(
-                    "text-[2.25rem] leading-none transition-transform duration-200",
+                    "text-[1.6rem] leading-none transition-transform duration-200",
                     isActive
-                      ? "drop-shadow-[0_2px_8px_rgba(201,162,74,0.4)]"
-                      : "opacity-90 group-hover:scale-110 group-hover:opacity-100",
+                      ? "drop-shadow-[0_2px_10px_rgba(224,190,107,0.5)]"
+                      : "opacity-75 grayscale-[35%] group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0",
                   )}
                   aria-hidden
                 >
@@ -2119,33 +2150,39 @@ function TabNav({
                 </span>
                 <span
                   className={cn(
-                    "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums tracking-wide transition-colors",
+                    "inline-flex items-center gap-1.5 whitespace-nowrap font-[family-name:var(--font-display)] text-lg leading-none tracking-wide transition-colors",
                     isActive
-                      ? "bg-[var(--color-brass)] text-[var(--color-ink)] shadow-sm"
-                      : "bg-[var(--bg-soft)] text-[var(--fg-dim)] group-hover:bg-[var(--color-brass)]/15 group-hover:text-[var(--color-brass-bright)]",
+                      ? "text-[var(--color-brass-bright)]"
+                      : "text-[var(--color-cream)]/70 group-hover:text-[var(--color-cream)]",
                   )}
-                  aria-label={`${count} sections`}
                 >
-                  {count}
+                  {t.label}
+                  <span
+                    className={cn(
+                      "rounded-full px-1.5 py-px font-sans text-[9px] font-bold tabular-nums tracking-normal",
+                      isActive
+                        ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
+                        : "bg-white/[0.06] text-[var(--color-cream)]/50",
+                    )}
+                    aria-label={`${count} sections`}
+                  >
+                    {count}
+                  </span>
                 </span>
-              </div>
-              <h3
-                className={cn(
-                  "mt-3 font-[family-name:var(--font-display)] text-xl tracking-wide transition-colors",
-                  isActive
-                    ? "text-[var(--color-brass-bright)]"
-                    : "text-[var(--fg)] group-hover:text-[var(--color-brass)]",
-                )}
-              >
-                {t.label}
-              </h3>
-              <p className="mt-1 text-[11px] leading-snug text-[var(--fg-dim)]">
-                {t.blurb}
-              </p>
-            </Link>
-          );
-        })}
+              </Link>
+            );
+          })}
+        </div>
       </div>
+      {activeTab && (
+        <p className="mt-3 flex items-baseline gap-2 px-1 text-sm text-[var(--color-cream)]/55">
+          <span className="pm-serif shrink-0 whitespace-nowrap text-base text-[var(--color-brass-bright)]">
+            {activeTab.label}
+          </span>
+          <span className="text-[var(--color-cream)]/25">—</span>
+          <span className="min-w-0">{activeTab.blurb}</span>
+        </p>
+      )}
     </nav>
   );
 }
@@ -2162,13 +2199,13 @@ function Stat({
   accent?: boolean;
 }) {
   return (
-    <div className="surface p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+    <div className="surface surface-hover relative overflow-hidden p-5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/50">
         {label}
       </p>
       <p
         className={cn(
-          "mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide",
+          "mt-2 font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide tabular-nums sm:text-5xl",
           accent
             ? "text-[var(--color-pop-bright)]"
             : "text-[var(--color-cream)]",
@@ -2176,14 +2213,17 @@ function Stat({
       >
         {value}
       </p>
-      {sub && <p className="text-xs text-[var(--fg-dim)]">{sub}</p>}
+      {sub && <p className="mt-2 text-xs text-[var(--color-cream)]/45">{sub}</p>}
     </div>
   );
 }
 
 function Empty({ msg }: { msg: string }) {
   return (
-    <p className="surface p-6 text-sm text-[var(--fg-dim)]">{msg}</p>
+    <p className="surface flex items-center gap-3 p-6 text-sm text-[var(--color-cream)]/55">
+      <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-brass)]/60" />
+      {msg}
+    </p>
   );
 }
 
@@ -2216,34 +2256,44 @@ function LineupCard({
   accent?: boolean;
 }) {
   return (
-    <div className="surface p-5">
+    <div className="surface relative overflow-hidden p-5 sm:p-6">
+      {accent && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(224,190,107,0.16),transparent_70%)]"
+        />
+      )}
       <h3
         className={cn(
-          "font-[family-name:var(--font-display)] text-xl tracking-wide",
+          "relative font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide",
           accent
-            ? "text-[var(--color-pop-bright)]"
+            ? "text-[var(--color-brass-bright)]"
             : "text-[var(--color-cream)]",
         )}
       >
         {heading}
       </h3>
       {rows.length === 0 ? (
-        <p className="mt-3 text-xs text-[var(--fg-dim)]">No data yet.</p>
+        <p className="mt-3 text-xs text-[var(--color-cream)]/50">No data yet.</p>
       ) : (
-        <ol className="mt-3 space-y-3">
+        <ol className="relative mt-3 divide-y divide-[var(--color-cream)]/[0.07]">
           {rows.map((r, i) => (
-            <li key={r.playerNames.join("+")}>
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
-                  #{i + 1}
-                </span>
-                <span className="text-xs font-semibold text-[var(--fg)]">
+            <li key={r.playerNames.join("+")} className="flex gap-3 py-3 last:pb-0">
+              <span
+                aria-hidden
+                className="pm-outline w-6 shrink-0 font-[family-name:var(--font-display)] text-3xl leading-none opacity-60 [-webkit-text-stroke-width:1px]"
+              >
+                {i + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <span className="sr-only">#{i + 1} </span>
+                <p className="text-xs font-semibold tabular-nums text-[var(--color-brass-bright)]">
                   {metric(r)}
-                </span>
+                </p>
+                <p className="mt-1 text-[13px] leading-snug text-[var(--color-cream)]/70">
+                  {r.playerNames.join(" · ")}
+                </p>
               </div>
-              <p className="mt-1 text-xs text-[var(--fg-dim)]">
-                {r.playerNames.join(" · ")}
-              </p>
             </li>
           ))}
         </ol>
@@ -2254,11 +2304,11 @@ function LineupCard({
 
 function winRateClass(pct: number, matches: number): string {
   if (matches < 2) return "text-[var(--fg-dim)]";
-  if (pct >= 70) return "bg-[var(--color-felt-bright)]/20 text-[var(--color-felt-bright)]";
+  if (pct >= 70) return "bg-[var(--color-felt-bright)]/[0.14] text-[var(--color-felt-text)] shadow-[inset_0_0_0_1px_rgba(46,139,87,0.22)]";
   if (pct >= 55) return "bg-[var(--color-felt)]/20 text-[var(--color-cream)]";
   if (pct >= 45) return "text-[var(--fg)]";
-  if (pct >= 30) return "bg-[var(--color-pop)]/10 text-[var(--fg)]";
-  return "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]";
+  if (pct >= 30) return "bg-[var(--color-pop)]/[0.08] text-[var(--fg)]";
+  return "bg-[var(--color-pop)]/[0.14] text-[var(--color-pop-bright)] shadow-[inset_0_0_0_1px_rgba(200,54,47,0.2)]";
 }
 
 /* ============================================== Player Impact (with/without) */
@@ -2273,9 +2323,9 @@ function ImpactTable({
   }
   return (
     <div className="surface overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+          <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
             <th className="px-4 py-3">Player</th>
             <th className="px-3 py-3 text-right">With (W/GP)</th>
             <th className="px-3 py-3 text-right">With %</th>
@@ -2288,7 +2338,7 @@ function ImpactTable({
           {rows.map((r) => (
             <tr
               key={r.playerId}
-              className="border-b border-[var(--border)] last:border-0"
+              className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
             >
               <td className="px-4 py-3">
                 <Link
@@ -2298,13 +2348,13 @@ function ImpactTable({
                   {r.playerName}
                 </Link>
               </td>
-              <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+              <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                 {r.withWins}/{r.withMatches}
               </td>
               <td className={cn("px-3 py-3 text-right tabular-nums", winRateClass(r.withWinPct, r.withMatches))}>
                 {r.withMatches ? `${r.withWinPct}%` : "—"}
               </td>
-              <td className="px-3 py-3 text-right tabular-nums text-[var(--fg-dim)]">
+              <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
                 {r.withoutWins}/{r.withoutMatches}
               </td>
               <td className={cn("px-3 py-3 text-right tabular-nums", winRateClass(r.withoutWinPct, r.withoutMatches))}>
@@ -2346,27 +2396,29 @@ function AchievementsGrid({
     );
   }
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
       {badges.map((b) => (
         <div
           key={b.id}
-          className="surface relative overflow-hidden p-4 text-center"
+          className="surface surface-hover relative flex flex-col items-center overflow-hidden px-3 pb-5 pt-5 text-center sm:px-4 sm:pt-6"
         >
-          <div className="absolute -right-3 -top-3 text-5xl opacity-20">
+          <div aria-hidden className="pointer-events-none absolute -right-4 -top-4 text-6xl opacity-[0.12] blur-[1px]">
             {b.emoji}
           </div>
-          <p className="text-2xl">{b.emoji}</p>
-          <p className="mt-1 font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--color-brass-bright)]">
+          <p className="flex h-14 w-14 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(255,241,201,0.25),rgba(201,162,74,0.12)_55%,rgba(0,0,0,0.3))] text-[1.7rem] shadow-[inset_0_0_0_1px_rgba(224,190,107,0.45),0_10px_24px_-10px_rgba(201,162,74,0.6)]">
+            {b.emoji}
+          </p>
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
             {b.label}
           </p>
           <Link
             href={`/roster/${b.playerId}`}
-            className="mt-1 block text-sm font-medium hover:text-[var(--color-brass)]"
+            className="mt-1.5 block font-[family-name:var(--font-display)] text-xl leading-none tracking-wide text-[var(--color-cream)] transition-colors hover:text-[var(--color-brass-bright)] sm:text-2xl"
           >
             {b.playerName}
           </Link>
-          <p className="mt-1 text-xs text-[var(--fg-dim)]">{b.value}</p>
-          <p className="mt-2 text-[10px] italic text-[var(--fg-dim)]">
+          <p className="mt-1.5 text-xs font-semibold tabular-nums text-[var(--color-brass-bright)]">{b.value}</p>
+          <p className="pm-serif mt-2 text-[13px] leading-snug text-[var(--color-cream)]/45">
             {b.description}
           </p>
         </div>
@@ -2390,17 +2442,23 @@ function RecordsBookView({
     );
   }
   return (
-    <ul className="surface divide-y divide-[var(--border)]">
+    <ul className="surface divide-y divide-[var(--color-cream)]/[0.07] overflow-hidden">
       {entries.map((e, i) => {
         const inner = (
-          <div className="flex items-baseline justify-between gap-3 px-4 py-3">
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{e.label}</p>
+          <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
+            <span
+              aria-hidden
+              className="hidden w-8 shrink-0 font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide text-[var(--color-cream)]/20 sm:block"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[15px] font-semibold text-[var(--color-cream)]">{e.label}</p>
               {e.detail && (
-                <p className="text-xs text-[var(--fg-dim)]">{e.detail}</p>
+                <p className="mt-0.5 text-xs text-[var(--color-cream)]/45">{e.detail}</p>
               )}
             </div>
-            <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide text-[var(--color-brass-bright)]">
+            <span className="shrink-0 text-right font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide tabular-nums text-[var(--color-brass-bright)]">
               {e.value}
             </span>
           </div>
@@ -2410,7 +2468,7 @@ function RecordsBookView({
             <li key={`${e.label}-${i}`}>
               <Link
                 href={`/matches/${e.matchId}`}
-                className="block hover:bg-[var(--bg-soft)]"
+                className="block transition-colors hover:bg-white/[0.03]"
               >
                 {inner}
               </Link>
@@ -2422,7 +2480,7 @@ function RecordsBookView({
             <li key={`${e.label}-${i}`}>
               <Link
                 href={`/roster/${e.playerId}`}
-                className="block hover:bg-[var(--bg-soft)]"
+                className="block transition-colors hover:bg-white/[0.03]"
               >
                 {inner}
               </Link>
@@ -2930,7 +2988,7 @@ function LevelUpWatchView({
     return <p className="surface p-6 text-sm text-[var(--fg-dim)]">No PA data yet.</p>;
   }
   return (
-    <div className="surface divide-y divide-[var(--border)]">
+    <div className="surface divide-y divide-[var(--color-cream)]/[0.07]">
       {rows.map((r) => (
         <div
           key={r.playerId}
@@ -3002,7 +3060,7 @@ function ExpectedVsActualView({
             ↳ Per-match expected probabilities
           </summary>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm [&_td:first-child]:whitespace-nowrap">
               <thead>
                 <tr className="border-t border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
                   <th className="px-4 py-3">Date</th>
@@ -3015,7 +3073,7 @@ function ExpectedVsActualView({
                 {ea.perMatch.map((p) => (
                   <tr
                     key={p.matchId}
-                    className="border-b border-[var(--border)] last:border-0"
+                    className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                   >
                     <td className="px-4 py-3 text-xs text-[var(--fg-dim)]">
                       {formatDate(p.date)}
@@ -3028,7 +3086,7 @@ function ExpectedVsActualView({
                         {p.opponent}
                       </Link>
                     </td>
-                    <td className="px-3 py-3 text-right text-sm tabular-nums">
+                    <td className="px-3 py-3 text-right font-[family-name:var(--font-display)] text-[1.05rem] leading-none tracking-wide tabular-nums">
                       {Math.round(p.expected * 100)}%
                     </td>
                     <td

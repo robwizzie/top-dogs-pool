@@ -39,7 +39,7 @@ export default async function ShotARPage({
           <ArrowLeft size={14} />
           Back to {shot.name}
         </Link>
-        <div className="surface p-6">
+        <div className="pm-glass p-6">
           <p className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
             AR view not available for multi-ball drills
           </p>

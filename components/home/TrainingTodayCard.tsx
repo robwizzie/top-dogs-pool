@@ -45,8 +45,13 @@ export function TrainingTodayCard({ shots }: { shots: KinisterShot[] }) {
   const hasData = summary.triedCount > 0;
 
   return (
-    <div className="surface flex flex-col gap-3 p-5">
-      <div className="flex items-center gap-2">
+    <div className="pm-glass relative flex flex-col gap-4 overflow-hidden p-6 sm:p-8">
+      <Dog
+        size={200}
+        aria-hidden
+        className="pointer-events-none absolute -bottom-10 -right-8 text-[var(--color-brass)]/[0.06]"
+      />
+      <div className="relative flex items-center gap-2">
         <Dog size={18} className="text-[var(--color-brass-bright)]" />
         <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
           Training today
@@ -54,7 +59,7 @@ export function TrainingTodayCard({ shots }: { shots: KinisterShot[] }) {
       </div>
 
       {hasData ? (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="relative grid grid-cols-2 gap-3">
           <Stat
             label="Streak"
             value={`${summary.streak}d`}
@@ -73,16 +78,17 @@ export function TrainingTodayCard({ shots }: { shots: KinisterShot[] }) {
           />
         </div>
       ) : (
-        <p className="text-sm leading-relaxed text-[var(--fg-dim)]">
+        <p className="relative max-w-2xl text-base leading-relaxed text-[var(--color-cream)]/75">
+          <span className="pm-serif text-[1.3em] text-[var(--color-cream)]">Chalk up.</span>{" "}
           Open the shot catalog and log a Made / Missed on any shot — your
           streak, stats, and a daily drill will start filling in.
         </p>
       )}
 
-      <div className="mt-1 flex flex-wrap items-center gap-2">
+      <div className="relative mt-1 flex flex-wrap items-center gap-3">
         <Link
           href="/dawg-drill?preset=today"
-          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-brass)] bg-[var(--color-brass)] px-4 text-sm font-semibold tracking-wide text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
+          className="pm-btn flex-1 justify-center"
         >
           Build today&apos;s drill
           <ArrowRight size={14} />
@@ -90,7 +96,7 @@ export function TrainingTodayCard({ shots }: { shots: KinisterShot[] }) {
         <Link
           href="/shots/random"
           prefetch={false}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--border-strong)] bg-black/30 px-5 text-xs font-semibold uppercase tracking-wider text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
           title="Open a random shot from the catalog"
         >
           <Dice5 size={14} />
@@ -99,7 +105,7 @@ export function TrainingTodayCard({ shots }: { shots: KinisterShot[] }) {
       </div>
       <Link
         href="/stats"
-        className="text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass-bright)]"
+        className="relative text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass-bright)]"
       >
         Open practice stats →
       </Link>
@@ -119,14 +125,14 @@ function Stat({
   sub?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">
+    <div className="rounded-2xl border border-[var(--color-cream)]/[0.07] bg-black/30 p-4">
       <div className="flex items-center gap-1.5 text-[var(--fg-dim)]">
         {icon}
         <p className="text-[10px] font-semibold uppercase tracking-[0.24em]">
           {label}
         </p>
       </div>
-      <p className="mt-1 font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide text-[var(--color-brass-bright)]">
+      <p className="mt-1 font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide text-[var(--color-brass-bright)]">
         {value}
       </p>
       {sub && (

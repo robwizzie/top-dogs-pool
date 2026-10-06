@@ -70,10 +70,14 @@ export function AttemptTracker({ shotId }: { shotId: string }) {
       : null;
 
   return (
-    <div className="surface p-5">
+    <div className="pm-glass relative isolate overflow-hidden p-5 sm:p-6">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-[radial-gradient(70%_100%_at_50%_0%,rgba(255,226,160,0.1),transparent_70%)]"
+        aria-hidden
+      />
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <Target size={16} className="text-[var(--color-brass-bright)]" />
+          <Target size={14} className="text-[var(--color-brass-bright)]" />
           <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
             Practice tracker
           </p>
@@ -82,77 +86,100 @@ export function AttemptTracker({ shotId }: { shotId: string }) {
           <button
             type="button"
             onClick={reset}
-            className="text-[10px] font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+            className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/40 transition-colors hover:text-[var(--color-pop-bright)]"
           >
             Reset
           </button>
         )}
       </div>
 
-      {/* Today's session + all-time totals */}
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--fg-dim)]">
-            Today
-          </p>
-          <p className="mt-1 font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide">
-            {todaySession.makes}
-            <span className="text-[var(--fg-dim)]">/{todaySession.attempts}</span>
-          </p>
-          <p className="mt-1 text-[11px] text-[var(--fg-dim)]">
-            {todayPct === null ? "no attempts yet" : `${todayPct}% made`}
-          </p>
-        </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-3">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--fg-dim)]">
-            All time
-          </p>
-          <p className="mt-1 font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide">
-            {stats.totalMakes}
-            <span className="text-[var(--fg-dim)]">/{stats.totalAttempts}</span>
-          </p>
-          <p className="mt-1 text-[11px] text-[var(--fg-dim)]">
-            {allTimePct === null ? "no attempts yet" : `${allTimePct}% made`}
-          </p>
-        </div>
+      {/* Today's session + all-time totals, on a walnut scoreboard rail */}
+      <div className="pm-rail mt-5 grid grid-cols-2">
+        <span className="pm-diamond left-1/2 top-1/2" aria-hidden />
+        <ScoreCell
+          label="Today"
+          makes={todaySession.makes}
+          attempts={todaySession.attempts}
+          pct={todayPct}
+          highlight
+        />
+        <ScoreCell
+          label="All time"
+          makes={stats.totalMakes}
+          attempts={stats.totalAttempts}
+          pct={allTimePct}
+        />
       </div>
 
       {/* +Make / +Miss buttons */}
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-4 flex items-center gap-2">
         <button
           type="button"
           onClick={logMake}
           className={cn(
-            "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-felt-bright)]/60 bg-[var(--color-felt-deep)]/40 text-sm font-semibold tracking-wide text-[var(--color-felt-bright)] transition-colors hover:bg-[var(--color-felt-deep)]/70",
+            "inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-b from-[#3aa86a] via-[#2e8b57] to-[#1f6e3d] text-sm font-semibold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_10px_24px_-12px_rgba(46,139,87,0.9)] transition-[filter,transform] hover:-translate-y-px hover:brightness-110 active:translate-y-0 active:brightness-95",
           )}
           aria-label="Log a make"
         >
-          <Plus size={14} /> Made
+          <Plus size={15} /> Made
+          <kbd className="ml-1 hidden rounded border border-white/25 px-1 font-sans text-[9px] font-semibold text-white/70 sm:inline">M</kbd>
         </button>
         <button
           type="button"
           onClick={logMiss}
           className={cn(
-            "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-pop)]/55 bg-[var(--color-pop)]/10 text-sm font-semibold tracking-wide text-[var(--color-pop-bright)] transition-colors hover:bg-[var(--color-pop)]/20",
+            "inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--color-pop)]/50 bg-[var(--color-pop)]/10 text-sm font-semibold tracking-wide text-[var(--color-pop-bright)] transition-[background-color,transform] hover:-translate-y-px hover:bg-[var(--color-pop)]/20 active:translate-y-0",
           )}
           aria-label="Log a miss"
         >
-          <X size={14} /> Missed
+          <X size={15} /> Missed
+          <kbd className="ml-1 hidden rounded border border-[var(--color-pop)]/40 px-1 font-sans text-[9px] font-semibold text-[var(--color-pop-bright)]/70 sm:inline">X</kbd>
         </button>
         <button
           type="button"
           onClick={undo}
           disabled={todaySession.attempts === 0}
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[var(--color-cream)]/10 bg-black/40 text-[var(--color-cream)]/60 transition-colors hover:border-[var(--color-brass)]/45 hover:text-[var(--color-brass-bright)] disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Undo last attempt"
           title="Undo last attempt"
         >
-          <CornerDownLeft size={14} />
+          <CornerDownLeft size={15} />
         </button>
       </div>
 
       {/* Sparkline of recent sessions (last ~10) */}
       {stats.sessions.length > 0 && <Sparkline sessions={stats.sessions} />}
+    </div>
+  );
+}
+
+function ScoreCell({
+  label,
+  makes,
+  attempts,
+  pct,
+  highlight = false,
+}: {
+  label: string;
+  makes: number;
+  attempts: number;
+  pct: number | null;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="relative px-4 py-4 text-center sm:px-5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-cream)]/50">
+        {label}
+      </p>
+      <p className="mt-1.5 font-[family-name:var(--font-display)] text-5xl leading-[0.85] tracking-wide tabular-nums">
+        <span className={highlight && makes > 0 ? "pm-foil" : "text-[var(--color-cream)]"}>
+          {makes}
+        </span>
+        <span className="text-3xl text-[var(--color-cream)]/30">/{attempts}</span>
+      </p>
+      <p className="mt-1.5 text-[11px] text-[var(--color-cream)]/50">
+        {pct === null ? "no attempts yet" : `${pct}% made`}
+      </p>
     </div>
   );
 }
@@ -166,11 +193,11 @@ function Sparkline({
   const ordered = [...sessions].reverse();
   const maxAttempts = Math.max(1, ...ordered.map((s) => s.attempts));
   return (
-    <div className="mt-4">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--fg-dim)]">
+    <div className="mt-5 border-t border-[var(--color-cream)]/[0.07] pt-4">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/45">
         Recent sessions
       </p>
-      <div className="mt-2 flex items-end gap-1.5">
+      <div className="mt-3 flex items-end gap-1.5">
         {ordered.map((s) => {
           const total = s.attempts || 1;
           const makeHeight = (s.makes / total) * (s.attempts / maxAttempts) * 100;
@@ -188,7 +215,7 @@ function Sparkline({
             >
               <div
                 style={{ height: `${makeHeight}%` }}
-                className="rounded-t-sm bg-[var(--color-felt-bright)]/80"
+                className="rounded-t-[3px] bg-gradient-to-t from-[var(--color-felt-bright)]/70 to-[var(--color-felt-text)]"
               />
               <div
                 style={{ height: `${missHeight}%` }}
@@ -198,9 +225,9 @@ function Sparkline({
           );
         })}
       </div>
-      <div className="mt-1 flex items-center gap-3 text-[10px] text-[var(--fg-dim)]">
+      <div className="mt-2 flex items-center gap-3 text-[10px] text-[var(--color-cream)]/45">
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm bg-[var(--color-felt-bright)]/80" />
+          <span className="inline-block h-2 w-2 rounded-sm bg-[var(--color-felt-text)]" />
           Makes
         </span>
         <span className="inline-flex items-center gap-1">

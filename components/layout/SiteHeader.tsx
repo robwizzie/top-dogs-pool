@@ -29,8 +29,8 @@ export function SiteHeader() {
   const live = useIsPoolNightLive();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[color-mix(in_oklab,var(--bg)_85%,transparent)] pt-[env(safe-area-inset-top)] backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 px-3 pb-1 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between rounded-full border border-[var(--color-brass)]/20 bg-[color-mix(in_oklab,#0b0d0b_72%,transparent)] pl-3 pr-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl backdrop-saturate-150 sm:pl-4 sm:pr-3">
         <Link href="/" className="cursor-cue" aria-label="Top Dawgs home">
           <LogoMark priority />
         </Link>
@@ -72,7 +72,7 @@ export function SiteHeader() {
               window.dispatchEvent(new Event("topdogs:open-cmdk"))
             }
             aria-label="Search"
-            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)]"
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]"
           >
             <Search size={16} />
           </button>
@@ -81,7 +81,7 @@ export function SiteHeader() {
             onClick={() => setOpen((o) => !o)}
             aria-label="Open menu"
             aria-expanded={open}
-            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-card)]"
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -90,7 +90,7 @@ export function SiteHeader() {
 
       {open && (
         <div className="md:hidden">
-          <nav className="mx-4 mb-4 grid grid-cols-2 gap-2 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-3">
+          <nav className="mx-auto mt-2 grid max-w-7xl grid-cols-2 gap-2 rounded-3xl border border-[var(--color-brass)]/20 bg-[color-mix(in_oklab,#0b0d0b_88%,transparent)] p-3 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
               return (
@@ -131,17 +131,14 @@ function NavLeafLink({
       className={cn(
         "relative rounded-full px-4 py-2 text-sm font-medium tracking-wide transition-colors",
         active
-          ? "text-[var(--color-brass-bright)]"
-          : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
+          ? "bg-[var(--color-brass)]/12 text-[var(--color-brass-bright)] shadow-[inset_0_0_0_1px_rgba(201,162,74,0.3)]"
+          : "text-[var(--color-cream)]/65 hover:bg-white/[0.04] hover:text-[var(--fg)]",
       )}
     >
       <span className="inline-flex items-center gap-1.5">
         {item.label}
         {isLive && <LiveDot />}
       </span>
-      {active && (
-        <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-[var(--color-brass)] to-transparent" />
-      )}
     </Link>
   );
 }
@@ -241,8 +238,8 @@ function NavGroupMenu({
         className={cn(
           "relative inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium tracking-wide transition-colors",
           childActive
-            ? "text-[var(--color-brass-bright)]"
-            : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
+            ? "bg-[var(--color-brass)]/12 text-[var(--color-brass-bright)] shadow-[inset_0_0_0_1px_rgba(201,162,74,0.3)]"
+            : "text-[var(--color-cream)]/65 hover:bg-white/[0.04] hover:text-[var(--fg)]",
         )}
       >
         {group.label}
@@ -253,9 +250,6 @@ function NavGroupMenu({
             open && "rotate-180",
           )}
         />
-        {childActive && (
-          <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-[var(--color-brass)] to-transparent" />
-        )}
       </button>
 
       {open && (
@@ -263,7 +257,7 @@ function NavGroupMenu({
           role="menu"
           className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2"
         >
-          <div className="min-w-[11rem] rounded-xl border border-[var(--border-strong)] bg-[var(--bg-card)] p-1 shadow-[var(--shadow-felt)]">
+          <div className="min-w-[12rem] rounded-2xl border border-[var(--color-brass)]/25 bg-[color-mix(in_oklab,#0b0d0b_90%,transparent)] p-1.5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
             {group.items.map((item) => {
               const active = isActive(pathname, item.href);
               return (

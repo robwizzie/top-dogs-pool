@@ -34,7 +34,7 @@ export function MistakeDiagram({
   const path = [shot.cueBall, contact, ...mistake.cueBallPath];
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl border border-[var(--color-pop)]/30 bg-[var(--bg-card)]">
+    <div className="relative w-full overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-[0_0_0_1px_rgba(232,82,72,0.3),0_18px_40px_-22px_rgba(232,82,72,0.5)]">
       <svg
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
         xmlns="http://www.w3.org/2000/svg"

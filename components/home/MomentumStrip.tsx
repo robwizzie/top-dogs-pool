@@ -3,10 +3,27 @@ import { Flame } from "lucide-react";
 import type { MomentumChip } from "@/lib/research";
 import { cn } from "@/lib/utils";
 
+const TONE = {
+  W: {
+    ball: "radial-gradient(circle at 32% 28%, #9be3b6 0%, #2e8b57 38%, #134d2f 80%, #0b2a1e 100%)",
+    glow: "rgba(46,139,87,0.55)",
+    text: "text-[var(--color-felt-bright)]",
+  },
+  L: {
+    ball: "radial-gradient(circle at 32% 28%, #ffb1aa 0%, #e85248 36%, #8f1f1a 80%, #4d0f0c 100%)",
+    glow: "rgba(232,82,72,0.5)",
+    text: "text-[var(--color-pop-bright)]",
+  },
+  T: {
+    ball: "radial-gradient(circle at 32% 28%, #ffe7a8 0%, #f4c453 36%, #a06f12 80%, #57400b 100%)",
+    glow: "rgba(244,196,83,0.5)",
+    text: "text-[var(--color-tie-bright)]",
+  },
+} as const;
+
 /**
- * Last-N match outcomes laid out most-recent-first (left → right). Two-row
- * 5×2 grid on mobile, one-row 10× grid on desktop, so each cell always has
- * room to show opponent + score without truncation gymnastics.
+ * Form guide — the last N match outcomes as a rail of glossy balls, most
+ * recent first (left → right). 5×2 on mobile, one row of 10 on desktop.
  */
 export function MomentumStrip({
   chips,
@@ -27,121 +44,86 @@ export function MomentumStrip({
   const ties = chips.length - wins - losses;
 
   return (
-    <div className="surface overflow-hidden">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-[var(--border)] bg-[var(--bg-soft)]/60 px-5 py-3">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+    <div className="pm-glass overflow-hidden">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-5 pb-1 pt-5 sm:px-7">
+        <div className="flex items-baseline gap-3">
+          <span className="font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide tabular-nums text-[var(--color-cream)]">
+            {wins}
+            <span className="text-[var(--color-cream)]/30">–</span>
+            {losses}
+            {ties > 0 && (
+              <>
+                <span className="text-[var(--color-cream)]/30">–</span>
+                {ties}
+              </>
+            )}
+          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-cream)]/50">
             Last {chips.length}
           </span>
-          <span className="font-[family-name:var(--font-display)] text-lg tracking-wide tabular-nums text-[var(--color-cream)]">
-            {wins}–{losses}
-            {ties > 0 ? `–${ties}` : ""}
-          </span>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.24em] text-[var(--fg-dim)]">
-          newest → oldest
-        </span>
         {showStreak && (
-          <div className="ml-auto flex items-center gap-1.5">
-            <Flame
-              size={14}
-              className={
-                streak.outcome === "W"
-                  ? "text-[var(--color-felt-bright)]"
-                  : "text-[var(--color-pop-bright)]"
-              }
-              fill="currentColor"
-            />
-            <span
-              className={cn(
-                "text-[10px] font-semibold uppercase tracking-[0.32em]",
-                streak.outcome === "W"
-                  ? "text-[var(--color-felt-bright)]"
-                  : "text-[var(--color-pop-bright)]",
-              )}
-            >
-              {streak.count}-match {streak.outcome === "W" ? "win" : "loss"} streak
-            </span>
-          </div>
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em]",
+              streak.outcome === "W"
+                ? "border-[var(--color-felt-bright)]/40 bg-[var(--color-felt-bright)]/10 text-[var(--color-felt-bright)]"
+                : "border-[var(--color-pop)]/40 bg-[var(--color-pop)]/10 text-[var(--color-pop-bright)]",
+            )}
+          >
+            <Flame size={12} fill="currentColor" />
+            {streak.count}-match {streak.outcome === "W" ? "win" : "skid"}
+          </span>
         )}
+        <span className="ml-auto hidden text-[10px] uppercase tracking-[0.28em] text-[var(--color-cream)]/35 sm:inline">
+          Newest → oldest
+        </span>
       </div>
 
-      {/* Cells — 5×2 on mobile, 10×1 on lg. Each cell stacks: outcome badge,
-       *  opponent name (truncated), score. Corner cells get matching radii so
-       *  the inset brass ring on the latest cell, hover backgrounds, and inner
-       *  borders all trace the parent's rounded outline cleanly. */}
-      <div className="grid grid-cols-5 lg:grid-cols-10">
+      <ol className="relative grid grid-cols-5 gap-y-2 px-2 pb-4 pt-3 sm:px-4 lg:grid-cols-10">
+        {/* The rail the balls sit on — desktop only, where they form a line. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-10 top-[2.6rem] hidden h-px bg-gradient-to-r from-[var(--color-brass)]/50 via-[var(--color-cream)]/10 to-transparent lg:block"
+        />
         {ordered.map((c, i) => {
-          const tone =
-            c.outcome === "W"
-              ? "bg-[var(--color-felt-bright)]/10 hover:bg-[var(--color-felt-bright)]/20"
-              : c.outcome === "L"
-                ? "bg-[var(--color-pop)]/10 hover:bg-[var(--color-pop)]/20"
-                : "bg-[var(--color-tie)]/10 hover:bg-[var(--color-tie)]/20";
-          const badgeBg =
-            c.outcome === "W"
-              ? "bg-[var(--color-felt-bright)]/25 text-[var(--color-felt-bright)]"
-              : c.outcome === "L"
-                ? "bg-[var(--color-pop)]/25 text-[var(--color-pop-bright)]"
-                : "bg-[var(--color-tie)]/25 text-[var(--color-tie-bright)]";
+          const tone = TONE[c.outcome];
           const isLatest = i === 0;
-
-          // Per-cell corner rounding so the inset ring follows the parent's
-          // 1rem (--radius-card) outline. Mobile is a 5×2 grid; desktop is a
-          // single 10-wide row, so corner positions differ by breakpoint.
-          //
-          //   index → corner
-          //   0     → mobile TL · desktop TL+BL
-          //   4     → mobile TR · desktop nothing
-          //   5     → mobile BL · desktop nothing
-          //   9     → mobile BR · desktop TR+BR
-          const corners: string[] = [];
-          if (i === 0) corners.push("rounded-tl-[1rem] lg:rounded-bl-[1rem]");
-          if (i === 4) corners.push("rounded-tr-[1rem] lg:rounded-none");
-          if (i === 5) corners.push("rounded-bl-[1rem] lg:rounded-none");
-          if (i === 9) corners.push("rounded-br-[1rem] lg:rounded-tr-[1rem]");
-
           return (
-            <Link
-              key={c.matchId}
-              href={`/matches/${c.matchId}`}
-              title={`${c.outcome} vs ${c.opponent} · ${c.teamScore}–${c.opponentScore} · ${new Date(c.date).toLocaleDateString()}`}
-              className={cn(
-                "group relative flex min-w-0 flex-col items-center gap-1.5 px-2 py-3 text-center transition-colors",
-                tone,
-                // Vertical separators (skip first-of-row cells)
-                "[&:not(:nth-child(5n+1))]:border-l lg:[&:not(:first-child)]:border-l border-[var(--border)]",
-                // Horizontal separator below first row on mobile only
-                "lg:border-b-0",
-                i < 5 && "border-b border-[var(--border)] lg:border-b-0",
-                isLatest && "ring-1 ring-inset ring-[var(--color-brass)]/50",
-                ...corners,
-              )}
-            >
-              {isLatest && (
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-brass-bright)] to-transparent"
-                />
-              )}
-              <span
-                className={cn(
-                  "inline-flex h-8 w-8 items-center justify-center rounded-full font-[family-name:var(--font-display)] text-base leading-none tracking-wide",
-                  badgeBg,
-                )}
+            <li key={c.matchId} className="min-w-0">
+              <Link
+                href={`/matches/${c.matchId}`}
+                title={`${c.outcome} vs ${c.opponent} · ${c.teamScore}–${c.opponentScore} · ${new Date(c.date).toLocaleDateString()}`}
+                className="group flex min-w-0 flex-col items-center gap-2 rounded-xl px-1 py-2 text-center transition-colors hover:bg-white/[0.04]"
               >
-                {c.outcome}
-              </span>
-              <span className="block w-full truncate text-[11px] font-medium leading-tight text-[var(--fg)]">
-                {c.opponent}
-              </span>
-              <span className="text-[10px] tabular-nums text-[var(--fg-dim)]">
-                {c.teamScore}–{c.opponentScore}
-              </span>
-            </Link>
+                <span
+                  className={cn(
+                    "relative inline-flex items-center justify-center rounded-full font-[family-name:var(--font-display)] leading-none text-white transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-105",
+                    isLatest ? "h-11 w-11 text-lg" : "h-9 w-9 text-base",
+                  )}
+                  style={{
+                    background: tone.ball,
+                    boxShadow: `0 6px 14px -4px rgba(0,0,0,0.7), 0 0 ${isLatest ? 22 : 0}px -2px ${tone.glow}`,
+                  }}
+                >
+                  <span className="flex h-[58%] w-[58%] items-center justify-center rounded-full bg-[#f6efdc] text-[0.8em] text-[var(--color-ink)] shadow-inner">
+                    {c.outcome}
+                  </span>
+                  {isLatest && (
+                    <span className="absolute -inset-1.5 rounded-full border border-[var(--color-brass-bright)]/50" />
+                  )}
+                </span>
+                <span className="block w-full truncate text-[11px] font-medium leading-tight text-[var(--color-cream)]/85">
+                  {c.opponent}
+                </span>
+                <span className={cn("font-[family-name:var(--font-display)] text-sm leading-none tracking-wider tabular-nums", tone.text)}>
+                  {c.teamScore}–{c.opponentScore}
+                </span>
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ol>
     </div>
   );
 }

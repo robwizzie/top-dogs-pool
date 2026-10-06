@@ -79,24 +79,27 @@ export function PointsBreakdown({
   const visible = segs.filter((s) => s.pts > 0);
 
   return (
-    <div className="surface px-5 py-4">
-      <div className="mb-2 flex items-baseline justify-between gap-3">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+    <div className="pm-glass h-full px-5 py-5 sm:px-6">
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-brass)]">
           Points come from
         </p>
-        <span className="font-[family-name:var(--font-display)] text-base tracking-wide tabular-nums text-[var(--color-brass-bright)]">
-          {points} pt{points === 1 ? "" : "s"}
+        <span className="font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide tabular-nums text-[var(--color-brass-bright)]">
+          {points}
+          <span className="ml-1 text-xs tracking-[0.2em] text-[var(--color-cream)]/45">
+            pt{points === 1 ? "" : "s"}
+          </span>
         </span>
       </div>
 
       {visible.length === 0 ? (
-        <p className="text-[11px] text-[var(--fg-dim)]">
+        <p className="text-xs text-[var(--color-cream)]/50">
           No leaderboard points logged in this scope yet.
         </p>
       ) : (
         <>
           <div
-            className="flex h-3 w-full overflow-hidden rounded-full border border-[var(--border)] bg-[var(--bg-soft)]"
+            className="flex h-3.5 w-full gap-[2px] overflow-hidden rounded-full bg-black/40 p-[2px] shadow-[inset_0_1px_3px_rgba(0,0,0,0.6)]"
             role="img"
             aria-label={`Points breakdown: ${visible.map((s) => `${s.count} ${s.label}`).join(", ")}`}
           >
@@ -105,7 +108,7 @@ export function PointsBreakdown({
               return (
                 <span
                   key={s.key}
-                  className="block h-full"
+                  className="block h-full rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]"
                   style={{ width: `${pct}%`, background: s.color }}
                   title={`${s.label}: ${s.count} (${s.pts}pt)`}
                 />
@@ -113,7 +116,7 @@ export function PointsBreakdown({
             })}
           </div>
 
-          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3 lg:grid-cols-5">
+          <ul className="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3 xl:grid-cols-5">
             {segs.map((s) => (
               <li
                 key={s.key}
@@ -127,9 +130,9 @@ export function PointsBreakdown({
                     style={{ background: s.color }}
                     aria-hidden
                   />
-                  <span className="text-[var(--fg-dim)]">{s.label}</span>
+                  <span className="text-[var(--color-cream)]/60">{s.label}</span>
                 </span>
-                <span className="font-[family-name:var(--font-display)] tracking-wide tabular-nums text-[var(--color-cream)]">
+                <span className="font-[family-name:var(--font-display)] text-base leading-none tracking-wide tabular-nums text-[var(--color-cream)]">
                   {s.count}
                 </span>
               </li>

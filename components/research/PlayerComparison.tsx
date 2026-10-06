@@ -91,7 +91,7 @@ function PlayerSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-2 text-sm focus:border-[var(--color-brass)] focus:outline-none"
+        className="mt-1 w-full rounded-xl border border-white/10 bg-black/30 px-3.5 py-2.5 text-sm text-[var(--color-cream)] transition-colors focus:ring-2 focus:ring-[var(--color-brass)]/25 focus:border-[var(--color-brass)] focus:outline-none"
       >
         {options.map((p) => (
           <option

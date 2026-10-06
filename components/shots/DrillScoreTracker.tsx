@@ -71,11 +71,15 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
   }
 
   return (
-    <section className="surface overflow-hidden">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--color-felt-deep)]/30 px-5 py-3">
+    <section className="pm-glass relative isolate overflow-hidden">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-[radial-gradient(70%_100%_at_50%_0%,rgba(255,226,160,0.1),transparent_70%)]"
+        aria-hidden
+      />
+      <header className="flex flex-wrap items-center justify-between gap-3 px-5 pt-5 sm:px-6">
         <div className="flex items-center gap-2">
-          <Trophy size={16} className="text-[var(--color-brass-bright)]" />
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)]">
+          <Trophy size={14} className="text-[var(--color-brass-bright)]" />
+          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
             Score Tracker
           </p>
         </div>
@@ -88,7 +92,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                   clearDrill();
                 }
               }}
-              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-[11px] font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--color-pop-bright)]"
+              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-cream)]/10 bg-black/30 px-3 text-[11px] font-semibold tracking-wide text-[var(--color-cream)]/55 transition-colors hover:text-[var(--color-pop-bright)]"
             >
               <Trash2 size={11} />
               Clear all
@@ -98,7 +102,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-brass)]/50 bg-[var(--color-brass)]/15 px-3 text-[11px] font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/25"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-gradient-to-b from-[#f0d48a] via-[#c9a24a] to-[#b38b36] px-4 text-xs font-semibold tracking-wide text-[var(--color-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_8px_20px_-10px_rgba(201,162,74,0.9)] transition-[filter] hover:brightness-110"
             >
               <Plus size={12} />
               Log attempt
@@ -107,28 +111,28 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
         </div>
       </header>
 
-      <div className="space-y-4 p-5">
+      <div className="space-y-5 p-5 sm:p-6">
         {open && (
           <form
             onSubmit={submit}
-            className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4"
+            className="space-y-3 rounded-2xl border border-[var(--color-cream)]/10 bg-black/30 p-4"
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
                 New attempt · {scoring.label}
                 {scoring.max ? ` (max ${scoring.max})` : ""}
               </p>
               <button
                 type="button"
                 onClick={reset}
-                className="text-[var(--fg-dim)] hover:text-[var(--fg)]"
+                className="text-[var(--color-cream)]/55 hover:text-[var(--color-cream)]"
                 aria-label="Cancel"
               >
                 <X size={14} />
               </button>
             </div>
 
-            <p className="text-[11px] text-[var(--fg-dim)]">
+            <p className="text-[11px] text-[var(--color-cream)]/55">
               Tap +/− to update each player&apos;s score as you drill. Save
               the attempt when you&apos;re done.
             </p>
@@ -136,7 +140,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
               {players.map((p, i) => (
                 <li
                   key={i}
-                  className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-2"
+                  className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--color-cream)]/10 bg-black/40 p-2"
                 >
                   <input
                     type="text"
@@ -147,24 +151,24 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                       setPlayers(next);
                     }}
                     placeholder={players.length === 1 ? "You" : `Player ${i + 1}`}
-                    className="min-w-0 flex-1 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-2 py-1.5 text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)]/60 focus:outline-none"
+                    className="min-w-0 flex-1 rounded-full border border-[var(--color-cream)]/10 bg-black/30 px-2 py-1.5 text-sm text-[var(--color-cream)] placeholder:text-[var(--color-cream)]/55 focus:border-[var(--color-brass)]/60 focus:outline-none"
                   />
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => adjustScore(i, -1)}
                       disabled={p.score <= 0}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] hover:text-[var(--fg)] disabled:opacity-30"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-cream)]/10 bg-black/30 text-[var(--color-cream)]/55 hover:text-[var(--color-cream)] disabled:opacity-30"
                       aria-label="Decrement score"
                     >
                       <Minus size={14} />
                     </button>
-                    <span className="inline-flex min-w-[3.5rem] items-baseline justify-center gap-1 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-base">
-                      <span className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--color-brass-bright)]">
+                    <span className="inline-flex min-w-[3.5rem] items-baseline justify-center gap-1 rounded-full border border-[var(--color-cream)]/10 bg-black/30 px-3 py-1.5 text-base">
+                      <span className="font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--color-brass-bright)]">
                         {p.score}
                       </span>
                       {scoring.max && (
-                        <span className="text-[10px] text-[var(--fg-dim)]">
+                        <span className="text-[10px] text-[var(--color-cream)]/55">
                           /{scoring.max}
                         </span>
                       )}
@@ -175,7 +179,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                       disabled={
                         scoring.max !== undefined && p.score >= scoring.max
                       }
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/15 text-[var(--color-brass-bright)] hover:bg-[var(--color-brass)]/25 disabled:opacity-30"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-brass)]/40 bg-[var(--color-brass)]/15 text-[var(--color-brass-bright)] hover:bg-[var(--color-brass)]/25 disabled:opacity-30"
                       aria-label="Increment score"
                     >
                       <Plus size={14} />
@@ -188,7 +192,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                         const next = players.filter((_, idx) => idx !== i);
                         setPlayers(next.length === 0 ? DEFAULT_PLAYERS : next);
                       }}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-cream)]/10 text-[var(--color-cream)]/55 hover:text-[var(--color-pop-bright)]"
                       aria-label="Remove player"
                     >
                       <X size={14} />
@@ -205,7 +209,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                   setPlayers([...players, { name: "", score: 0 }])
                 }
                 disabled={players.length >= 8}
-                className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg)] px-3 text-[11px] font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)] disabled:opacity-40"
+                className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-cream)]/10 bg-black/40 px-3 text-[11px] font-semibold tracking-wide text-[var(--color-cream)]/55 transition-colors hover:text-[var(--color-cream)] disabled:opacity-40"
               >
                 <Plus size={11} />
                 Add player
@@ -217,20 +221,20 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Notes (optional)"
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)]/60 focus:outline-none"
+              className="w-full rounded-xl border border-[var(--color-cream)]/10 bg-black/40 px-3 py-1.5 text-sm text-[var(--color-cream)] placeholder:text-[var(--color-cream)]/55 focus:border-[var(--color-brass)]/60 focus:outline-none"
             />
 
             <div className="flex justify-end gap-2 pt-1">
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex h-9 items-center rounded-full border border-[var(--border)] bg-[var(--bg)] px-4 text-sm font-semibold tracking-wide text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+                className="inline-flex h-9 items-center rounded-full border border-[var(--color-cream)]/10 bg-black/40 px-4 text-sm font-semibold tracking-wide text-[var(--color-cream)]/55 transition-colors hover:text-[var(--color-cream)]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="inline-flex h-9 items-center rounded-full border border-[var(--color-brass)]/50 bg-[var(--color-brass)]/20 px-4 text-sm font-semibold tracking-wide text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/35"
+                className="inline-flex h-9 items-center rounded-full bg-gradient-to-b from-[#f0d48a] via-[#c9a24a] to-[#b38b36] px-5 text-sm font-semibold tracking-wide text-[var(--color-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] transition-[filter] hover:brightness-110"
               >
                 Save
               </button>
@@ -240,7 +244,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
 
         {bestByPlayer.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
               Personal bests
             </p>
             <ul className="grid gap-1.5 sm:grid-cols-2">
@@ -248,17 +252,22 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                 <li
                   key={player}
                   className={cn(
-                    "flex items-baseline justify-between rounded-lg border px-3 py-2 text-sm",
+                    "flex items-center justify-between rounded-2xl border px-4 py-2.5 text-sm",
                     i === 0
-                      ? "border-[var(--color-brass)]/50 bg-[var(--color-brass)]/10"
-                      : "border-[var(--border)] bg-[var(--bg-card)]",
+                      ? "border-[var(--color-brass)]/45 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(224,190,107,0.18),rgba(224,190,107,0.04))] shadow-[0_10px_30px_-18px_rgba(201,162,74,0.8)]"
+                      : "border-[var(--color-cream)]/10 bg-black/30",
                   )}
                 >
                   <span className="truncate font-semibold">{player}</span>
-                  <span className="font-[family-name:var(--font-display)] text-lg tracking-wide text-[var(--color-brass-bright)]">
+                  <span
+                    className={cn(
+                      "font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide tabular-nums",
+                      i === 0 ? "pm-foil" : "text-[var(--color-brass-bright)]",
+                    )}
+                  >
                     {entry.score}
                     {scoring.max && (
-                      <span className="text-xs text-[var(--fg-dim)]">
+                      <span className="text-xs text-[var(--color-cream)]/55">
                         /{scoring.max}
                       </span>
                     )}
@@ -271,19 +280,19 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
 
         {entries.length > 0 ? (
           <div className="space-y-2">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
               History · {entries.length}{" "}
               {entries.length === 1 ? "attempt" : "attempts"}
             </p>
-            <ul className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border border-[var(--border)]">
+            <ul className="divide-y divide-[var(--color-cream)]/[0.07] overflow-hidden rounded-2xl border border-[var(--color-cream)]/10">
               {entries.slice(0, 12).map((e, i) => (
                 <li
                   key={`${e.date}-${i}`}
-                  className="flex items-center justify-between gap-3 bg-[var(--bg-card)] px-3 py-2 text-sm"
+                  className="flex items-center justify-between gap-3 bg-black/30 px-3 py-2 text-sm"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold">{e.player}</p>
-                    <p className="text-[11px] text-[var(--fg-dim)]">
+                    <p className="text-[11px] text-[var(--color-cream)]/55">
                       {new Date(e.date).toLocaleDateString(undefined, {
                         month: "short",
                         day: "numeric",
@@ -292,10 +301,10 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                       {e.note ? ` · ${e.note}` : ""}
                     </p>
                   </div>
-                  <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--fg)]">
+                  <span className="font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--color-cream)]">
                     {e.score}
                     {scoring.unit && (
-                      <span className="ml-1 text-xs text-[var(--fg-dim)]">
+                      <span className="ml-1 text-xs text-[var(--color-cream)]/55">
                         {scoring.unit}
                       </span>
                     )}
@@ -303,7 +312,7 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
                   <button
                     type="button"
                     onClick={() => remove(i)}
-                    className="text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+                    className="text-[var(--color-cream)]/55 hover:text-[var(--color-pop-bright)]"
                     aria-label="Delete entry"
                   >
                     <Trash2 size={13} />
@@ -312,14 +321,14 @@ export function DrillScoreTracker({ drillId, scoring }: Props) {
               ))}
             </ul>
             {entries.length > 12 && (
-              <p className="text-[11px] text-[var(--fg-dim)]">
+              <p className="text-[11px] text-[var(--color-cream)]/55">
                 Showing 12 of {entries.length} attempts.
               </p>
             )}
           </div>
         ) : (
           !open && (
-            <p className="text-sm text-[var(--fg-dim)]">
+            <p className="text-sm text-[var(--color-cream)]/55">
               No attempts yet. Log one to start tracking progress.
             </p>
           )

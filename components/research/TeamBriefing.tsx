@@ -10,6 +10,8 @@ import {
 } from "@/lib/research";
 import type { Match, OpponentTeamProfile, Player } from "@/lib/apa/schemas";
 import { cn, formatDate, formatTime } from "@/lib/utils";
+import { PoolBall } from "@/components/brand/PoolBall";
+import { DISPLAY, EYEBROW, StatRail } from "@/components/research/ScoutUI";
 
 /**
  * Inputs needed to recompute the predicted lineup on the client when the
@@ -132,21 +134,31 @@ export function TeamBriefing({
   }
 
   return (
-    <div className="space-y-6">
-      {/* ---- Hero ---- */}
-      <section className="surface relative overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--color-felt)] via-[var(--color-brass)] to-[var(--color-pop)]" />
-        <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+    <div className="space-y-8 sm:space-y-10">
+      {/* ---- Hero — on the rail ---- */}
+      <section className="pm-rail fade-in-up mt-2">
+        {[12.5, 37.5, 62.5, 87.5].map((x) => (
+          <span
+            key={x}
+            aria-hidden
+            className="pm-diamond hidden sm:block"
+            style={{ left: `${x}%`, top: 14 }}
+          />
+        ))}
+        <div className="flex flex-col gap-6 px-5 pb-6 pt-8 sm:px-9 sm:pb-8 sm:pt-11 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-brass)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-felt-bright)] shadow-[0_0_10px_2px_rgba(46,139,87,0.8)]" />
               Next match · {countdown}
             </p>
-            <p className="mt-2 font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-4xl">
-              vs{" "}
+            <p className={`${DISPLAY} mt-3 text-5xl leading-[0.9] text-[var(--color-cream)] sm:text-7xl`}>
+              <span className="pm-serif mr-2 text-[0.55em] text-[var(--color-cream)]/50">
+                vs
+              </span>
               {oppTeam ? (
                 <Link
                   href={`/opponents/${oppTeam.id}`}
-                  className="text-[var(--color-brass-bright)] hover:underline"
+                  className="text-[var(--color-brass-bright)] transition-colors hover:text-[var(--color-brass)]"
                 >
                   {briefing.opponentName}
                 </Link>
@@ -156,16 +168,16 @@ export function TeamBriefing({
                 </span>
               )}
             </p>
-            <p className="mt-1 text-sm text-[var(--fg-dim)]">
+            <p className="mt-3 text-sm text-[var(--color-cream)]/60">
               {formatDate(briefing.match.date)} ·{" "}
               {formatTime(briefing.match.date)}
               {briefing.match.location && ` · ${briefing.match.location}`}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             <Link
               href={`/matches/${briefing.match.id}`}
-              className="rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-semibold hover:border-[var(--color-brass)]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-brass)]/40 bg-black/30 px-5 py-3 text-sm font-semibold text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
             >
               Match details →
             </Link>
@@ -174,10 +186,9 @@ export function TeamBriefing({
                 type="button"
                 onClick={copyShareLink}
                 className={cn(
-                  "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-                  shareCopied
-                    ? "bg-[var(--color-felt-bright)] text-[var(--color-ink)]"
-                    : "bg-[var(--color-brass)] text-[var(--color-ink)] hover:bg-[var(--color-brass-bright)]",
+                  "pm-btn",
+                  shareCopied &&
+                    "![background:linear-gradient(180deg,#5fc28a,#2e8b57)]",
                 )}
               >
                 {shareCopied ? "✓ Link copied!" : "Share with team"}
@@ -187,127 +198,177 @@ export function TeamBriefing({
         </div>
       </section>
 
-      {/* ---- Roster check ---- */}
-      <RosterCheck
-        roster={inputs.roster}
-        available={availableIds}
-        onChange={editable ? setAvailableIds : null}
-      />
+      <div className="grid gap-8 sm:gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start lg:gap-6">
+        {/* Right rail on desktop (first on phones): who's in + TL;DR */}
+        <div className="space-y-6 lg:order-2">
+          {/* ---- Roster check ---- */}
+          <RosterCheck
+            roster={inputs.roster}
+            available={availableIds}
+            onChange={editable ? setAvailableIds : null}
+          />
 
-      {/* ---- TL;DR ---- */}
-      {insights.tldr.length > 0 && (
-        <section className="surface p-5">
-          <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Tonight&apos;s Read · TL;DR
-          </h3>
-          <ul className="space-y-2">
-            {insights.tldr.map((t, i) => (
-              <li key={i} className="flex gap-3 text-sm leading-relaxed">
-                <span className="text-lg leading-snug">{t.emoji}</span>
-                <span>{t.text}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* ---- Lineup section ---- */}
-      <section>
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Suggested lineup · {availableRoster.length} player
-            {availableRoster.length === 1 ? "" : "s"} available
-          </h3>
-          <div className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] p-0.5 text-[10px]">
-            <button
-              type="button"
-              onClick={() => setScenario("we-first")}
-              className={cn(
-                "rounded-full px-3 py-1 font-semibold uppercase tracking-[0.2em]",
-                scenario === "we-first"
-                  ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
-                  : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
-              )}
-            >
-              We put up M1
-            </button>
-            <button
-              type="button"
-              onClick={() => setScenario("they-first")}
-              className={cn(
-                "rounded-full px-3 py-1 font-semibold uppercase tracking-[0.2em]",
-                scenario === "they-first"
-                  ? "bg-[var(--color-brass)] text-[var(--color-ink)]"
-                  : "text-[var(--fg-dim)] hover:text-[var(--fg)]",
-              )}
-            >
-              They put up M1
-            </button>
-          </div>
+          {/* ---- TL;DR ---- */}
+          {insights.tldr.length > 0 && (
+            <section className="pm-glass relative overflow-hidden p-5 sm:p-6">
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(224,190,107,0.16),transparent_70%)]"
+              />
+              <h3 className={cn(EYEBROW, "relative mb-1")}>
+                Tonight&apos;s Read · TL;DR
+              </h3>
+              <ul className="relative divide-y divide-[var(--color-cream)]/[0.07]">
+                {insights.tldr.map((t, i) => (
+                  <li
+                    key={i}
+                    className="flex gap-3.5 py-3.5 text-[15px] leading-relaxed text-[var(--color-cream)]/85 last:pb-0"
+                  >
+                    <span
+                      aria-hidden
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/35 text-base ring-1 ring-inset ring-[var(--color-brass)]/25"
+                    >
+                      {t.emoji}
+                    </span>
+                    <span>{t.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
-        {lineup ? (
-          <LineupCard lineup={lineup} oppName={briefing.opponentName} />
-        ) : availableRoster.length < 5 ? (
-          <p className="surface p-6 text-sm text-[var(--fg-dim)]">
-            Need at least 5 players available to suggest a lineup. Toggle
-            chips above to mark who&apos;s in.
-          </p>
-        ) : (
-          <p className="surface p-6 text-sm text-[var(--fg-dim)]">
-            Not enough opponent roster data yet — run a fresh sync.
-          </p>
-        )}
-      </section>
+
+        {/* ---- Lineup section ---- */}
+        <section className="min-w-0 lg:order-1">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className={cn(EYEBROW, "mb-1.5")}>
+                {availableRoster.length} player
+                {availableRoster.length === 1 ? "" : "s"} available
+              </p>
+              <h3 className={`${DISPLAY} text-3xl leading-none text-[var(--color-cream)] sm:text-4xl`}>
+                Suggested lineup
+              </h3>
+            </div>
+            <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/35 p-1 text-[10px] backdrop-blur-sm">
+              <button
+                type="button"
+                onClick={() => setScenario("we-first")}
+                className={cn(
+                  "rounded-full px-3 py-1.5 font-semibold uppercase tracking-[0.2em] transition-colors",
+                  scenario === "we-first"
+                    ? "bg-gradient-to-b from-[#f0d48a] to-[#c9a24a] text-[var(--color-ink)] shadow-[0_4px_14px_-4px_rgba(201,162,74,0.7)]"
+                    : "text-[var(--color-cream)]/55 hover:text-[var(--color-cream)]",
+                )}
+              >
+                We put up M1
+              </button>
+              <button
+                type="button"
+                onClick={() => setScenario("they-first")}
+                className={cn(
+                  "rounded-full px-3 py-1.5 font-semibold uppercase tracking-[0.2em] transition-colors",
+                  scenario === "they-first"
+                    ? "bg-gradient-to-b from-[#f0d48a] to-[#c9a24a] text-[var(--color-ink)] shadow-[0_4px_14px_-4px_rgba(201,162,74,0.7)]"
+                    : "text-[var(--color-cream)]/55 hover:text-[var(--color-cream)]",
+                )}
+              >
+                They put up M1
+              </button>
+            </div>
+          </div>
+          {lineup ? (
+            <LineupCard lineup={lineup} oppName={briefing.opponentName} />
+          ) : availableRoster.length < 5 ? (
+            <p className="surface p-6 text-sm text-[var(--color-cream)]/60">
+              Need at least 5 players available to suggest a lineup. Toggle
+              chips above to mark who&apos;s in.
+            </p>
+          ) : (
+            <p className="surface p-6 text-sm text-[var(--color-cream)]/60">
+              Not enough opponent roster data yet — run a fresh sync.
+            </p>
+          )}
+        </section>
+      </div>
 
       {/* ---- Top threats ---- */}
       {insights.topThreats.length > 0 && (
         <section>
-          <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-            Top threats
-          </h3>
+          <div className="mb-4 flex items-end gap-4">
+            <div>
+              <p className={cn(EYEBROW, "mb-1.5")}>Who to watch</p>
+              <h3 className={`${DISPLAY} text-3xl leading-none text-[var(--color-cream)] sm:text-4xl`}>
+                Top threats
+              </h3>
+            </div>
+            <div className="pm-rule mb-2 hidden flex-1 sm:block" aria-hidden />
+          </div>
           <ul className="grid gap-3 sm:grid-cols-3">
-            {insights.topThreats.map((t) => (
-              <li key={t.name} className="surface p-4">
-                <div className="flex items-baseline justify-between gap-2">
-                  {t.playerId ? (
-                    <Link
-                      href={`/players/${t.playerId}`}
-                      className="font-[family-name:var(--font-display)] text-lg tracking-wide hover:text-[var(--color-brass)]"
-                    >
-                      {t.name}
-                    </Link>
-                  ) : (
-                    <span className="font-[family-name:var(--font-display)] text-lg tracking-wide">
-                      {t.name}
+            {insights.topThreats.map((t, i) => (
+              <li
+                key={t.name}
+                className="surface surface-hover fade-in-up relative overflow-hidden p-5"
+                style={{ animationDelay: `${i * 70}ms` }}
+              >
+                {t.trend === "hot" && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -left-10 -top-14 h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(232,82,72,0.16),transparent_70%)]"
+                  />
+                )}
+                <div className="relative flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-semibold tabular-nums tracking-[0.2em] text-[var(--color-cream)]/35">
+                      #{i + 1}
                     </span>
-                  )}
+                    {t.playerId ? (
+                      <Link
+                        href={`/players/${t.playerId}`}
+                        className={`${DISPLAY} block truncate text-2xl leading-tight text-[var(--color-cream)] transition-colors hover:text-[var(--color-brass-bright)]`}
+                      >
+                        {t.name}
+                      </Link>
+                    ) : (
+                      <span className={`${DISPLAY} block truncate text-2xl leading-tight text-[var(--color-cream)]`}>
+                        {t.name}
+                      </span>
+                    )}
+                  </div>
                   {t.sl != null && (
-                    <span className="text-xs text-[var(--fg-dim)]">
-                      SL{t.sl}
+                    <span className="flex shrink-0 flex-col items-center gap-0.5">
+                      <PoolBall
+                        number={t.sl}
+                        size={32}
+                        className="drop-shadow-[0_6px_8px_rgba(0,0,0,0.55)]"
+                      />
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/45">
+                        SL{t.sl}
+                      </span>
                     </span>
                   )}
                 </div>
-                <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                <div className="relative mt-2 flex flex-wrap items-center gap-1.5">
                   {t.trend === "hot" && (
-                    <span className="rounded-full bg-[var(--color-pop)]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-pop-bright)]">
+                    <span className="rounded-full bg-[var(--color-pop)]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-pop-bright)] ring-1 ring-inset ring-[var(--color-pop-bright)]/25">
                       🔥 Hot
                     </span>
                   )}
                   {t.trend === "cold" && (
-                    <span className="rounded-full bg-[var(--color-felt)]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-felt-bright)]">
+                    <span className="rounded-full bg-[var(--color-felt)]/25 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-felt-text)] ring-1 ring-inset ring-[var(--color-felt-bright)]/30">
                       ❄️ Cold
                     </span>
                   )}
-                  <span className="text-[10px] text-[var(--fg-dim)]">
+                  <span className="text-[11px] text-[var(--color-cream)]/55">
                     {t.summary}
                   </span>
                 </div>
                 {t.counter && (
-                  <p className="mt-2 text-xs text-[var(--fg-dim)]">
+                  <p className="relative mt-3 border-t border-[var(--color-cream)]/[0.07] pt-3 text-xs text-[var(--color-cream)]/55">
                     🎯 Best counter:{" "}
                     <Link
                       href={`/roster/${t.counter.id}`}
-                      className="font-semibold text-[var(--color-felt-bright)] hover:underline"
+                      className="font-semibold text-[var(--color-felt-text)] hover:underline"
                     >
                       {t.counter.name}
                     </Link>{" "}
@@ -322,40 +383,44 @@ export function TeamBriefing({
       )}
 
       {/* ---- Stats footer ---- */}
-      <section className="grid gap-3 sm:grid-cols-3">
-        {scouting && (
-          <Stat
-            label="Our record vs them"
-            value={`${scouting.vsUs.wins}–${scouting.vsUs.losses}${scouting.vsUs.ties ? `–${scouting.vsUs.ties}` : ""}`}
-            sub={`${scouting.vsUs.winPct}% across all sessions`}
-            tone={
-              scouting.vsUs.winPct >= 60
-                ? "text-[var(--color-felt-bright)]"
-                : scouting.vsUs.winPct <= 40
-                  ? "text-[var(--color-pop-bright)]"
-                  : undefined
-            }
-          />
-        )}
-        {scouting && (
-          <Stat
-            label="Individual matches vs them"
-            value={`${scouting.individualWinPctVsUs}%`}
-            sub="our players' win % against theirs"
-          />
-        )}
-        {oppTeam && (
-          <Stat
-            label={`${oppTeam.name} this session`}
-            value={`${oppTeam.record.wins}–${oppTeam.record.losses}${oppTeam.record.ties ? `–${oppTeam.record.ties}` : ""}`}
-            sub={
-              oppTeam.record.rank
-                ? `#${oppTeam.record.rank} in division${oppTeam.record.points ? ` · ${oppTeam.record.points} pts` : ""}`
-                : "their record"
-            }
-          />
-        )}
-      </section>
+      {(scouting || oppTeam) && (
+        <StatRail
+          size="md"
+          stats={[
+            ...(scouting
+              ? [
+                  {
+                    label: "Our record vs them",
+                    value: `${scouting.vsUs.wins}–${scouting.vsUs.losses}${scouting.vsUs.ties ? `–${scouting.vsUs.ties}` : ""}`,
+                    sub: `${scouting.vsUs.winPct}% across all sessions`,
+                    tone:
+                      scouting.vsUs.winPct >= 60
+                        ? ("win" as const)
+                        : scouting.vsUs.winPct <= 40
+                          ? ("loss" as const)
+                          : undefined,
+                  },
+                  {
+                    label: "Individual matches vs them",
+                    value: `${scouting.individualWinPctVsUs}%`,
+                    sub: "our players' win % against theirs",
+                  },
+                ]
+              : []),
+            ...(oppTeam
+              ? [
+                  {
+                    label: `${oppTeam.name} this session`,
+                    value: `${oppTeam.record.wins}–${oppTeam.record.losses}${oppTeam.record.ties ? `–${oppTeam.record.ties}` : ""}`,
+                    sub: oppTeam.record.rank
+                      ? `#${oppTeam.record.rank} in division${oppTeam.record.points ? ` · ${oppTeam.record.points} pts` : ""}`
+                      : "their record",
+                  },
+                ]
+              : []),
+          ]}
+        />
+      )}
     </div>
   );
 }
@@ -373,24 +438,24 @@ function RosterCheck({
 }) {
   const editable = !!onChange;
   return (
-    <section className="surface p-5">
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+    <section className="pm-glass p-5 sm:p-6">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h3 className={EYEBROW}>
           {editable ? "Who's playing tonight?" : "Lineup tonight"}
         </h3>
         {editable && (
-          <div className="flex gap-3 text-[10px] uppercase tracking-[0.2em]">
+          <div className="flex gap-3 text-[10px] font-semibold uppercase tracking-[0.2em]">
             <button
               type="button"
               onClick={() => onChange!(new Set(roster.map((p) => p.id)))}
-              className="text-[var(--color-brass)] hover:underline"
+              className="text-[var(--color-brass)] hover:text-[var(--color-brass-bright)]"
             >
               All in
             </button>
             <button
               type="button"
               onClick={() => onChange!(new Set())}
-              className="text-[var(--fg-dim)] hover:text-[var(--fg)]"
+              className="text-[var(--color-cream)]/50 hover:text-[var(--color-cream)]"
             >
               Clear
             </button>
@@ -417,15 +482,21 @@ function RosterCheck({
                   : undefined
               }
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-sm font-medium transition-colors",
+                "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium ring-1 ring-inset transition-all",
                 on
-                  ? "border-[var(--color-brass)] bg-[var(--color-brass)]/15 text-[var(--fg)]"
-                  : "border-[var(--border)] bg-[var(--bg-soft)]/30 text-[var(--fg-dim)] hover:border-[var(--border)] hover:text-[var(--fg)]",
+                  ? "bg-[var(--color-brass)]/[0.14] text-[var(--color-cream)] ring-[var(--color-brass)]/70 shadow-[0_0_18px_-6px_rgba(201,162,74,0.6)]"
+                  : "bg-black/25 text-[var(--color-cream)]/45 ring-white/10 hover:text-[var(--color-cream)] hover:ring-white/20",
               )}
             >
+              {on && (
+                <span
+                  aria-hidden
+                  className="h-1.5 w-1.5 rounded-full bg-[var(--color-brass-bright)]"
+                />
+              )}
               <span>{p.name}</span>
               {p.skillLevel != null && (
-                <span className="text-[10px] text-[var(--fg-dim)]">
+                <span className="text-[10px] font-semibold tabular-nums text-[var(--color-brass)]/80">
                   SL{p.skillLevel}
                 </span>
               )}
@@ -434,12 +505,27 @@ function RosterCheck({
         })}
       </div>
       {editable && (
-        <p className="mt-3 text-[10px] text-[var(--fg-dim)]">
+        <p className="mt-3 text-[11px] text-[var(--color-cream)]/45">
           Tap to toggle. The suggested lineup recomputes from these picks.
         </p>
       )}
     </section>
   );
+}
+
+function probTone(p: number): string {
+  return p >= 60
+    ? "text-[var(--color-felt-text)]"
+    : p >= 40
+      ? "text-[var(--color-brass-bright)]"
+      : "text-[var(--color-pop-bright)]";
+}
+function probBar(p: number): string {
+  return p >= 60
+    ? "bg-gradient-to-r from-[var(--color-felt)] to-[var(--color-felt-bright)]"
+    : p >= 40
+      ? "bg-gradient-to-r from-[var(--color-brass-dim)] to-[var(--color-brass-bright)]"
+      : "bg-gradient-to-r from-[var(--color-pop)] to-[var(--color-pop-bright)]";
 }
 
 function LineupCard({
@@ -450,44 +536,46 @@ function LineupCard({
   oppName: string;
 }) {
   const wonProb = lineup.nightWinProbability;
-  const tone =
-    wonProb >= 60
-      ? "text-[var(--color-felt-bright)]"
-      : wonProb >= 40
-        ? "text-[var(--color-brass-bright)]"
-        : "text-[var(--color-pop-bright)]";
   return (
     <div className="surface overflow-hidden">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--border)] bg-[var(--bg-soft)]/60 px-5 py-3">
+      <div className="relative flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-cream)]/[0.08] bg-black/25 px-5 py-5 sm:px-6">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/50">
             Predicted score
           </p>
-          <p className="text-base tabular-nums">
-            <span className="font-bold text-[var(--color-felt-bright)]">
-              {lineup.ourPoints}
-            </span>
-            <span className="mx-1 text-[var(--fg-dim)]">–</span>
-            <span className="font-bold text-[var(--color-pop-bright)]">
+          <p className={`${DISPLAY} mt-1 text-4xl leading-none tabular-nums sm:text-5xl`}>
+            <span className="text-[var(--color-felt-text)]">{lineup.ourPoints}</span>
+            <span className="mx-1.5 text-[var(--color-cream)]/25">–</span>
+            <span className="text-[var(--color-pop-bright)]">
               {lineup.theirPoints}
             </span>
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/50">
             Win probability
           </p>
           <p
             className={cn(
-              "font-[family-name:var(--font-display)] text-3xl tabular-nums",
-              tone,
+              DISPLAY,
+              "mt-1 text-5xl leading-none tabular-nums sm:text-6xl",
+              wonProb >= 60 ? "pm-foil" : probTone(wonProb),
             )}
           >
             {wonProb}%
           </p>
         </div>
+        <span
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-[2px] bg-white/[0.04]"
+        >
+          <span
+            className={cn("block h-full", probBar(wonProb))}
+            style={{ width: `${Math.max(0, Math.min(100, wonProb))}%` }}
+          />
+        </span>
       </div>
-      <ol className="divide-y divide-[var(--border)]">
+      <ol className="divide-y divide-[var(--color-cream)]/[0.06]">
         {lineup.slots.map((s) => (
           <SlotRow key={s.position} slot={s} oppName={oppName} />
         ))}
@@ -504,55 +592,49 @@ function SlotRow({
   oppName: string;
 }) {
   const our = slot.ourPick;
-  const tone = our
-    ? our.expectedWinProb >= 60
-      ? "text-[var(--color-felt-bright)]"
-      : our.expectedWinProb >= 40
-        ? "text-[var(--color-brass-bright)]"
-        : "text-[var(--color-pop-bright)]"
-    : "text-[var(--fg-dim)]";
+  const tone = our ? probTone(our.expectedWinProb) : "text-[var(--color-cream)]/40";
   const topOpp = slot.opponentLikelihoods[0];
   return (
-    <li className="grid gap-3 px-5 py-4 sm:grid-cols-[auto_1fr_auto] sm:items-center">
-      <div className="flex items-baseline gap-2 sm:flex-col sm:items-start sm:gap-0">
-        <span className="font-[family-name:var(--font-display)] text-2xl tracking-wide text-[var(--color-brass-bright)]">
+    <li className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 transition-colors hover:bg-white/[0.02] sm:grid-cols-[4.5rem_minmax(0,1fr)_auto] sm:gap-4 sm:px-6">
+      <div className="flex flex-col items-start">
+        <span className={`${DISPLAY} text-3xl leading-none text-[var(--color-brass-bright)]`}>
           M{slot.position}
         </span>
-        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+        <span className="mt-1 text-[8px] font-semibold uppercase leading-tight tracking-[0.18em] text-[var(--color-cream)]/40 sm:text-[9px]">
           {slot.weThrowFirst ? "we put up" : "they put up"}
         </span>
       </div>
       <div className="min-w-0">
         {our ? (
           <>
-            <div className="flex flex-wrap items-baseline gap-2">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <Link
                 href={`/roster/${our.playerId}`}
-                className="font-[family-name:var(--font-display)] text-lg tracking-wide hover:text-[var(--color-brass)]"
+                className={`${DISPLAY} text-xl leading-tight text-[var(--color-cream)] transition-colors hover:text-[var(--color-brass-bright)]`}
               >
                 {our.playerName}
               </Link>
               {our.skillLevel != null && (
-                <span className="text-[10px] text-[var(--fg-dim)]">
+                <span className="text-[10px] font-semibold text-[var(--color-brass)]/80">
                   SL{our.skillLevel}
                 </span>
               )}
-              <span className="text-[10px] text-[var(--fg-dim)]">vs</span>
+              <span className="pm-serif text-sm text-[var(--color-cream)]/40">vs</span>
               {topOpp ? (
-                <span className="text-sm text-[var(--fg)]">
+                <span className="text-sm text-[var(--color-cream)]/75">
                   {topOpp.name}
                   {topOpp.sl != null && (
-                    <span className="ml-1 text-[10px] text-[var(--fg-dim)]">
+                    <span className="ml-1 text-[10px] text-[var(--color-cream)]/45">
                       SL{topOpp.sl}
                     </span>
                   )}
                 </span>
               ) : (
-                <span className="text-sm text-[var(--fg-dim)]">{oppName}</span>
+                <span className="text-sm text-[var(--color-cream)]/50">{oppName}</span>
               )}
             </div>
             {slot.opponentLikelihoods.length > 1 && (
-              <p className="mt-1 text-[10px] text-[var(--fg-dim)]">
+              <p className="mt-1 text-[11px] leading-snug text-[var(--color-cream)]/40">
                 Other likely:{" "}
                 {slot.opponentLikelihoods
                   .slice(1, 3)
@@ -562,46 +644,27 @@ function SlotRow({
             )}
           </>
         ) : (
-          <p className="text-sm text-[var(--fg-dim)]">
+          <p className="text-sm text-[var(--color-cream)]/50">
             {slot.blocked
               ? "No feasible pick — 23-rule budget locked."
               : "—"}
           </p>
         )}
       </div>
-      <div className={cn("text-right text-2xl font-bold tabular-nums", tone)}>
-        {our ? `${our.expectedWinProb}%` : "—"}
+      <div className="flex flex-col items-end gap-1.5">
+        <span className={cn(DISPLAY, "text-3xl leading-none tabular-nums", tone)}>
+          {our ? `${our.expectedWinProb}%` : "—"}
+        </span>
+        {our && (
+          <span aria-hidden className="h-1 w-14 overflow-hidden rounded-full bg-white/[0.06]">
+            <span
+              className={cn("block h-full rounded-full", probBar(our.expectedWinProb))}
+              style={{ width: `${Math.max(0, Math.min(100, our.expectedWinProb))}%` }}
+            />
+          </span>
+        )}
       </div>
     </li>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  sub,
-  tone,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  tone?: string;
-}) {
-  return (
-    <div className="surface p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
-        {label}
-      </p>
-      <p
-        className={cn(
-          "mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums",
-          tone ?? "text-[var(--color-cream)]",
-        )}
-      >
-        {value}
-      </p>
-      {sub && <p className="text-[10px] text-[var(--fg-dim)]">{sub}</p>}
-    </div>
   );
 }
 

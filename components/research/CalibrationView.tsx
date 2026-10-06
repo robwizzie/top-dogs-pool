@@ -98,7 +98,7 @@ export function CalibrationView({
           <div className="max-h-96 overflow-y-auto">
             <table className="w-full text-xs">
               <thead className="sticky top-0 bg-[var(--bg-card)]">
-                <tr className="border-b border-[var(--border)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
+                <tr className="border-b border-[var(--color-cream)]/[0.08] bg-black/25 text-left text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-brass)]/85 [&>th]:whitespace-nowrap">
                   <th className="px-3 py-2">Date</th>
                   <th className="px-3 py-2">Player</th>
                   <th className="px-3 py-2">Opp</th>
@@ -113,7 +113,7 @@ export function CalibrationView({
                   return (
                     <tr
                       key={`${p.matchId}-${p.playerId}-${i}`}
-                      className="border-b border-[var(--border)] last:border-0"
+                      className="border-b border-[var(--color-cream)]/[0.06] transition-colors last:border-0 hover:bg-white/[0.025]"
                     >
                       <td className="px-3 py-2 text-[var(--fg-dim)] tabular-nums">
                         {new Date(p.date).toLocaleDateString("en-US", {

@@ -1,6 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/ui/Section";
+import { PoolBall } from "@/components/brand/PoolBall";
+import { PointerSheen } from "@/components/home/PointerSheen";
+import {
+  Chip,
+  ChipRow,
+  DISPLAY,
+  OutcomePill,
+  SectionHead,
+  StatRail,
+  TABLE_WRAP,
+  TH,
+  THEAD_ROW,
+  TR,
+  TR_OURS,
+} from "@/components/research/ScoutUI";
 import {
   getMatch,
   getOpponentTeam,
@@ -233,101 +249,108 @@ export default async function OpponentTeamPage({ params }: Props) {
     (m): m is NonNullable<typeof m> => m !== null,
   );
 
+  const recordStr = `${team.record.wins}–${team.record.losses}${team.record.ties ? `–${team.record.ties}` : ""}`;
+
   return (
     <>
       <PageHeader
         eyebrow={team.division ?? "Opposing team"}
         title={team.name}
         subtitle={
-          <span className="inline-flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[var(--fg-dim)]">
-            <span>
-              {team.record.wins}–{team.record.losses}
-              {team.record.ties ? `–${team.record.ties}` : ""}
+          team.sessionName || team.homeLocation ? (
+            <span className="inline-flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span className="pm-serif text-[1.15em] text-[var(--color-brass-bright)]/90">
+                Scouting report
+              </span>
+              {team.sessionName && <span>· {team.sessionName}</span>}
+              {team.homeLocation && <span>· {team.homeLocation}</span>}
             </span>
-            {team.record.rank ? (
-              <span>#{team.record.rank} in division</span>
-            ) : null}
-            {team.record.points != null && (
-              <span>{team.record.points} pts</span>
-            )}
-            {team.sessionName && <span>· {team.sessionName}</span>}
-            {team.homeLocation && <span>· {team.homeLocation}</span>}
-          </span>
+          ) : undefined
         }
-      />
-
-      <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:px-6 lg:px-8">
-        {/* ===== Quick stat cards ===== */}
-        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat
-            label="Roster avg SL"
-            value={avgSL ? avgSL.toFixed(1) : "—"}
-            sub={`${rosterWithSL.length} player${rosterWithSL.length === 1 ? "" : "s"}`}
-          />
-          <Stat
-            label="Roster career"
-            value={rosterWinPct != null ? `${rosterWinPct}%` : "—"}
-            sub={`${totalRosterWins}–${totalRosterMatches - totalRosterWins} across all sessions`}
-            tone={
-              rosterWinPct == null
-                ? undefined
-                : rosterWinPct >= 55
-                  ? "text-[var(--color-pop-bright)]"
-                  : rosterWinPct <= 45
-                    ? "text-[var(--color-felt-bright)]"
-                    : undefined
-            }
-          />
-          <Stat
-            label="Avg points / week"
-            value={nMargins > 0 ? `${avgFor}` : "—"}
-            sub={
-              nMargins > 0
-                ? `vs ${avgAgainst} allowed (${avgFor - avgAgainst >= 0 ? "+" : ""}${(avgFor - avgAgainst).toFixed(1)} margin)`
-                : "no completed matches"
-            }
-            tone={
-              nMargins > 0 && avgFor > avgAgainst
-                ? "text-[var(--color-pop-bright)]"
-                : nMargins > 0 && avgFor < avgAgainst
-                  ? "text-[var(--color-felt-bright)]"
-                  : undefined
-            }
-          />
-          {streak && streak.count >= 2 ? (
-            <Stat
-              label="Current streak"
-              value={`${streak.count}${streak.kind}`}
-              sub={
-                streak.kind === "W"
-                  ? "wins in a row 🔥"
-                  : streak.kind === "L"
-                    ? "losses in a row ❄️"
-                    : "ties in a row"
-              }
-              tone={
-                streak.kind === "W"
-                  ? "text-[var(--color-pop-bright)]"
-                  : streak.kind === "L"
-                    ? "text-[var(--color-felt-bright)]"
-                    : undefined
-              }
-            />
-          ) : (
-            <Stat
-              label="Hot / cold roster"
-              value={`${hotCount} 🔥 / ${coldCount} ❄️`}
-              sub={`based on ≥5-match career win %`}
-            />
+      >
+        <ChipRow>
+          <Chip tone="brass" className="font-semibold tabular-nums">
+            {recordStr}
+          </Chip>
+          {team.record.rank ? (
+            <Chip>#{team.record.rank} in division</Chip>
+          ) : null}
+          {team.record.points != null && (
+            <Chip className="tabular-nums">{team.record.points} pts</Chip>
           )}
-        </section>
+        </ChipRow>
+      </PageHeader>
+      <PointerSheen />
+
+      <div className="mx-auto max-w-7xl space-y-14 px-4 pb-16 pt-4 sm:px-6 sm:pt-6 lg:px-8">
+        {/* ===== Quick stats — on the rail ===== */}
+        <StatRail
+          className="fade-in-up mt-2"
+          stats={[
+            {
+              label: "Roster avg SL",
+              value: avgSL ? avgSL.toFixed(1) : "—",
+              sub: `${rosterWithSL.length} player${rosterWithSL.length === 1 ? "" : "s"}`,
+            },
+            {
+              label: "Roster career",
+              value: rosterWinPct != null ? `${rosterWinPct}%` : "—",
+              sub: `${totalRosterWins}–${totalRosterMatches - totalRosterWins} across all sessions`,
+              tone:
+                rosterWinPct == null
+                  ? undefined
+                  : rosterWinPct >= 55
+                    ? "loss"
+                    : rosterWinPct <= 45
+                      ? "win"
+                      : undefined,
+            },
+            {
+              label: "Avg points / week",
+              value: nMargins > 0 ? `${avgFor}` : "—",
+              sub:
+                nMargins > 0
+                  ? `vs ${avgAgainst} allowed (${avgFor - avgAgainst >= 0 ? "+" : ""}${(avgFor - avgAgainst).toFixed(1)} margin)`
+                  : "no completed matches",
+              tone:
+                nMargins > 0 && avgFor > avgAgainst
+                  ? "loss"
+                  : nMargins > 0 && avgFor < avgAgainst
+                    ? "win"
+                    : undefined,
+            },
+            streak && streak.count >= 2
+              ? {
+                  label: "Current streak",
+                  value: `${streak.count}${streak.kind}`,
+                  sub:
+                    streak.kind === "W"
+                      ? "wins in a row 🔥"
+                      : streak.kind === "L"
+                        ? "losses in a row ❄️"
+                        : "ties in a row",
+                  tone:
+                    streak.kind === "W"
+                      ? "loss"
+                      : streak.kind === "L"
+                        ? "win"
+                        : undefined,
+                }
+              : {
+                  label: "Hot / cold roster",
+                  value: `${hotCount} 🔥 / ${coldCount} ❄️`,
+                  sub: `based on ≥5-match career win %`,
+                },
+          ]}
+        />
 
         {/* ===== Top scorer + key matches ===== */}
         {(topScorer || bestWin || worstLoss) && (
-          <section className="grid gap-3 lg:grid-cols-3">
+          <section className="grid gap-4 lg:grid-cols-3">
             {topScorer && (
               <Highlight
-                eyebrow="🏆 Top scorer"
+                icon="🏆"
+                eyebrow="Top scorer"
                 title={topScorer.name}
                 href={`/players/${topScorer.id}`}
                 lines={[
@@ -339,11 +362,13 @@ export default async function OpponentTeamPage({ params }: Props) {
                     : "",
                 ].filter(Boolean)}
                 tone="brass"
+                index={0}
               />
             )}
             {bestWin && (
               <Highlight
-                eyebrow="💥 Biggest win"
+                icon="💥"
+                eyebrow="Biggest win"
                 title={`+${bestWin.margin} vs ${bestWin.match.opponent}`}
                 href={
                   team.matchesVsUs.includes(bestWin.match.id)
@@ -355,11 +380,13 @@ export default async function OpponentTeamPage({ params }: Props) {
                   formatDate(bestWin.match.date),
                 ]}
                 tone="pop"
+                index={1}
               />
             )}
             {worstLoss && (
               <Highlight
-                eyebrow="🥶 Worst loss"
+                icon="🥶"
+                eyebrow="Worst loss"
                 title={`${worstLoss.margin} vs ${worstLoss.match.opponent}`}
                 href={
                   team.matchesVsUs.includes(worstLoss.match.id)
@@ -371,6 +398,7 @@ export default async function OpponentTeamPage({ params }: Props) {
                   formatDate(worstLoss.match.date),
                 ]}
                 tone="felt"
+                index={2}
               />
             )}
           </section>
@@ -378,20 +406,21 @@ export default async function OpponentTeamPage({ params }: Props) {
 
         {/* ===== Roster ===== */}
         <section>
-          <div className="mb-4 flex items-baseline justify-between gap-2">
-            <h2 className="font-[family-name:var(--font-display)] text-3xl tracking-wide">
-              Roster
-            </h2>
-            <p className="text-xs text-[var(--fg-dim)]">
-              Sorted by SL desc · click any player for full session history
-            </p>
-          </div>
+          <SectionHead
+            eyebrow="The roster"
+            title="Who they bring"
+            action={
+              <p className="hidden text-[11px] text-[var(--color-cream)]/45 md:block">
+                Sorted by SL desc · click any player for full session history
+              </p>
+            }
+          />
           {rosterEnriched.length === 0 ? (
-            <p className="surface p-6 text-sm text-[var(--fg-dim)]">
+            <p className="surface p-6 text-sm text-[var(--color-cream)]/55">
               No roster data yet.
             </p>
           ) : (
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="pm-reveal grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {[...rosterEnriched]
                 .sort(
                   (a, b) =>
@@ -409,15 +438,19 @@ export default async function OpponentTeamPage({ params }: Props) {
                 ))}
             </ul>
           )}
+          <p className="mt-3 text-[11px] text-[var(--color-cream)]/45 md:hidden">
+            Sorted by SL desc · tap any player for full session history
+          </p>
         </section>
 
         {/* ===== Matches vs us — quick recap ===== */}
         {validMatchesVsUs.length > 0 && (
           <section>
-            <h2 className="mb-4 font-[family-name:var(--font-display)] text-3xl tracking-wide">
-              When we played them ({validMatchesVsUs.length})
-            </h2>
-            <ul className="surface divide-y divide-[var(--border)]">
+            <SectionHead
+              eyebrow="Head to head"
+              title={`When we played them (${validMatchesVsUs.length})`}
+            />
+            <ul className="surface pm-reveal overflow-hidden">
               {validMatchesVsUs.map((m) => {
                 const won =
                   typeof m.teamScore === "number" &&
@@ -432,48 +465,38 @@ export default async function OpponentTeamPage({ params }: Props) {
                   typeof m.opponentScore === "number" &&
                   m.teamScore === m.opponentScore;
                 return (
-                  <li
-                    key={m.id}
-                    className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-[var(--bg-soft)]/40"
-                  >
+                  <li key={m.id} className={cn(TR, "relative")}>
                     <Link
                       href={`/matches/${m.id}`}
-                      className="flex flex-1 flex-wrap items-baseline gap-2"
+                      className="group flex items-center gap-3 px-4 py-3.5 sm:gap-4 sm:px-6"
                     >
-                      <span
-                        className={cn(
-                          "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em]",
-                          won &&
-                            "bg-[var(--color-felt)]/20 text-[var(--color-felt-bright)]",
-                          lost &&
-                            "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]",
-                          tied &&
-                            "bg-[var(--color-brass)]/20 text-[var(--color-brass-bright)]",
-                        )}
-                      >
-                        {won ? "W" : lost ? "L" : tied ? "T" : "—"}
-                      </span>
-                      <span className="text-sm font-medium">
-                        {formatDate(m.date)}
-                      </span>
-                      {m.location && (
-                        <span className="text-xs text-[var(--fg-dim)]">
-                          @ {m.location}
+                      <OutcomePill outcome={won ? "W" : lost ? "L" : tied ? "T" : "—"} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold text-[var(--color-cream)]">
+                          {formatDate(m.date)}
                         </span>
-                      )}
-                    </Link>
-                    <Link
-                      href={`/matches/${m.id}`}
-                      className="rounded px-1 text-sm tabular-nums transition-colors hover:bg-[var(--bg-soft)]"
-                      title="View this match"
-                    >
-                      <span className="text-[var(--color-felt-bright)]">
-                        {m.teamScore ?? "—"}
+                        {m.location && (
+                          <span className="block truncate text-xs text-[var(--color-cream)]/45">
+                            @ {m.location}
+                          </span>
+                        )}
                       </span>
-                      <span className="text-[var(--fg-dim)]"> – </span>
-                      <span className="text-[var(--color-pop-bright)]">
-                        {m.opponentScore ?? "—"}
+                      <span
+                        className={`${DISPLAY} shrink-0 text-2xl leading-none tabular-nums sm:text-3xl`}
+                        title="View this match"
+                      >
+                        <span className="text-[var(--color-felt-text)]">
+                          {m.teamScore ?? "—"}
+                        </span>
+                        <span className="mx-1 text-[var(--color-cream)]/25">–</span>
+                        <span className="text-[var(--color-pop-bright)]">
+                          {m.opponentScore ?? "—"}
+                        </span>
                       </span>
+                      <ArrowRight
+                        size={16}
+                        className="shrink-0 text-[var(--color-brass)]/60 transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--color-brass-bright)]"
+                      />
                     </Link>
                   </li>
                 );
@@ -485,21 +508,21 @@ export default async function OpponentTeamPage({ params }: Props) {
         {/* ===== Common opponents ===== */}
         {commonOpponents.length > 0 && (
           <section>
-            <h2 className="mb-1 font-[family-name:var(--font-display)] text-3xl tracking-wide">
-              Common opponents
-            </h2>
-            <p className="mb-4 text-xs text-[var(--fg-dim)]">
-              Teams both we and {team.name} have played this session — handy
-              for transitive read on relative strength.
-            </p>
-            <div className="surface overflow-x-auto">
-              <table className="w-full text-sm">
+            <SectionHead
+              eyebrow="Transitive read"
+              title="Common opponents"
+              sub={`Teams both we and ${team.name} have played this session — handy for transitive read on relative strength.`}
+            />
+            <div className={cn(TABLE_WRAP, "pm-reveal")}>
+              <table className="w-full min-w-[34rem] text-sm">
                 <thead>
-                  <tr className="border-b border-[var(--border)] bg-[var(--bg-soft)] text-left text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--fg-dim)]">
-                    <th className="px-4 py-3">Opponent</th>
-                    <th className="px-4 py-3 text-right">{team.name}</th>
-                    <th className="px-4 py-3 text-right">{ourTeamName}</th>
-                    <th className="px-4 py-3 text-right">Δ</th>
+                  <tr className={THEAD_ROW}>
+                    <th className={TH}>Opponent</th>
+                    <th className={cn(TH, "text-right")}>{team.name}</th>
+                    <th className={cn(TH, "text-right text-[var(--color-brass-bright)]")}>
+                      {ourTeamName}
+                    </th>
+                    <th className={cn(TH, "text-right")}>Δ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -519,20 +542,17 @@ export default async function OpponentTeamPage({ params }: Props) {
                     const delta = ourNum - theirNum;
                     const deltaTone =
                       delta > 0
-                        ? "text-[var(--color-felt-bright)]"
+                        ? "text-[var(--color-felt-text)]"
                         : delta < 0
                           ? "text-[var(--color-pop-bright)]"
-                          : "text-[var(--fg-dim)]";
+                          : "text-[var(--color-cream)]/45";
                     return (
-                      <tr
-                        key={`${row.opponent}-${i}`}
-                        className="border-b border-[var(--border)] last:border-0"
-                      >
-                        <td className="px-4 py-3 font-medium">
+                      <tr key={`${row.opponent}-${i}`} className={TR}>
+                        <td className="px-4 py-3.5 font-medium text-[var(--color-cream)]">
                           {row.oppTeamId ? (
                             <Link
                               href={`/opponents/${row.oppTeamId}`}
-                              className="hover:text-[var(--color-brass)]"
+                              className="transition-colors hover:text-[var(--color-brass-bright)]"
                             >
                               {row.opponent}
                             </Link>
@@ -540,15 +560,15 @@ export default async function OpponentTeamPage({ params }: Props) {
                             row.opponent
                           )}
                         </td>
-                        <td className="px-4 py-3 text-right text-xs tabular-nums">
+                        <td className="px-4 py-3.5 text-right">
                           <ResultPill r={row.theirResult} />
                         </td>
-                        <td className="px-4 py-3 text-right text-xs tabular-nums">
+                        <td className="bg-[var(--color-brass)]/[0.04] px-4 py-3.5 text-right">
                           <ResultPill r={row.ourResult} />
                         </td>
                         <td
                           className={cn(
-                            "px-4 py-3 text-right text-xs font-semibold tabular-nums",
+                            "whitespace-nowrap px-4 py-3.5 text-right text-xs font-semibold",
                             deltaTone,
                           )}
                         >
@@ -570,10 +590,8 @@ export default async function OpponentTeamPage({ params }: Props) {
         {/* ===== Upcoming ===== */}
         {upcoming.length > 0 && (
           <section>
-            <h2 className="mb-4 font-[family-name:var(--font-display)] text-3xl tracking-wide">
-              Upcoming ({upcoming.length})
-            </h2>
-            <ul className="surface divide-y divide-[var(--border)]">
+            <SectionHead eyebrow="On deck" title={`Upcoming (${upcoming.length})`} />
+            <ul className="surface pm-reveal overflow-hidden">
               {upcoming.map((m) => {
                 const linkedOpp = oppTeamByName.get(
                   m.opponent.trim().toLowerCase(),
@@ -581,34 +599,33 @@ export default async function OpponentTeamPage({ params }: Props) {
                 return (
                   <li
                     key={m.id}
-                    className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3 transition-colors hover:bg-[var(--bg-soft)]/40"
+                    className={cn(TR, "flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-3.5 sm:px-6")}
                   >
                     <Link
                       href={`/matches/${m.id}?team=${team.id}`}
-                      className="flex flex-1 flex-wrap items-baseline gap-2"
+                      className="flex min-w-[min(100%,15rem)] flex-1 items-baseline gap-3"
                     >
-                      <span className="text-xs uppercase tracking-[0.2em] text-[var(--fg-dim)]">
-                        Wk{m.week ?? "?"}
+                      <WeekTag week={m.week} />
+                      <span className="min-w-0 truncate text-[var(--color-cream)]/85">
+                        <span className="pm-serif text-[var(--color-cream)]/45">vs</span>{" "}
+                        <span className="font-semibold text-[var(--color-cream)]">{m.opponent}</span>
+                        {m.location && (
+                          <span className="ml-2 text-xs text-[var(--color-cream)]/40">
+                            @ {m.location}
+                          </span>
+                        )}
                       </span>
-                      <span>
-                        vs <span className="font-medium">{m.opponent}</span>
-                      </span>
-                      {m.location && (
-                        <span className="text-xs text-[var(--fg-dim)]">
-                          @ {m.location}
-                        </span>
-                      )}
                     </Link>
-                    <span className="flex items-baseline gap-2 text-xs text-[var(--fg-dim)]">
+                    <span className="flex items-baseline gap-3 text-xs text-[var(--color-cream)]/50">
                       {linkedOpp && (
                         <Link
                           href={`/opponents/${linkedOpp.id}`}
-                          className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-brass)] hover:underline"
+                          className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)] hover:text-[var(--color-brass-bright)]"
                         >
                           team →
                         </Link>
                       )}
-                      <span>{formatDate(m.date)}</span>
+                      <span className="tabular-nums">{formatDate(m.date)}</span>
                     </span>
                   </li>
                 );
@@ -620,10 +637,11 @@ export default async function OpponentTeamPage({ params }: Props) {
         {/* ===== Full schedule ===== */}
         {completed.length > 0 && (
           <section>
-            <h2 className="mb-4 font-[family-name:var(--font-display)] text-3xl tracking-wide">
-              Schedule ({completed.length} completed)
-            </h2>
-            <ul className="surface divide-y divide-[var(--border)]">
+            <SectionHead
+              eyebrow="Their season"
+              title={`Schedule (${completed.length} completed)`}
+            />
+            <ul className="surface pm-reveal overflow-hidden">
               {completed.map((m) => {
                 const won =
                   typeof m.teamScore === "number" &&
@@ -651,43 +669,53 @@ export default async function OpponentTeamPage({ params }: Props) {
                 return (
                   <li
                     key={m.id}
-                    className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-[var(--bg-soft)]/40"
+                    className={cn(
+                      TR,
+                      "flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 px-4 py-3 sm:px-6",
+                      isVsUs && TR_OURS,
+                    )}
                   >
                     <Link
                       href={matchHref}
-                      className="flex flex-1 flex-wrap items-baseline gap-2"
+                      className="flex min-w-[min(100%,15rem)] flex-1 items-center gap-3"
                     >
+                      {/* Their perspective: their W reads as bad news (red). */}
                       <span
                         className={cn(
-                          "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em]",
+                          DISPLAY,
+                          "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full pt-px text-base leading-none ring-1 ring-inset",
                           won &&
-                            "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]",
+                            "bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)] ring-[var(--color-pop-bright)]/35",
                           lost &&
-                            "bg-[var(--color-felt)]/20 text-[var(--color-felt-bright)]",
+                            "bg-[var(--color-felt-bright)]/15 text-[var(--color-felt-text)] ring-[var(--color-felt-bright)]/40",
                           tied &&
-                            "bg-[var(--color-brass)]/20 text-[var(--color-brass-bright)]",
+                            "bg-[var(--color-brass)]/15 text-[var(--color-brass-bright)] ring-[var(--color-brass)]/40",
+                          !won && !lost && !tied && "bg-white/5 text-[var(--color-cream)]/45 ring-white/10",
                         )}
                       >
                         {won ? "W" : lost ? "L" : tied ? "T" : "—"}
                       </span>
+                      <WeekTag week={m.week} />
+                      <span className="min-w-0 truncate text-[var(--color-cream)]/85">
+                        <span className="pm-serif text-[var(--color-cream)]/45">vs</span>{" "}
+                        <span className="font-semibold text-[var(--color-cream)]">{m.opponent}</span>
+                      </span>
                       {isVsUs && (
-                        <span className="rounded-full bg-[var(--color-brass)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]">
+                        <span className="shrink-0 rounded-full bg-[var(--color-brass)]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-brass-bright)] ring-1 ring-inset ring-[var(--color-brass)]/35">
                           vs us
                         </span>
                       )}
-                      <span className="text-xs uppercase tracking-[0.2em] text-[var(--fg-dim)]">
-                        Wk{m.week ?? "?"}
-                      </span>
-                      <span>vs <span className="font-medium">{m.opponent}</span></span>
                     </Link>
-                    <span className="flex items-baseline gap-3 text-sm tabular-nums">
+                    <span className="ml-10 flex items-baseline gap-3 sm:ml-0">
                       <Link
                         href={matchHref}
                         className={cn(
-                          "rounded px-1 transition-colors hover:bg-[var(--bg-soft)]",
-                          won && "font-semibold text-[var(--color-pop-bright)]",
-                          lost && "font-semibold text-[var(--color-felt-bright)]",
-                          tied && "font-semibold text-[var(--color-brass-bright)]",
+                          DISPLAY,
+                          "text-xl leading-none tabular-nums transition-opacity hover:opacity-80",
+                          won && "text-[var(--color-pop-bright)]",
+                          lost && "text-[var(--color-felt-text)]",
+                          tied && "text-[var(--color-brass-bright)]",
+                          !won && !lost && !tied && "text-[var(--color-cream)]/40",
                         )}
                         title="View this match"
                       >
@@ -696,13 +724,13 @@ export default async function OpponentTeamPage({ params }: Props) {
                       {linkedOpp && (
                         <Link
                           href={`/opponents/${linkedOpp.id}`}
-                          className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-brass)] hover:underline"
+                          className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-brass)] hover:text-[var(--color-brass-bright)]"
                           title={`View ${m.opponent}`}
                         >
                           team →
                         </Link>
                       )}
-                      <span className="text-xs text-[var(--fg-dim)]">
+                      <span className="w-[5.5rem] text-right text-xs tabular-nums text-[var(--color-cream)]/45">
                         {formatDate(m.date)}
                       </span>
                     </span>
@@ -713,14 +741,14 @@ export default async function OpponentTeamPage({ params }: Props) {
           </section>
         )}
 
-        <p className="text-xs text-[var(--fg-dim)]">
+        <p className="flex flex-wrap items-center gap-x-2 border-t border-[var(--color-cream)]/[0.07] pt-5 text-xs text-[var(--color-cream)]/45">
           Last fetched {formatDate(team.lastFetched)} ·{" "}
           {team.url && (
             <a
               href={team.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[var(--color-brass)] hover:underline"
+              className="text-[var(--color-brass)] hover:text-[var(--color-brass-bright)] hover:underline"
             >
               View on APA league portal →
             </a>
@@ -733,71 +761,78 @@ export default async function OpponentTeamPage({ params }: Props) {
 
 /* ---------- helpers ---------- */
 
-function Stat({
-  label,
-  value,
-  sub,
-  tone,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  tone?: string;
-}) {
+function WeekTag({ week }: { week?: number }) {
   return (
-    <div className="surface p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
-        {label}
-      </p>
-      <p
-        className={cn(
-          "mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums",
-          tone ?? "text-[var(--color-cream)]",
-        )}
-      >
-        {value}
-      </p>
-      {sub && <p className="text-[10px] text-[var(--fg-dim)]">{sub}</p>}
-    </div>
+    <span className="w-9 shrink-0 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/40 tabular-nums">
+      Wk{week ?? "?"}
+    </span>
   );
 }
 
 function Highlight({
+  icon,
   eyebrow,
   title,
   href,
   lines,
   tone,
+  index = 0,
 }: {
+  icon: string;
   eyebrow: string;
   title: string;
   href: string | null;
   lines: string[];
   tone: "brass" | "pop" | "felt";
+  index?: number;
 }) {
   const accent =
     tone === "brass"
       ? "text-[var(--color-brass-bright)]"
       : tone === "pop"
         ? "text-[var(--color-pop-bright)]"
-        : "text-[var(--color-felt-bright)]";
+        : "text-[var(--color-felt-text)]";
+  const glow =
+    tone === "brass"
+      ? "rgba(224,190,107,0.2)"
+      : tone === "pop"
+        ? "rgba(232,82,72,0.18)"
+        : "rgba(46,139,87,0.22)";
   const inner = (
-    <div className="surface p-4">
-      <p className={cn("text-[10px] font-semibold uppercase tracking-[0.28em]", accent)}>
+    <div
+      className={cn(
+        "pm-glass fade-in-up relative h-full overflow-hidden p-5 sm:p-6",
+        href && "pm-lift",
+      )}
+      style={{ animationDelay: `${index * 80}ms` }}
+    >
+      {href && <span className="pm-sheen" />}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full"
+        style={{ background: `radial-gradient(circle, ${glow}, transparent 70%)` }}
+      />
+      <span aria-hidden className="absolute right-5 top-5 text-2xl opacity-90">
+        {icon}
+      </span>
+      <p className={cn("relative text-[10px] font-semibold uppercase tracking-[0.3em]", accent)}>
         {eyebrow}
       </p>
-      <p className="mt-1 font-[family-name:var(--font-display)] text-2xl tracking-wide">
+      <p className={`${DISPLAY} relative mt-2 pr-8 text-3xl leading-[0.95] text-[var(--color-cream)]`}>
         {title}
       </p>
-      {lines.map((line, i) => (
-        <p key={i} className="text-[10px] text-[var(--fg-dim)]">
-          {line}
-        </p>
-      ))}
+      <div className="relative mt-3 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[var(--color-cream)]/55">
+        {lines.map((line, i) => (
+          <span key={i} className="tabular-nums">
+            {i > 0 && <span className="mr-3 text-[var(--color-cream)]/20">·</span>}
+            {line}
+          </span>
+        ))}
+      </div>
     </div>
   );
   return href ? (
-    <Link href={href} className="block transition-colors hover:opacity-90">
+    <Link href={href} className="block h-full">
       {inner}
     </Link>
   ) : (
@@ -810,21 +845,21 @@ function ResultPill({
 }: {
   r: { score: string; outcome: "W" | "L" | "T" } | null;
 }) {
-  if (!r) return <span className="text-[var(--fg-dim)]">—</span>;
+  if (!r) return <span className="text-[var(--color-cream)]/40">—</span>;
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em]",
+        "inline-flex items-center gap-2 rounded-full px-2.5 py-1 ring-1 ring-inset",
         r.outcome === "W" &&
-          "bg-[var(--color-felt)]/20 text-[var(--color-felt-bright)]",
+          "bg-[var(--color-felt-bright)]/12 text-[var(--color-felt-text)] ring-[var(--color-felt-bright)]/35",
         r.outcome === "L" &&
-          "bg-[var(--color-pop)]/20 text-[var(--color-pop-bright)]",
+          "bg-[var(--color-pop)]/12 text-[var(--color-pop-bright)] ring-[var(--color-pop-bright)]/30",
         r.outcome === "T" &&
-          "bg-[var(--color-brass)]/20 text-[var(--color-brass-bright)]",
+          "bg-[var(--color-brass)]/12 text-[var(--color-brass-bright)] ring-[var(--color-brass)]/35",
       )}
     >
-      <span>{r.outcome}</span>
-      <span className="font-mono text-[10px] tabular-nums">{r.score}</span>
+      <span className="text-[10px] font-bold">{r.outcome}</span>
+      <span className={`${DISPLAY} text-base leading-none tabular-nums`}>{r.score}</span>
     </span>
   );
 }
@@ -859,54 +894,62 @@ function RosterCard({
     .slice(0, 4)
     .reverse();
   return (
-    <li className="surface p-4">
-      <Link
-        href={`/players/${player.id}`}
-        className="block hover:text-[var(--color-brass)]"
-      >
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="font-[family-name:var(--font-display)] text-xl tracking-wide truncate">
-            {player.name}
-          </span>
+    <li className="surface surface-hover group relative">
+      <Link href={`/players/${player.id}`} className="block p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <span
+              className={`${DISPLAY} block truncate text-2xl leading-none text-[var(--color-cream)] transition-colors group-hover:text-[var(--color-brass-bright)]`}
+            >
+              {player.name}
+            </span>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              {trend === "hot" && (
+                <span className="rounded-full bg-[var(--color-pop)]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-pop-bright)] ring-1 ring-inset ring-[var(--color-pop-bright)]/25">
+                  🔥 Hot
+                </span>
+              )}
+              {trend === "cold" && (
+                <span className="rounded-full bg-[var(--color-felt)]/25 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-felt-text)] ring-1 ring-inset ring-[var(--color-felt-bright)]/30">
+                  ❄️ Cold
+                </span>
+              )}
+              {sessionRec?.matchesPlayed ? (
+                <span className="text-[11px] tabular-nums text-[var(--color-cream)]/55">
+                  {sessionRec.wins ?? 0}/{sessionRec.matchesPlayed} this session
+                  {sessionRec.winPct != null && ` · ${sessionRec.winPct}%`}
+                </span>
+              ) : null}
+            </div>
+          </div>
           {player.skillLevel != null && (
-            <span className="text-xs text-[var(--fg-dim)]">
-              SL{player.skillLevel}
+            <span className="flex shrink-0 flex-col items-center gap-1" title={`SL${player.skillLevel}`}>
+              <PoolBall
+                number={player.skillLevel}
+                size={38}
+                className="drop-shadow-[0_8px_10px_rgba(0,0,0,0.55)]"
+              />
+              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/45">
+                SL{player.skillLevel}
+              </span>
             </span>
           )}
-        </div>
-        <div className="mt-1 flex flex-wrap items-baseline gap-1.5">
-          {trend === "hot" && (
-            <span className="rounded-full bg-[var(--color-pop)]/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-pop-bright)]">
-              🔥 Hot
-            </span>
-          )}
-          {trend === "cold" && (
-            <span className="rounded-full bg-[var(--color-felt)]/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--color-felt-bright)]">
-              ❄️ Cold
-            </span>
-          )}
-          {sessionRec?.matchesPlayed ? (
-            <span className="text-[10px] text-[var(--fg-dim)]">
-              {sessionRec.wins ?? 0}/{sessionRec.matchesPlayed} this session
-              {sessionRec.winPct != null && ` · ${sessionRec.winPct}%`}
-            </span>
-          ) : null}
         </div>
         {player.career && player.career.matchesPlayed > 0 && (
-          <p className="mt-1 text-[10px] text-[var(--fg-dim)]">
+          <p className="mt-3 text-[11px] text-[var(--color-cream)]/50">
             Career:{" "}
-            <span className="font-semibold text-[var(--fg)]">
+            <span className={`${DISPLAY} text-base leading-none tabular-nums text-[var(--color-cream)]`}>
               {player.career.wins}–{player.career.losses}
             </span>{" "}
             ({player.career.winPct}%) over {player.career.matchesPlayed} matches
           </p>
         )}
         {trajectory.length > 0 && (
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-[9px] uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+          <div className="mt-3 flex items-center gap-2 border-t border-[var(--color-cream)]/[0.07] pt-3">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[var(--color-cream)]/40">
               SL trajectory
             </span>
-            <div className="flex items-baseline gap-1">
+            <div className="flex items-center gap-1">
               {trajectory.map((s, i) => {
                 const isCurrent =
                   currentSessionId != null && s.sessionId === currentSessionId;
@@ -914,10 +957,10 @@ function RosterCard({
                   <span
                     key={`${s.sessionId}-${i}`}
                     className={cn(
-                      "rounded px-1 py-px text-[10px] tabular-nums",
+                      "inline-flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-[10px] font-semibold tabular-nums",
                       isCurrent
-                        ? "border border-[var(--color-brass)] bg-[var(--color-brass)]/15 font-bold text-[var(--color-brass-bright)]"
-                        : "border border-[var(--border)] text-[var(--fg-dim)]",
+                        ? "bg-[var(--color-brass)]/20 text-[var(--color-brass-bright)] ring-1 ring-inset ring-[var(--color-brass)]"
+                        : "text-[var(--color-cream)]/50 ring-1 ring-inset ring-white/10",
                     )}
                     title={`${s.sessionName}${isCurrent ? " (current)" : ""}: ${s.matchesPlayed ?? 0} matches${s.winPct != null ? ` · ${s.winPct}%` : ""}`}
                   >

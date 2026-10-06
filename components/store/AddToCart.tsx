@@ -43,11 +43,11 @@ export function AddToCart({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-baseline gap-3">
-        <span className="font-[family-name:var(--font-display)] text-3xl tracking-wide text-[var(--color-brass-bright)]">
+        <span className="pm-foil font-[family-name:var(--font-display)] text-5xl leading-none tracking-wide tabular-nums">
           {formatMoney(activeVariant?.price ?? product.priceRange.min)}
         </span>
         {activeVariant?.compareAtPrice && (
-          <span className="text-sm text-[var(--fg-dim)] line-through">
+          <span className="text-base tabular-nums text-[var(--color-cream)]/40 line-through">
             {formatMoney(activeVariant.compareAtPrice)}
           </span>
         )}
@@ -62,10 +62,10 @@ export function AddToCart({
           return (
             <div key={option.name} className="flex flex-col gap-2">
               <div className="flex items-baseline justify-between">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brass)]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-brass)]">
                   {option.name}
                 </span>
-                <span className="text-xs text-[var(--fg-dim)]">
+                <span className="text-xs font-medium text-[var(--color-cream)]/60">
                   {selected[option.name]}
                 </span>
               </div>
@@ -84,12 +84,12 @@ export function AddToCart({
                       type="button"
                       onClick={() => onSelectedChange(hypothetical)}
                       className={cn(
-                        "rounded-full border px-4 py-2 text-sm font-medium tracking-wide transition-colors",
+                        "min-w-[3rem] rounded-full border px-4 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200",
                         isActive
-                          ? "border-[var(--color-brass)] bg-[var(--color-brass)] text-[var(--color-ink)]"
+                          ? "border-transparent bg-[linear-gradient(180deg,#f0d48a,#c9a24a_55%,#b38b36)] text-[var(--color-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_8px_22px_-8px_rgba(201,162,74,0.75)]"
                           : available
-                            ? "border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg)] hover:border-[var(--border-strong)]"
-                            : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] line-through opacity-60",
+                            ? "border-white/10 bg-white/[0.04] text-[var(--color-cream)] hover:border-[var(--color-brass)]/50 hover:bg-[var(--color-brass)]/10"
+                            : "border-white/[0.06] bg-transparent text-[var(--color-cream)]/35 line-through",
                       )}
                     >
                       {value}
@@ -102,22 +102,22 @@ export function AddToCart({
         })}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--bg-card)]">
+        <div className="inline-flex items-center self-start rounded-full border border-white/10 bg-black/30 shadow-[inset_0_2px_6px_rgba(0,0,0,0.4)] sm:self-auto">
           <button
             type="button"
             aria-label="Decrease quantity"
             disabled={quantity <= 1}
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-l-full text-lg text-[var(--fg-dim)] hover:text-[var(--fg)] disabled:opacity-40"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-l-full text-lg text-[var(--color-cream)]/60 transition-colors hover:text-[var(--color-brass-bright)] disabled:opacity-40"
           >
             −
           </button>
-          <span className="min-w-[2.5rem] text-center font-semibold">{quantity}</span>
+          <span className="min-w-[2.5rem] text-center font-[family-name:var(--font-display)] text-2xl leading-none tabular-nums text-[var(--color-cream)]">{quantity}</span>
           <button
             type="button"
             aria-label="Increase quantity"
             onClick={() => setQuantity((q) => q + 1)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-r-full text-lg text-[var(--fg-dim)] hover:text-[var(--fg)]"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-r-full text-lg text-[var(--color-cream)]/60 transition-colors hover:text-[var(--color-brass-bright)]"
           >
             +
           </button>
@@ -127,10 +127,10 @@ export function AddToCart({
           onClick={onAdd}
           disabled={!canBuy || isLoading}
           className={cn(
-            "inline-flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-colors",
+            "flex-1 justify-center",
             canBuy
-              ? "bg-[var(--color-brass)] text-[var(--color-ink)] hover:bg-[var(--color-brass-bright)]"
-              : "bg-[var(--bg-card)] text-[var(--fg-dim)]",
+              ? "pm-btn min-h-12 disabled:opacity-80"
+              : "inline-flex min-h-12 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-semibold tracking-wide text-[var(--color-cream)]/45",
           )}
         >
           {isLoading ? (

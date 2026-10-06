@@ -45,11 +45,11 @@ export function BowliardsTracker() {
     <div className="space-y-4">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
             Live game · {current.players.length}{" "}
             {current.players.length === 1 ? "player" : "players"}
           </p>
-          <p className="font-[family-name:var(--font-display)] text-lg tracking-wide text-[var(--fg)]">
+          <p className="font-[family-name:var(--font-display)] text-lg tracking-wide text-[var(--color-cream)]">
             Frame{" "}
             {Math.min(
               FRAME_COUNT,
@@ -78,7 +78,7 @@ export function BowliardsTracker() {
             onClick={() => {
               if (confirm("Discard this game without saving?")) cancelGame();
             }}
-            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-[11px] font-semibold tracking-wide text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-cream)]/10 bg-black/30 px-3 text-[11px] font-semibold tracking-wide text-[var(--color-cream)]/55 hover:text-[var(--color-pop-bright)]"
           >
             <X size={11} />
             Discard
@@ -105,7 +105,7 @@ export function BowliardsTracker() {
           onClick={() => {
             if (confirm("Wipe live game AND history?")) clearAll();
           }}
-          className="inline-flex items-center gap-1.5 text-[11px] text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+          className="inline-flex items-center gap-1.5 text-[11px] text-[var(--color-cream)]/55 hover:text-[var(--color-pop-bright)]"
         >
           <Trash2 size={11} />
           Clear everything
@@ -132,9 +132,9 @@ function NewGameForm({
   return (
     <form
       onSubmit={submit}
-      className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4"
+      className="space-y-3 rounded-2xl border border-[var(--color-cream)]/10 bg-black/30 p-4"
     >
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
         New game
       </p>
       <ul className="space-y-2">
@@ -149,7 +149,7 @@ function NewGameForm({
                 setNames(next);
               }}
               placeholder={names.length === 1 ? "You" : `Player ${i + 1}`}
-              className="min-w-0 flex-1 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-sm text-[var(--fg)] placeholder:text-[var(--fg-dim)] focus:border-[var(--color-brass)]/60 focus:outline-none"
+              className="min-w-0 flex-1 rounded-xl border border-[var(--color-cream)]/10 bg-black/40 px-3 py-1.5 text-sm text-[var(--color-cream)] placeholder:text-[var(--color-cream)]/55 focus:border-[var(--color-brass)]/60 focus:outline-none"
             />
             {names.length > 1 && (
               <button
@@ -157,7 +157,7 @@ function NewGameForm({
                 onClick={() =>
                   setNames(names.filter((_, idx) => idx !== i))
                 }
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-cream)]/10 text-[var(--color-cream)]/55 hover:text-[var(--color-pop-bright)]"
                 aria-label="Remove player"
               >
                 <X size={14} />
@@ -171,7 +171,7 @@ function NewGameForm({
           type="button"
           onClick={() => setNames([...names, ""])}
           disabled={names.length >= 6}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg)] px-3 text-[11px] font-semibold tracking-wide text-[var(--fg-dim)] hover:text-[var(--fg)] disabled:opacity-40"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--color-cream)]/10 bg-black/40 px-3 text-[11px] font-semibold tracking-wide text-[var(--color-cream)]/55 hover:text-[var(--color-cream)] disabled:opacity-40"
         >
           <Plus size={11} />
           Add player
@@ -207,10 +207,10 @@ function PlayerCard({
   return (
     <article
       className={cn(
-        "rounded-xl border bg-[var(--bg-card)] p-3",
+        "rounded-2xl border bg-black/30 p-3",
         done
           ? "border-[var(--color-felt-bright)]/40"
-          : "border-[var(--border)]",
+          : "border-[var(--color-cream)]/10",
       )}
     >
       <div className="mb-2 flex items-baseline justify-between gap-2">
@@ -311,11 +311,11 @@ function FrameCell({
         "flex shrink-0 flex-col rounded border",
         active
           ? "border-[var(--color-brass)]/60 bg-[var(--color-brass)]/10"
-          : "border-[var(--border)] bg-[var(--bg)]",
+          : "border-[var(--color-cream)]/10 bg-black/40",
         isFrameTen ? "w-16" : "w-12",
       )}
     >
-      <div className="flex h-5 items-stretch divide-x divide-[var(--border)] border-b border-[var(--border)] text-[10px] font-semibold text-[var(--fg)]">
+      <div className="flex h-5 items-stretch divide-x divide-[var(--color-cream)]/[0.07] border-b border-[var(--color-cream)]/10 text-[10px] font-semibold text-[var(--color-cream)]">
         {isFrameTen ? (
           <>
             <span className="flex-1 text-center leading-5">
@@ -345,7 +345,7 @@ function FrameCell({
           </>
         )}
       </div>
-      <div className="flex h-7 items-center justify-center text-xs font-semibold text-[var(--fg-dim)]">
+      <div className="flex h-7 items-center justify-center text-xs font-semibold text-[var(--color-cream)]/55">
         {total ?? ""}
       </div>
     </div>
@@ -377,7 +377,7 @@ function RollPad({
 
   return (
     <div className="mt-3 space-y-2">
-      <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+      <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
         {isFrameTen
           ? afterStrike
             ? "Fresh rack — pins this roll"
@@ -400,7 +400,7 @@ function RollPad({
                 ? "border-[var(--color-felt-bright)]/50 bg-[var(--color-felt-bright)]/15 text-[var(--color-felt-bright)] hover:bg-[var(--color-felt-bright)]/25"
                 : n === max
                   ? "border-[var(--color-brass)]/50 bg-[var(--color-brass)]/15 text-[var(--color-brass-bright)] hover:bg-[var(--color-brass)]/25"
-                  : "border-[var(--border)] bg-[var(--bg)] text-[var(--fg)] hover:border-[var(--border-strong)]",
+                  : "border-[var(--color-cream)]/10 bg-black/40 text-[var(--color-cream)] hover:border-[var(--border-strong)]",
             )}
           >
             {n === 10 ? "X" : n}
@@ -410,7 +410,7 @@ function RollPad({
           <button
             type="button"
             onClick={onUndo}
-            className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--bg)] px-2 text-xs font-semibold text-[var(--fg-dim)] hover:text-[var(--fg)]"
+            className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-md border border-[var(--color-cream)]/10 bg-black/40 px-2 text-xs font-semibold text-[var(--color-cream)]/55 hover:text-[var(--color-cream)]"
             aria-label="Undo last roll"
           >
             <Undo2 size={11} />
@@ -435,7 +435,7 @@ function HistoryList({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/55">
           Past games · {history.length}
         </p>
         <button
@@ -443,7 +443,7 @@ function HistoryList({
           onClick={() => {
             if (confirm("Clear all past Bowliards games?")) onClearHistory();
           }}
-          className="inline-flex items-center gap-1.5 text-[11px] text-[var(--fg-dim)] hover:text-[var(--color-pop-bright)]"
+          className="inline-flex items-center gap-1.5 text-[11px] text-[var(--color-cream)]/55 hover:text-[var(--color-pop-bright)]"
         >
           <RotateCcw size={11} />
           Clear history
@@ -457,9 +457,9 @@ function HistoryList({
           return (
             <li
               key={g.id}
-              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3"
+              className="rounded-xl border border-[var(--color-cream)]/10 bg-black/30 p-3"
             >
-              <div className="flex items-baseline justify-between text-[11px] text-[var(--fg-dim)]">
+              <div className="flex items-baseline justify-between text-[11px] text-[var(--color-cream)]/55">
                 <span>
                   {new Date(g.finishedAt ?? g.startedAt).toLocaleDateString(
                     undefined,
@@ -472,7 +472,7 @@ function HistoryList({
                 </span>
                 <span>{g.players.length} players</span>
               </div>
-              <ul className="mt-1.5 divide-y divide-[var(--border)]/60">
+              <ul className="mt-1.5 divide-y divide-[var(--color-cream)]/[0.07]/60">
                 {sorted.map((p, i) => (
                   <li
                     key={p.id}
@@ -487,7 +487,7 @@ function HistoryList({
                       {p.name}
                       {i === 0 && " 🏆"}
                     </span>
-                    <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--fg)]">
+                    <span className="font-[family-name:var(--font-display)] text-base tracking-wide text-[var(--color-cream)]">
                       {gameTotal(p.frames) ?? 0}
                     </span>
                   </li>

@@ -5,12 +5,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * The team plays in South Jersey, so match dates and times are formatted in
+ * Eastern time. Without an explicit zone, Intl falls back to the runtime's
+ * zone — UTC on the server/edge — and a 7:30pm match renders as "11:30 PM"
+ * (and can even land on the next day). Pinning it also keeps server and
+ * client output identical, so hydration never disagrees.
+ */
+export const SITE_TIME_ZONE = "America/New_York";
+
 export function formatDate(input: string | Date, opts: Intl.DateTimeFormatOptions = {}) {
   const d = typeof input === "string" ? new Date(input) : input;
   return new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",
+    timeZone: SITE_TIME_ZONE,
     ...opts,
   }).format(d);
 }
@@ -20,6 +30,7 @@ export function formatTime(input: string | Date) {
   return new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: SITE_TIME_ZONE,
   }).format(d);
 }
 
