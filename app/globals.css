@@ -1364,3 +1364,193 @@ a.patch-lightbox-instance-link:hover {
     animation: none !important;
   }
 }
+
+/* ── Refresh layer, part 2: lamp, rail, holo cards, rack ─────────────────── */
+
+/* Italic serif accent — pairs with the Bebas display face for editorial
+ * contrast ("the *most dangerous* crew"). */
+.pm-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* Volumetric light falling from the lamp: a soft trapezoid of warm light. */
+.pm-cone {
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 228, 165, 0.32) 0%,
+    rgba(255, 220, 150, 0.12) 35%,
+    rgba(255, 220, 150, 0.04) 70%,
+    transparent 100%
+  );
+  filter: blur(18px);
+  mix-blend-mode: screen;
+}
+
+/* Dust drifting through the light. Each mote gets its own delay/duration. */
+@keyframes pm-mote {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.6; }
+  100% { transform: translate3d(var(--dx, 20px), -140px, 0); opacity: 0; }
+}
+.pm-mote {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 236, 190, 0.9);
+  box-shadow: 0 0 6px 1px rgba(255, 226, 160, 0.6);
+  animation: pm-mote var(--t, 9s) ease-in-out var(--d, 0s) infinite;
+}
+
+/* Lamp sway — a barely-there pendulum so the scene feels alive. */
+@keyframes pm-sway {
+  0%, 100% { transform: rotate(-0.6deg); }
+  50%      { transform: rotate(0.6deg); }
+}
+.pm-sway {
+  transform-origin: 50% 0;
+  animation: pm-sway 6s ease-in-out infinite;
+}
+
+/* Table rail — dark walnut with a leather cushion lip and brass diamond
+ * sights between cells. */
+.pm-rail {
+  position: relative;
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 18%),
+    repeating-linear-gradient(
+      92deg,
+      rgba(255, 255, 255, 0.018) 0 2px,
+      transparent 2px 9px
+    ),
+    linear-gradient(180deg, #2b1c12 0%, #1d130c 55%, #140d08 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 170, 0.18),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(201, 162, 74, 0.25),
+    0 40px 80px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 6px rgba(10, 6, 4, 0.55);
+}
+.pm-rail::before {
+  /* the felt cushion peeking above the rail */
+  content: "";
+  position: absolute;
+  inset: -6px 18px auto;
+  height: 6px;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, #2e8b57, #134d2f);
+  opacity: 0.9;
+}
+.pm-diamond {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 1.5px;
+  background: linear-gradient(135deg, #fff6dc, #e0be6b 45%, #8b6f2c);
+  box-shadow: 0 0 10px rgba(224, 190, 107, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Holographic collector card. A <TiltCard> sets --rx/--ry for the tilt and
+ * --mx/--my for the glare; the foil layer shifts with the pointer. */
+.pm-tilt {
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+  will-change: transform;
+}
+.pm-tilt[data-active="true"] {
+  transition: transform 0.08s linear;
+}
+.pm-holo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.22;
+  background:
+    radial-gradient(
+      380px circle at var(--mx, 70%) var(--my, 20%),
+      rgba(255, 255, 255, 0.55),
+      transparent 45%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 214, 120, 0.55) 36%,
+      rgba(120, 255, 200, 0.35) 46%,
+      rgba(140, 170, 255, 0.4) 56%,
+      rgba(255, 140, 200, 0.35) 64%,
+      transparent 80%
+    );
+  background-size: 100% 100%, 260% 260%;
+  background-position: 0 0, var(--hx, 50%) var(--hy, 50%);
+  transition: opacity 0.4s ease;
+}
+.pm-tilt[data-active="true"] .pm-holo {
+  opacity: 0.55;
+}
+/* Fine diagonal foil etching on the card face. */
+.pm-etch {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.06;
+  background: repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 6px);
+}
+
+/* Countdown digits — split-flap style tiles. */
+.pm-flap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2ch;
+  padding: 0.3rem 0.45rem 0.2rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(180deg, #1b1d1b 0%, #1b1d1b 49%, #121412 51%, #121412 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(201, 162, 74, 0.2),
+    0 10px 20px -10px rgba(0, 0, 0, 0.8);
+}
+.pm-flap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Ambient felt glow sitting behind a section. */
+.pm-ambient {
+  position: absolute;
+  inset: -10% -20%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(46, 139, 87, 0.12), transparent 70%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-mote,
+  .pm-sway {
+    animation: none !important;
+  }
+  .pm-mote {
+    display: none;
+  }
+  .pm-tilt {
+    transform: none !important;
+  }
+}

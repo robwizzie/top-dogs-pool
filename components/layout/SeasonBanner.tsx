@@ -16,7 +16,7 @@ export async function SeasonBanner() {
 
   const upcoming = team.upcomingMatch;
   return (
-    <div className="border-b border-[var(--border)] bg-[radial-gradient(120%_140%_at_50%_-30%,rgba(201,162,74,0.18),transparent_55%)]">
+    <div className="relative z-[5] border-b border-[var(--border)] bg-[radial-gradient(120%_140%_at_50%_-30%,rgba(201,162,74,0.18),transparent_55%)]">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5 text-xs sm:px-6 lg:px-8">
         <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.32em] text-[var(--color-brass-bright)]">
           <Sparkles size={12} className="animate-pulse" />

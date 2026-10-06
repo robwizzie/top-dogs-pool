@@ -3,6 +3,8 @@ import { ArrowRight, MapPin } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { LiveCTA } from "@/components/live/LiveCTA";
+import { BilliardLamp } from "@/components/home/BilliardLamp";
+import { StatCounter } from "@/components/ui/StatCounter";
 import { formatDate } from "@/lib/utils";
 
 /**
@@ -35,7 +37,7 @@ export function Hero({
   const winPct = totalMatches ? Math.round((record.wins / totalMatches) * 100) : null;
 
   return (
-    <section className="pm-grain relative overflow-hidden">
+    <section className="pm-grain relative mt-[calc(-5rem-env(safe-area-inset-top))] overflow-hidden">
       {/* Felt, lamp light, vignette */}
       <div className="pm-felt absolute inset-0 -z-20" aria-hidden />
       <div className="pm-lamp pm-lamp-flicker absolute inset-0 -z-10" aria-hidden />
@@ -47,8 +49,9 @@ export function Hero({
         className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-b from-transparent to-[var(--bg)]"
         aria-hidden
       />
+      <BilliardLamp className="pointer-events-none absolute inset-x-0 bottom-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1]" />
 
-      <div className="mx-auto max-w-7xl px-4 pb-10 pt-10 sm:px-6 sm:pt-16 lg:px-8 lg:pb-14 lg:pt-20">
+      <div className="mx-auto max-w-7xl px-4 pb-10 pt-[calc(200px+env(safe-area-inset-top))] sm:px-6 sm:pt-[250px] lg:px-8 lg:pb-14 lg:pt-[255px]">
         <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-6">
           <div className="relative z-[2] text-center lg:text-left">
             <p
@@ -75,8 +78,11 @@ export function Hero({
               className="fade-in-up mx-auto mt-6 max-w-md text-base leading-relaxed text-[var(--color-cream)]/75 sm:text-lg lg:mx-0"
               style={{ animationDelay: "180ms" }}
             >
-              South Jersey&apos;s most dangerous 8-ball crew. Every rack, every
-              sweep, every stat — live.
+              South Jersey&apos;s{" "}
+              <span className="pm-serif text-[1.35em] leading-none text-[var(--color-brass-bright)]">
+                most dangerous
+              </span>{" "}
+              8-ball crew. Every rack, every sweep, every stat — live.
             </p>
 
             <div
@@ -96,18 +102,27 @@ export function Hero({
 
         {/* Scoreboard rail */}
         <dl
-          className="fade-in-up pm-glass relative z-[2] mt-12 grid grid-cols-2 overflow-hidden sm:grid-cols-4 lg:mt-16"
+          className="fade-in-up pm-rail relative z-[2] mt-14 grid grid-cols-2 sm:grid-cols-4 lg:mt-16"
           style={{ animationDelay: "420ms" }}
         >
+          {/* diamond sights inlaid along the rail */}
+          {[12.5, 37.5, 62.5, 87.5].map((x) => (
+            <span
+              key={x}
+              aria-hidden
+              className="pm-diamond hidden sm:block"
+              style={{ left: `${x}%`, top: 14 }}
+            />
+          ))}
           <Stat label="Record">
-            {record.wins}
+            <StatCounter value={record.wins} delay={500} />
             <span className="mx-1 text-[var(--color-cream)]/30">–</span>
-            {record.losses}
+            <StatCounter value={record.losses} delay={500} />
           </Stat>
           <Stat label="Win rate" accent>
             {winPct !== null ? (
               <>
-                {winPct}
+                <StatCounter value={winPct} delay={500} />
                 <span className="text-[0.55em] text-[var(--color-cream)]/50">%</span>
               </>
             ) : (
@@ -118,7 +133,7 @@ export function Hero({
             {divisionRank ? (
               <>
                 <span className="text-[0.55em] text-[var(--color-cream)]/50">#</span>
-                {divisionRank}
+                <StatCounter value={divisionRank} delay={500} duration={600} />
                 {divisionSize && (
                   <span className="text-[0.45em] text-[var(--color-cream)]/40"> of {divisionSize}</span>
                 )}

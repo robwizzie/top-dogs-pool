@@ -16,7 +16,7 @@ export function LogoMark({ className, withText = true, priority = false }: { cla
 			{withText && (
 				<span className='leading-none'>
 					<span className='block font-[family-name:var(--font-display)] text-xl tracking-[0.18em] text-[var(--color-cream)]'>TOP DAWGS</span>
-					<span className='block whitespace-nowrap text-[10px] tracking-[0.18em] text-[var(--color-brass)] sm:tracking-[0.32em]'>APA POOL · SOUTH JERSEY</span>
+					<span className='block whitespace-nowrap text-[10px] max-[420px]:hidden tracking-[0.18em] text-[var(--color-brass)] sm:tracking-[0.32em]'>APA POOL · SOUTH JERSEY</span>
 				</span>
 			)}
 		</span>

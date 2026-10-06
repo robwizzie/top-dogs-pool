@@ -5,6 +5,9 @@ import { HomeSection } from "@/components/home/HomeSection";
 import { PointerSheen } from "@/components/home/PointerSheen";
 import { ResultsTicker } from "@/components/home/ResultsTicker";
 import { Logo } from "@/components/brand/Logo";
+import { Countdown } from "@/components/home/Countdown";
+import { RackArt } from "@/components/home/RackArt";
+import { TiltCard } from "@/components/home/TiltCard";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { LiveCTA } from "@/components/live/LiveCTA";
 import { Sparkline } from "@/components/leaderboard/Sparkline";
@@ -30,6 +33,9 @@ import { ChalkTalk } from "@/components/cards/ChalkTalk";
 import { formatDate, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
 
 export const revalidate = 3600;
+
+/** APA match times are local to South Jersey. */
+const POOL_TZ = "America/New_York";
 
 export default async function HomePage() {
   const [team, roster, leaderboard, standings, lastUpdated, snap] =
@@ -188,12 +194,19 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-col items-center gap-4 border-t border-[var(--color-cream)]/10 pt-5 sm:flex-row sm:justify-between">
+              <div className="mt-7 flex justify-center">
+                <Countdown target={upcoming.date} />
+              </div>
+
+              <div className="mt-7 flex flex-col items-center gap-4 border-t border-[var(--color-cream)]/10 pt-5 sm:flex-row sm:justify-between">
                 <p className="text-center text-sm text-[var(--color-cream)]/70 sm:text-left">
-                  {formatDate(upcoming.date)} ·{" "}
+                  {/* Match times are Eastern; format there, not in the
+                      server's zone (UTC on the edge). */}
+                  {formatDate(upcoming.date, { timeZone: POOL_TZ })} ·{" "}
                   {new Date(upcoming.date).toLocaleTimeString("en-US", {
                     hour: "numeric",
                     minute: "2-digit",
+                    timeZone: POOL_TZ,
                   })}
                   {upcoming.location && ` · ${upcoming.location}`}
                 </p>
@@ -283,37 +296,49 @@ export default async function HomePage() {
             </Link>
 
             {lastMvp && (
-              <div className="pm-glass relative overflow-hidden p-6 sm:p-8">
-                <div
-                  className="absolute inset-0 -z-10 bg-[radial-gradient(90%_70%_at_100%_0%,rgba(224,190,107,0.22),transparent_60%)]"
-                  aria-hidden
-                />
-                <Star
-                  size={150}
-                  className="pointer-events-none absolute -right-8 -top-8 text-[var(--color-brass)]/10"
-                  fill="currentColor"
-                  aria-hidden
-                />
-                <div className="relative flex h-full flex-col">
-                  <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass-bright)]">
-                    <Star size={12} fill="currentColor" /> Match MVP
-                  </p>
-                  <p className="pm-foil mt-4 font-[family-name:var(--font-display)] text-5xl leading-[0.9] tracking-wide">
-                    {lastMvp.playerName}
-                  </p>
-                  {lastMvp.score && (
-                    <p className="mt-2 font-[family-name:var(--font-display)] text-2xl tracking-wider tabular-nums text-[var(--color-cream)]/70">
-                      {lastMvp.score}
+              <TiltCard className="h-full">
+                <div className="pm-glass relative h-full overflow-hidden p-6 sm:p-8">
+                  <div
+                    className="absolute inset-0 -z-10 bg-[radial-gradient(90%_70%_at_100%_0%,rgba(224,190,107,0.28),transparent_60%),radial-gradient(70%_60%_at_0%_100%,rgba(46,139,87,0.25),transparent_60%)]"
+                    aria-hidden
+                  />
+                  <span className="pm-etch" aria-hidden />
+                  <span className="pm-holo" aria-hidden />
+                  {/* inner foil frame, like a collector card */}
+                  <span
+                    className="pointer-events-none absolute inset-3 rounded-[0.9rem] border border-[var(--color-brass)]/30"
+                    aria-hidden
+                  />
+                  <div className="relative flex h-full flex-col">
+                    <div className="flex items-start justify-between">
+                      <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass-bright)]">
+                        <Star size={12} fill="currentColor" /> Match MVP
+                      </p>
+                      <span className="flex h-14 w-14 rotate-[-10deg] flex-col items-center justify-center rounded-full border-2 border-[var(--color-brass-bright)]/70 bg-black/30 text-center leading-none text-[var(--color-brass-bright)] shadow-[0_0_20px_rgba(224,190,107,0.35)]">
+                        <Star size={14} fill="currentColor" />
+                        <span className="mt-0.5 font-[family-name:var(--font-display)] text-sm tracking-[0.15em]">MVP</span>
+                      </span>
+                    </div>
+                    <p className="pm-serif mt-2 text-lg text-[var(--color-cream)]/60">
+                      Player of the night
                     </p>
-                  )}
-                  <div className="mt-auto flex flex-wrap gap-1.5 pt-6">
-                    {lastMvp.sweep && <Badge tone="pop">Sweep</Badge>}
-                    {!lastMvp.sweep && lastMvp.miniSweep && <Badge tone="brass">Mini sweep</Badge>}
-                    {lastMvp.breakAndRun && <Badge tone="felt">Break &amp; run</Badge>}
-                    {lastMvp.eightOnBreak && <Badge tone="cream">8 on the break</Badge>}
+                    <p className="pm-foil font-[family-name:var(--font-display)] text-5xl leading-[0.9] tracking-wide sm:text-6xl">
+                      {lastMvp.playerName}
+                    </p>
+                    {lastMvp.score && (
+                      <p className="mt-3 font-[family-name:var(--font-display)] text-3xl tracking-wider tabular-nums text-[var(--color-cream)]/80">
+                        {lastMvp.score}
+                      </p>
+                    )}
+                    <div className="mt-auto flex flex-wrap gap-1.5 pt-6">
+                      {lastMvp.sweep && <Badge tone="pop">Sweep</Badge>}
+                      {!lastMvp.sweep && lastMvp.miniSweep && <Badge tone="brass">Mini sweep</Badge>}
+                      {lastMvp.breakAndRun && <Badge tone="felt">Break &amp; run</Badge>}
+                      {lastMvp.eightOnBreak && <Badge tone="cream">8 on the break</Badge>}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </TiltCard>
             )}
 
             {spotlight && (
@@ -404,11 +429,13 @@ export default async function HomePage() {
           }
         >
           <div className="grid gap-4 lg:grid-cols-[1fr_1.35fr]">
+            <TiltCard className="h-full" max={5}>
             <Link
               href={`/roster/${leader.playerId}`}
-              className="pm-glass pm-lift group relative flex flex-col overflow-hidden p-6 sm:p-8"
+              className="pm-glass group relative flex h-full flex-col overflow-hidden p-6 sm:p-8"
             >
-              <span className="pm-sheen" />
+              <span className="pm-etch" aria-hidden />
+              <span className="pm-holo" aria-hidden />
               <div
                 className="absolute inset-0 -z-10 bg-[radial-gradient(80%_60%_at_20%_0%,rgba(224,190,107,0.2),transparent_65%)]"
                 aria-hidden
@@ -419,7 +446,10 @@ export default async function HomePage() {
                 </span>
                 <PoolBall number={1} size={52} className="drop-shadow-[0_10px_16px_rgba(0,0,0,0.6)]" />
               </div>
-              <p className="mt-6 font-[family-name:var(--font-display)] text-5xl leading-[0.9] tracking-wide text-[var(--color-cream)] sm:text-6xl">
+              <p className="pm-serif mt-6 text-lg text-[var(--color-cream)]/60">
+                Leading the ladder
+              </p>
+              <p className="font-[family-name:var(--font-display)] text-5xl leading-[0.9] tracking-wide text-[var(--color-cream)] sm:text-6xl">
                 {leader.playerName}
               </p>
               <p className="mt-2 text-sm text-[var(--color-cream)]/60">
@@ -447,6 +477,7 @@ export default async function HomePage() {
                 />
               </div>
             </Link>
+            </TiltCard>
 
             {chasers.length > 0 && (
               <ol className="pm-glass flex flex-col overflow-hidden p-2">
@@ -507,20 +538,21 @@ export default async function HomePage() {
       </HomeSection>
 
       {/* Finale — the live-stream invite, set on felt under the lamp. */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pb-24 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pb-10 pt-8 sm:px-6 sm:pb-14 lg:px-8">
         <div className="pm-grain pm-reveal relative overflow-hidden rounded-[1.75rem] border border-[var(--color-brass)]/25 shadow-[0_40px_120px_-40px_rgba(46,139,87,0.6)]">
           <div className="pm-felt absolute inset-0 -z-10" aria-hidden />
           <div className="pm-lamp pm-lamp-flicker absolute inset-0 -z-10" aria-hidden />
-          <div className="pointer-events-none absolute -bottom-20 -right-20 origin-bottom-right scale-[0.55] opacity-70 drop-shadow-[0_30px_40px_rgba(0,0,0,0.7)] sm:-bottom-16 sm:-right-4 sm:scale-100 sm:opacity-90" aria-hidden>
-            <PoolBall number={8} size={260} />
-          </div>
-          <div className="relative z-[2] px-6 py-12 sm:px-12 sm:py-16">
+          <div className="relative z-[2] grid items-center gap-10 px-6 py-12 sm:px-12 sm:py-16 lg:grid-cols-[1fr_auto]">
+            <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[var(--color-brass-bright)] sm:text-[11px]">
               Every Tuesday · 7:30 – 11:30pm
             </p>
             <h3 className="mt-3 max-w-2xl font-[family-name:var(--font-display)] text-5xl leading-[0.9] tracking-wide text-[var(--color-cream)] sm:text-7xl">
               Pull up a stool.
-              <span className="pm-foil block">We&apos;re live.</span>
+              <span className="block">
+                <span className="pm-serif mr-3 text-[0.8em] text-[var(--color-cream)]/80">we&apos;re</span>
+                <span className="pm-foil">Live.</span>
+              </span>
             </h3>
             <p className="mt-4 max-w-md text-[var(--color-cream)]/75">
               We stream the table every match night. Drop a comment, cheer the
@@ -529,12 +561,18 @@ export default async function HomePage() {
             <div className="mt-8">
               <LiveCTA />
             </div>
+            </div>
+            <div className="flex justify-center lg:pr-6">
+              {/* One instance, scaled — a second, display:none copy would own
+                  the SVG gradient ids and leave the visible one unpainted. */}
+              <RackArt ball={46} className="-my-8 rotate-[-8deg] scale-[0.8] sm:my-0 sm:scale-100" />
+            </div>
           </div>
         </div>
       </section>
 
       {lastUpdated && (
-        <p className="px-4 pb-10 text-center text-[11px] uppercase tracking-[0.2em] text-[var(--color-cream)]/35">
+        <p className="px-4 text-center text-[11px] uppercase tracking-[0.2em] text-[var(--color-cream)]/35">
           APA data synced{" "}
           <time dateTime={lastUpdated.toISOString()}>
             {lastUpdated.toLocaleString("en-US", {
