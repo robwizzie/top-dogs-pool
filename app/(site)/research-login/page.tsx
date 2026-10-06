@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { Lock } from "lucide-react";
-import { PoolBall } from "@/components/brand/PoolBall";
+import { LockScreen } from "@/components/ui/LockScreen";
 
 export const dynamic = "force-dynamic";
 
@@ -45,50 +44,19 @@ export default async function ResearchLoginPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="relative mx-auto flex min-h-[70vh] max-w-md flex-col items-center justify-center px-6 py-16">
-      <div className="pointer-events-none absolute -right-10 top-0 opacity-15" aria-hidden>
-        <PoolBall number={8} size={220} />
-      </div>
-      <div className="surface relative w-full overflow-hidden p-8">
-        <span aria-hidden className="block h-px w-12 bg-gradient-to-r from-[var(--color-brass)] to-transparent" />
-        <div className="mt-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
-          <Lock size={12} />
-          Top Dawgs only
-        </div>
-        <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-4xl">
-          Research is locked
-        </h1>
-        <p className="mt-2 text-sm leading-relaxed text-[var(--fg-dim)]">
+    <LockScreen
+      title="Research is locked"
+      passwordLabel="Team password"
+      submitLabel="Unlock research"
+      action={login}
+      next={safeNext}
+      error={!!sp.error}
+      blurb={
+        <>
           Scouting reports, counter-picks, and lineup math live behind a team
           password. Opponents don&apos;t need to know how to beat us.
-        </p>
-
-        <form action={login} className="mt-6 space-y-3">
-          <input type="hidden" name="next" value={safeNext} />
-          <label className="block text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
-            Team password
-            <input
-              name="password"
-              type="password"
-              required
-              autoFocus
-              autoComplete="current-password"
-              className="mt-2 block w-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3 font-sans text-base normal-case tracking-normal text-[var(--fg)] outline-none transition-colors focus:border-[var(--color-brass)] focus:ring-2 focus:ring-[var(--color-brass)]/40"
-            />
-          </label>
-          {sp.error && (
-            <p className="text-xs text-[var(--color-pop-bright)]">
-              That password didn&apos;t match. Try again.
-            </p>
-          )}
-          <button
-            type="submit"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-brass)] px-5 py-3 text-sm font-semibold text-[var(--color-ink)] transition-colors hover:bg-[var(--color-brass-bright)]"
-          >
-            Unlock research
-          </button>
-        </form>
-      </div>
-    </main>
+        </>
+      }
+    />
   );
 }

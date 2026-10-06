@@ -462,46 +462,12 @@ button:hover .hover-roll {
   .top-dog-stamp { font-size: 32px; padding: 0.6rem 1.1rem; }
 }
 
-/* Command palette (⌘K) */
-.cmdk-overlay {
-  background: color-mix(in oklab, var(--color-ink) 80%, transparent);
-  backdrop-filter: blur(6px);
-  animation: fade-in 0.18s ease-out forwards;
-}
-.cmdk-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border-strong);
-  border-radius: 14px;
-  box-shadow: var(--shadow-felt), 0 0 0 1px rgba(201, 162, 74, 0.15);
-  animation: cmdk-pop 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-  transform-origin: top center;
-}
+/* Command palette (⌘K) / toast entrance — the components style themselves
+ * with utilities and reference this keyframe by name. */
 @keyframes cmdk-pop {
   from { opacity: 0; transform: translateY(-6px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-.cmdk-item {
-  transition: background 0.15s ease;
-}
-.cmdk-item[data-active="true"] {
-  background: var(--bg-soft);
-}
-.cmdk-kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.4rem;
-  height: 1.3rem;
-  padding: 0 0.35rem;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  color: var(--fg-dim);
-}
-.cmdk-launcher .cmdk-kbd { color: inherit; opacity: 0.85; }
 
 /* Rack skeleton — pool balls "break" outward on mount, then settle. Each
  * ball gets its own scatter vector (via inline style) translated to a CSS

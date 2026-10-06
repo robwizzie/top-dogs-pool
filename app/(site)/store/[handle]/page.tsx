@@ -49,15 +49,25 @@ export default async function ProductPage({
   if (!product) notFound();
 
   return (
-    <article className="mx-auto max-w-7xl overflow-x-hidden px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <Link
-        href="/store"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-[var(--fg-dim)] hover:text-[var(--color-brass-bright)]"
-      >
-        <ChevronLeft size={14} /> Back to shop
-      </Link>
+    <article className="pm-grain relative mt-[calc(-5rem-env(safe-area-inset-top))] overflow-x-clip">
+      {/* Lamp-lit felt behind the top of the page, fading into the night. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[46rem]" aria-hidden>
+        <div className="pm-felt absolute inset-0" />
+        <div className="pm-lamp pm-lamp-flicker absolute inset-0" />
+        <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_50%_0%,transparent_35%,rgba(0,0,0,0.7)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent to-[var(--bg)]" />
+      </div>
 
-      <ProductDisplay product={product} />
+      <div className="relative z-[2] mx-auto max-w-7xl px-4 pb-14 pt-[calc(5rem+env(safe-area-inset-top)+1.75rem)] sm:px-6 sm:pb-20 sm:pt-[calc(5rem+env(safe-area-inset-top)+2.75rem)] lg:px-8">
+        <Link
+          href="/store"
+          className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/25 py-1.5 pl-2.5 pr-3.5 text-xs font-semibold tracking-wide text-[var(--color-cream)]/75 backdrop-blur-sm transition-colors hover:border-[var(--color-brass)]/50 hover:text-[var(--color-brass-bright)] sm:mb-8"
+        >
+          <ChevronLeft size={14} /> Back to shop
+        </Link>
+
+        <ProductDisplay product={product} />
+      </div>
     </article>
   );
 }
