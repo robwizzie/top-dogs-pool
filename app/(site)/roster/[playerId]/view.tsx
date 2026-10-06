@@ -13,6 +13,7 @@ import { CareerArc } from "@/components/cards/CareerArc";
 import { RosterRackCard } from "@/components/rack/RosterRackCard";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { SessionPicker } from "@/components/leaderboard/SessionPicker";
+import { HeaderRail, ResultBall, SeasonHeading } from "@/components/season/SeasonKit";
 import { parseSessionScope, resolveScope } from "@/lib/session-scope";
 import {
   getCurrentSession,
@@ -212,16 +213,16 @@ export async function PlayerView({ params, query }: Props) {
         />
       )}
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-14 pt-2 sm:px-6 lg:px-8">
         <Link
           href="/roster"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass)] focus:outline-none focus-visible:text-[var(--color-brass)]"
+          className="group mb-6 inline-flex items-center gap-1.5 rounded-full border border-[var(--color-brass)]/30 bg-black/30 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brass)]"
         >
-          <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
+          <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-0.5" />
           Back to roster
         </Link>
 
-        <div className="mb-6">
+        <div className="mb-10">
           <SessionPicker
             basePath={`/roster/${playerId}`}
             sessions={sessions.filter((s) =>
@@ -231,39 +232,73 @@ export async function PlayerView({ params, query }: Props) {
           />
         </div>
 
-        <div className="mb-3 flex items-center gap-3">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+        <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <h2 className="font-[family-name:var(--font-display)] text-3xl leading-none tracking-wide text-[var(--color-cream)] sm:text-4xl">
             {display.label}
           </h2>
           {playerHistory?.streak && (
             <StreakBadge streak={playerHistory.streak} />
           )}
+          <div className="pm-rule hidden flex-1 sm:block" aria-hidden />
           {playerHistory && playerHistory.outcomes.length > 0 && (
-            <div className="hidden items-center gap-2 text-[11px] text-[var(--fg-dim)] sm:flex">
-              <span>Recent:</span>
+            <div className="flex items-center gap-2.5 text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/45">
+              <span>Recent form</span>
               <OutcomeBars outcomes={playerHistory.outcomes} max={10} />
             </div>
           )}
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <AnimatedStatTile label="Points" value={display.points} decimals={Number.isInteger(display.points) ? 0 : 1} accent delay={0} />
-          <RecordTile wins={display.wins} losses={display.losses} delay={80} />
-          <AnimatedStatTile
-            label="Win %"
-            value={display.matchesPlayed ? display.winPct : 0}
-            empty={!display.matchesPlayed}
-            suffix="%"
-            decimals={1}
-            delay={160}
-          />
-          <AnimatedStatTile label="Sweeps" value={display.sweeps} accent delay={240} />
-          <AnimatedStatTile label="Mini-Sweeps" value={display.miniSweeps} delay={320} />
-          <AnimatedStatTile label="Break & Runs" value={display.breakAndRuns} delay={400} />
-          <AnimatedStatTile label="8 on Break" value={display.eightOnBreaks} delay={480} />
+
+        {/* Scoreboard — the four numbers that matter, on the table rail. */}
+        <HeaderRail
+          size="lg"
+          className="mt-0 max-w-none"
+          cells={[
+            {
+              label: "Patch points",
+              value: (
+                <StatCounter
+                  value={display.points}
+                  decimals={Number.isInteger(display.points) ? 0 : 1}
+                />
+              ),
+              accent: true,
+            },
+            {
+              label: "Record",
+              value: (
+                <>
+                  <StatCounter value={display.wins} delay={80} />
+                  <span className="text-[var(--color-cream)]/30">–</span>
+                  <StatCounter value={display.losses} delay={80} />
+                </>
+              ),
+            },
+            {
+              label: "Win rate",
+              value: display.matchesPlayed ? (
+                <>
+                  <StatCounter value={display.winPct} decimals={1} delay={160} />
+                  <span className="text-[0.5em] text-[var(--color-cream)]/45">%</span>
+                </>
+              ) : (
+                <span className="text-[var(--color-cream)]/30">—</span>
+              ),
+            },
+            {
+              label: "Sweeps",
+              value: <StatCounter value={display.sweeps} delay={240} />,
+            },
+          ]}
+        />
+
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <AnimatedStatTile label="Mini-Sweeps" value={display.miniSweeps} delay={320} tone="brass" />
+          <AnimatedStatTile label="Break & Runs" value={display.breakAndRuns} delay={400} tone="felt" />
+          <AnimatedStatTile label="8 on Break" value={display.eightOnBreaks} delay={480} tone="cream" />
           {display.pa !== undefined ? (
-            <AnimatedStatTile label="PA" value={display.pa} suffix="%" delay={560} />
+            <AnimatedStatTile label="PA" value={display.pa} suffix="%" delay={560} tone="pop" />
           ) : (
-            <AnimatedStatTile label="Matches" value={display.matchesPlayed} delay={560} />
+            <AnimatedStatTile label="Matches" value={display.matchesPlayed} delay={560} tone="pop" />
           )}
         </div>
 
@@ -288,15 +323,16 @@ export async function PlayerView({ params, query }: Props) {
           display.levelUps > 0 ||
           display.firstWin > 0 ||
           display.mvp > 0) && (
-          <section className="mt-12">
-            <div className="mb-4 flex items-baseline justify-between gap-3">
-              <h2 className="font-[family-name:var(--font-display)] text-2xl tracking-wide">
-                Patches Earned
-              </h2>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--fg-dim)]">
-                Tap a patch for the match list
-              </span>
-            </div>
+          <section className="mt-16">
+            <SeasonHeading
+              eyebrow="Hardware"
+              title="Patches Earned"
+              action={
+                <span className="hidden text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/45 sm:inline">
+                  Tap a patch for the match list
+                </span>
+              }
+            />
             <PatchShowcase
               sweeps={display.sweeps}
               miniSweeps={display.miniSweeps}
@@ -312,119 +348,173 @@ export async function PlayerView({ params, query }: Props) {
 
         {/* Live-scored record from the Rack Up section, if this player has
             linked an account there. Renders nothing when they haven't. */}
-        <div className="mt-12">
+        <div className="mt-12 empty:hidden">
           <RosterRackCard apaMemberId={playerId} />
         </div>
 
         {profile && profile.sessions.length > 1 && (
-          <section className="mt-12">
-            <h2 className="mb-4 font-[family-name:var(--font-display)] text-2xl tracking-wide">
-              Session History
-            </h2>
-            <ul className="surface divide-y divide-[var(--border)]">
-              {profile.sessions.map((s) => (
-                <li
-                  key={`${s.sessionId}-${s.teamId}`}
-                  className={
-                    selectedIds.has(s.sessionId)
-                      ? "flex items-center gap-4 bg-[var(--color-felt-deep)]/40 p-4"
-                      : "flex items-center gap-4 p-4"
-                  }
-                >
-                  <Link
-                    href={`/roster/${playerId}?session=${s.sessionId}`}
-                    className="min-w-0 flex-1 hover:text-[var(--color-brass)]"
-                  >
-                    <p className="truncate text-sm font-medium">
-                      {s.sessionName}
-                      <span className="text-[var(--fg-dim)]"> · </span>
-                      <span className="text-[var(--fg-dim)]">
-                        {s.teamName}
-                      </span>
-                    </p>
-                    <p className="text-xs text-[var(--fg-dim)]">
-                      {s.skillLevel ? `SL${s.skillLevel} · ` : ""}
-                      {s.matchesPlayed ?? 0} matches
-                      {s.winPct !== undefined ? ` · ${s.winPct}% win` : ""}
-                      {s.points !== undefined && s.points > 0
-                        ? ` · ${s.points} pts`
-                        : ""}
-                    </p>
-                  </Link>
-                  {s.wins !== undefined && s.matchesPlayed !== undefined && (
-                    <span className="text-sm font-medium tabular-nums">
-                      {s.wins}
-                      <span className="text-[var(--fg-dim)]">/</span>
-                      {s.matchesPlayed}
-                    </span>
-                  )}
-                </li>
-              ))}
+          <section className="mt-16">
+            <SeasonHeading
+              eyebrow="Career"
+              title="Session History"
+              action={
+                <span className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/45">
+                  {profile.sessions.length} sessions
+                </span>
+              }
+            />
+            <ul className="pm-glass overflow-hidden p-1.5 sm:p-2">
+              {profile.sessions.map((s) => {
+                const active = selectedIds.has(s.sessionId);
+                const pct =
+                  s.winPct ??
+                  (s.matchesPlayed && s.wins !== undefined
+                    ? Math.round((s.wins / s.matchesPlayed) * 1000) / 10
+                    : undefined);
+                return (
+                  <li key={`${s.sessionId}-${s.teamId}`}>
+                    <Link
+                      href={`/roster/${playerId}?session=${s.sessionId}`}
+                      className={
+                        "group relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-3 transition-colors sm:gap-4 sm:px-4 " +
+                        (active
+                          ? "bg-[linear-gradient(90deg,rgba(46,139,87,0.28),rgba(46,139,87,0.06)_70%,transparent)] shadow-[inset_3px_0_0_var(--color-brass-bright)]"
+                          : "hover:bg-white/[0.04]")
+                      }
+                    >
+                      {s.skillLevel ? (
+                        <PoolBall number={s.skillLevel} size={34} />
+                      ) : (
+                        <span className="h-[34px] w-[34px] shrink-0 rounded-full border border-[var(--color-cream)]/10" aria-hidden />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-[family-name:var(--font-display)] text-xl leading-tight tracking-wide text-[var(--color-cream)] transition-colors group-hover:text-[var(--color-brass-bright)]">
+                          {s.sessionName}
+                          <span className="ml-2 font-sans text-xs normal-case tracking-normal text-[var(--color-cream)]/50">
+                            {s.teamName}
+                          </span>
+                        </p>
+                        <p className="mt-0.5 truncate text-xs text-[var(--color-cream)]/50">
+                          {s.skillLevel ? `SL${s.skillLevel} · ` : ""}
+                          {s.matchesPlayed ?? 0} matches
+                          {s.winPct !== undefined ? ` · ${s.winPct}% win` : ""}
+                          {s.points !== undefined && s.points > 0
+                            ? ` · ${s.points} pts`
+                            : ""}
+                        </p>
+                      </div>
+                      {pct !== undefined && (
+                        <span
+                          className="hidden h-1.5 w-28 shrink-0 overflow-hidden rounded-full bg-white/[0.06] md:block"
+                          aria-hidden
+                        >
+                          <span
+                            className="block h-full rounded-full bg-gradient-to-r from-[var(--color-felt-bright)] to-[var(--color-brass-bright)]"
+                            style={{ width: `${Math.min(100, Math.max(0, pct))}%` }}
+                          />
+                        </span>
+                      )}
+                      {s.wins !== undefined && s.matchesPlayed !== undefined && (
+                        <span className="w-14 shrink-0 text-right font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--color-cream)]">
+                          {s.wins}
+                          <span className="text-[var(--color-cream)]/30">/</span>
+                          {s.matchesPlayed}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         )}
 
-        <section className="mt-12">
-          <h2 className="mb-4 font-[family-name:var(--font-display)] text-2xl tracking-wide">
-            {isAllSessions ? "Recent Matches (career)" : "Matches"}
-          </h2>
+        <section className="mt-16">
+          <SeasonHeading
+            eyebrow="Scoresheets"
+            title={isAllSessions ? "Recent Matches" : "Matches"}
+            action={
+              isAllSessions ? (
+                <span className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--color-cream)]/45">
+                  Career
+                </span>
+              ) : undefined
+            }
+          />
           {matchHistory.length === 0 ? (
-            <p className="surface p-6 text-sm text-[var(--fg-dim)]">
+            <p className="pm-glass p-6 text-sm text-[var(--color-cream)]/60">
               No matches with scoresheet results for this scope.
             </p>
           ) : (
-            <ul className="surface divide-y divide-[var(--border)]">
-              {matchHistory.map(({ match, mine }) => (
-                <li key={match.id}>
-                  <Link
-                    href={`/matches/${match.id}`}
-                    className="flex items-center gap-4 p-4 hover:bg-[var(--bg-soft)]"
-                  >
-                    <PoolBall
-                      number={mine.outcome === "W" ? 6 : 8}
-                      size={28}
-                    />
-                    <div className="flex-1 truncate">
-                      <p className="text-sm font-medium">
-                        vs {match.opponent}
-                        {match.sessionName && (
-                          <span className="ml-2 text-xs text-[var(--fg-dim)]">
-                            {match.sessionName}
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-xs text-[var(--fg-dim)]">
-                        {formatDate(match.date)}
-                        {mine.score && ` · ${mine.score}`}
-                        {mine.skillLevel && ` · SL${mine.skillLevel}`}
-                        {mine.opponentSkillLevel && ` vs SL${mine.opponentSkillLevel}`}
-                        {mine.sweep && " · SWEEP"}
-                        {!mine.sweep && mine.miniSweep && " · MINI"}
-                        {mine.breakAndRun && " · B&R"}
-                        {mine.eightOnBreak && " · 8 ON BREAK"}
-                      </p>
-                    </div>
-                    <span
-                      className={
-                        mine.outcome === "W"
-                          ? "text-sm font-bold text-[var(--color-felt-bright)]"
-                          : "text-sm font-bold text-[var(--color-pop-bright)]"
-                      }
+            <ul className="pm-glass overflow-hidden p-1.5 sm:p-2">
+              {matchHistory.map(({ match, mine }) => {
+                const tags = [
+                  mine.sweep ? "Sweep" : null,
+                  !mine.sweep && mine.miniSweep ? "Mini" : null,
+                  mine.breakAndRun ? "B&R" : null,
+                  mine.eightOnBreak ? "8 on break" : null,
+                ].filter(Boolean) as string[];
+                return (
+                  <li key={match.id}>
+                    <Link
+                      href={`/matches/${match.id}`}
+                      className="group flex items-center gap-3 rounded-2xl px-3 py-3 transition-colors hover:bg-white/[0.04] sm:gap-4 sm:px-4"
                     >
-                      {mine.outcome}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+                      <ResultBall
+                        outcome={mine.outcome === "W" ? "W" : "L"}
+                        size={38}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-[var(--color-cream)] transition-colors group-hover:text-[var(--color-brass-bright)] sm:text-base">
+                          vs {match.opponent}
+                          {match.sessionName && (
+                            <span className="ml-2 text-xs font-normal text-[var(--color-cream)]/45">
+                              {match.sessionName}
+                            </span>
+                          )}
+                        </p>
+                        <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-[var(--color-cream)]/50">
+                          <span>{formatDate(match.date)}</span>
+                          {mine.skillLevel && (
+                            <span>
+                              · SL{mine.skillLevel}
+                              {mine.opponentSkillLevel && ` vs SL${mine.opponentSkillLevel}`}
+                            </span>
+                          )}
+                          {tags.map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-full bg-[var(--color-brass)]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--color-brass-bright)]"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </p>
+                      </div>
+                      {mine.score && (
+                        <span
+                          className={
+                            "shrink-0 font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums " +
+                            (mine.outcome === "W"
+                              ? "text-[var(--color-felt-bright)]"
+                              : "text-[var(--color-pop-bright)]")
+                          }
+                        >
+                          {mine.score}
+                        </span>
+                      )}
+                      <span className="sr-only">{mine.outcome === "W" ? "Win" : "Loss"}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
 
         {clips.length > 0 && (
-          <section className="mt-12">
-            <h2 className="mb-4 font-[family-name:var(--font-display)] text-2xl tracking-wide">
-              Highlight Reel
-            </h2>
+          <section className="mt-16">
+            <SeasonHeading eyebrow="On camera" title="Highlight Reel" />
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {clips.map((c, i) => (
                 <YouTubeEmbed key={c.id} clip={c} priority={i === 0} />
@@ -487,7 +577,7 @@ function PlayerHero({
   isTopDog?: boolean;
 }) {
   return (
-    <section className="relative isolate overflow-hidden border-b border-[var(--border)]">
+    <section className="pm-grain relative isolate mt-[calc(-5rem-env(safe-area-inset-top))] overflow-hidden">
       {/* Soft blurred background fill so contain doesn't leave hard letterbox
           bars — gives the hero a polished, full-bleed feel while keeping the
           entire action shot visible. */}
@@ -512,16 +602,17 @@ function PlayerHero({
         className="absolute inset-0 -z-10 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/55 to-[var(--bg)]/30"
         aria-hidden
       />
+      <div className="pm-lamp absolute inset-0 -z-10" aria-hidden />
       {isTopDog && (
         <div
-          className="top-dog-stamp pointer-events-none absolute right-4 top-6 z-10 sm:right-8 sm:top-10"
+          className="top-dog-stamp pointer-events-none absolute right-4 top-28 z-10 sm:right-8 sm:top-32"
           aria-label="Top Dog — current sweeps leader"
         >
           <span className="block">TOP</span>
           <span className="block">DOG</span>
         </div>
       )}
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-12 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:px-8 lg:pb-20 lg:pt-48">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-12 pt-[calc(5rem+env(safe-area-inset-top)+8rem)] sm:px-6 sm:pb-16 sm:pt-[calc(5rem+env(safe-area-inset-top)+10rem)] lg:px-8 lg:pb-20 lg:pt-[calc(5rem+env(safe-area-inset-top)+12rem)]">
         <div className="flex items-end gap-5">
           {profileImage && (
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-[var(--color-brass)]/70 bg-[var(--color-felt-deep)] shadow-[0_8px_24px_rgba(0,0,0,0.4)] sm:h-24 sm:w-24">
@@ -535,12 +626,12 @@ function PlayerHero({
             </div>
           )}
           <div>
-            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
+            <p className="mb-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass-bright)] backdrop-blur-sm sm:text-[11px]">
               {format !== "unknown" ? format.toUpperCase() : "Player"}
               {skillLevel ? ` · SL${skillLevel}` : ""}
               {teamLabel ? ` · ${teamLabel}` : ""}
             </p>
-            <h1 className="font-[family-name:var(--font-display)] text-5xl leading-none tracking-wide drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:text-6xl lg:text-7xl">
+            <h1 className="font-[family-name:var(--font-display)] text-6xl leading-[0.9] tracking-wide text-[var(--color-cream)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:text-7xl lg:text-8xl">
               {name}
             </h1>
           </div>
@@ -550,63 +641,43 @@ function PlayerHero({
   );
 }
 
+const TILE_TONE = {
+  brass: "rgba(224,190,107,0.22)",
+  felt: "rgba(46,139,87,0.3)",
+  cream: "rgba(236,225,196,0.14)",
+  pop: "rgba(232,82,72,0.22)",
+} as const;
+
 function AnimatedStatTile({
   label,
   value,
   decimals = 0,
   suffix = "",
-  accent = false,
-  empty = false,
   delay = 0,
+  tone = "cream",
 }: {
   label: string;
   value: number;
   decimals?: number;
   suffix?: string;
-  accent?: boolean;
-  empty?: boolean;
   delay?: number;
+  tone?: keyof typeof TILE_TONE;
 }) {
   return (
-    <div className="surface px-5 py-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+    <div className="pm-glass relative overflow-hidden px-5 py-4">
+      <span
+        className="pointer-events-none absolute inset-0 rounded-[inherit]"
+        style={{
+          background: `radial-gradient(80% 90% at 100% 0%, ${TILE_TONE[tone]}, transparent 65%)`,
+        }}
+        aria-hidden
+      />
+      <p className="relative text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/50">
         {label}
       </p>
-      <p
-        className={`mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums ${
-          accent ? "text-[var(--color-pop-bright)]" : "text-[var(--color-cream)]"
-        }`}
-      >
-        {empty ? (
-          "—"
-        ) : (
-          <StatCounter value={value} decimals={decimals} suffix={suffix} delay={delay} />
-        )}
+      <p className="relative mt-1.5 font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide tabular-nums text-[var(--color-cream)]">
+        <StatCounter value={value} decimals={decimals} suffix={suffix} delay={delay} />
       </p>
     </div>
   );
 }
-
-function RecordTile({
-  wins,
-  losses,
-  delay = 0,
-}: {
-  wins: number;
-  losses: number;
-  delay?: number;
-}) {
-  return (
-    <div className="surface px-5 py-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
-        Record
-      </p>
-      <p className="mt-1 font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums text-[var(--color-cream)]">
-        <StatCounter value={wins} delay={delay} />
-        <span className="text-[var(--fg-dim)]">–</span>
-        <StatCounter value={losses} delay={delay} />
-      </p>
-    </div>
-  );
-}
-

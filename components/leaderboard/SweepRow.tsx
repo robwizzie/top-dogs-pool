@@ -74,44 +74,48 @@ export function SweepRow({
         // Top-aligned, not centred: a row carrying a patch strip is taller
         // than the rank and avatar beside it, and centring left the name
         // floating above them attached to nothing.
-        "fade-in-up flex items-start gap-3 px-4 py-3",
-        "transition-colors hover:bg-[var(--color-felt-deep)]/25",
+        "group fade-in-up flex items-start gap-3 rounded-2xl px-3 py-3.5 sm:gap-4 sm:px-4",
+        "transition-colors hover:bg-white/[0.04]",
       )}
       style={{ animationDelay: `${rank * 40}ms` }}
     >
-      <span className="flex w-9 shrink-0 flex-col items-center">
-        <span className="font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--fg-dim)]">
+      <span className="flex w-9 shrink-0 flex-col items-center pt-0.5 sm:w-10">
+        <span className="font-[family-name:var(--font-display)] text-3xl leading-none tabular-nums text-[var(--color-cream)]/35 transition-colors group-hover:text-[var(--color-cream)]/60">
           {tied ? `T${rank}` : rank}
         </span>
         {rankDelta !== null && rankDelta !== 0 && (
-          <span className="mt-0.5 flex items-center gap-px text-[10px] tabular-nums text-[var(--fg-dim)]">
+          <span className="mt-1 flex items-center gap-px text-[10px] tabular-nums text-[var(--color-cream)]/50">
             <MoveArrow delta={rankDelta} />
             {Math.abs(rankDelta)}
           </span>
         )}
       </span>
       {row.profileImage ? (
-        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-[var(--color-brass)]/40">
+        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[var(--color-brass)]/45 shadow-[0_8px_18px_-8px_rgba(0,0,0,0.9)]">
           <Image
             src={row.profileImage}
             alt={row.playerName}
             fill
-            sizes="36px"
+            sizes="40px"
             className="object-cover object-top"
           />
         </div>
       ) : (
-        <PoolBall number={((rank - 1) % 7) + 1} size={36} />
+        <PoolBall
+          number={((rank - 1) % 7) + 1}
+          size={40}
+          className="shrink-0 drop-shadow-[0_8px_10px_rgba(0,0,0,0.6)]"
+        />
       )}
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
           <Link
             href={`/roster/${row.playerId}`}
-            className="truncate text-base font-medium hover:text-[var(--color-brass)]"
+            className="min-w-0 truncate text-base font-medium text-[var(--color-cream)] transition-colors hover:text-[var(--color-brass-bright)]"
           >
             {row.playerName}
             {row.skillLevel && (
-              <span className="ml-2 text-xs text-[var(--fg-dim)]">
+              <span className="ml-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-cream)]/40">
                 SL{row.skillLevel}
               </span>
             )}
@@ -130,8 +134,8 @@ export function SweepRow({
           size="sm"
           className="mt-2"
         />
-        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--fg-dim)]">
-          <span>
+        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[var(--color-cream)]/45">
+          <span className="tabular-nums">
             {row.wins}/{row.matchesPlayed} W
           </span>
         </div>
@@ -141,11 +145,11 @@ export function SweepRow({
           <OutcomeBars outcomes={outcomes} />
         </div>
       )}
-      <div className="shrink-0 text-right">
-        <p className="font-[family-name:var(--font-display)] text-3xl tracking-wide tabular-nums text-[var(--color-brass-bright)]">
+      <div className="w-14 shrink-0 text-right">
+        <p className="font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide tabular-nums text-[var(--color-brass-bright)]">
           {row.points}
         </p>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--fg-dim)]">
+        <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.24em] text-[var(--color-cream)]/40">
           {row.points === 1 ? "pt" : "pts"}
         </p>
       </div>

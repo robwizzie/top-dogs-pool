@@ -5,7 +5,7 @@
  */
 export function CareerArc({
   outcomes,
-  height = 64,
+  height = 84,
 }: {
   outcomes: ("W" | "L")[];
   height?: number;
@@ -42,17 +42,17 @@ export function CareerArc({
   const lastLoss = lossesPts[lossesPts.length - 1];
 
   return (
-    <div className="surface px-5 py-4">
-      <div className="mb-1 flex items-baseline justify-between">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+    <div className="pm-glass h-full px-5 py-5 sm:px-6">
+      <div className="mb-3 flex items-end justify-between gap-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--color-brass)]">
           Trajectory
         </p>
-        <p className="text-[11px] text-[var(--fg-dim)]">
-          <span className="font-[family-name:var(--font-display)] tracking-wide tabular-nums text-[var(--color-brass-bright)]">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-cream)]/45">
+          <span className="font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--color-brass-bright)]">
             {w}
           </span>{" "}
-          W ·{" "}
-          <span className="font-[family-name:var(--font-display)] tracking-wide tabular-nums text-[var(--color-pop-bright)]">
+          W{" "}
+          <span className="font-[family-name:var(--font-display)] text-2xl leading-none tracking-wide tabular-nums text-[var(--color-pop-bright)]">
             {l}
           </span>{" "}
           L · {outcomes.length} matches
@@ -66,6 +66,17 @@ export function CareerArc({
         role="img"
         aria-label={`Cumulative ${w} wins, ${l} losses across ${outcomes.length} matches`}
       >
+        <defs>
+          <linearGradient id="career-arc-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-brass-bright)" stopOpacity={0.28} />
+            <stop offset="100%" stopColor="var(--color-brass-bright)" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <path
+          d={`${winsPath} L${lastWin[0].toFixed(1)},${height} L${winsPts[0][0].toFixed(1)},${height} Z`}
+          fill="url(#career-arc-fill)"
+          stroke="none"
+        />
         <path
           d={lossesPath}
           fill="none"

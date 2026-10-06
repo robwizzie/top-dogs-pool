@@ -118,7 +118,7 @@ export async function PublicBriefingView({ query }: Props) {
         title="Tonight's read"
         subtitle="Shared from the captain — opponent intel + suggested lineup based on who's playing."
       />
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 sm:pt-6 lg:px-8">
         <TeamBriefing
           briefing={briefing}
           scouting={scouting}

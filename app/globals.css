@@ -6,6 +6,9 @@
   --color-felt: #143d2c;
   --color-felt-mid: #1b5e3f;
   --color-felt-bright: #2e8b57;
+  /* Readable win/positive green for text on near-black (felt-bright is a
+   * surface colour and too dark for small text). */
+  --color-felt-text: #7fd3a2;
   --color-brass: #c9a24a;
   --color-brass-bright: #e0be6b;
   --color-brass-dim: #8b6f2c;
@@ -13,7 +16,7 @@
   --color-cream-dim: #b9ad8d;
   --color-ink: #070707;
   --color-ink-soft: #111111;
-  --color-ink-card: #161616;
+  --color-ink-card: #141614;
   --color-six-ball: #1f6e3d;
   --color-pop: #c8362f;
   --color-pop-bright: #e85248;
@@ -134,14 +137,54 @@ body {
   }
 }
 
-/* Utility: card surface */
+/* Utility: card surface.
+ *
+ * The site-wide card. Same visual language as the home page's `.pm-glass`:
+ * a layered dark fill with a hairline border that catches brass light along
+ * the top edge. The border gradient is painted with the padding-box /
+ * border-box background trick rather than a pseudo-element, so `.surface`
+ * never needs `position: relative` (which would fight `sticky`/`absolute`
+ * utilities on the ~200 elements that use it). */
 .surface {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.008) 45%, rgba(0, 0, 0, 0.1)) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(
+      180deg,
+      rgba(224, 190, 107, 0.34),
+      rgba(224, 190, 107, 0.1) 35%,
+      rgba(255, 255, 255, 0.05) 75%,
+      rgba(224, 190, 107, 0.12)
+    ) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 24px 48px -28px rgba(0, 0, 0, 0.85);
 }
-.surface-hover:hover {
-  border-color: var(--border-strong);
+.surface-hover {
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    background 0.35s ease;
+}
+@media (hover: hover) {
+  .surface-hover:hover {
+    transform: translateY(-2px);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012) 45%, rgba(0, 0, 0, 0.1)) padding-box,
+      linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+      linear-gradient(
+        180deg,
+        rgba(224, 190, 107, 0.6),
+        rgba(224, 190, 107, 0.22) 40%,
+        rgba(224, 190, 107, 0.18)
+      ) border-box;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 30px 60px -28px rgba(0, 0, 0, 0.9),
+      0 16px 48px -28px rgba(201, 162, 74, 0.45);
+  }
 }
 
 /* 8-ball spinner */
@@ -422,46 +465,12 @@ button:hover .hover-roll {
   .top-dog-stamp { font-size: 32px; padding: 0.6rem 1.1rem; }
 }
 
-/* Command palette (⌘K) */
-.cmdk-overlay {
-  background: color-mix(in oklab, var(--color-ink) 80%, transparent);
-  backdrop-filter: blur(6px);
-  animation: fade-in 0.18s ease-out forwards;
-}
-.cmdk-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border-strong);
-  border-radius: 14px;
-  box-shadow: var(--shadow-felt), 0 0 0 1px rgba(201, 162, 74, 0.15);
-  animation: cmdk-pop 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-  transform-origin: top center;
-}
+/* Command palette (⌘K) / toast entrance — the components style themselves
+ * with utilities and reference this keyframe by name. */
 @keyframes cmdk-pop {
   from { opacity: 0; transform: translateY(-6px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-.cmdk-item {
-  transition: background 0.15s ease;
-}
-.cmdk-item[data-active="true"] {
-  background: var(--bg-soft);
-}
-.cmdk-kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.4rem;
-  height: 1.3rem;
-  padding: 0 0.35rem;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  color: var(--fg-dim);
-}
-.cmdk-launcher .cmdk-kbd { color: inherit; opacity: 0.85; }
 
 /* Rack skeleton — pool balls "break" outward on mount, then settle. Each
  * ball gets its own scatter vector (via inline style) translated to a CSS
@@ -536,9 +545,14 @@ button:hover .hover-roll {
 
 .ribbon-tile {
   position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  /* Same glass recipe as .surface: layered fill + brass-lit hairline. */
+  border: 1px solid transparent;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.008) 50%, rgba(0, 0, 0, 0.12)) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(180deg, rgba(224, 190, 107, 0.3), rgba(255, 255, 255, 0.05) 60%, rgba(224, 190, 107, 0.1)) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 36px -24px rgba(0, 0, 0, 0.85);
+  border-radius: 16px;
   padding: 14px 14px 14px 22px;
   overflow: hidden;
   transition:
@@ -569,7 +583,6 @@ button:hover .hover-roll {
 }
 .group:hover .ribbon-tile,
 .ribbon-tile:hover {
-  border-color: var(--border-strong);
   transform: translateY(-3px);
   box-shadow: 0 12px 30px -16px var(--ribbon-rail, rgba(0, 0, 0, 0.6));
 }
@@ -1111,4 +1124,453 @@ a.patch-lightbox-instance-link:hover {
 }
 .animate-pulse-pop {
   animation: pulse-pop 1.6s ease-out infinite;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+ * Refresh layer — "lamp over the felt".
+ *
+ * Additive `pm-*` primitives for the redesigned home page. They sit beside the
+ * older `.surface` system rather than replacing it, so the rest of the site
+ * keeps its current look until each page is migrated.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* Film grain — a static SVG turbulence tile, blended over dark surfaces so
+ * big gradients don't band and flat blacks feel tactile. */
+.pm-grain {
+  position: relative;
+  isolation: isolate;
+}
+.pm-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glass card — layered gradient fill, hairline brass top highlight and a
+ * soft drop. The border is a masked gradient so it brightens at the top edge
+ * like light catching a rail. */
+/* `position` lives in the components layer so Tailwind utilities (which are
+ * in the later utilities layer) can still make a glass card `sticky` or
+ * `absolute`; unlayered, it would silently win over them. */
+@layer components {
+  .pm-glass {
+    position: relative;
+  }
+}
+.pm-glass {
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012) 40%, rgba(0, 0, 0, 0.12)),
+    rgba(18, 20, 18, 0.72);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.8),
+    0 12px 24px -16px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+}
+.pm-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(224, 190, 107, 0.45),
+    rgba(224, 190, 107, 0.12) 30%,
+    rgba(255, 255, 255, 0.05) 70%,
+    rgba(224, 190, 107, 0.14)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Interactive glass: lifts and picks up a lamp-light sheen under the cursor
+ * (--mx / --my are set by <Spotlight>; it falls back to top-center). */
+.pm-lift {
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.pm-lift > .pm-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(224, 190, 107, 0.12),
+    transparent 60%
+  );
+}
+@media (hover: hover) {
+  .pm-lift:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 40px 80px -30px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(224, 190, 107, 0.18),
+      0 20px 60px -30px rgba(201, 162, 74, 0.35);
+  }
+  .pm-lift:hover > .pm-sheen {
+    opacity: 1;
+  }
+}
+
+/* Brass foil text — a slow sheen sweeps across the gradient. */
+.pm-foil {
+  background: linear-gradient(
+    100deg,
+    #a8822f 0%,
+    #e0be6b 22%,
+    #fff1c9 38%,
+    #e0be6b 52%,
+    #b38b36 70%,
+    #f2d896 88%,
+    #a8822f 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: pm-foil-sweep 9s ease-in-out infinite;
+}
+@keyframes pm-foil-sweep {
+  0%, 100% { background-position: 100% 0; }
+  50%      { background-position: 0% 0; }
+}
+
+/* Outline display text — cream stroke, hollow fill. */
+.pm-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(236, 225, 196, 0.85);
+}
+
+/* Overhead billiard lamp: a warm cone pooling onto the felt. */
+.pm-lamp {
+  background:
+    radial-gradient(60% 55% at 50% 0%, rgba(255, 226, 160, 0.16), transparent 70%),
+    radial-gradient(45% 40% at 50% 8%, rgba(255, 236, 190, 0.1), transparent 70%);
+}
+@keyframes pm-lamp-flicker {
+  0%, 100% { opacity: 1; }
+  47%      { opacity: 1; }
+  48%      { opacity: 0.86; }
+  50%      { opacity: 1; }
+  73%      { opacity: 0.93; }
+  74%      { opacity: 1; }
+}
+.pm-lamp-flicker {
+  animation: pm-lamp-flicker 7s linear infinite;
+}
+
+/* Felt surface with a diamond-stitched rail border. */
+.pm-felt {
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(46, 139, 87, 0.55), transparent 65%),
+    radial-gradient(rgba(0, 0, 0, 0.22) 1px, transparent 1px) 0 0 / 5px 5px,
+    linear-gradient(180deg, #13402d, #0b2a1e 70%, #08201a);
+}
+
+/* Section header — big index numeral + hairline that runs to the edge. */
+.pm-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(224, 190, 107, 0.5), rgba(224, 190, 107, 0.08) 60%, transparent);
+}
+
+/* Orbiting balls around the hero crest. */
+@keyframes pm-orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes pm-counter-orbit {
+  to { transform: rotate(-360deg); }
+}
+.pm-orbit {
+  animation: pm-orbit 48s linear infinite;
+}
+.pm-orbit > * {
+  animation: pm-counter-orbit 48s linear infinite;
+}
+
+/* Halo ring behind the crest — conic brass sweep, slowly rotating. */
+.pm-halo {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(224, 190, 107, 0.55) 40deg,
+    transparent 110deg,
+    transparent 200deg,
+    rgba(46, 139, 87, 0.6) 250deg,
+    transparent 320deg
+  );
+  -webkit-mask: radial-gradient(closest-side, transparent 96%, #000 97%, #000 99%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 96%, #000 97%, #000 99%, transparent 100%);
+  animation: pm-orbit 18s linear infinite;
+}
+
+/* Infinite ticker. Content is rendered twice; we slide by exactly one copy. */
+@keyframes pm-marquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.pm-marquee {
+  display: flex;
+  width: max-content;
+  animation: pm-marquee 40s linear infinite;
+}
+.pm-marquee-mask {
+  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* Scroll reveal — progressive enhancement via scroll-driven animations.
+ * Browsers without support simply show the content. */
+@supports (animation-timeline: view()) {
+  .pm-reveal {
+    animation: pm-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+  @keyframes pm-reveal {
+    from { opacity: 0; transform: translate3d(0, 28px, 0) scale(0.985); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+
+/* Primary pill button — brass with a gloss highlight. */
+.pm-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.85rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+  background: linear-gradient(180deg, #f0d48a, #c9a24a 55%, #b38b36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 10px 30px -10px rgba(201, 162, 74, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.pm-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 16px 40px -12px rgba(201, 162, 74, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-foil,
+  .pm-orbit,
+  .pm-orbit > *,
+  .pm-halo,
+  .pm-marquee,
+  .pm-lamp-flicker {
+    animation: none !important;
+  }
+}
+
+/* ── Refresh layer, part 2: lamp, rail, holo cards, rack ─────────────────── */
+
+/* Italic serif accent — pairs with the Bebas display face for editorial
+ * contrast ("the *most dangerous* crew"). */
+.pm-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* Volumetric light falling from the lamp: a soft trapezoid of warm light. */
+.pm-cone {
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 228, 165, 0.32) 0%,
+    rgba(255, 220, 150, 0.12) 35%,
+    rgba(255, 220, 150, 0.04) 70%,
+    transparent 100%
+  );
+  filter: blur(18px);
+  mix-blend-mode: screen;
+}
+
+/* Dust drifting through the light. Each mote gets its own delay/duration. */
+@keyframes pm-mote {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.6; }
+  100% { transform: translate3d(var(--dx, 20px), -140px, 0); opacity: 0; }
+}
+.pm-mote {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 236, 190, 0.9);
+  box-shadow: 0 0 6px 1px rgba(255, 226, 160, 0.6);
+  animation: pm-mote var(--t, 9s) ease-in-out var(--d, 0s) infinite;
+}
+
+/* Lamp sway — a barely-there pendulum so the scene feels alive. */
+@keyframes pm-sway {
+  0%, 100% { transform: rotate(-0.6deg); }
+  50%      { transform: rotate(0.6deg); }
+}
+.pm-sway {
+  transform-origin: 50% 0;
+  animation: pm-sway 6s ease-in-out infinite;
+}
+
+/* Table rail — dark walnut with a leather cushion lip and brass diamond
+ * sights between cells. */
+.pm-rail {
+  position: relative;
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 18%),
+    repeating-linear-gradient(
+      92deg,
+      rgba(255, 255, 255, 0.018) 0 2px,
+      transparent 2px 9px
+    ),
+    linear-gradient(180deg, #2b1c12 0%, #1d130c 55%, #140d08 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 170, 0.18),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(201, 162, 74, 0.25),
+    0 40px 80px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 6px rgba(10, 6, 4, 0.55);
+}
+.pm-rail::before {
+  /* the felt cushion peeking above the rail */
+  content: "";
+  position: absolute;
+  inset: -6px 18px auto;
+  height: 6px;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, #2e8b57, #134d2f);
+  opacity: 0.9;
+}
+.pm-diamond {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 1.5px;
+  background: linear-gradient(135deg, #fff6dc, #e0be6b 45%, #8b6f2c);
+  box-shadow: 0 0 10px rgba(224, 190, 107, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Holographic collector card. A <TiltCard> sets --rx/--ry for the tilt and
+ * --mx/--my for the glare; the foil layer shifts with the pointer. */
+.pm-tilt {
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+  will-change: transform;
+}
+.pm-tilt[data-active="true"] {
+  transition: transform 0.08s linear;
+}
+.pm-holo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.22;
+  background:
+    radial-gradient(
+      380px circle at var(--mx, 70%) var(--my, 20%),
+      rgba(255, 255, 255, 0.55),
+      transparent 45%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 214, 120, 0.55) 36%,
+      rgba(120, 255, 200, 0.35) 46%,
+      rgba(140, 170, 255, 0.4) 56%,
+      rgba(255, 140, 200, 0.35) 64%,
+      transparent 80%
+    );
+  background-size: 100% 100%, 260% 260%;
+  background-position: 0 0, var(--hx, 50%) var(--hy, 50%);
+  transition: opacity 0.4s ease;
+}
+.pm-tilt[data-active="true"] .pm-holo {
+  opacity: 0.55;
+}
+/* Fine diagonal foil etching on the card face. */
+.pm-etch {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.06;
+  background: repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 6px);
+}
+
+/* Countdown digits — split-flap style tiles. */
+.pm-flap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2ch;
+  padding: 0.3rem 0.45rem 0.2rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(180deg, #1b1d1b 0%, #1b1d1b 49%, #121412 51%, #121412 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(201, 162, 74, 0.2),
+    0 10px 20px -10px rgba(0, 0, 0, 0.8);
+}
+.pm-flap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Ambient felt glow sitting behind a section. */
+.pm-ambient {
+  position: absolute;
+  inset: -10% -20%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(46, 139, 87, 0.12), transparent 70%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-mote,
+  .pm-sway {
+    animation: none !important;
+  }
+  .pm-mote {
+    display: none;
+  }
+  .pm-tilt {
+    transform: none !important;
+  }
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Target } from "lucide-react";
 import { PoolTable } from "@/components/shots/PoolTable";
+import { LampStage } from "@/components/shots/TrainingUI";
 import { getShot, KINISTER_SHOTS } from "@/lib/kinister/shots";
 import { describePosition, pocketLabel } from "@/lib/kinister/setup";
 
@@ -29,8 +30,8 @@ export default async function ShotPracticePage({
   const topMistake = shot.commonMistakes[0];
 
   return (
-    <main className="min-h-dvh bg-[var(--bg)]">
-      <header className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
+    <div className="min-h-dvh">
+      <header className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-4">
         <Link
           href={`/shots/${shot.id}`}
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)] transition-colors hover:text-[var(--color-brass-bright)]"
@@ -44,16 +45,18 @@ export default async function ShotPracticePage({
       </header>
 
       <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-5">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-4xl">
+        <h1 className="font-[family-name:var(--font-display)] text-4xl leading-[0.9] tracking-wide text-[var(--color-cream)] sm:text-5xl">
           {shot.name}
         </h1>
 
         {/* Big diagram + english indicator */}
-        <PoolTable shot={shot} interactive />
+        <LampStage compact>
+          <PoolTable shot={shot} interactive />
+        </LampStage>
 
         {/* Setup — only what you need to rack the balls */}
         {!shot.sequence && (
-          <div className="surface p-4">
+          <div className="pm-glass p-4 sm:p-5">
             <div className="flex items-center gap-2">
               <MapPin size={14} className="text-[var(--color-brass-bright)]" />
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
@@ -92,7 +95,7 @@ export default async function ShotPracticePage({
         )}
 
         {/* Single-line technique cue + key tip + key mistake */}
-        <div className="surface p-4">
+        <div className="pm-glass p-4 sm:p-5">
           <div className="flex items-center gap-2">
             <Target size={14} className="text-[var(--color-brass-bright)]" />
             <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-brass)]">
@@ -120,6 +123,6 @@ export default async function ShotPracticePage({
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

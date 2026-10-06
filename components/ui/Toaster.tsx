@@ -68,7 +68,7 @@ export function Toaster() {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-2 px-3 sm:bottom-6 sm:right-6 sm:left-auto sm:items-end"
+      className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-50 flex flex-col items-center gap-2 px-3 sm:right-6 sm:left-auto sm:items-end md:bottom-20"
     >
       {toasts.map((t) => (
         <Toast key={t.id} toast={t} onDismiss={() => dismiss(t.id)} />
@@ -92,23 +92,26 @@ function Toast({
         : Info;
   const tone =
     toast.kind === "success"
-      ? "border-[var(--color-felt-bright)]/55 bg-[var(--color-felt-deep)]/85 text-[var(--color-felt-bright)]"
+      ? { chip: "border-[var(--color-felt-bright)]/45 bg-[var(--color-felt)]/50 text-[var(--color-felt-bright)]", bar: "from-[var(--color-felt-bright)]" }
       : toast.kind === "error"
-        ? "border-[var(--color-pop)]/55 bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)]"
-        : "border-[var(--color-brass)]/55 bg-[var(--bg-card)] text-[var(--fg)]";
+        ? { chip: "border-[var(--color-pop)]/45 bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)]", bar: "from-[var(--color-pop-bright)]" }
+        : { chip: "border-[var(--color-brass)]/40 bg-[var(--color-brass)]/10 text-[var(--color-brass-bright)]", bar: "from-[var(--color-brass-bright)]" };
   return (
     <div
       role="status"
-      className={cn(
-        "pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl border px-4 py-3 shadow-lg backdrop-blur",
-        tone,
-      )}
+      className="pointer-events-auto relative flex w-full max-w-sm animate-[cmdk-pop_0.25s_cubic-bezier(0.2,0.7,0.3,1)_forwards] items-start gap-3 overflow-hidden rounded-2xl border border-[var(--color-brass)]/20 bg-[color-mix(in_oklab,#0b0d0b_86%,transparent)] py-3 pl-3 pr-3.5 text-[var(--color-cream)] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl backdrop-saturate-150"
     >
-      <Icon size={16} className="mt-[2px] shrink-0" />
-      <div className="min-w-0 flex-1">
+      <span
+        className={cn("pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r to-transparent", tone.bar)}
+        aria-hidden
+      />
+      <span className={cn("inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border", tone.chip)}>
+        <Icon size={15} />
+      </span>
+      <div className="min-w-0 flex-1 pt-0.5">
         <p className="text-sm font-semibold leading-tight">{toast.message}</p>
         {toast.detail && (
-          <p className="mt-0.5 text-xs leading-snug opacity-80">
+          <p className="mt-1 text-xs leading-snug text-[var(--color-cream)]/60">
             {toast.detail}
           </p>
         )}
@@ -116,7 +119,7 @@ function Toast({
       <button
         type="button"
         onClick={onDismiss}
-        className="text-current opacity-60 transition-opacity hover:opacity-100"
+        className="-mr-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[var(--color-cream)]/45 transition-colors hover:bg-white/[0.06] hover:text-[var(--color-cream)]"
         aria-label="Dismiss"
       >
         <X size={14} />

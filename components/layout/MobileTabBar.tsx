@@ -21,10 +21,10 @@ export function MobileTabBar() {
   const pathname = usePathname();
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[color-mix(in_oklab,var(--bg)_92%,transparent)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 rounded-full border border-[var(--color-brass)]/20 bg-[color-mix(in_oklab,#0b0d0b_78%,transparent)] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl backdrop-saturate-150 md:hidden"
       aria-label="Primary"
     >
-      <ul className="mx-auto grid max-w-lg grid-cols-5">
+      <ul className="mx-auto grid max-w-lg grid-cols-5 px-1.5 py-1.5">
         {TABS.map((t) => {
           const active = pathname === t.href || (t.href !== "/" && pathname.startsWith(t.href));
           const Icon = t.icon;
@@ -33,10 +33,10 @@ export function MobileTabBar() {
               <Link
                 href={t.href}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 text-[11px] font-medium tracking-wide",
+                  "flex flex-col items-center gap-0.5 rounded-full px-2 py-1.5 text-[10px] font-medium tracking-wide transition-colors",
                   active
-                    ? "text-[var(--color-brass-bright)]"
-                    : "text-[var(--fg-dim)]",
+                    ? "bg-[var(--color-brass)]/12 text-[var(--color-brass-bright)]"
+                    : "text-[var(--color-cream)]/60",
                 )}
               >
                 <span className="relative">
@@ -46,9 +46,6 @@ export function MobileTabBar() {
                   )}
                 </span>
                 <span>{t.label}</span>
-                {active && (
-                  <span className="block h-0.5 w-6 rounded-full bg-[var(--color-brass)]" />
-                )}
               </Link>
             </li>
           );

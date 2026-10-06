@@ -39,32 +39,34 @@ export function WeekRecap({
   const scorers = recap.movers.filter((m) => m.gained > 0);
 
   return (
-    <section className="surface overflow-hidden">
+    <section className="pm-glass overflow-hidden">
       {/* --- the result ------------------------------------------------- */}
-      <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-[var(--border)] bg-[var(--color-felt-deep)]/40 px-5 py-4">
-        <span className="rounded-full bg-[var(--color-brass)]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--color-brass-bright)]">
+      <header className="pm-grain relative flex flex-wrap items-center gap-x-3 gap-y-2 overflow-hidden rounded-t-[1.25rem] border-b border-[var(--color-cream)]/[0.07] px-5 py-4 sm:px-6">
+        <div className="pm-felt absolute inset-0 -z-10 opacity-80" aria-hidden />
+        <div className="pm-lamp absolute inset-0 -z-10" aria-hidden />
+        <span className="relative z-[2] rounded-full border border-[var(--color-brass)]/40 bg-black/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--color-brass-bright)]">
           Week {recap.week}
         </span>
         {recap.date && (
-          <span className="text-sm text-[var(--fg-dim)]">
+          <span className="relative z-[2] text-xs uppercase tracking-[0.18em] text-[var(--color-cream)]/60">
             {formatDate(recap.date)}
           </span>
         )}
         {recap.opponent && (
-          <span className="text-sm">
-            <span className="text-[var(--fg-dim)]">vs </span>
-            <span className="font-medium">{recap.opponent}</span>
+          <span className="relative z-[2] font-[family-name:var(--font-display)] text-xl leading-none tracking-wide text-[var(--color-cream)] sm:text-2xl">
+            <span className="text-[0.75em] text-[var(--color-cream)]/45">vs </span>
+            {recap.opponent}
           </span>
         )}
         {recap.teamScore !== null && recap.opponentScore !== null && (
           <span
             className={[
-              "ml-auto rounded-full px-3 py-1 text-sm font-semibold tabular-nums",
+              "relative z-[2] ml-auto rounded-full border px-3 py-1 font-[family-name:var(--font-display)] text-lg leading-none tracking-wider tabular-nums",
               won
-                ? "bg-[var(--color-felt-bright)]/18 text-[var(--color-felt-bright)]"
+                ? "border-[var(--color-felt-bright)]/40 bg-black/35 text-[#7fd6a1]"
                 : tied
-                  ? "bg-[var(--color-tie)]/18 text-[var(--color-tie-bright)]"
-                  : "bg-[var(--color-pop)]/15 text-[var(--color-pop-bright)]",
+                  ? "border-[var(--color-tie)]/40 bg-black/35 text-[var(--color-tie-bright)]"
+                  : "border-[var(--color-pop)]/40 bg-black/35 text-[var(--color-pop-bright)]",
             ].join(" ")}
           >
             {won ? "Won" : tied ? "Tied" : "Lost"} {recap.teamScore}–
@@ -73,25 +75,25 @@ export function WeekRecap({
         )}
       </header>
 
-      <div className="grid gap-5 p-5 sm:grid-cols-[auto_1fr] sm:gap-6">
+      <div className="grid gap-5 p-5 sm:grid-cols-[auto_1fr] sm:gap-7 sm:p-6">
         {/* --- points put on the board --------------------------------- */}
-        <div className="sm:border-r sm:border-[var(--border)] sm:pr-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+        <div className="flex items-end gap-3 sm:block sm:border-r sm:border-[var(--color-cream)]/[0.07] sm:pr-7">
+          <p className="order-2 pb-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/50 sm:pb-0">
             Patch points
           </p>
-          <p className="font-[family-name:var(--font-display)] text-5xl leading-none tracking-wide text-[var(--color-brass-bright)]">
+          <p className="font-[family-name:var(--font-display)] text-6xl leading-none tracking-wide text-[var(--color-brass-bright)] sm:mt-1 sm:text-7xl">
             {recap.teamPoints % 1 === 0
               ? recap.teamPoints
               : recap.teamPoints.toFixed(1)}
           </p>
-          <p className="mt-1 text-xs text-[var(--fg-dim)]">this week</p>
+          <p className="order-3 pb-1 text-xs text-[var(--color-cream)]/45 sm:pb-0">this week</p>
         </div>
 
         {/* --- the patches themselves ----------------------------------- */}
         <div className="min-w-0">
           {patches.length > 0 ? (
             <>
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--fg-dim)]">
+              <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--color-cream)]/50">
                 Earned this week
               </p>
               <ul className="flex flex-wrap gap-2">
@@ -99,7 +101,7 @@ export function WeekRecap({
                   <li key={`${p.playerId}-${p.kind}-${i}`}>
                     <Link
                       href={`/roster/${p.playerId}`}
-                      className="group flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-soft)] py-1 pl-1 pr-3 transition-colors hover:border-[var(--color-brass)]"
+                      className="group flex items-center gap-2 rounded-full border border-[var(--color-brass)]/20 bg-black/30 py-1 pl-1 pr-3.5 transition-colors hover:border-[var(--color-brass)]/60 hover:bg-[var(--color-brass)]/10"
                     >
                       {/* interactive={false} — the whole chip is the link,
                           so the badge must not open its own lightbox. */}
@@ -110,7 +112,7 @@ export function WeekRecap({
                         interactive={false}
                       />
                       <span className="text-sm">
-                        <span className="font-medium group-hover:text-[var(--color-brass)]">
+                        <span className="font-medium text-[var(--color-cream)] group-hover:text-[var(--color-brass-bright)]">
                           {p.playerName}
                         </span>
                       </span>
@@ -120,21 +122,21 @@ export function WeekRecap({
               </ul>
             </>
           ) : (
-            <p className="text-sm text-[var(--fg-dim)]">
+            <p className="text-sm text-[var(--color-cream)]/55">
               No patches this week — {scorers.length > 0 ? "points still moved." : "the board held."}
             </p>
           )}
 
           {/* --- who moved ------------------------------------------- */}
           {climbers.length > 0 && (
-            <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--fg-dim)]">
+            <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--color-cream)]/55">
               <MoveArrow delta={1} />
               <span>
                 {climbers.slice(0, 3).map((m, i, arr) => (
                   <span key={m.playerId}>
                     <Link
                       href={`/roster/${m.playerId}`}
-                      className="font-medium text-[var(--fg)] hover:text-[var(--color-brass)]"
+                      className="font-medium text-[var(--color-cream)] hover:text-[var(--color-brass-bright)]"
                     >
                       {m.playerName}
                     </Link>

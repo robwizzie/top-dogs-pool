@@ -129,20 +129,22 @@ export function DataIO() {
   }
 
   return (
-    <div className="surface p-5">
+    <div className="pm-glass flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="max-w-xl">
       <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--color-brass)]">
         Backup / restore
       </p>
-      <p className="mt-1 text-xs leading-relaxed text-[var(--fg-dim)]">
+      <p className="mt-1.5 text-xs leading-relaxed text-[var(--color-cream)]/55">
         Tracker data, notes, and drilled flags live in this browser only.
         Download a JSON backup to keep them safe or move them to another
         device.
       </p>
-      <div className="mt-3 flex flex-wrap gap-2">
+      </div>
+      <div className="flex shrink-0 flex-wrap gap-2">
         <button
           type="button"
           onClick={exportData}
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg)] transition-colors hover:border-[var(--color-brass)]/60 hover:text-[var(--color-brass-bright)]"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-brass)]/40 bg-black/30 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
         >
           <Download size={13} />
           Download backup
@@ -150,7 +152,7 @@ export function DataIO() {
         <button
           type="button"
           onClick={triggerImport}
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg)] transition-colors hover:border-[var(--color-brass)]/60 hover:text-[var(--color-brass-bright)]"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--color-brass)]/40 bg-black/30 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-brass-bright)] transition-colors hover:bg-[var(--color-brass)]/10"
         >
           <Upload size={13} />
           Restore from backup

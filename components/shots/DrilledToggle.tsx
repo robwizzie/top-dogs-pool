@@ -13,10 +13,10 @@ export function DrilledToggle({ shotId }: { shotId: string }) {
       onClick={() => toggle(shotId)}
       aria-pressed={drilled}
       className={cn(
-        "inline-flex h-9 items-center gap-2 rounded-full border px-4 text-sm font-semibold tracking-wide transition-colors",
+        "inline-flex h-9 items-center gap-2 rounded-full border px-4 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-sm transition-colors",
         drilled
-          ? "border-[var(--color-felt-bright)]/50 bg-[var(--color-felt-deep)]/60 text-[var(--color-felt-bright)]"
-          : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--fg-dim)] hover:text-[var(--fg)]",
+          ? "border-[var(--color-felt-bright)]/60 bg-[var(--color-felt-bright)]/20 text-[#7ad6a0] shadow-[0_0_20px_-6px_rgba(46,139,87,0.9)]"
+          : "border-white/10 bg-black/30 text-[var(--color-cream)]/70 hover:border-[var(--color-cream)]/25 hover:text-[var(--color-cream)]",
       )}
     >
       {drilled ? <CheckCircle2 size={14} /> : <Circle size={14} />}

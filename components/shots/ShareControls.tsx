@@ -67,11 +67,11 @@ export function ShareControls({ shot }: { shot: KinisterShot }) {
     typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="-ml-2 flex flex-wrap items-center gap-1">
       <button
         type="button"
         onClick={copyLink}
-        className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+        className="inline-flex h-8 items-center gap-2 rounded-full px-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--color-cream)]/55 transition-colors hover:text-[var(--color-brass-bright)]"
         aria-label="Copy link to this shot"
       >
         {copied ? <Check size={13} /> : <Link2 size={13} />}
@@ -81,7 +81,7 @@ export function ShareControls({ shot }: { shot: KinisterShot }) {
         <button
           type="button"
           onClick={shareNative}
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+          className="inline-flex h-8 items-center gap-2 rounded-full px-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--color-cream)]/55 transition-colors hover:text-[var(--color-brass-bright)]"
           aria-label="Share via system share sheet"
         >
           <Share2 size={13} />
@@ -91,7 +91,7 @@ export function ShareControls({ shot }: { shot: KinisterShot }) {
       <button
         type="button"
         onClick={downloadDiagram}
-        className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+        className="inline-flex h-8 items-center gap-2 rounded-full px-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--color-cream)]/55 transition-colors hover:text-[var(--color-brass-bright)]"
         aria-label="Download the diagram as an SVG file"
         title="Save the diagram as .svg"
       >
