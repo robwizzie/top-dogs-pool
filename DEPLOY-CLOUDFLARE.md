@@ -52,7 +52,7 @@ are also prerendered during the build.
 
 | Variable | Where | Notes |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | build | `https://poolmaxxing.com` — used by robots.txt / sitemap.xml |
+| `NEXT_PUBLIC_SITE_URL` | build | `https://poolmaxxing.com` (the default) — absolute og:image / canonical URLs, robots.txt, sitemap.xml |
 | `NEXT_PUBLIC_TIKTOK_HANDLE` | build | optional |
 | `NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN` | build | storefront (all three together) |
 | `NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN` | build | public Storefront token |

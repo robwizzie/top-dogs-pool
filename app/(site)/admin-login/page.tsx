@@ -5,7 +5,7 @@ import { ADMIN_COOKIE, sha256 } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin · Locked" };
+export const metadata = { title: "Admin · Locked", robots: { index: false, follow: false } };
 
 const SAFE_PREFIX = "/leaderboard/admin";
 const safePath = (next: string | undefined) =>

@@ -21,6 +21,7 @@ import {
   SectionHead,
 } from "@/components/research/ScoutUI";
 import type { MatchResult } from "@/lib/apa/schemas";
+import { pageMetadata } from "@/lib/site";
 
 
 
@@ -32,7 +33,17 @@ type Props = {
 export async function generateMetadata({ params }: Pick<Props, "params">) {
   const { matchId } = await params;
   const match = await getMatch(matchId);
-  return { title: match ? `vs ${match.opponent}` : "Match" };
+  if (!match) return { title: "Match" };
+  const when = formatDate(match.date);
+  const final =
+    match.status === "completed" && match.teamScore != null && match.opponentScore != null
+      ? ` Final: ${match.teamScore}–${match.opponentScore}.`
+      : "";
+  return pageMetadata({
+    title: `vs ${match.opponent}`,
+    description: `Top Dawgs vs ${match.opponent} — APA 8-ball match on ${when}.${final} Lineups, every game, and the recap.`,
+    path: `/matches/${matchId}`,
+  });
 }
 
 export async function MatchView({ params, query }: Props) {

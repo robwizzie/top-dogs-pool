@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getShot, KINISTER_SHOTS } from "@/lib/kinister/shots";
 import { ShotAR } from "@/components/shots/ar/ShotAR";
+import { pageMetadata } from "@/lib/site";
 
 type Params = { id: string };
 
@@ -13,11 +14,16 @@ export function generateStaticParams(): Params[] {
   return KINISTER_SHOTS.map((s) => ({ id: s.id }));
 }
 
-export const metadata = {
-  title: "AR Shot Trainer — Top Dogs Pool",
-  description:
-    "Track every shot with your phone's camera: make/miss, cut error, and cue-ball position feedback on your own table.",
-};
+export async function generateMetadata({ params }: { params: Promise<Params> }) {
+  const { id } = await params;
+  const shot = getShot(id);
+  return pageMetadata({
+    title: shot ? `AR Trainer · ${shot.name}` : "AR Shot Trainer",
+    description:
+      "Track every shot with your phone's camera: make/miss, cut error, and cue-ball position feedback on your own table.",
+    path: `/shots/${id}/ar`,
+  });
+}
 
 export default async function ShotARPage({
   params,

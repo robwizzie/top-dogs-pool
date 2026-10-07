@@ -4,14 +4,16 @@ import {
   DawgDrillHeader,
   DawgDrillRunner,
 } from "@/components/shots/DawgDrillRunner";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-static";
 
-export const metadata = {
-  title: "Dawg Drill — Top Dogs Pool",
+export const metadata = pageMetadata({
+  title: "Dawg Drill",
   description:
-    "Build a custom Dawg Drill: pick any shots, set how many reps you'll take of each, and run them in any order.",
-};
+    "Build a custom pool practice routine: pick any shots, set reps for each, and run them in any order with live scoring.",
+  path: "/dawg-drill",
+});
 
 export default function DawgDrillPage() {
   // The runner reads search params, so it renders client-side; the

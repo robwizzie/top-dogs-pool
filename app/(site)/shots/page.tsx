@@ -7,14 +7,16 @@ import { DrillCard } from "@/components/shots/DrillCard";
 import { HeaderChip, SECONDARY_PILL, TrainingHeading } from "@/components/shots/TrainingUI";
 import { KINISTER_SHOTS } from "@/lib/kinister/shots";
 import { DRILLS } from "@/lib/kinister/drills";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-static";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Shots — The Kinister Workout",
   description:
-    "Bert Kinister's drill catalog — the shots Top Dawgs are grinding to sharpen stroke, position, and shape.",
-};
+    "Bert Kinister's shot catalog with interactive table diagrams — the shots Top Dawgs grind to sharpen stroke, position, and cue-ball control.",
+  path: "/shots",
+});
 
 export default function ShotsPage() {
   const tiers = new Set(KINISTER_SHOTS.map((s) => s.difficulty)).size;

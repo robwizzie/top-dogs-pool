@@ -1,14 +1,16 @@
 import { PageHeader } from "@/components/ui/Section";
 import { HeaderBackLink, HeaderChip } from "@/components/shots/TrainingUI";
 import { GLOSSARY, type GlossaryEntry } from "@/lib/kinister/glossary";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-static";
 
-export const metadata = {
-  title: "Glossary — Top Dogs Pool",
+export const metadata = pageMetadata({
+  title: "Pool Glossary",
   description:
-    "Definitions for the pool terms used throughout the shot catalog — english, draw, stun, ghost ball, tangent line, and more.",
-};
+    "Plain-English definitions for the pool terms used in the shot catalog — english, draw, stun, ghost ball, tangent line, and more.",
+  path: "/glossary",
+});
 
 const SECTION_ORDER: GlossaryEntry["category"][] = [
   "Stroke",

@@ -8,7 +8,7 @@ import type { KinisterShot } from "@/lib/kinister/shots";
 // static params, and we don't want this regenerating on every share-link
 // preview — it was a heavy slice of our Fluid Active CPU budget.
 export const runtime = "nodejs";
-export const alt = "Top Dogs Pool — shot card";
+export const alt = "Top Dawgs — Kinister shot card";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -38,7 +38,7 @@ export default async function ShotOgImage({
   params: { id: string };
 }) {
   const shot = getShot(params.id);
-  const title = shot?.name ?? "Top Dogs Pool";
+  const title = shot?.name ?? "Top Dawgs";
   const subtitle = shot
     ? `Shot ${String(shot.number).padStart(2, "0")} · ${shot.difficulty} · ${shot.series}`
     : "Bert Kinister's shot catalog";
@@ -127,7 +127,7 @@ export default async function ShotOgImage({
                 background: "#c9a24a",
               }}
             />
-            <div style={{ fontWeight: 700 }}>Top Dogs Pool</div>
+            <div style={{ fontWeight: 700 }}>Top Dawgs</div>
             <div
               style={{
                 marginLeft: 16,

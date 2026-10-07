@@ -16,6 +16,7 @@ import {
   resolveScope,
   scopeLabel,
 } from "@/lib/session-scope";
+import { pageMetadata } from "@/lib/site";
 
 /**
  * Rank teams by `pointsLastWeek` (descending) to derive last week's standings,
@@ -64,10 +65,12 @@ function RankDelta({ delta }: { delta: number }) {
 
 
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Standings",
-  description: "Full division standings — current session and past sessions.",
-};
+  description:
+    "Full APA division standings for Top Dawgs — points, wins, and where every team sits this session and past ones.",
+  path: "/standings",
+});
 
 type Props = {
   query: { session?: string };

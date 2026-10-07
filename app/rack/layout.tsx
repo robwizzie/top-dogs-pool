@@ -19,9 +19,24 @@ const poppins = Poppins({
   display: "swap",
 });
 
+const RACK_DESCRIPTION = `${RACK_NAME} — ${RACK_TAGLINE}. Score APA matches live from your phone, run a bracket, track practice, and put the scoreboard on the TV.`;
+
+// og:image comes from ./opengraph-image.tsx — Rack Up's own card.
 export const metadata: Metadata = {
   title: { default: RACK_NAME, template: `%s · ${RACK_NAME}` },
-  description: `${RACK_NAME} — ${RACK_TAGLINE}. Score APA matches live from your phone, run a bracket, track practice, and put the scoreboard on the TV.`,
+  description: RACK_DESCRIPTION,
+  openGraph: {
+    title: `${RACK_NAME} — live APA scoring`,
+    description: RACK_DESCRIPTION,
+    siteName: RACK_NAME,
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${RACK_NAME} — live APA scoring`,
+    description: RACK_DESCRIPTION,
+  },
 };
 
 /**

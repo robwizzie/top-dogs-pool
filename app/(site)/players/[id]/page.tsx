@@ -14,6 +14,7 @@ import {
   TR,
   TR_OURS,
 } from "@/components/research/ScoutUI";
+import { pageMetadata } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -29,12 +30,14 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const { profile } = await getAnyPlayerProfile(id);
-  return {
+  return pageMetadata({
     title: profile ? `${profile.name} · Player` : "Player",
     description: profile
-      ? `${profile.name} — career profile, session-by-session record, and skill level history.`
-      : "Player profile.",
-  };
+      ? `${profile.name} — APA pool career profile, session-by-session record, and skill level history.`
+      : "APA pool player profile.",
+    path: `/players/${id}`,
+    type: "profile",
+  });
 }
 
 export default async function PlayerPage({ params }: Props) {

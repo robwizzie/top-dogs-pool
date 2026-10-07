@@ -26,6 +26,7 @@ import { DrillScoreTracker } from "@/components/shots/DrillScoreTracker";
 import { BowliardsTracker } from "@/components/shots/BowliardsTracker";
 import { DRILLS, getDrill } from "@/lib/kinister/drills";
 import { cn } from "@/lib/utils";
+import { pageMetadata } from "@/lib/site";
 
 type Params = { id: string };
 
@@ -44,10 +45,12 @@ export async function generateMetadata({
   const { id } = await params;
   const drill = getDrill(id);
   if (!drill) return { title: "Drill not found" };
-  return {
+  return pageMetadata({
     title: `${drill.name} — Practice Drill`,
     description: drill.description,
-  };
+    path: `/drills/${drill.id}`,
+    type: "article",
+  });
 }
 
 export default async function DrillDetailPage({

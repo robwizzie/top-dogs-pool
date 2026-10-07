@@ -28,6 +28,7 @@ import { loadSnapshot } from "@/lib/apa/client";
 import { cn, formatDate } from "@/lib/utils";
 import type { Match, Player } from "@/lib/apa/schemas";
 import { prerenderOpponentTeamIds } from "@/lib/prerender";
+import { pageMetadata } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -46,12 +47,13 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const { teamId } = await params;
   const team = await getOpponentTeam(teamId);
-  return {
+  return pageMetadata({
     title: team ? `${team.name} · Opponent` : "Opponent",
     description: team
-      ? `Scouting profile for ${team.name} — roster, schedule, and our matches against them.`
+      ? `Scouting profile for ${team.name} — roster, schedule, and their APA matches against Top Dawgs.`
       : "Opponent team profile.",
-  };
+    path: `/opponents/${teamId}`,
+  });
 }
 
 export default async function OpponentTeamPage({ params }: Props) {
