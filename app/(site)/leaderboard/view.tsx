@@ -29,14 +29,16 @@ import {
   resolveScope,
   scopeLabel,
 } from "@/lib/session-scope";
+import { pageMetadata } from "@/lib/site";
 
 
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Patch Watch",
   description:
-    "Top Dawgs Patch Watch — points from sweeps, mini-sweeps, break-and-runs, 8-on-breaks, and level-ups (the things that earn an APA patch). Pick any session(s) or All Time.",
-};
+    "Top Dawgs Patch Watch — the leaderboard for sweeps, mini-sweeps, break-and-runs, 8-on-the-breaks, and level-ups. Pick any session or All Time.",
+  path: "/leaderboard",
+});
 
 type Props = {
   query: { session?: string; tourneys?: string };

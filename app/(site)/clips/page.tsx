@@ -4,13 +4,16 @@ import { YouTubeEmbed } from "@/components/clips/YouTubeEmbed";
 import { LiveCTA } from "@/components/live/LiveCTA";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { getClips } from "@/lib/youtube/client";
+import { pageMetadata } from "@/lib/site";
 
 export const revalidate = 21600;
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Clips",
-  description: "Highlights from Top Dawgs matches.",
-};
+  description:
+    "Highlight clips from Top Dawgs APA match nights — big runs, clutch outs, and the shots worth watching twice.",
+  path: "/clips",
+});
 
 export default async function ClipsPage() {
   const clips = await getClips();

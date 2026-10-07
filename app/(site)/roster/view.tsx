@@ -15,13 +15,16 @@ import {
   resolveScope,
   scopeLabel,
 } from "@/lib/session-scope";
+import { pageMetadata } from "@/lib/site";
 
 
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Roster",
-  description: "Top Dawgs roster — current and historical, by session.",
-};
+  description:
+    "Meet the Top Dawgs — every player on the APA 8-ball roster with skill levels, win rates, and records, current and past sessions.",
+  path: "/roster",
+});
 
 type Props = {
   query: { session?: string };

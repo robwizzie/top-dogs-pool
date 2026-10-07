@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { ProductDisplay } from "@/components/store/ProductDisplay";
 import { getAllProductHandles, getProduct } from "@/lib/shopify";
+import { pageMetadata } from "@/lib/site";
 
 export const revalidate = 300;
 
@@ -25,14 +26,19 @@ export async function generateMetadata({
   try {
     const product = await getProduct(handle);
     if (!product) return { title: "Not found" };
-    return {
+    const base = pageMetadata({
       title: product.title,
-      description: product.description.slice(0, 160) || `Shop ${product.title} — Top Dawgs`,
-      openGraph: {
-        title: product.title,
-        description: product.description.slice(0, 160),
-        images: product.featuredImage ? [{ url: product.featuredImage.url }] : undefined,
-      },
+      description: product.description.slice(0, 160) || `Shop ${product.title} — official Top Dawgs gear.`,
+      path: `/store/${handle}`,
+    });
+    // The product photo beats the site card; without one, the site card
+    // (app/opengraph-image.tsx) is filled in by Next.
+    if (!product.featuredImage) return base;
+    const images = [{ url: product.featuredImage.url, alt: product.title }];
+    return {
+      ...base,
+      openGraph: { ...base.openGraph, images },
+      twitter: { ...base.twitter, images },
     };
   } catch {
     return { title: "Shop" };

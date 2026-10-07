@@ -1,18 +1,19 @@
-import type { Metadata } from "next";
 import { ShoppingBag } from "lucide-react";
 import { Section, PageHeader } from "@/components/ui/Section";
 import { ProductCard } from "@/components/store/ProductCard";
 import { PointerSheen } from "@/components/home/PointerSheen";
 import { PoolBall } from "@/components/brand/PoolBall";
 import { SHOPIFY_CONFIGURED, getProducts } from "@/lib/shopify";
+import { pageMetadata } from "@/lib/site";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Shop",
   description:
     "Official Top Dawgs gear — shirts, hoodies, and team merch. Repping the rack and the run.",
-};
+  path: "/store",
+});
 
 export default async function StorePage() {
   if (!SHOPIFY_CONFIGURED) {

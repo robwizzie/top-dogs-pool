@@ -11,15 +11,18 @@ import {
   TIKTOK_PROFILE_URL,
 } from "@/lib/config";
 import { formatDate, formatTime, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
+import { pageMetadata } from "@/lib/site";
 
 // The live banner just flips on/off based on the schedule (Tue 7:30-11:30pm);
 // a 5-min stale window is fine and saves a lot of background regen cycles.
 export const revalidate = 300;
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Live",
-  description: "Watch Top Dawgs match nights live on TikTok — Tuesdays 7:30pm.",
-};
+  description:
+    "Watch Top Dawgs APA match nights live on TikTok — Tuesdays at 7:30pm, plus recent highlights.",
+  path: "/live",
+});
 
 export default async function LivePage() {
   const clips = (await getClips()).slice(0, 6);

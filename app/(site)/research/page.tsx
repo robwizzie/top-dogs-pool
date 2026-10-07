@@ -58,14 +58,17 @@ import {
   resolveScope,
   scopeLabel as fmtScopeLabel,
 } from "@/lib/session-scope";
+import { pageMetadata } from "@/lib/site";
 
 export const revalidate = 3600;
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Research",
   description:
     "Top Dawgs analytics — best lineups, position strategy, opponent records, form, and a recommended starting five.",
-};
+  path: "/research",
+  noindex: true,
+});
 
 type TabKey =
   | "overview"

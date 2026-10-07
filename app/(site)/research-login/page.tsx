@@ -4,7 +4,7 @@ import { LockScreen } from "@/components/ui/LockScreen";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Research · Locked" };
+export const metadata = { title: "Research · Locked", robots: { index: false, follow: false } };
 
 type Props = {
   searchParams: Promise<{ next?: string; error?: string }>;

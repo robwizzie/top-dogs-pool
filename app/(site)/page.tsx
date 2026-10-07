@@ -31,9 +31,24 @@ import {
 import { matchBreakdown, matchMvp, matchRecap } from "@/lib/recap";
 import { ChalkTalk } from "@/components/cards/ChalkTalk";
 import { SITE_TIME_ZONE, formatDate, isPoolNightLive, nextPoolNightStart } from "@/lib/utils";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_OG_IMAGE, SITE_TITLE, siteJsonLd } from "@/lib/site";
+import type { Metadata } from "next";
 
 export const revalidate = 3600;
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  // The whole object, not just `url`: Next replaces `openGraph` wholesale.
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    type: "website",
+    images: [SITE_OG_IMAGE],
+  },
+};
 
 export default async function HomePage() {
   const [team, roster, leaderboard, standings, lastUpdated, snap] =
@@ -118,6 +133,10 @@ export default async function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd()).replace(/</g, "\\u003c") }}
+      />
       <PointerSheen />
       <Hero
         record={team?.record ?? { wins: 0, losses: 0 }}

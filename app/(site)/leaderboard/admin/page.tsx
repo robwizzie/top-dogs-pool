@@ -7,14 +7,17 @@ import {
   getCurrentSession,
   getSessions,
 } from "@/lib/apa";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Add Tournament Results",
   description:
     "Manually add tournament games, patches, and scores to the Top Dawgs Patch Watch leaderboard.",
-};
+  path: "/leaderboard/admin",
+  noindex: true,
+});
 
 export default async function TournamentAdminPage() {
   const [sessions, currentSession, players] = await Promise.all([

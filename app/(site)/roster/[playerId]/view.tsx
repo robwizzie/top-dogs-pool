@@ -26,6 +26,7 @@ import {
 } from "@/lib/apa";
 import { getClipsForPlayer } from "@/lib/youtube/client";
 import { formatDate } from "@/lib/utils";
+import { pageMetadata } from "@/lib/site";
 
 
 
@@ -38,9 +39,15 @@ export async function generateMetadata({ params }: Pick<Props, "params">) {
   const { playerId } = await params;
   const { player, profile } = await getPlayer(playerId);
   if (player?.visible === false || profile?.visible === false) {
-    return { title: "Player" };
+    return { title: "Player", robots: { index: false, follow: false } };
   }
-  return { title: player?.name ?? "Player" };
+  const name = player?.name ?? "Player";
+  return pageMetadata({
+    title: name,
+    description: `${name} on the Top Dawgs APA 8-ball roster — skill level, record, patches, career arc, and match clips.`,
+    path: `/roster/${playerId}`,
+    type: "profile",
+  });
 }
 
 export async function PlayerView({ params, query }: Props) {

@@ -13,14 +13,17 @@ import {
   nextMatchBriefing,
   opponentScoutingReport,
 } from "@/lib/research";
+import { pageMetadata } from "@/lib/site";
 
 
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Team briefing",
   description:
     "Pre-match briefing for the team — opponent intel, suggested lineup, and threats to watch.",
-};
+  path: "/briefing",
+  noindex: true,
+});
 
 type Props = {
   query: { available?: string };

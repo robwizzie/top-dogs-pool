@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Bebas_Neue, Instrument_Serif, Inter } from 'next/font/google';
 import './globals.css';
-import { TEAM_NAME, TEAM_TAGLINE } from '@/lib/config';
+import { TEAM_NAME } from '@/lib/config';
+import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_OG_IMAGE, SITE_TITLE, SITE_URL } from '@/lib/site';
 
 /**
  * The document shell, and nothing else.
@@ -37,19 +38,41 @@ const serif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+	// Every relative URL below (og:image, canonical, og:url) resolves against
+	// this. Without it, link previews get a relative og:image and show nothing.
+	metadataBase: new URL(SITE_URL),
 	title: {
-		default: `${TEAM_NAME} — APA Pool`,
+		default: SITE_TITLE,
 		template: `%s · ${TEAM_NAME}`
 	},
-	description: `${TEAM_NAME} — ${TEAM_TAGLINE}. Roster, schedule, stats, sweeps leaderboard, and match clips, all live.`,
+	description: SITE_DESCRIPTION,
 	applicationName: TEAM_NAME,
+	keywords: SITE_KEYWORDS,
+	authors: [{ name: TEAM_NAME, url: SITE_URL }],
+	creator: TEAM_NAME,
+	publisher: TEAM_NAME,
+	category: 'sports',
 	manifest: '/manifest.webmanifest',
+	// The card itself is app/opengraph-image.tsx.
 	openGraph: {
-		title: `${TEAM_NAME} — APA Pool`,
-		description: `${TEAM_NAME} — ${TEAM_TAGLINE}.`,
-		type: 'website'
+		title: SITE_TITLE,
+		description: SITE_DESCRIPTION,
+		siteName: SITE_NAME,
+		locale: 'en_US',
+		type: 'website',
+		images: [SITE_OG_IMAGE]
 	},
-	twitter: { card: 'summary_large_image' },
+	twitter: {
+		card: 'summary_large_image',
+		title: SITE_TITLE,
+		description: SITE_DESCRIPTION,
+		images: [SITE_OG_IMAGE]
+	},
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 }
+	},
 	icons: {
 		icon: [
 			{ url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
