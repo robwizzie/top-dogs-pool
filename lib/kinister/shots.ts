@@ -9,6 +9,13 @@
  * — the videos are the canonical source. Coordinates here match the verbal
  * setups he describes; treat the geometry as approximate and tune as your
  * friends drill them.
+ *
+ * Every single-ball shot is checked against the physics engine
+ * (./physics.ts): `power` + `english` are "Bert's setup", and `cueBallPath`
+ * is where the simulated cue ball actually goes with them (rail contacts,
+ * then the resting spot). If you move a ball, re-tune `power`/`english`
+ * and the path together — `npm run test:kinister` fails when the diagram
+ * and the simulation disagree.
  */
 
 export type DiamondCoord = { x: number; y: number };
@@ -58,6 +65,12 @@ export type KinisterShot = {
   cueBallPath: DiamondCoord[];
   /** Where to strike the cue ball to make this shot work (english/spin). */
   english?: EnglishHit;
+  /**
+   * Stroke power for the physics simulation, 0..1 (see
+   * `powerToSpeed` in ./physics). Calibrated so the simulated cue ball
+   * follows `cueBallPath` with `english` — i.e. "how Bert plays it".
+   */
+  power?: number;
   /**
    * Optional "what goes wrong" mini-diagrams. Each entry pairs a verbal
    * description of the mistake with an alternate cue-ball path that
@@ -188,44 +201,45 @@ export const KINISTER_SHOTS: KinisterShot[] = [
   {
     id: "basic-stop-shot",
     number: 1,
-    name: "Basic Stop Shot",
-    shortName: "Stop Shot",
+    name: "Replace the Object Ball",
+    shortName: "Replace OB",
     series: "Top Dogs Workout",
     difficulty: "Foundational",
-    cueBall: { x: 4, y: 0.3 },
-    objectBall: { x: 1.5, y: 0.3 },
+    cueBall: { x: 6, y: 0.75 },
+    objectBall: { x: 2, y: 0.28 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 1.5, y: 0.3 }],
-    english: { x: 0, y: 0 },
+    cueBallPath: [{ x: 1.98, y: 0.31 }],
+    english: { x: 0, y: -0.2 },
+    power: 0.31,
     mistakeDiagrams: [
       {
         mistake: "Hitting above center",
         outcome:
-          "Cue ball follows the OB forward and tucks against the head rail instead of stopping on the OB's spot.",
-        cueBallPath: [{ x: 0.4, y: 0.3 }],
+          "Cue ball rolls through the OB's spot and keeps following toward the corner instead of stopping on it.",
+        cueBallPath: [{ x: 1.46, y: 0.28 }],
       },
       {
-        mistake: "Decelerating into the ball",
+        mistake: "Too much low / decelerating",
         outcome:
-          "Unintended draw pulls the cue ball back toward your starting position.",
-        cueBallPath: [{ x: 3, y: 0.3 }],
+          "Cue ball stops short of the OB's spot — and at this pace the draw also bleeds off the OB's speed so it can die before the pocket.",
+        cueBallPath: [{ x: 2.22, y: 0.32 }],
       },
     ],
     description:
-      "Cue ball and object ball on the same long rail, OB sitting just below the corner pocket. Pocket the OB and freeze the cue ball where the OB started — CB takes the place of OBJ.",
+      "Bert's shot #1. Object ball at the second diamond, about half a ball off the long rail; cue ball back at the other second diamond on the same rail. Pocket the OB in the corner and have the cue ball roll forward and take the OB's place — it is NOT a stop shot.",
     technique:
-      "Dead-center hit, medium pace. No follow, no draw — the cue ball must stop on contact.",
+      "A hair below center, slow-medium pace. Over four diamonds the cloth turns that into a slight stun-follow at contact, so the cue ball creeps one ball-width forward onto the OB's spot.",
     commonMistakes: [
-      "Hitting above center → CB rolls forward past the OB spot",
-      "Decelerating into the ball → unintended draw",
+      "Hitting it as a stop shot → CB stops a ball short of the OB spot",
+      "Hitting above center → CB rolls through the OB spot toward the pocket",
       "Adding english that walks the CB off the rail line",
     ],
     tips: [
       "Pick the OB's spot as your CB resting target before you stroke",
-      "Match speed to distance — just enough to send the OB to the pocket cleanly",
+      "Bert uses this as his stroke check — if the CB doesn't replace the OB, the stroke isn't straight",
     ],
     teaches:
-      "Pure center-ball contact and stop-shot speed control. The bedrock of every position play.",
+      "Speed and tip-height feel — how far the cue ball rolls after contact at a given distance. The bedrock of every position play.",
   },
   {
     id: "pocket-speed-diagonal",
@@ -237,8 +251,9 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBall: { x: 6, y: 1.8 },
     objectBall: { x: 2, y: 0.6 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 1.5, y: 0.5 }],
+    cueBallPath: [{ x: 1.53, y: 0.46 }],
     english: { x: 0, y: 0 },
+    power: 0.355,
     description:
       "Diagonal shot from the lower half of the table up through center to the far corner. Pocket the OB at pocket speed — slow enough that even a partially blocked pocket (a chapstick on the edge) still accepts the ball.",
     technique:
@@ -262,12 +277,13 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     series: "Top Dogs Workout",
     difficulty: "Advanced",
     cueBall: { x: 7, y: 3.5 },
-    objectBall: { x: 3, y: 1 },
+    objectBall: { x: 3, y: 1.5 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 7, y: 3.5 }],
-    english: { x: 0, y: -0.9 },
+    cueBallPath: [{ x: 6.88, y: 3.44 }],
+    english: { x: 0, y: -0.6 },
+    power: 0.76,
     description:
-      "Cue ball near the corner pocket on the foot end; OB sits diagonally up-table. Pocket the OB in the far corner and draw the cue ball the full length of the table back to where it started.",
+      "Cue ball near the foot-end corner; OB sits on the long diagonal, straight in to the far corner. Pocket the OB and draw the cue ball all the way back down the diagonal to where it started.",
     technique:
       "Low draw, level cue, firm accelerating stroke. A square, full hit on the OB is critical at this distance.",
     commonMistakes: [
@@ -285,30 +301,31 @@ export const KINISTER_SHOTS: KinisterShot[] = [
   {
     id: "inside-english-return",
     number: 3,
-    name: "Inside English — Return to Center",
-    shortName: "Inside English",
+    name: "Left English — Return to Center",
+    shortName: "Left English",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
     cueBall: { x: 3, y: 0.3 },
     objectBall: { x: 0.4, y: 0.3 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.9 },
-      { x: 1.8, y: 4 },
-      { x: 4, y: 2 },
+      { x: 0.14, y: 0.9 },
+      { x: 1.84, y: 3.86 },
+      { x: 4.01, y: 2.02 },
     ],
-    english: { x: -0.6, y: 0 },
+    english: { x: -0.45, y: 0 },
+    power: 0.49,
     description:
-      "Same rail-line setup as the stop shot, but apply inside (left) english. After pocketing the OB the cue ball runs up the rail to the short rail, kicks across to the far long rail, and floats back to land in the dead center of the table.",
+      "Rail-line cut into the corner with left english. After pocketing the OB the cue ball comes off the short rail just below the pocket, crosses to the far long rail, and floats back to land in the dead center of the table.",
     technique:
-      "Left english (inside on a right-rail shot), medium pace. The english widens the rebound off the short rail so the cue ball comes back across and lands on the center spot.",
+      "Half a tip of left english, center height, medium pace. On this cut left is outside (running) english: it widens the rebound off the short rail so the cue ball swings back across to the center spot.",
     commonMistakes: [
-      "Too much english — CB throws the OB off the rail",
-      "Wrong english — outside spin shortens the rebound and CB stays near the rail",
+      "Too much english — squirt and throw pull the OB off the rail line",
+      "Right english instead — reverse spin shortens the short-rail rebound and the CB never reaches the far rail",
       "Hitting too hard and over-running the landing zone",
     ],
     tips: [
-      "Inside english on a rail-line cut holds the OB and widens the CB rebound",
+      "Running english off the short rail is what turns the CB back toward center",
       "Visualize the CB's rebound point on the short rail before stroking",
     ],
     teaches:
@@ -322,18 +339,20 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     series: "Top Dogs Workout",
     difficulty: "Advanced",
     cueBall: { x: 3, y: 2.3 },
-    objectBall: { x: 2, y: 1.5 },
+    objectBall: { x: 1.2, y: 0.6 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.9 },
-      { x: 1.7, y: 4 },
-      { x: 3, y: 2.3 },
+      { x: 1.63, y: 0.14 },
+      { x: 0.14, y: 1.77 },
+      { x: 1.24, y: 3.86 },
+      { x: 3.05, y: 2.31 },
     ],
-    english: { x: -0.5, y: 0.6 },
+    english: { x: -0.55, y: 0.5 },
+    power: 0.745,
     description:
-      "Cue ball starts in the middle of the table, just left of the center vertical line. Cut the OB into the far corner and wrap the cue ball off the short rail near the pocket and the far long rail back to the middle of the table where it started — ready for the next ball.",
+      "Cue ball starts in the middle of the table; OB sits up by the corner pocket. Cut the OB into the corner and send the cue ball three rails — near long rail, short rail, far long rail — back to the middle of the table where it started, ready for the next ball.",
     technique:
-      "Above-center with running english, firm pace. The english keeps each rebound angle open so the cue ball wraps cleanly back to the side-pocket area.",
+      "High left (running) english, firm pace. The english keeps each rebound angle open so the cue ball wraps cleanly back to the middle.",
     commonMistakes: [
       "Not enough pace — CB dies before completing the wrap",
       "Wrong english kills one of the rebound angles",
@@ -357,15 +376,16 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 0.4, y: 1.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 2 },
-      { x: 2.5, y: 0 },
-      { x: 3, y: 2.2 },
+      { x: 0.14, y: 1.78 },
+      { x: 1.19, y: 0.14 },
+      { x: 2.95, y: 2.24 },
     ],
-    english: { x: -0.3, y: 0.4 },
+    english: { x: 0.25, y: 0.5 },
+    power: 0.63,
     description:
       "OB sits on the head rail between TR and the head spot; CB starts back near the head-rail/left-rail corner area. Cut the OB into the corner and take two rails — head rail, then the near long rail — to land in the open upper-middle of the table. Pick a landing spot that stays off the scratch lines into either side pocket or the opposite corner.",
     technique:
-      "Stun-follow with a touch of running english. Medium pace — enough to reach the upper-middle landing zone without rolling past it onto a scratch line.",
+      "Follow with a touch of right (running) english, medium pace — enough to reach the upper-middle landing zone without rolling past it onto a scratch line. Keep the stroke smooth; jamming high-right english sends the CB off the first rail at a false angle.",
     commonMistakes: [
       "Too much pace → CB grabs a third rail and drifts onto a scratch line",
       "Wrong english kills the second rebound and CB dies on the rail",
@@ -385,13 +405,14 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Draw Center",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3.5, y: 2.1 },
-    objectBall: { x: 2, y: 0.4 },
+    cueBall: { x: 3.6, y: 1.8 },
+    objectBall: { x: 2, y: 1 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 3.5, y: 2.1 }],
-    english: { x: 0, y: -0.35 },
+    cueBallPath: [{ x: 3.63, y: 1.82 }],
+    english: { x: 0, y: -0.5 },
+    power: 0.64,
     description:
-      "OB sits on the right rail a couple of diamonds below the TR corner; CB starts in the open middle of the table, just above the side-pocket line. Cut the OB into the corner and draw the cue ball straight back along the same line to land right where it started.",
+      "OB sits two diamonds out from the corner pocket; the cue ball is straight in behind it, in the open middle of the table. Pocket the OB and draw the cue ball straight back along the same line to land right where it started.",
     technique:
       "One-third tip low, smooth stroke. Don't use too much low — just enough draw to bring the cue ball back to where it started.",
     commonMistakes: [
@@ -413,18 +434,19 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Soft English",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 3, y: 1.7 },
-    objectBall: { x: 0.7, y: 0.4 },
+    cueBall: { x: 3, y: 0.75 },
+    objectBall: { x: 2, y: 1 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0.9, y: 4 },
-      { x: 1.1, y: 3.7 },
+      { x: 1.13, y: 3.86 },
+      { x: 0.88, y: 3.49 },
     ],
-    english: { x: 0.15, y: 0 },
+    english: { x: 0.12, y: -0.8 },
+    power: 0.385,
     description:
-      "Variation of the draw-to-center shot. Cut the OB into the corner and float the cue ball straight across the table off the opposite long rail using just a whisper of english — CB nicks the far long rail and dies right next to it.",
+      "Variation of the draw-to-center shot — same OB, but the cue ball now sits up near the head end so it's a cut. Pocket the OB and float the cue ball down the tangent line straight across the table — it nicks the far long rail and dies right next to it.",
     technique:
-      "Very little english — no more than one-eighth of a tip. Soft stun pace; the english widens the tangent line just enough to send the CB cleanly across.",
+      "Low enough that the cue ball arrives stunned (no roll), soft pace, and only a whisper of right english — no more than one-eighth of a tip. The stun sends the CB down the tangent line; the english just tunes where it nicks the rail.",
     commonMistakes: [
       "Too much english — CB throws the OB or swerves off line",
       "Confusing this with the draw shot — this is a stun/float, not a draw",
@@ -443,32 +465,32 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "2 Rails (No 3rd)",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 2.4, y: 2.3 },
+    cueBall: { x: 2.4, y: 1.2 },
     objectBall: { x: 0.6, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 1.6 },
-      { x: 0.55, y: 4 },
-      { x: 0.85, y: 0.7 },
+      { x: 0.14, y: 1.6 },
+      { x: 0.79, y: 3.86 },
+      { x: 0.89, y: 2.59 },
     ],
-    english: { x: -0.3, y: 0 },
+    english: { x: 0.3, y: -0.4 },
+    power: 0.685,
     mistakeDiagrams: [
       {
         mistake: "Too much pace",
         outcome:
-          "Cue ball doesn't die after the far rail — it picks up a third rail and ends wherever, often on a scratch line.",
+          "Cue ball doesn't die after the far rail — it runs on down the table and can scratch in the far corner.",
         cueBallPath: [
-          { x: 0, y: 1.6 },
-          { x: 0.55, y: 4 },
-          { x: 2.8, y: 0 },
-          { x: 3.2, y: 1.8 },
+          { x: 0.14, y: 1.45 },
+          { x: 2.44, y: 3.86 },
+          { x: 8, y: 0 },
         ],
       },
     ],
     description:
-      "Pocket the OB in the corner; cue ball comes off the short rail, then the far long rail, and dies before it can pick up a third rail. Lands back near where the OB was.",
+      "Pocket the OB in the corner; the cue ball comes off the short rail, then the far long rail, and dies before it can pick up a third rail — up-table of the head string, in the middle of the table.",
     technique:
-      "Soft stun with a touch of inside english. Pace is the key — just enough to complete two rails without grabbing a third.",
+      "A little below center with a touch of inside (right) english, medium pace. Pace is the key — just enough to complete two rails without grabbing a third.",
     commonMistakes: [
       "Too much pace → CB picks up the third rail and lands wherever",
       "Wrong english changes both rebound angles",
@@ -483,40 +505,41 @@ export const KINISTER_SHOTS: KinisterShot[] = [
   {
     id: "four-rail-zig-zag",
     number: 9,
-    name: "Four Rails — Zig-Zag",
+    name: "Four Rails — Around the Table",
     shortName: "4 Rails",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 1.5, y: 2.3 },
+    cueBall: { x: 2.4, y: 1.2 },
     objectBall: { x: 0.6, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0.6, y: 4 },
-      { x: 1.0, y: 0 },
-      { x: 1.4, y: 4 },
-      { x: 1.7, y: 0 },
-      { x: 1.4, y: 0.6 },
+      { x: 0.14, y: 1.43 },
+      { x: 3.02, y: 3.86 },
+      { x: 7.86, y: 1.35 },
+      { x: 5.33, y: 0.14 },
+      { x: 2.51, y: 0.99 },
     ],
-    english: { x: -0.7, y: 0 },
+    english: { x: 0.5, y: -0.8 },
+    power: 0.95,
     mistakeDiagrams: [
       {
         mistake: "Not enough pace",
         outcome:
-          "Cue ball stops after two or three rails instead of completing the four-rail zig-zag.",
+          "Cue ball stops after two rails instead of making it all the way around the table.",
         cueBallPath: [
-          { x: 0.6, y: 4 },
-          { x: 1.1, y: 0 },
-          { x: 1.4, y: 1.8 },
+          { x: 0.14, y: 1.66 },
+          { x: 1.46, y: 3.86 },
+          { x: 3.55, y: 0.85 },
         ],
       },
     ],
     description:
-      "Same setup as the two-rail version but with much more pace and english. CB zig-zags back and forth between the two long rails for at least four rails, drifting slightly down-table each pass. A fifth rail is fine.",
+      "Same setup as the two-rail version but with much more pace and spin. The cue ball goes short rail, far long rail, foot rail, near long rail — all the way around the table and back up toward the head end. A fifth rail is fine.",
     technique:
-      "Running english, firm pace. The english keeps the rebound angles open across every rail so the CB keeps traveling instead of dying.",
+      "Power stroke with low right english. The draw carries the CB wide off the first rail and the pace keeps it alive for four rails.",
     commonMistakes: [
-      "Not enough pace → CB stops at two or three rails",
-      "Wrong english angle → CB exits the zig-zag pattern early",
+      "Not enough pace → CB stops after two or three rails",
+      "Wrong english angle → CB comes off the foot rail into a corner pocket",
     ],
     tips: [
       "Calibrate the english and pace together — both required for the chain",
@@ -532,11 +555,12 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Half Draw",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 4, y: 1.5 },
-    objectBall: { x: 1.5, y: 0.8 },
+    cueBall: { x: 4, y: 1.6 },
+    objectBall: { x: 1, y: 0.4 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 4, y: 1.5 }],
+    cueBallPath: [{ x: 4.12, y: 1.65 }],
     english: { x: 0, y: -0.7 },
+    power: 0.655,
     description:
       "Mid-distance draw shot. Pocket the OB in the corner and draw the cue ball back exactly half a table to its starting position.",
     technique:
@@ -563,25 +587,20 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBall: { x: 4, y: 2 },
     objectBall: { x: 4, y: 0.5 },
     targetPocket: "MR",
-    cueBallPath: [
-      { x: 0, y: 1.5 },
-      { x: 3, y: 4 },
-      { x: 7, y: 4 },
-      { x: 8, y: 2.5 },
-      { x: 4, y: 2 },
-    ],
-    english: { x: -0.2, y: 0.2 },
+    cueBallPath: [{ x: 4, y: 2.04 }],
+    english: { x: 0, y: -0.6 },
+    power: 0.555,
     description:
-      "Run six object balls one at a time into the side pocket. After each ball, the cue ball must return to the center of the table for the next setup.",
+      "Run six object balls one at a time into the side pocket. Each one is straight in from the center of the table, and after each ball the cue ball must draw back to the center spot for the next setup.",
     technique:
-      "Smooth cut into the side; cue ball takes a multi-rail loop and dies in the center each rep.",
+      "Draw — a bit more than a tip below center — with a smooth medium stroke. Same stroke every rep so the cue ball comes back to the same spot.",
     commonMistakes: [
-      "Over-hitting → CB blows past center on the return",
-      "Wrong english → loop pattern collapses early",
+      "Over-hitting → CB draws past center",
+      "Unintended side spin → CB drifts off the line and the next ball isn't straight",
       "Treating each ball differently — the goal is repeatability",
     ],
     tips: [
-      "Find a pace and english combo that consistently returns to center, then repeat it",
+      "Find the pace and tip height that consistently returns to center, then repeat it",
       "Score the drill — out of six — and track progress across sessions",
     ],
     teaches:
@@ -597,10 +616,14 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBall: { x: 3, y: 1.8 },
     objectBall: { x: 1, y: 1.2 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 4, y: 2 }],
-    english: { x: 0.5, y: 0 },
+    cueBallPath: [
+      { x: 0.14, y: 1.88 },
+      { x: 4.02, y: 2.26 },
+    ],
+    english: { x: 0.55, y: 0.2 },
+    power: 0.49,
     description:
-      "Cut the OB into the corner using a half-tip of right english, then bring the cue ball back to the middle of the table.",
+      "Cut the OB into the corner using a half-tip of right english; the cue ball comes off the short rail and back out to the middle of the table.",
     technique:
       "Half cuetip of right english, smooth medium pace. The english widens the rebound just enough to swing back to center.",
     commonMistakes: [
@@ -621,16 +644,17 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rails (Deflection)",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 2.5, y: 2.5 },
-    objectBall: { x: 1.5, y: 1.3 },
+    cueBall: { x: 3, y: 2.6 },
+    objectBall: { x: 1.4, y: 0.9 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.7 },
-      { x: 2.7, y: 4 },
-      { x: 0, y: 1.9 },
-      { x: 3, y: 2 },
+      { x: 1.98, y: 0.14 },
+      { x: 0.14, y: 2.58 },
+      { x: 0.63, y: 3.86 },
+      { x: 3.01, y: 2.01 },
     ],
-    english: { x: -0.7, y: 0.7 },
+    english: { x: -0.5, y: 0.4 },
+    power: 0.845,
     description:
       "Three rails back to the center of the table with high-left english. Use this shot to dial in how much cue deflection (squirt) you get on your stick.",
     technique:
@@ -657,12 +681,14 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1, y: 0.5 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 3 },
-      { x: 4, y: 2.2 },
+      { x: 0.14, y: 1.73 },
+      { x: 1.75, y: 3.86 },
+      { x: 3.99, y: 2.22 },
     ],
-    english: { x: 0, y: 0.2 },
+    english: { x: 0, y: 0.3 },
+    power: 0.555,
     description:
-      "Rail-line cut into the corner; cue ball takes the natural angle off the short rail and lands in the center of the table.",
+      "Rail-line cut into the corner; the cue ball takes the natural angle off the short rail and the far long rail and lands in the center of the table.",
     technique:
       "Center-ball or a touch of follow, medium pace. No forced english — let the natural mirror rebound do the work.",
     commonMistakes: [
@@ -687,11 +713,12 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 1, y: 0.9 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 0.7 },
-      { x: 1, y: 4 },
-      { x: 4, y: 2 },
+      { x: 0.14, y: 1.73 },
+      { x: 1.44, y: 3.86 },
+      { x: 3.95, y: 1.96 },
     ],
-    english: { x: -0.5, y: 0.2 },
+    english: { x: -0.75, y: 0.3 },
+    power: 0.45,
     description:
       "Pat's go-to shape shot. Pocket the OB in the corner from a near-straight angle and send the cue ball off the short rail near the pocket and the far long rail to land in the dead center of the table.",
     technique:
@@ -714,15 +741,16 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "2 Rails (Top)",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 5, y: 2 },
+    cueBall: { x: 5, y: 0.45 },
     objectBall: { x: 2, y: 0.6 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 2, y: 4 },
-      { x: 0.3, y: 2.5 },
-      { x: 1.5, y: 2 },
+      { x: 0.87, y: 3.86 },
+      { x: 0.14, y: 3.37 },
+      { x: 1.2, y: 1.83 },
     ],
-    english: { x: 0.4, y: 0 },
+    english: { x: 0.4, y: -0.25 },
+    power: 0.64,
     description:
       "Cut the OB into the corner and bring the cue ball back two rails — far long rail, then short rail — to land in the middle of the top (head) end of the table.",
     technique:
@@ -745,17 +773,21 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Speed Control",
     series: "Top Dogs Workout",
     difficulty: "Foundational",
-    cueBall: { x: 2, y: 1.5 },
-    objectBall: { x: 0.5, y: 0.5 },
+    cueBall: { x: 2.2, y: 1.6 },
+    objectBall: { x: 0.3, y: 1 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 6, y: 0.6 }],
-    english: { x: 0, y: 0.4 },
+    cueBallPath: [
+      { x: 0.14, y: 1.32 },
+      { x: 5.25, y: 2.43 },
+    ],
+    english: { x: 0, y: 0.3 },
+    power: 0.425,
     description:
-      "Tight cut into the corner; cue ball rolls down-table parallel to the long rail and stops without ever touching a long rail. Pure speed control drill.",
+      "Thin cut on an OB near the short rail; the cue ball comes off the short rail and rolls back down-table, stopping without ever touching a long rail. Pure speed control drill.",
     technique:
-      "Soft follow, dead center. Don't use the long rail — the only variable that matters is pace.",
+      "Soft follow, no side. Don't use the long rails — the only variable that matters is pace.",
     commonMistakes: [
-      "Touching the long rail — disqualifies the rep",
+      "Touching a long rail — disqualifies the rep",
       "Hitting too hard and reaching the foot rail",
       "Adding unintended english that drifts CB into a rail",
     ],
@@ -773,16 +805,17 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rail Draw",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 2, y: 2 },
-    objectBall: { x: 1, y: 0.6 },
+    cueBall: { x: 2.5, y: 0.6 },
+    objectBall: { x: 1, y: 0.8 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0, y: 3.5 },
-      { x: 3, y: 4 },
-      { x: 5, y: 0 },
-      { x: 6, y: 0.5 },
+      { x: 0.14, y: 2.18 },
+      { x: 0.89, y: 3.86 },
+      { x: 5.11, y: 0.14 },
+      { x: 5.81, y: 0.48 },
     ],
-    english: { x: -0.5, y: -0.7 },
+    english: { x: -0.4, y: -0.4 },
+    power: 0.545,
     description:
       "Pocket the OB in the corner with draw and send the cue ball three rails — short, far long, near long — ending down by the foot end of the right rail.",
     technique:
@@ -806,16 +839,17 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Side to Top",
     series: "Top Dogs Workout",
     difficulty: "Intermediate",
-    cueBall: { x: 4, y: 2.5 },
-    objectBall: { x: 4, y: 0.4 },
+    cueBall: { x: 3.3, y: 2.4 },
+    objectBall: { x: 3.7, y: 0.5 },
     targetPocket: "MR",
     cueBallPath: [
-      { x: 4.2, y: 0 },
-      { x: 1.5, y: 2 },
+      { x: 3.19, y: 0.14 },
+      { x: 1.84, y: 2.26 },
     ],
     english: { x: 0, y: 0.3 },
+    power: 0.51,
     description:
-      "Straight-in cut to the side pocket. After contact the cue ball nips the near long rail and floats diagonally back to the upper middle of the table.",
+      "Slight cut into the side pocket. After contact the cue ball nips the near long rail just up-table of the pocket and floats diagonally back to the upper middle of the table.",
     technique:
       "Stun with a touch of follow; medium pace. The tangent walks the CB into a clean rail-and-out for upper-middle shape.",
     commonMistakes: [
@@ -837,15 +871,17 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "3 Rails (High)",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 1.5, y: 2 },
-    objectBall: { x: 0.5, y: 0.6 },
+    cueBall: { x: 2, y: 2.2 },
+    objectBall: { x: 1, y: 0.7 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 0.3, y: 0.5 },
-      { x: 6, y: 4 },
-      { x: 7.5, y: 3.3 },
+      { x: 1.64, y: 0.13 },
+      { x: 6.19, y: 3.86 },
+      { x: 7.86, y: 3.13 },
+      { x: 7.19, y: 2.96 },
     ],
-    english: { x: 0.3, y: 0.75 },
+    english: { x: 0.7, y: 0.7 },
+    power: 0.815,
     description:
       "Pocket the OB in the corner from the head end, then send the cue ball three rails diagonally across the table to land near the opposite corner.",
     technique:
@@ -868,18 +904,19 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Outside Draw",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 3, y: 2 },
-    objectBall: { x: 1, y: 0.5 },
+    cueBall: { x: 2.74, y: 2.07 },
+    objectBall: { x: 1.2, y: 1 },
     targetPocket: "TR",
     cueBallPath: [
-      { x: 4, y: 4 },
-      { x: 3.5, y: 3.3 },
+      { x: 3.22, y: 3.86 },
+      { x: 3.94, y: 3.53 },
     ],
-    english: { x: 0.6, y: -0.7 },
+    english: { x: -0.5, y: -0.8 },
+    power: 0.57,
     description:
-      "Cut the OB into the corner with right (outside) english and draw. CB pulls back diagonally across the table, kisses the far long rail, and lands just off it.",
+      "Nearly straight-in to the corner with left (outside) english and draw. The CB pulls back diagonally across the table, kisses the far long rail, and lands just off it.",
     technique:
-      "Right english plus low draw. Outside english widens the cut and combines with the draw to swing the CB across.",
+      "Left english plus low draw. On a near-straight shot the draw does the work — a small cut angle is enough to send the CB back diagonally instead of straight back.",
     commonMistakes: [
       "Inside english instead of outside — OB throws into the rail",
       "Decelerating into the ball → no draw",
@@ -902,11 +939,12 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     objectBall: { x: 4, y: 0.4 },
     targetPocket: "MR",
     cueBallPath: [
-      { x: 0.5, y: 2 },
-      { x: 2.5, y: 4 },
-      { x: 4, y: 2 },
+      { x: 0.14, y: 1.51 },
+      { x: 2.05, y: 3.86 },
+      { x: 4.25, y: 2.43 },
     ],
-    english: { x: -0.5, y: -0.4 },
+    english: { x: -0.3, y: -0.6 },
+    power: 0.685,
     description:
       "Pocket the OB in the side and send the cue ball two rails — short rail then far long rail — back to the center of the table.",
     technique:
@@ -930,17 +968,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     series: "Top Dogs Workout",
     difficulty: "Advanced",
     cueBall: { x: 3, y: 2 },
-    objectBall: { x: 3, y: 0.4 },
+    objectBall: { x: 3.6, y: 0.45 },
     targetPocket: "MR",
     cueBallPath: [
-      { x: 0, y: 2 },
-      { x: 3, y: 4 },
-      { x: 6, y: 0.3 },
-      { x: 6, y: 1 },
+      { x: 2.88, y: 0.14 },
+      { x: 0.14, y: 1.48 },
+      { x: 1.77, y: 3.86 },
+      { x: 5.94, y: 1.04 },
     ],
-    english: { x: -0.5, y: 0.5 },
+    english: { x: -0.5, y: 0.25 },
+    power: 0.84,
     description:
-      "Pocket the OB in the side and wrap the cue ball around three rails — short rail, far long rail, near long rail — to land down by the foot end of the right rail.",
+      "Pocket the OB in the side and wrap the cue ball around three rails — near long rail, short rail, far long rail — to land down-table, past the side pocket near the right rail.",
     technique:
       "Running english with follow, firm pace. The wrap pattern only holds if the english carries through every rebound.",
     commonMistakes: [
@@ -962,17 +1001,18 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     series: "Top Dogs Workout",
     difficulty: "Advanced",
     cueBall: { x: 3, y: 1.8 },
-    objectBall: { x: 3, y: 0.4 },
+    objectBall: { x: 3.6, y: 0.45 },
     targetPocket: "MR",
     cueBallPath: [
-      { x: 0, y: 2.5 },
-      { x: 6, y: 4 },
-      { x: 5, y: 0.3 },
-      { x: 5.5, y: 1.5 },
+      { x: 2.84, y: 0.14 },
+      { x: 0.14, y: 1.17 },
+      { x: 2.08, y: 3.86 },
+      { x: 5.91, y: 2.02 },
     ],
     english: { x: -0.5, y: 0 },
+    power: 0.855,
     description:
-      "Same setup as the around-the-table side-pocket shot, but the long diagonal path opens up scratch lines into multiple pockets. The drill is reading and avoiding them.",
+      "Same setup as the around-the-table side-pocket shot with the cue ball a little closer to the rail. The long diagonal path off the third rail crosses scratch lines into multiple pockets — the drill is reading and avoiding them.",
     technique:
       "Running english, firm pace. The challenge is the path crosses scratch lines — read the rebound chain before stroking.",
     commonMistakes: [
@@ -996,8 +1036,9 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     cueBall: { x: 5, y: 0.4 },
     objectBall: { x: 1.5, y: 0.4 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 1.5, y: 0.4 }],
+    cueBallPath: [{ x: 1.31, y: 0.79 }],
     english: { x: 0, y: 0.2 },
+    power: 0.255,
     description:
       "Jump-shot setup with the OB on the rail line near the corner. The technique works, but it tears up the cloth — only use it when there's no other option. Better to find a kick, a curve, or a different angle whenever possible.",
     technique:
@@ -1080,11 +1121,12 @@ export const KINISTER_SHOTS: KinisterShot[] = [
     shortName: "Level Draw",
     series: "Top Dogs Workout",
     difficulty: "Advanced",
-    cueBall: { x: 5.5, y: 0.4 },
-    objectBall: { x: 2, y: 0.4 },
+    cueBall: { x: 5.5, y: 0.6 },
+    objectBall: { x: 2.5, y: 0.27 },
     targetPocket: "TR",
-    cueBallPath: [{ x: 5.5, y: 0.6 }],
-    english: { x: 0, y: -0.7 },
+    cueBallPath: [{ x: 5.27, y: 0.53 }],
+    english: { x: 0, y: -0.5 },
+    power: 0.735,
     description:
       "Rail-line cut into the corner. Draw the cue ball back along the same line and stop it before it touches a rail — perfectly level cue, perfectly controlled draw.",
     technique:
