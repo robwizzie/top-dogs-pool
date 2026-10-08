@@ -92,11 +92,15 @@ export function Button({
   className,
   variant = "secondary",
   size = "md",
+  // A bare <button> inside a <form> submits it. Nearly every button here is
+  // an action, not a submit, so make that the default and opt in explicitly.
+  type = "button",
   ...props
 }: ButtonProps) {
   return (
     <button
       {...props}
+      type={type}
       className={cn(
         "inline-flex select-none items-center justify-center gap-2 font-semibold transition",
         "font-[family-name:var(--rack-font-heading)]",
