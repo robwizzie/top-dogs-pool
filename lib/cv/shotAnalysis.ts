@@ -100,11 +100,12 @@ export function analyzeShot(
         const idealCut = signedAngle(full, ideal);
         const actualCut = signedAngle(full, dir);
         // Overcut = the OB went further from the full-ball line than it
-        // needed to. Over/under means nothing on a straight-in shot, so
-        // there the error is the signed deviation (+ = to the left).
+        // needed to. Over/under means nothing on a (near) straight-in shot,
+        // so there the error is the signed deviation from the ideal line
+        // (+ = to the left).
         const errorDeg =
           Math.abs(idealCut) < 1.5
-            ? actualCut
+            ? actualCut - idealCut
             : Math.sign(idealCut) * (actualCut - idealCut);
         const toTarget = dist(ob, aimTarget);
         const devRad = (signedAngle(ideal, dir) * Math.PI) / 180;
