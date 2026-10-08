@@ -40,7 +40,10 @@ export function MatchSetupForm({
 }) {
   const supabase = getSupabaseBrowser();
   const [game, setGame] = useState<GameType>("8-ball");
-  const [playerA, setPlayerA] = useState<string>("");
+  // You're almost always one of the two players, so start with you picked.
+  const [playerA, setPlayerA] = useState<string>(() =>
+    ownerId && members.some((m) => m.user_id === ownerId) ? ownerId : "",
+  );
   const [playerB, setPlayerB] = useState<string>("");
   const [breaker, setBreaker] = useState<PlayerSide>(0);
   const [isCasual, setIsCasual] = useState(false);
@@ -101,14 +104,21 @@ export function MatchSetupForm({
       if (insertError) throw insertError;
 
       // Point the room at the new match so every device in it follows along.
-      await supabase
+      // Without this the match exists but nobody's screen opens it.
+      const { error: pointError } = await supabase
         .from("rooms")
         .update({ current_match_id: data.id })
         .eq("id", roomId);
+      if (pointError) throw pointError;
 
       onStarted(data.id as string);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't start the match.");
+      // Supabase errors are plain objects, not Error instances.
+      const message =
+        err && typeof err === "object" && "message" in err
+          ? String((err as { message: unknown }).message)
+          : "Couldn't start the match.";
+      setError(message);
     } finally {
       setBusy(false);
     }
@@ -163,7 +173,15 @@ export function MatchSetupForm({
             ownerId={ownerId}
             roomId={roomId}
             seatedIds={members.map((m) => m.user_id)}
-            onSeated={onPlayersChanged}
+            onSeated={async (guest) => {
+              await onPlayersChanged();
+              // Someone just added the person they're about to play: put them
+              // in the empty slot and get the panel out of the way.
+              if (!guest) return;
+              if (!playerA) setPlayerA(guest.id);
+              else if (!playerB && guest.id !== playerA) setPlayerB(guest.id);
+              setAddingPlayer(false);
+            }}
             onClose={() => setAddingPlayer(false)}
           />
         ) : (
@@ -212,7 +230,7 @@ export function MatchSetupForm({
       </label>
 
       {preview?.ok && (
-        <div className="rounded-xl border border-[hsl(var(--rack-border-strong))] bg-black/20 px-4 py-3 text-center">
+        <div className="rack-pop rounded-[var(--rack-radius)] border border-[hsl(var(--rack-accent))]/40 bg-[hsl(var(--rack-accent))]/10 px-4 py-3 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[hsl(var(--rack-accent))]">
             {raceLabel(
               game,
@@ -221,8 +239,10 @@ export function MatchSetupForm({
             )}
           </p>
           <p className="mt-1 text-sm text-[hsl(var(--rack-fg-muted))]">
-            {preview.setup.players[0].name} (SL {preview.setup.players[0].skill}) breaks
-            first vs {preview.setup.players[1].name} (SL {preview.setup.players[1].skill})
+            {preview.setup.players[0].name} (SL {preview.setup.players[0].skill}) vs{" "}
+            {preview.setup.players[1].name} (SL {preview.setup.players[1].skill})
+            {" · "}
+            {preview.setup.players[0].name} breaks
           </p>
         </div>
       )}
@@ -276,7 +296,7 @@ function PlayerPicker({
               disabled={isDisabled}
               onClick={() => onSelect(p.id)}
               className={[
-                "flex min-h-14 items-center gap-3 rounded-xl border px-3 text-left transition",
+                "flex min-h-14 items-center gap-3 rounded-[var(--rack-radius)] border px-3 text-left transition",
                 isSelected
                   ? "border-[hsl(var(--rack-accent))] bg-[hsl(var(--rack-accent))]/10"
                   : "border-[hsl(var(--rack-border))] hover:border-[hsl(var(--rack-border-strong))]",

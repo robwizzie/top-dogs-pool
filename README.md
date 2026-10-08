@@ -380,6 +380,19 @@ select tablename from pg_publication_tables
  where pubname = 'supabase_realtime' order by tablename;
 ```
 
+**"Could not find the 'guest_owner' column of 'profiles' in the schema
+cache"** when adding a guest means the database is behind the code: the
+guest-players migration was never applied. Paste
+[`20260918020000_rack_guest_players.sql`](supabase/migrations/20260918020000_rack_guest_players.sql)
+into the SQL Editor and run it. It finishes with `notify pgrst, 'reload schema'`
+so the API sees the new columns straight away. To check what the database has:
+
+```sql
+select column_name from information_schema.columns
+ where table_schema = 'public' and table_name = 'profiles'
+   and column_name in ('is_guest', 'guest_owner');
+```
+
 ### Schema notes
 
 A few things are deliberately *absent* compared with the original app's

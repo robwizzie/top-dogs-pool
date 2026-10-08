@@ -3,10 +3,10 @@
 import { useState, type ReactNode } from "react";
 import { Check, Pencil, Trash2, UserPlus, X } from "lucide-react";
 import { getSupabaseBrowser } from "@/lib/rack/supabase/browser";
-import { useGuests, type GuestDraft } from "@/lib/rack/hooks/useGuests";
+import { GUEST_SCHEMA_MISSING, useGuests, type GuestDraft } from "@/lib/rack/hooks/useGuests";
 import { GAME_TYPES, SKILL_RANGE, type GameType } from "@/lib/rack/rules/race";
 import type { ProfileRow } from "@/lib/rack/types";
-import { Avatar, Button, ConfirmAction, ErrorNote, Field, Input, Select } from "./ui";
+import { Avatar, Button, ConfirmAction, ErrorNote, Field, Input, Note, Select } from "./ui";
 
 /**
  * Getting a second player to the table without a second account.
@@ -32,7 +32,8 @@ export function AddPlayerPanel({
   ownerId: string;
   roomId: string;
   seatedIds: string[];
-  onSeated: () => void | Promise<void>;
+  /** Called after anyone is seated or edited; `guest` is set when someone was just seated. */
+  onSeated: (guest?: ProfileRow) => void | Promise<void>;
   onClose: () => void;
 }) {
   const supabase = getSupabaseBrowser();
@@ -49,10 +50,17 @@ export function AddPlayerPanel({
     const { error: err } = await supabase
       .from("room_players")
       .insert({ room_id: roomId, user_id: guest.id });
-    // Already at the table — another tab, or a double tap.
-    if (err && err.code !== "23505") setError(err.message);
     setBusyId(null);
-    await onSeated();
+    // Already at the table — another tab, or a double tap — counts as seated.
+    if (err && err.code !== "23505") {
+      setError(
+        err.code === "42501"
+          ? `Couldn't seat ${guest.name} — only the account that added a guest can bring them to a table.`
+          : err.message,
+      );
+      return;
+    }
+    await onSeated(guest);
   }
 
   async function createAndSeat(draft: GuestDraft) {
@@ -66,8 +74,8 @@ export function AddPlayerPanel({
   const seated = book.guests.filter((g) => seatedIds.includes(g.id));
 
   return (
-    <div className="rounded-[var(--rack-radius)] border border-[hsl(var(--rack-border))] bg-[hsl(var(--rack-bg-soft))] p-4">
-      <div className="mb-3 flex items-center justify-between gap-2">
+    <div className="rack-fade-in space-y-3 rounded-[var(--rack-radius)] border border-[hsl(var(--rack-border))] bg-[hsl(var(--rack-bg-soft))] p-4">
+      <div className="flex items-center justify-between gap-2">
         <p className="font-[family-name:var(--rack-font-heading)] text-sm font-bold">
           {editing ? `Edit ${editing.name}` : "Add someone without an account"}
         </p>
@@ -76,9 +84,15 @@ export function AddPlayerPanel({
         </Button>
       </div>
 
-      <ErrorNote>{error ?? book.error}</ErrorNote>
+      {book.unavailable ? (
+        <Note>{GUEST_SCHEMA_MISSING}</Note>
+      ) : (
+        <ErrorNote>{error ?? book.error}</ErrorNote>
+      )}
 
-      {editing ? (
+      {book.unavailable ? null : book.loading ? (
+        <p className="py-2 text-sm text-[hsl(var(--rack-fg-muted))]">Loading your guests…</p>
+      ) : editing ? (
         <GuestForm
           initial={editing}
           submitLabel="Save"
@@ -120,7 +134,7 @@ export function AddPlayerPanel({
       ) : (
         <>
           {unseated.length > 0 && (
-            <ul className="mb-3 space-y-2">
+            <ul className="space-y-2">
               {unseated.map((g) => (
                 <li
                   key={g.id}
@@ -158,7 +172,7 @@ export function AddPlayerPanel({
           )}
 
           {seated.length > 0 && (
-            <p className="mb-3 text-xs text-[hsl(var(--rack-fg-muted))]">
+            <p className="text-xs text-[hsl(var(--rack-fg-muted))]">
               Already at the table: {seated.map((g) => g.name).join(", ")}.
             </p>
           )}
@@ -167,7 +181,7 @@ export function AddPlayerPanel({
             <UserPlus className="h-4 w-4" />
             {book.guests.length > 0 ? "New guest" : "Add a guest"}
           </Button>
-          <p className="mt-2 text-xs text-[hsl(var(--rack-fg-muted))]">
+          <p className="text-xs text-[hsl(var(--rack-fg-muted))]">
             You score for both of you. Guests are saved to your account, so
             they&apos;re one tap next time.
           </p>
@@ -204,67 +218,84 @@ function GuestForm({
   // least one here rather than letting the setup screen dead-end later.
   const ready = name.trim().length > 0 && Object.keys(skills).length > 0;
 
+  async function submit() {
+    if (!ready || busy) return;
+    setBusy(true);
+    try {
+      await onSubmit({ name, skills });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <Field label="Name">
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Dave"
-          autoFocus
-          maxLength={40}
-        />
-      </Field>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void submit();
+        }}
+      >
+        <Field label="Name">
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Dave"
+            autoFocus
+            maxLength={40}
+          />
+        </Field>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        {GAME_TYPES.map((g) => (
-          <Field key={g} label={`${g} skill level`}>
-            <Select
-              value={skills[g] ?? ""}
-              onChange={(e) => {
-                const v = e.target.value;
-                setSkills((prev) => {
-                  const next = { ...prev };
-                  if (v === "") delete next[g];
-                  else next[g] = Number(v);
-                  return next;
-                });
-              }}
-            >
-              <option value="">Not set</option>
-              {skillOptions(g).map((n) => (
-                <option key={n} value={n}>
-                  SL {n}
-                </option>
-              ))}
-            </Select>
-          </Field>
-        ))}
-      </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {GAME_TYPES.map((g) => (
+            <Field key={g} label={`${g} skill level`}>
+              <Select
+                value={skills[g] ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setSkills((prev) => {
+                    const next = { ...prev };
+                    if (v === "") delete next[g];
+                    else next[g] = Number(v);
+                    return next;
+                  });
+                }}
+              >
+                <option value="">Not set</option>
+                {skillOptions(g).map((n) => (
+                  <option key={n} value={n}>
+                    SL {n}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          ))}
+        </div>
 
-      <p className="text-xs text-[hsl(var(--rack-fg-muted))]">
-        Set the level for whichever game you&apos;re playing — the race comes
-        straight off the APA chart, so a guess here changes the match.
-      </p>
+        <p className="text-xs text-[hsl(var(--rack-fg-muted))]">
+          {Object.keys(skills).length === 0 && name.trim().length > 0 && (
+            <strong className="text-[hsl(var(--rack-fg))]">Pick at least one. </strong>
+          )}
+          Set the level for whichever game you&apos;re playing — the race comes
+          straight off the APA chart, so a guess here changes the match.
+        </p>
 
-      <div className="flex gap-2">
-        <Button variant="ghost" onClick={onCancel} className="flex-1">
-          Cancel
-        </Button>
-        <Button
-          variant="primary"
-          className="flex-[2]"
-          disabled={!ready || busy}
-          onClick={async () => {
-            setBusy(true);
-            await onSubmit({ name, skills });
-            setBusy(false);
-          }}
-        >
-          <Check className="h-4 w-4" />
-          {busy ? "Saving…" : submitLabel}
-        </Button>
-      </div>
+        <div className="flex gap-2">
+          <Button type="button" variant="ghost" onClick={onCancel} className="flex-1">
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="flex-[2]"
+            disabled={!ready || busy}
+          >
+            <Check className="h-4 w-4" />
+            {busy ? "Saving…" : submitLabel}
+          </Button>
+        </div>
+      </form>
 
       {footer && (
         <div className="border-t border-[hsl(var(--rack-border))] pt-3">{footer}</div>

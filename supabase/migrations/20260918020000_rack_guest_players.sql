@@ -263,3 +263,12 @@ update public.rooms set closed_at = created_at
 
 create index if not exists rooms_created_by_idx
   on public.rooms (created_by, created_at desc);
+
+-- ---------------------------------------------------------------------------
+-- 7. Tell PostgREST
+-- ---------------------------------------------------------------------------
+-- The API caches the schema. Supabase normally reloads it on DDL, but if that
+-- hook misses (or this file is pasted into the SQL editor) the app keeps
+-- failing with "Could not find the 'guest_owner' column of 'profiles' in the
+-- schema cache" even though the column now exists. Ask for a reload outright.
+notify pgrst, 'reload schema';

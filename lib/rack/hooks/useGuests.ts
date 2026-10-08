@@ -25,6 +25,12 @@ export type GuestBook = {
   guests: ProfileRow[];
   loading: boolean;
   error: string | null;
+  /**
+   * The database hasn't had the guest-players migration applied, so there is
+   * nothing to list and nothing can be created. The UI should say so up front
+   * rather than let someone fill in a form that can only fail.
+   */
+  unavailable: boolean;
   create: (draft: GuestDraft) => Promise<ProfileRow | null>;
   update: (id: string, draft: GuestDraft) => Promise<boolean>;
   remove: (id: string) => Promise<boolean>;
@@ -32,17 +38,29 @@ export type GuestBook = {
 };
 
 /**
- * Say what went wrong in terms the person reading it can act on.
+ * Whether an error means "this database predates guests" rather than a real
+ * failure.
  *
- * `42703` is PostgREST relaying "column does not exist", which for this hook
- * means one thing: the deploy is ahead of the database. Raw SQL text would
- * send whoever hit it looking for a bug in the app.
+ * It surfaces three ways depending on which request hits it first:
+ *   · `PGRST204` — PostgREST rejecting an insert/update payload that names a
+ *     column it doesn't have ("Could not find the 'guest_owner' column of
+ *     'profiles' in the schema cache"). This is what adding a guest hits.
+ *   · `42703`   — Postgres itself, "column does not exist", from the
+ *     `guest_owner=eq.…` filter on the list query.
+ *   · the schema-cache wording, for PostgREST versions that reword the code.
  */
+export function isMissingGuestSchema(err: { code?: string; message?: string }): boolean {
+  if (err.code === "PGRST204" || err.code === "42703") return true;
+  const msg = err.message ?? "";
+  return /guest_owner|is_guest/.test(msg) && /schema cache|does not exist/.test(msg);
+}
+
+export const GUEST_SCHEMA_MISSING =
+  "Guest players aren't switched on for this database yet. Whoever runs the Supabase project needs to apply supabase/migrations/20260918020000_rack_guest_players.sql (SQL Editor → paste → Run).";
+
+/** Say what went wrong in terms the person reading it can act on. */
 function describe(err: { code?: string; message: string }): string {
-  if (err.code === "42703") {
-    return "Guests need a database update that hasn't been applied yet — run the latest migration in supabase/migrations/.";
-  }
-  return err.message;
+  return isMissingGuestSchema(err) ? GUEST_SCHEMA_MISSING : err.message;
 }
 
 export function useGuests(ownerId: string | null): GuestBook {
@@ -50,6 +68,13 @@ export function useGuests(ownerId: string | null): GuestBook {
   const [guests, setGuests] = useState<ProfileRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unavailable, setUnavailable] = useState(false);
+
+  /** Record a failure, and remember if it means guests can't work at all. */
+  const fail = useCallback((err: { code?: string; message: string }) => {
+    if (isMissingGuestSchema(err)) setUnavailable(true);
+    setError(describe(err));
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!supabase || !ownerId) {
@@ -62,10 +87,15 @@ export function useGuests(ownerId: string | null): GuestBook {
       .select("*")
       .eq("guest_owner", ownerId)
       .order("name", { ascending: true });
-    if (err) setError(describe(err));
+    if (err) {
+      fail(err);
+    } else {
+      setError(null);
+      setUnavailable(false);
+    }
     setGuests((data ?? []) as ProfileRow[]);
     setLoading(false);
-  }, [supabase, ownerId]);
+  }, [supabase, ownerId, fail]);
 
   useEffect(() => {
     setLoading(true);
@@ -91,7 +121,7 @@ export function useGuests(ownerId: string | null): GuestBook {
         .single();
 
       if (err) {
-        setError(describe(err));
+        fail(err);
         return null;
       }
       const row = data as ProfileRow;
@@ -100,7 +130,7 @@ export function useGuests(ownerId: string | null): GuestBook {
       );
       return row;
     },
-    [supabase, ownerId],
+    [supabase, ownerId, fail],
   );
 
   const update = useCallback(
@@ -116,13 +146,13 @@ export function useGuests(ownerId: string | null): GuestBook {
         })
         .eq("id", id);
       if (err) {
-        setError(describe(err));
+        fail(err);
         return false;
       }
       await refresh();
       return true;
     },
-    [supabase, refresh],
+    [supabase, refresh, fail],
   );
 
   const remove = useCallback(
@@ -131,14 +161,14 @@ export function useGuests(ownerId: string | null): GuestBook {
       setError(null);
       const { error: err } = await supabase.from("profiles").delete().eq("id", id);
       if (err) {
-        setError(describe(err));
+        fail(err);
         return false;
       }
       setGuests((prev) => prev.filter((g) => g.id !== id));
       return true;
     },
-    [supabase],
+    [supabase, fail],
   );
 
-  return { guests, loading, error, create, update, remove, refresh };
+  return { guests, loading, error, unavailable, create, update, remove, refresh };
 }
