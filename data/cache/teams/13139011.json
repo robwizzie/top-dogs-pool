@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-02T21:11:05.196Z",
+  "fetchedAt": "2026-10-09T18:56:26.450Z",
   "data": {
     "teamPage": {
       "team": {
@@ -73,10 +73,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 3,
-            "pa": 0.1111111111111111,
-            "ppm": 0.3333333333333333,
+            "matchesWon": 1,
+            "matchesPlayed": 4,
+            "pa": 0.25,
+            "ppm": 0.75,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -98,10 +98,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -124,7 +124,7 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 5,
@@ -149,9 +149,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0,
-            "ppm": 0,
+            "matchesPlayed": 3,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
             "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
@@ -198,10 +198,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -267,8 +267,8 @@
       "team": {
         "id": 13139011,
         "sessionBonusPoints": 0,
-        "sessionPoints": 38,
-        "sessionTotalPoints": 38,
+        "sessionPoints": 50,
+        "sessionTotalPoints": 50,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -596,18 +596,35 @@
             "type": "EIGHT",
             "id": 51767520,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-10-06T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -660,7 +677,7 @@
             "id": 51767522,
             "isBye": false,
             "status": "UNPLAYED",
-            "scoresheet": null,
+            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/51767522/3175746/3",
             "startTime": "2026-10-13T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,

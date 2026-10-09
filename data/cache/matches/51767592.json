@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-02T21:08:40.150Z",
+  "fetchedAt": "2026-10-09T18:55:47.681Z",
   "data": {
     "match": {
       "id": 51767592,
@@ -111,10 +111,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -186,8 +186,8 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "matchesWon": 2,
+            "matchesPlayed": 2,
             "pa": 0.6666666666666666,
             "ppm": 2,
             "skillLevel": 5,
@@ -211,8 +211,8 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 2,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
             "pa": 0.6666666666666666,
             "ppm": 2,
             "skillLevel": 7,
@@ -237,13 +237,38 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 1715331,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93220241,
+            "memberNumber": "08200401",
+            "displayName": "Michael Dougherty",
+            "alias": {
+              "id": 3409897,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0,
+            "ppm": 0,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3499925,
               "__typename": "Member"
             }
           }

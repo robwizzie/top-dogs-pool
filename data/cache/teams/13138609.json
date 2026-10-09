@@ -1,19 +1,19 @@
 {
-  "fetchedAt": "2026-10-09T18:57:15.563Z",
+  "fetchedAt": "2026-10-09T18:59:12.842Z",
   "data": {
     "teamPage": {
       "team": {
-        "id": 13138887,
-        "name": "Nailed It!!",
-        "number": "06807",
-        "isTied": false,
-        "standing": 2,
+        "id": 13138609,
+        "name": "Here We Go!",
+        "number": "05305",
+        "isTied": true,
+        "standing": 3,
         "division": {
-          "id": 441441,
-          "name": "Gl-68",
-          "number": "068",
+          "id": 441481,
+          "name": "GL-53",
+          "number": "053",
           "timeOfPlay": "1900-01-01T19:30:00+00:00",
-          "nightOfPlay": "Tuesday",
+          "nightOfPlay": "Thursday",
           "format": "8-Ball Open",
           "state": "CURRENT",
           "isTournament": false,
@@ -21,11 +21,11 @@
           "__typename": "Division"
         },
         "location": {
-          "id": 39644,
-          "name": "Highland Tavern",
+          "id": 39172,
+          "name": "The RailHouse",
           "address": {
-            "id": 41405,
-            "name": "Highland Tavern",
+            "id": 73686,
+            "name": "The RailHouse",
             "__typename": "Address"
           },
           "__typename": "HostLocation"
@@ -45,26 +45,26 @@
     },
     "teamRoster": {
       "team": {
-        "id": 13138887,
-        "name": "Nailed It!!",
-        "number": "06807",
+        "id": 13138609,
+        "name": "Here We Go!",
+        "number": "05305",
         "league": {
           "id": 890,
           "slug": "southjersey",
           "__typename": "League"
         },
         "division": {
-          "id": 441441,
+          "id": 441481,
           "type": "EIGHT",
           "__typename": "Division"
         },
         "roster": [
           {
-            "id": 93020882,
-            "memberNumber": "08202423",
-            "displayName": "Frank Heitman",
+            "id": 93018749,
+            "memberNumber": "08210550",
+            "displayName": "Sean Thomas",
             "alias": {
-              "id": 2239694,
+              "id": 1863415,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -74,22 +74,72 @@
               "__typename": "Alias"
             },
             "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 6,
+            "matchesPlayed": 4,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
+            "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 2685914,
+              "id": 2432460,
               "__typename": "Member"
             }
           },
           {
-            "id": 93020884,
-            "memberNumber": "08212577",
-            "displayName": "Chris Walmsley",
+            "id": 93018750,
+            "memberNumber": "08212458",
+            "displayName": "CJ Hasko",
             "alias": {
-              "id": 2891584,
+              "id": 2842564,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3119252,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93018751,
+            "memberNumber": "08204342",
+            "displayName": "Kimberly Talley",
+            "alias": {
+              "id": 3005906,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3232943,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93018746,
+            "memberNumber": "08227678",
+            "displayName": "Walter Talley IV",
+            "alias": {
+              "id": 136869,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -99,47 +149,22 @@
               "__typename": "Alias"
             },
             "matchesWon": 3,
-            "matchesPlayed": 3,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3151337,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93020881,
-            "memberNumber": "08205602",
-            "displayName": "Jenn Smith",
-            "alias": {
-              "id": 1553364,
-              "league": {
-                "id": 890,
-                "slug": "southjersey",
-                "isMine": true,
-                "__typename": "League"
-              },
-              "__typename": "Alias"
-            },
-            "matchesWon": 0,
             "matchesPlayed": 4,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 2119186,
+              "id": 1018690,
               "__typename": "Member"
             }
           },
           {
-            "id": 93020883,
-            "memberNumber": "08207056",
-            "displayName": "Big Dawg Diesel DeStefano",
+            "id": 93018752,
+            "memberNumber": "08213757",
+            "displayName": "Ron Monaco",
             "alias": {
-              "id": 2492980,
+              "id": 3151893,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -155,16 +180,16 @@
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 2877161,
+              "id": 3329207,
               "__typename": "Member"
             }
           },
           {
-            "id": 93020887,
-            "memberNumber": "08213379",
-            "displayName": "Joe Rogan DiRienzo",
+            "id": 93018753,
+            "memberNumber": "08214250",
+            "displayName": "Richard Smizer",
             "alias": {
-              "id": 3167012,
+              "id": 3279172,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -173,48 +198,23 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 3,
+            "matchesWon": 2,
             "matchesPlayed": 3,
-            "pa": 0.7777777777777778,
-            "ppm": 2.3333333333333335,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3341918,
+              "id": 3410521,
               "__typename": "Member"
             }
           },
           {
-            "id": 93020885,
-            "memberNumber": "08203817",
-            "displayName": "Steven Cowgill",
+            "id": 93018748,
+            "memberNumber": "08239218",
+            "displayName": "Jamie Miller",
             "alias": {
-              "id": 2911113,
-              "league": {
-                "id": 890,
-                "slug": "southjersey",
-                "isMine": true,
-                "__typename": "League"
-              },
-              "__typename": "Alias"
-            },
-            "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 3165336,
-              "__typename": "Member"
-            }
-          },
-          {
-            "id": 93020880,
-            "memberNumber": "08207058",
-            "displayName": "Fred Hampton",
-            "alias": {
-              "id": 524547,
+              "id": 221837,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -224,22 +224,22 @@
               "__typename": "Alias"
             },
             "matchesWon": 1,
-            "matchesPlayed": 2,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "skillLevel": 5,
+            "matchesPlayed": 3,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 2165195,
+              "id": 1338689,
               "__typename": "Member"
             }
           },
           {
-            "id": 93020886,
-            "memberNumber": "08203938",
-            "displayName": "Justin Cowgill",
+            "id": 93204976,
+            "memberNumber": "08209244",
+            "displayName": "Paul Thomas III",
             "alias": {
-              "id": 2971112,
+              "id": 1707364,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -248,14 +248,14 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 1,
-            "pa": 1,
-            "ppm": 3,
-            "skillLevel": 4,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 6,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 3204506,
+              "id": 2292511,
               "__typename": "Member"
             }
           }
@@ -265,12 +265,12 @@
     },
     "teamSchedule": {
       "team": {
-        "id": 13138887,
+        "id": 13138609,
         "sessionBonusPoints": 0,
-        "sessionPoints": 56,
-        "sessionTotalPoints": 56,
+        "sessionPoints": 55,
+        "sessionTotalPoints": 55,
         "division": {
-          "id": 441441,
+          "id": 441481,
           "isTournament": false,
           "__typename": "Division"
         },
@@ -278,24 +278,24 @@
           {
             "week": 1,
             "type": "EIGHT",
-            "id": 51767500,
+            "id": 52020522,
             "isBye": false,
             "status": "COMPLETED",
             "scoresheet": null,
-            "startTime": "2026-09-08T19:30:00-04:00",
+            "startTime": "2026-09-10T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
-            "description": null,
+            "description": "",
             "tableNumber": null,
             "results": [
               {
                 "homeAway": "HOME",
                 "points": {
-                  "total": 14,
+                  "total": 13,
                   "__typename": "MatchResultPoints"
                 },
                 "__typename": "MatchResult"
@@ -303,7 +303,7 @@
               {
                 "homeAway": "AWAY",
                 "points": {
-                  "total": 7,
+                  "total": 9,
                   "__typename": "MatchResultPoints"
                 },
                 "__typename": "MatchResult"
@@ -315,26 +315,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
+              "id": 39172,
+              "name": "The RailHouse",
               "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
+                "id": 73686,
+                "name": "The RailHouse",
                 "__typename": "Address"
               },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13139007,
-              "name": "Keep It Simple Stupid",
-              "number": "06808",
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
               "isMine": false,
               "__typename": "Team"
             },
@@ -347,8 +347,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
+              "id": 441481,
+              "isMine": false,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -358,24 +358,24 @@
           {
             "week": 2,
             "type": "EIGHT",
-            "id": 51767502,
-            "isBye": true,
+            "id": 52020529,
+            "isBye": false,
             "status": "COMPLETED",
             "scoresheet": null,
-            "startTime": "2026-09-15T19:30:00-04:00",
+            "startTime": "2026-09-17T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
-            "description": null,
+            "description": "",
             "tableNumber": null,
             "results": [
               {
                 "homeAway": "HOME",
                 "points": {
-                  "total": 0,
+                  "total": 13,
                   "__typename": "MatchResultPoints"
                 },
                 "__typename": "MatchResult"
@@ -383,7 +383,7 @@
               {
                 "homeAway": "AWAY",
                 "points": {
-                  "total": 12,
+                  "total": 8,
                   "__typename": "MatchResultPoints"
                 },
                 "__typename": "MatchResult"
@@ -395,22 +395,26 @@
               "__typename": "TimeZone"
             },
             "location": {
-              "id": 87357,
-              "name": "No Match This Week",
-              "address": null,
+              "id": 113653,
+              "name": "Spread Eagle Tavern",
+              "address": {
+                "id": 75396,
+                "name": "Spread Eagle Tavern",
+                "__typename": "Address"
+              },
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13139273,
-              "name": "Bye",
-              "number": "06810",
+              "id": 13139212,
+              "name": "Sweep the Leg",
+              "number": "05302",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
               "isMine": false,
               "__typename": "Team"
             },
@@ -423,8 +427,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
+              "id": 441481,
+              "isMine": false,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -434,18 +438,98 @@
           {
             "week": 3,
             "type": "EIGHT",
-            "id": 51767508,
+            "id": 52020533,
             "isBye": false,
             "status": "COMPLETED",
             "scoresheet": null,
-            "startTime": "2026-09-22T19:30:00-04:00",
+            "startTime": "2026-09-24T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
             "isScored": true,
             "isFinalized": true,
             "isPlayoff": false,
-            "description": null,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139009,
+              "name": "Chalk Harder",
+              "number": "05303",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 4,
+            "type": "EIGHT",
+            "id": 52020538,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-10-01T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
             "tableNumber": null,
             "results": [
               {
@@ -471,6 +555,86 @@
               "__typename": "TimeZone"
             },
             "location": {
+              "id": 57943,
+              "name": "Westville Boat Club",
+              "address": {
+                "id": 41223,
+                "name": "Westville Boat Club",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138991,
+              "name": "Fun Ghouls 2.0",
+              "number": "05307",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 5,
+            "type": "EIGHT",
+            "id": 52020541,
+            "isBye": false,
+            "status": "COMPLETED",
+            "scoresheet": null,
+            "startTime": "2026-10-08T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": true,
+            "isFinalized": true,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
               "id": 39172,
               "name": "The RailHouse",
               "address": {
@@ -481,16 +645,16 @@
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13138612,
-              "name": "8 Balls for Sale",
-              "number": "06804",
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 13139010,
+              "name": "Happy Accidents",
+              "number": "05304",
               "isMine": false,
               "__typename": "Team"
             },
@@ -503,168 +667,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 4,
-            "type": "EIGHT",
-            "id": 51767515,
-            "isBye": false,
-            "status": "COMPLETED",
-            "scoresheet": null,
-            "startTime": "2026-09-29T19:30:00-04:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": true,
-            "isFinalized": true,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [
-              {
-                "homeAway": "HOME",
-                "points": {
-                  "total": 10,
-                  "__typename": "MatchResultPoints"
-                },
-                "__typename": "MatchResult"
-              },
-              {
-                "homeAway": "AWAY",
-                "points": {
-                  "total": 10,
-                  "__typename": "MatchResultPoints"
-                },
-                "__typename": "MatchResult"
-              }
-            ],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
-              "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 441481,
               "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13139029,
-              "name": "Lights Out",
-              "number": "06805",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 5,
-            "type": "EIGHT",
-            "id": 51767517,
-            "isBye": false,
-            "status": "COMPLETED",
-            "scoresheet": null,
-            "startTime": "2026-10-06T19:30:00-04:00",
-            "isMine": true,
-            "isPaid": false,
-            "isTournament": false,
-            "isScored": true,
-            "isFinalized": true,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [
-              {
-                "homeAway": "HOME",
-                "points": {
-                  "total": 9,
-                  "__typename": "MatchResultPoints"
-                },
-                "__typename": "MatchResult"
-              },
-              {
-                "homeAway": "AWAY",
-                "points": {
-                  "total": 14,
-                  "__typename": "MatchResultPoints"
-                },
-                "__typename": "MatchResult"
-              }
-            ],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
-              "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13139030,
-              "name": "Top Dawgs",
-              "number": "06806",
-              "isMine": true,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": [],
-            "division": {
-              "id": 441441,
-              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -674,18 +678,81 @@
           {
             "week": 6,
             "type": "EIGHT",
-            "id": 51767524,
+            "id": 52020548,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-10-13T19:30:00-04:00",
+            "startTime": "2026-10-15T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
-            "description": null,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139211,
+              "name": "Calculated Chaos",
+              "number": "05301",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 7,
+            "type": "EIGHT",
+            "id": 52020552,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-10-22T19:30:00-04:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
             "tableNumber": null,
             "results": [],
             "timeZone": {
@@ -704,16 +771,16 @@
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13138982,
-              "name": "Break 8 Away",
-              "number": "06802",
+              "id": 13157887,
+              "name": "Questionable Guidance",
+              "number": "05310",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
               "isMine": false,
               "__typename": "Team"
             },
@@ -726,71 +793,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 7,
-            "type": "EIGHT",
-            "id": 51767528,
-            "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-10-20T19:30:00-04:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
-              "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 441481,
               "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13138608,
-              "name": "The Railhouse",
-              "number": "06803",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -800,18 +804,312 @@
           {
             "week": 8,
             "type": "EIGHT",
-            "id": 51767534,
+            "id": 52020558,
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-10-27T19:30:00-04:00",
+            "startTime": "2026-10-29T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
             "isScored": false,
             "isFinalized": false,
             "isPlayoff": false,
-            "description": null,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 88173,
+              "name": "Zoe's Place",
+              "address": {
+                "id": 31569,
+                "name": "Zoe's Place",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139005,
+              "name": "Back in the Rack",
+              "number": "05308",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 9,
+            "type": "EIGHT",
+            "id": 52020563,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-05T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139181,
+              "name": "Jack's or Better",
+              "number": "05309",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 10,
+            "type": "EIGHT",
+            "id": 52020567,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-12T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 116612,
+              "name": "The Bank Bar",
+              "address": {
+                "id": 82140,
+                "name": "The Bank Bar",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13139208,
+              "name": "Just Here For Shots",
+              "number": "05306",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 11,
+            "type": "EIGHT",
+            "id": 52020574,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-19T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": {
+              "id": 39172,
+              "name": "The RailHouse",
+              "address": {
+                "id": 73686,
+                "name": "The RailHouse",
+                "__typename": "Address"
+              },
+              "__typename": "HostLocation"
+            },
+            "home": {
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "away": {
+              "id": 13139212,
+              "name": "Sweep the Leg",
+              "number": "05302",
+              "isMine": false,
+              "__typename": "Team"
+            },
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": null,
+            "type": null,
+            "id": null,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-11-26T19:30:00-05:00",
+            "isMine": true,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "No Play",
+            "tableNumber": null,
+            "results": [],
+            "timeZone": {
+              "id": "169",
+              "name": "America/New_York",
+              "__typename": "TimeZone"
+            },
+            "location": null,
+            "home": null,
+            "away": null,
+            "league": {
+              "id": 890,
+              "isMine": true,
+              "slug": "southjersey",
+              "isElectronicPaymentsEnabled": false,
+              "__typename": "League"
+            },
+            "orderItems": null,
+            "division": {
+              "id": 441481,
+              "isMine": false,
+              "scheduleInEdit": false,
+              "isTournament": false,
+              "__typename": "Division"
+            },
+            "__typename": "Match"
+          },
+          {
+            "week": 12,
+            "type": "EIGHT",
+            "id": 52020578,
+            "isBye": false,
+            "status": "UNPLAYED",
+            "scoresheet": null,
+            "startTime": "2026-12-03T19:30:00-05:00",
+            "isMine": false,
+            "isPaid": null,
+            "isTournament": false,
+            "isScored": false,
+            "isFinalized": false,
+            "isPlayoff": false,
+            "description": "",
             "tableNumber": null,
             "results": [],
             "timeZone": {
@@ -830,16 +1128,16 @@
               "__typename": "HostLocation"
             },
             "home": {
-              "id": 13139011,
-              "name": "Boys From The Basement",
-              "number": "06809",
+              "id": 13139009,
+              "name": "Chalk Harder",
+              "number": "05303",
               "isMine": false,
               "__typename": "Team"
             },
             "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
+              "id": 13138609,
+              "name": "Here We Go!",
+              "number": "05305",
               "isMine": false,
               "__typename": "Team"
             },
@@ -852,386 +1150,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 9,
-            "type": "EIGHT",
-            "id": 51767537,
-            "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-11-03T19:30:00-05:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39749,
-              "name": "Gloucester VFW Post 3620",
-              "address": {
-                "id": 73672,
-                "name": "Gloucester VFW Post 3620",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138981,
-              "name": "Poolin’ & Boolin’",
-              "number": "06801",
+              "id": 441481,
               "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 10,
-            "type": "EIGHT",
-            "id": 51767545,
-            "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-11-10T19:30:00-05:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
-              "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13139007,
-              "name": "Keep It Simple Stupid",
-              "number": "06808",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 11,
-            "type": "EIGHT",
-            "id": 51767547,
-            "isBye": true,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-11-17T19:30:00-05:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
-              "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13139273,
-              "name": "Bye",
-              "number": "06810",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 12,
-            "type": "EIGHT",
-            "id": 51767553,
-            "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-11-24T19:30:00-05:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 39644,
-              "name": "Highland Tavern",
-              "address": {
-                "id": 41405,
-                "name": "Highland Tavern",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13138612,
-              "name": "8 Balls for Sale",
-              "number": "06804",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 13,
-            "type": "EIGHT",
-            "id": 51767560,
-            "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-12-01T19:30:00-05:00",
-            "isMine": false,
-            "isPaid": null,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
-              "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13139029,
-              "name": "Lights Out",
-              "number": "06805",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": null,
-            "division": {
-              "id": 441441,
-              "isMine": true,
-              "scheduleInEdit": false,
-              "isTournament": false,
-              "__typename": "Division"
-            },
-            "__typename": "Match"
-          },
-          {
-            "week": 14,
-            "type": "EIGHT",
-            "id": 51767562,
-            "isBye": false,
-            "status": "UNPLAYED",
-            "scoresheet": null,
-            "startTime": "2026-12-08T19:30:00-05:00",
-            "isMine": true,
-            "isPaid": false,
-            "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
-            "isPlayoff": false,
-            "description": null,
-            "tableNumber": null,
-            "results": [],
-            "timeZone": {
-              "id": "169",
-              "name": "America/New_York",
-              "__typename": "TimeZone"
-            },
-            "location": {
-              "id": 90042,
-              "name": "Wilson's Pub",
-              "address": {
-                "id": 40206,
-                "name": "Wilson's Pub",
-                "__typename": "Address"
-              },
-              "__typename": "HostLocation"
-            },
-            "home": {
-              "id": 13139030,
-              "name": "Top Dawgs",
-              "number": "06806",
-              "isMine": true,
-              "__typename": "Team"
-            },
-            "away": {
-              "id": 13138887,
-              "name": "Nailed It!!",
-              "number": "06807",
-              "isMine": false,
-              "__typename": "Team"
-            },
-            "league": {
-              "id": 890,
-              "isMine": true,
-              "slug": "southjersey",
-              "isElectronicPaymentsEnabled": false,
-              "__typename": "League"
-            },
-            "orderItems": [],
-            "division": {
-              "id": 441441,
-              "isMine": true,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1245,7 +1165,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-12-15T19:30:00-05:00",
+            "startTime": "2026-12-10T19:30:00-05:00",
             "isMine": true,
             "isPaid": null,
             "isTournament": false,
@@ -1272,8 +1192,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
+              "id": 441481,
+              "isMine": false,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
@@ -1287,7 +1207,7 @@
             "isBye": false,
             "status": "UNPLAYED",
             "scoresheet": null,
-            "startTime": "2026-12-22T19:30:00-05:00",
+            "startTime": "2026-12-17T19:30:00-05:00",
             "isMine": true,
             "isPaid": null,
             "isTournament": false,
@@ -1314,8 +1234,8 @@
             },
             "orderItems": null,
             "division": {
-              "id": 441441,
-              "isMine": true,
+              "id": 441481,
+              "isMine": false,
               "scheduleInEdit": false,
               "isTournament": false,
               "__typename": "Division"
