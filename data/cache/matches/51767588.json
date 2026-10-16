@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-10-09T18:55:45.908Z",
+  "fetchedAt": "2026-10-16T17:12:14.314Z",
   "data": {
     "match": {
       "id": 51767588,
-      "isFinalized": false,
+      "isFinalized": true,
       "isTournament": false,
       "tableNumber": null,
       "division": {
@@ -31,7 +31,7 @@
       "week": 6,
       "isBye": false,
       "isMine": false,
-      "isScored": false,
+      "isScored": true,
       "scoresheet": null,
       "isPaid": null,
       "timeZone": {
@@ -73,31 +73,6 @@
         },
         "roster": [
           {
-            "id": 93021865,
-            "memberNumber": "08221801",
-            "displayName": "Steven Quintus",
-            "alias": {
-              "id": 55391,
-              "league": {
-                "id": 890,
-                "slug": "southjersey",
-                "isMine": true,
-                "__typename": "League"
-              },
-              "__typename": "Alias"
-            },
-            "matchesWon": 0,
-            "matchesPlayed": 0,
-            "pa": 0,
-            "ppm": 0,
-            "skillLevel": 4,
-            "__typename": "EightBallPlayer",
-            "member": {
-              "id": 949555,
-              "__typename": "Member"
-            }
-          },
-          {
             "id": 93021869,
             "memberNumber": "08219241",
             "displayName": "Patrick Lotierzo",
@@ -111,10 +86,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 1,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -123,11 +98,11 @@
             }
           },
           {
-            "id": 93021867,
-            "memberNumber": "08242587",
-            "displayName": "Steve Thompson",
+            "id": 93223213,
+            "memberNumber": "08221128",
+            "displayName": "Donna Brown",
             "alias": {
-              "id": 933798,
+              "id": 56347,
               "league": {
                 "id": 890,
                 "slug": "southjersey",
@@ -136,14 +111,14 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
-              "id": 1644870,
+              "id": 949009,
               "__typename": "Member"
             }
           },
@@ -161,10 +136,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 2,
-            "pa": 0.5,
-            "ppm": 1.5,
+            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -186,10 +161,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.8333333333333334,
-            "ppm": 2.5,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
+            "pa": 0.7777777777777778,
+            "ppm": 2.3333333333333335,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -211,8 +186,8 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 2,
+            "matchesWon": 3,
+            "matchesPlayed": 3,
             "pa": 0.6666666666666666,
             "ppm": 2,
             "skillLevel": 4,
@@ -271,6 +246,31 @@
               "id": 737682,
               "__typename": "Member"
             }
+          },
+          {
+            "id": 93021867,
+            "memberNumber": "08242587",
+            "displayName": "Steve Thompson",
+            "alias": {
+              "id": 933798,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 3,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "skillLevel": 3,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 1644870,
+              "__typename": "Member"
+            }
           }
         ],
         "__typename": "Team"
@@ -306,9 +306,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 2,
-            "matchesPlayed": 2,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesPlayed": 3,
+            "pa": 0.5555555555555556,
+            "ppm": 1.6666666666666667,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -331,9 +331,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 3,
-            "matchesPlayed": 3,
-            "pa": 0.7777777777777778,
-            "ppm": 2.3333333333333335,
+            "matchesPlayed": 4,
+            "pa": 0.5833333333333334,
+            "ppm": 1.75,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -381,9 +381,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
+            "matchesPlayed": 4,
+            "pa": 0.4166666666666667,
+            "ppm": 1.25,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -405,10 +405,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 2,
-            "matchesPlayed": 3,
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "matchesWon": 3,
+            "matchesPlayed": 5,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -507,7 +507,328 @@
         "__typename": "Fees"
       },
       "orderItems": null,
-      "results": []
+      "results": [
+        {
+          "homeAway": "HOME",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 4,
+          "matchesPlayed": 5,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 9,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 13,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [
+            {
+              "id": 130473462,
+              "player": {
+                "id": 93021869,
+                "displayName": "Patrick Lotierzo",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 1,
+              "playerPosition": 1,
+              "skillLevel": 5,
+              "eightBallWins": 4,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473464,
+              "player": {
+                "id": 93021868,
+                "displayName": "Bob Dilmore",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 2,
+              "playerPosition": 1,
+              "skillLevel": 4,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473466,
+              "player": {
+                "id": 93021864,
+                "displayName": "Bob Goodwin Jr",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 3,
+              "playerPosition": 1,
+              "skillLevel": 4,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473468,
+              "player": {
+                "id": 93021870,
+                "displayName": "Jay McGuigan",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 4,
+              "playerPosition": 1,
+              "skillLevel": 5,
+              "eightBallWins": 4,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473470,
+              "player": {
+                "id": 93223213,
+                "displayName": "Donna Brown",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 5,
+              "playerPosition": 1,
+              "skillLevel": 3,
+              "eightBallWins": 1,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8E",
+              "eightBallMatchPointsEarned": 1,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            }
+          ],
+          "__typename": "MatchResult"
+        },
+        {
+          "homeAway": "AWAY",
+          "overUnder": 0,
+          "forfeits": 0,
+          "matchesWon": 1,
+          "matchesPlayed": 5,
+          "points": {
+            "bonus": 4,
+            "penalty": 0,
+            "won": 3,
+            "adjustment": 0,
+            "sportsmanship": 0,
+            "total": 7,
+            "skillLevelViolationAdjustment": 0,
+            "__typename": "MatchResultPoints"
+          },
+          "scores": [
+            {
+              "id": 130473471,
+              "player": {
+                "id": 93021877,
+                "displayName": "Evette Cruz",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 5,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "W",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 2,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473469,
+              "player": {
+                "id": 93021872,
+                "displayName": "Francisco Castillo",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 4,
+              "playerPosition": 2,
+              "skillLevel": 5,
+              "eightBallWins": 2,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8B",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473467,
+              "player": {
+                "id": 93021877,
+                "displayName": "Evette Cruz",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 3,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 1,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473465,
+              "player": {
+                "id": 93021876,
+                "displayName": "Andy Smith",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 2,
+              "playerPosition": 2,
+              "skillLevel": 4,
+              "eightBallWins": 1,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 0,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            },
+            {
+              "id": 130473463,
+              "player": {
+                "id": 93021873,
+                "displayName": "George Smith IV",
+                "__typename": "EightBallPlayer"
+              },
+              "matchPositionNumber": 1,
+              "playerPosition": 2,
+              "skillLevel": 5,
+              "eightBallWins": 3,
+              "eightOnBreak": 0,
+              "eightBallBreakAndRun": 0,
+              "nineBallPoints": null,
+              "nineOnSnap": null,
+              "nineBallBreakAndRun": null,
+              "nineBallMatchPointsEarned": null,
+              "mastersEightBallWins": null,
+              "mastersNineBallWins": null,
+              "winLoss": "L",
+              "matchForfeited": false,
+              "doublesMatch": false,
+              "dateTimeStamp": "2026-10-14T13:18:06+00:00",
+              "teamSlot": "8A",
+              "eightBallMatchPointsEarned": 1,
+              "incompleteMatch": false,
+              "__typename": "MatchScore"
+            }
+          ],
+          "__typename": "MatchResult"
+        }
+      ]
     }
   }
 }

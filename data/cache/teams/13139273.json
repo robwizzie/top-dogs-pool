@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T18:57:05.389Z",
+  "fetchedAt": "2026-10-16T17:13:50.670Z",
   "data": {
     "teamPage": {
       "team": {
@@ -463,18 +463,35 @@
             "type": "EIGHT",
             "id": 51767523,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-10-13T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",

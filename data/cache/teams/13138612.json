@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-10-09T18:57:32.447Z",
+  "fetchedAt": "2026-10-16T17:14:22.716Z",
   "data": {
     "teamPage": {
       "team": {
         "id": 13138612,
         "name": "8 Balls for Sale",
         "number": "06804",
-        "isTied": false,
+        "isTied": true,
         "standing": 3,
         "division": {
           "id": 441441,
@@ -267,8 +267,8 @@
       "team": {
         "id": 13138612,
         "sessionBonusPoints": 0,
-        "sessionPoints": 55,
-        "sessionTotalPoints": 55,
+        "sessionPoints": 67,
+        "sessionTotalPoints": 67,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -680,18 +680,35 @@
             "type": "EIGHT",
             "id": 51767523,
             "isBye": true,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-10-13T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 12,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 0,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",

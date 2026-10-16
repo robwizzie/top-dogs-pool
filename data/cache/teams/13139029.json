@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T18:56:36.908Z",
+  "fetchedAt": "2026-10-16T17:12:57.083Z",
   "data": {
     "teamPage": {
       "team": {
@@ -7,7 +7,7 @@
         "name": "Lights Out",
         "number": "06805",
         "isTied": false,
-        "standing": 8,
+        "standing": 7,
         "division": {
           "id": 441441,
           "name": "Gl-68",
@@ -74,9 +74,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 1,
-            "matchesPlayed": 3,
-            "pa": 0.3333333333333333,
-            "ppm": 1,
+            "matchesPlayed": 4,
+            "pa": 0.25,
+            "ppm": 0.75,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -148,10 +148,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 3,
-            "matchesPlayed": 4,
-            "pa": 0.5,
-            "ppm": 1.5,
+            "matchesWon": 4,
+            "matchesPlayed": 5,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -173,10 +173,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 1,
-            "matchesPlayed": 3,
-            "pa": 0.4444444444444444,
-            "ppm": 1.3333333333333333,
+            "matchesWon": 2,
+            "matchesPlayed": 4,
+            "pa": 0.5,
+            "ppm": 1.5,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -199,9 +199,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 3,
-            "matchesPlayed": 3,
-            "pa": 0.8888888888888888,
-            "ppm": 2.6666666666666665,
+            "matchesPlayed": 4,
+            "pa": 0.75,
+            "ppm": 2.25,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -223,10 +223,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 2,
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
+            "matchesWon": 1,
+            "matchesPlayed": 3,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
             "skillLevel": 3,
             "__typename": "EightBallPlayer",
             "member": {
@@ -267,8 +267,8 @@
       "team": {
         "id": 13139029,
         "sessionBonusPoints": 0,
-        "sessionPoints": 52,
-        "sessionTotalPoints": 52,
+        "sessionPoints": 63,
+        "sessionTotalPoints": 63,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -680,18 +680,35 @@
             "type": "EIGHT",
             "id": 51767525,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-10-13T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 9,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",

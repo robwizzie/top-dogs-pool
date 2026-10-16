@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-02T21:17:46.369Z",
+  "fetchedAt": "2026-10-16T17:27:43.136Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,15 +20,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5555555555555556,
-            "ppm": 1.6666666666666667,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 1,
-            "matchesPlayed": 3,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "eightBallMatchPointsEarned": 10,
+            "matchesWon": 3,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 6,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
+            "eightBallMatchPointsEarned": 8,
             "matchesWon": 2,
-            "matchesPlayed": 3,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -944,7 +944,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -1602,12 +1602,12 @@
         "EightBallStats": [
           {
             "id": 803001063,
-            "matchesWon": 170,
-            "matchesPlayed": 337,
+            "matchesWon": 172,
+            "matchesPlayed": 341,
             "CLA": 4,
-            "defensiveShotAvg": 2.37,
-            "matchCountForLastTwoYrs": 167,
-            "lastPlayed": "2026-09-29T00:00:00+00:00",
+            "defensiveShotAvg": 2.36,
+            "matchCountForLastTwoYrs": 165,
+            "lastPlayed": "2026-10-13T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1618,7 +1618,7 @@
             "matchesPlayed": 130,
             "CLA": 0,
             "defensiveShotAvg": 1.14,
-            "matchCountForLastTwoYrs": 75,
+            "matchCountForLastTwoYrs": 74,
             "lastPlayed": "2026-08-24T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -1730,18 +1730,8 @@
         "league": {
           "news": [
             {
-              "id": 57749,
-              "title": "15% Off American Poolplayer T-shirts",
-              "__typename": "News"
-            },
-            {
               "id": 57704,
               "title": "Scorekeeper Tablet Mode Is Available Now",
-              "__typename": "News"
-            },
-            {
-              "id": 57490,
-              "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
             },
             {
@@ -1917,25 +1907,25 @@
           "notificationBellCount": 2,
           "notifications": [
             {
-              "id": 320372185,
+              "id": 322640538,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-02T20:49:12+00:00",
+              "createdDate": "2026-10-16T15:34:02+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             },
             {
-              "id": 319191433,
+              "id": 321459950,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-09-25T17:19:23+00:00",
+              "createdDate": "2026-10-09T15:44:20+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2305,15 +2295,15 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 1,
+              "matchesPlayed": 5,
+              "matchesWon": 3,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13139011,
                 "name": "Boys From The Basement",
@@ -2332,7 +2322,7 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 5,
               "matchesWon": 2,
               "session": {
                 "id": 140,

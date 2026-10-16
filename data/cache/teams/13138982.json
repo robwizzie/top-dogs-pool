@@ -1,13 +1,13 @@
 {
-  "fetchedAt": "2026-10-09T18:57:23.682Z",
+  "fetchedAt": "2026-10-16T17:12:47.472Z",
   "data": {
     "teamPage": {
       "team": {
         "id": 13138982,
         "name": "Break 8 Away",
         "number": "06802",
-        "isTied": true,
-        "standing": 4,
+        "isTied": false,
+        "standing": 6,
         "division": {
           "id": 441441,
           "name": "Gl-68",
@@ -74,9 +74,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 4,
-            "matchesPlayed": 5,
-            "pa": 0.7333333333333334,
-            "ppm": 2.2,
+            "matchesPlayed": 6,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -148,10 +148,10 @@
               },
               "__typename": "Alias"
             },
-            "matchesWon": 0,
-            "matchesPlayed": 4,
-            "pa": 0,
-            "ppm": 0,
+            "matchesWon": 1,
+            "matchesPlayed": 5,
+            "pa": 0.13333333333333333,
+            "ppm": 0.4,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
@@ -174,9 +174,9 @@
               "__typename": "Alias"
             },
             "matchesWon": 5,
-            "matchesPlayed": 6,
-            "pa": 0.611111111111111,
-            "ppm": 1.8333333333333333,
+            "matchesPlayed": 7,
+            "pa": 0.5714285714285714,
+            "ppm": 1.7142857142857142,
             "skillLevel": 4,
             "__typename": "EightBallPlayer",
             "member": {
@@ -199,13 +199,38 @@
               "__typename": "Alias"
             },
             "matchesWon": 0,
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "pa": 0,
             "ppm": 0,
             "skillLevel": 5,
             "__typename": "EightBallPlayer",
             "member": {
               "id": 3374860,
+              "__typename": "Member"
+            }
+          },
+          {
+            "id": 93021577,
+            "memberNumber": "08214110",
+            "displayName": "Carl Wiley",
+            "alias": {
+              "id": 3252670,
+              "league": {
+                "id": 890,
+                "slug": "southjersey",
+                "isMine": true,
+                "__typename": "League"
+              },
+              "__typename": "Alias"
+            },
+            "matchesWon": 1,
+            "matchesPlayed": 1,
+            "pa": 1,
+            "ppm": 3,
+            "skillLevel": 4,
+            "__typename": "EightBallPlayer",
+            "member": {
+              "id": 3392065,
               "__typename": "Member"
             }
           }
@@ -217,8 +242,8 @@
       "team": {
         "id": 13138982,
         "sessionBonusPoints": 0,
-        "sessionPoints": 54,
-        "sessionTotalPoints": 54,
+        "sessionPoints": 65,
+        "sessionTotalPoints": 65,
         "division": {
           "id": 441441,
           "isTournament": false,
@@ -630,18 +655,35 @@
             "type": "EIGHT",
             "id": 51767524,
             "isBye": false,
-            "status": "UNPLAYED",
+            "status": "COMPLETED",
             "scoresheet": null,
             "startTime": "2026-10-13T19:30:00-04:00",
             "isMine": false,
             "isPaid": null,
             "isTournament": false,
-            "isScored": false,
-            "isFinalized": false,
+            "isScored": true,
+            "isFinalized": true,
             "isPlayoff": false,
             "description": null,
             "tableNumber": null,
-            "results": [],
+            "results": [
+              {
+                "homeAway": "HOME",
+                "points": {
+                  "total": 11,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              },
+              {
+                "homeAway": "AWAY",
+                "points": {
+                  "total": 10,
+                  "__typename": "MatchResultPoints"
+                },
+                "__typename": "MatchResult"
+              }
+            ],
             "timeZone": {
               "id": "169",
               "name": "America/New_York",
@@ -694,7 +736,7 @@
             "id": 51767530,
             "isBye": false,
             "status": "UNPLAYED",
-            "scoresheet": null,
+            "scoresheet": "https://api.poolplayers.com/scoresheets/PrintOMSScoresheet/51767530/3175746/3",
             "startTime": "2026-10-20T19:30:00-04:00",
             "isMine": true,
             "isPaid": false,
