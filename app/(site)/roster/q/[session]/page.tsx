@@ -1,15 +1,20 @@
-import { fromSegment } from "@/lib/query-segment";
-import { RosterView } from "../../view";
+import { fromSegment, withSessionRobots } from "@/lib/query-segment";
+import { prerenderSessionSegments } from "@/lib/prerender";
+import { RosterView, metadata } from "../../view";
 
-export { metadata } from "../../view";
 export const revalidate = 3600;
 
-/** Rendered on first request per value, then cached — see lib/query-segment. */
-export function generateStaticParams() {
-  return [];
+/** "all" + each single session are prerendered on Workers; combinations render on demand. */
+export async function generateStaticParams() {
+  return (await prerenderSessionSegments()).map((session) => ({ session }));
 }
 
 type Props = { params: Promise<{ session: string }> };
+
+export async function generateMetadata({ params }: Props) {
+  const { session } = await params;
+  return withSessionRobots(metadata, session);
+}
 
 export default async function RosterQueryPage({ params }: Props) {
   const { session } = await params;

@@ -34,3 +34,17 @@ export async function prerenderOpponentTeamIds(): Promise<string[]> {
   if (!PRERENDER_ALL) return [];
   return Object.keys((await loadSnapshot()).opponentTeams);
 }
+
+/**
+ * `?session=` values to prerender for the query-segment pages
+ * (/roster, /schedule, /standings, /leaderboard, /roster/[playerId]):
+ * "all" plus each single session. That's a bounded set (sessions + 1 per
+ * page), so a session switch is served from cache instead of a cold
+ * multi-MB snapshot parse + render on the Worker. Multi-session
+ * combinations stay on-demand; they're only reachable by clicking.
+ */
+export async function prerenderSessionSegments(): Promise<string[]> {
+  if (!PRERENDER_ALL) return [];
+  const snap = await loadSnapshot();
+  return ["all", ...snap.sessions.map((s) => String(s.id))];
+}

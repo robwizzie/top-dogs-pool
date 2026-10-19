@@ -21,3 +21,19 @@ export function fromSegment(segment: string): string | undefined {
     return segment;
   }
 }
+
+/**
+ * True when a rewritten `session` segment selects more than one session
+ * ("138,137"). Those combinations are unbounded (2^n of them), never
+ * prerendered, and only reachable by clicking — keep them out of search.
+ */
+export function isMultiSessionSegment(segment: string): boolean {
+  const value = fromSegment(segment);
+  return value !== undefined && value.includes(",");
+}
+
+/** Merge a noindex robots directive into page metadata for multi-session URLs. */
+export function withSessionRobots<T extends object>(base: T, segment: string): T {
+  if (!isMultiSessionSegment(segment)) return base;
+  return { ...base, robots: { index: false, follow: false } };
+}

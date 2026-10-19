@@ -1,15 +1,26 @@
-import { fromSegment } from "@/lib/query-segment";
-import { LeaderboardView } from "../../../view";
+import { NO_VALUE, fromSegment, withSessionRobots } from "@/lib/query-segment";
+import { prerenderSessionSegments } from "@/lib/prerender";
+import { LeaderboardView, metadata } from "../../../view";
 
-export { metadata } from "../../../view";
 export const revalidate = 3600;
 
-/** Rendered on first request per value, then cached — see lib/query-segment. */
-export function generateStaticParams() {
-  return [];
+/**
+ * "all" + each single session (league-only) are prerendered on Workers;
+ * tournament variants and combinations render on demand.
+ */
+export async function generateStaticParams() {
+  return (await prerenderSessionSegments()).map((session) => ({
+    session,
+    tourneys: NO_VALUE,
+  }));
 }
 
 type Props = { params: Promise<{ session: string; tourneys: string }> };
+
+export async function generateMetadata({ params }: Props) {
+  const { session } = await params;
+  return withSessionRobots(metadata, session);
+}
 
 export default async function LeaderboardQueryPage({ params }: Props) {
   const { session, tourneys } = await params;
