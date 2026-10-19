@@ -20,6 +20,11 @@ export default function robots(): MetadataRoute.Robots {
           "/leaderboard/admin",
           "/store/checkout",
           "/rack/admin",
+          // Multi-session combinations (?session=138,137…) — 2^n of them,
+          // each an uncached Worker render. Single-session and "all" views
+          // stay crawlable; they're prerendered.
+          "/*session=*,",
+          "/*session=*%2C",
         ],
       },
     ],

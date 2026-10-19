@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import type { SessionRecord } from "@/lib/apa/schemas";
 import { serializeSessionScope, toggleSessionInScope } from "@/lib/session-scope";
 import { ResetSessionScope } from "@/components/leaderboard/ResetSessionScope";
+import { SessionToggle } from "@/components/leaderboard/SessionToggle";
 
 /**
  * Multi-select session picker. Each pill toggles its session in/out of the
@@ -82,19 +83,32 @@ export function SessionPicker({
       <div className="-my-1 flex min-w-0 flex-1 snap-x items-center gap-1 overflow-x-auto py-1 pl-1 pr-8 [mask-image:linear-gradient(90deg,#000_88%,transparent)] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none] [&::-webkit-scrollbar]:hidden">
       {sessions.map((s) => {
         const active = selectedIds.has(s.id);
-        const href = singleSelect
-          ? singleHref(s.id)
-          : hrefFor(toggleSessionInScope(selectedIds, s.id));
+        const className = cn(pill, "cursor-pointer", active ? pillActive : pillIdle);
+        // Single-select links are bounded (one URL per session) and
+        // prerendered, so they stay crawlable links.
+        if (singleSelect) {
+          return (
+            <Link
+              key={s.id}
+              href={singleHref(s.id)}
+              scroll={false}
+              className={className}
+              aria-pressed={active}
+            >
+              {s.name}
+            </Link>
+          );
+        }
+        // Multi-select toggles are buttons — see SessionToggle for why.
         return (
-          <Link
+          <SessionToggle
             key={s.id}
-            href={href}
-            scroll={false}
-            className={cn(pill, active ? pillActive : pillIdle)}
-            aria-pressed={active}
+            href={hrefFor(toggleSessionInScope(selectedIds, s.id))}
+            active={active}
+            className={className}
           >
             {s.name}
-          </Link>
+          </SessionToggle>
         );
       })}
       {showAllTime && !singleSelect && (
