@@ -23,5 +23,10 @@
   ],
   "observability": {
     "enabled": true
-  }
+  },
+  // Non-production branch builds run `wrangler preview`, which refuses to
+  // start without this block (defaults are fine). Production `wrangler
+  // deploy` ignores it. Previews skip the WORKER_SELF_REFERENCE service
+  // binding, so ISR background revalidation won't run on a preview.
+  "previews": {}
 }
