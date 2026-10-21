@@ -1,6 +1,29 @@
-# Top Dawgs
+# 🎱 Top Dawgs
 
-The official site for the **Top Dawgs** APA pool team — South Jersey.
+The official site for the **Top Dawgs** APA pool team — South Jersey. Live at **[poolmaxxing.com](https://poolmaxxing.com)**.
+
+<p align="center">
+  <img src=".github/readme/demo.gif" alt="Scrolling the Top Dawgs homepage: hero, momentum, recap, coach's corner, the ladder and today's drill" width="800" />
+</p>
+
+<table>
+<tr>
+<td width="50%"><img src=".github/readme/roster.png" alt="Roster player cards" /><p align="center"><sub>The roster, with skill levels and hot/cold streaks</sub></p></td>
+<td width="50%"><img src=".github/readme/player.png" alt="A player's career stats" /><p align="center"><sub>Career stats, patch points and a win/loss trajectory per player</sub></p></td>
+</tr>
+<tr>
+<td width="50%"><img src=".github/readme/match.png" alt="Match recap scoreboard" /><p align="center"><sub>Match recaps with round-by-round results and an MVP</sub></p></td>
+<td width="50%"><img src=".github/readme/shot-trainer.png" alt="Animated shot trainer" /><p align="center"><sub>Shot trainer: animated diagrams, cue tip and power, rep tracking</sub></p></td>
+</tr>
+</table>
+
+<p align="center">
+  <img src=".github/readme/mobile-home.png" alt="Homepage on a phone" width="220" />
+  &nbsp;
+  <img src=".github/readme/mobile-match.png" alt="Match recap on a phone" width="220" />
+  &nbsp;
+  <img src=".github/readme/mobile-rack-up.png" alt="Rack Up live scoreboard on a phone" width="220" />
+</p>
 
 Live roster, schedule, deep player stats, sweeps & mini-sweeps leaderboard,
 match recaps with embedded clips, and a TikTok live link. Match data is
@@ -169,6 +192,8 @@ team logo PNG at `public/logo.png` (overwrite) or change the `src` in
 `components/brand/Logo.tsx` to `/logo.png`.
 
 ## Rack Up — live scoring (`/rack`)
+
+<p align="center"><img src=".github/readme/rack-up.png" alt="Rack Up live scoreboard" width="720" /></p>
 
 A second, interactive half of the site: score a match at the table from your
 phone, run a tournament bracket, log practice drills, and put the scoreboard on
