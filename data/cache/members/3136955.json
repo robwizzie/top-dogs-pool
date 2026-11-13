@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-02T21:13:09.813Z",
+  "fetchedAt": "2026-11-13T20:32:01.452Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 2,
-            "matchesPlayed": 2,
+            "pa": 0.7333333333333334,
+            "ppm": 2.2,
+            "eightBallMatchPointsEarned": 11,
+            "matchesWon": 5,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -44,7 +44,7 @@
             "ppm": 0,
             "eightBallMatchPointsEarned": 0,
             "matchesWon": 0,
-            "matchesPlayed": 3,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1259,12 +1259,12 @@
         "EightBallStats": [
           {
             "id": 802869326,
-            "matchesWon": 167,
-            "matchesPlayed": 337,
+            "matchesWon": 170,
+            "matchesPlayed": 345,
             "CLA": 0,
-            "defensiveShotAvg": 1.3,
-            "matchCountForLastTwoYrs": 144,
-            "lastPlayed": "2026-09-29T00:00:00+00:00",
+            "defensiveShotAvg": 1.32,
+            "matchCountForLastTwoYrs": 142,
+            "lastPlayed": "2026-11-05T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1272,11 +1272,11 @@
           {
             "id": 902869326,
             "matchesWon": 86,
-            "matchesPlayed": 166,
+            "matchesPlayed": 168,
             "CLA": 0,
-            "defensiveShotAvg": 0.87,
-            "matchCountForLastTwoYrs": 64,
-            "lastPlayed": "2026-09-21T00:00:00+00:00",
+            "defensiveShotAvg": 0.86,
+            "matchCountForLastTwoYrs": 61,
+            "lastPlayed": "2026-10-19T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1409,18 +1409,8 @@
         "league": {
           "news": [
             {
-              "id": 57749,
-              "title": "15% Off American Poolplayer T-shirts",
-              "__typename": "News"
-            },
-            {
               "id": 57704,
               "title": "Scorekeeper Tablet Mode Is Available Now",
-              "__typename": "News"
-            },
-            {
-              "id": 57490,
-              "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
             },
             {
@@ -1447,10 +1437,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1593,28 +1580,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 320372185,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-02T20:49:12+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 319191433,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-25T17:19:23+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1638,17 +1614,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1984,15 +1952,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 2,
-              "matchesWon": 2,
+              "matchesPlayed": 5,
+              "matchesWon": 5,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13138979,
                 "name": "All Pockets Available",
@@ -2011,7 +1979,7 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 1,
+              "matchesPlayed": 3,
               "matchesWon": 1,
               "session": {
                 "id": 140,
@@ -2038,7 +2006,7 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 6,
               "matchesWon": 0,
               "session": {
                 "id": 140,
@@ -2046,7 +2014,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13139029,
                 "name": "Lights Out",

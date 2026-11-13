@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:24:09.101Z",
+  "fetchedAt": "2026-11-13T20:36:39.671Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3333333333333333,
-            "ppm": 1,
-            "eightBallMatchPointsEarned": 4,
-            "matchesWon": 1,
-            "matchesPlayed": 4,
+            "pa": 0.4444444444444444,
+            "ppm": 1.3333333333333333,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 2,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1523,24 +1523,24 @@
         "EightBallStats": [
           {
             "id": 802492980,
-            "matchesWon": 132,
-            "matchesPlayed": 311,
+            "matchesWon": 133,
+            "matchesPlayed": 313,
             "CLA": 0,
-            "defensiveShotAvg": 1.26,
-            "matchCountForLastTwoYrs": 92,
-            "lastPlayed": "2026-10-13T00:00:00+00:00",
+            "defensiveShotAvg": 1.25,
+            "matchCountForLastTwoYrs": 90,
+            "lastPlayed": "2026-11-03T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902492980,
-            "matchesWon": 148,
-            "matchesPlayed": 292,
+            "matchesWon": 149,
+            "matchesPlayed": 295,
             "CLA": 0,
-            "defensiveShotAvg": 1.24,
-            "matchCountForLastTwoYrs": 82,
-            "lastPlayed": "2026-10-12T00:00:00+00:00",
+            "defensiveShotAvg": 1.26,
+            "matchCountForLastTwoYrs": 81,
+            "lastPlayed": "2026-11-02T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1552,7 +1552,7 @@
         "id": 2492980,
         "member": {
           "id": 2877161,
-          "consecutiveYearsPlayed": 12,
+          "consecutiveYearsPlayed": 13,
           "membershipHistory": [
             {
               "id": 5057508,
@@ -1685,6 +1685,17 @@
                 "__typename": "League"
               },
               "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7866730,
+              "year": 2027,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
             }
           ],
           "__typename": "Member"
@@ -1756,10 +1767,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1902,28 +1910,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1947,17 +1944,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -2293,15 +2282,15 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": "Big Dawg Diesel",
-              "matchesPlayed": 4,
-              "matchesWon": 1,
+              "matchesPlayed": 6,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": null,
+              "rank": 4,
               "team": {
                 "id": 13138887,
                 "name": "Nailed It!!",
@@ -2320,8 +2309,8 @@
               "role": "MEMBER",
               "rosterPosition": 3,
               "nickName": "Big Dawg Diesel",
-              "matchesPlayed": 3,
-              "matchesWon": 1,
+              "matchesPlayed": 6,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",

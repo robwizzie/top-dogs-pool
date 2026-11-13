@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:19:30.525Z",
+  "fetchedAt": "2026-11-13T20:33:51.745Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.2222222222222222,
-            "ppm": 0.6666666666666666,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 0,
-            "matchesPlayed": 3,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 4,
+            "matchesWon": 1,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -318,12 +318,12 @@
         "EightBallStats": [
           {
             "id": 803264709,
-            "matchesWon": 34,
-            "matchesPlayed": 66,
+            "matchesWon": 35,
+            "matchesPlayed": 67,
             "CLA": 0,
-            "defensiveShotAvg": 1.03,
-            "matchCountForLastTwoYrs": 100,
-            "lastPlayed": "2026-09-29T00:00:00+00:00",
+            "defensiveShotAvg": 1.05,
+            "matchCountForLastTwoYrs": 101,
+            "lastPlayed": "2026-10-20T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -441,10 +441,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -587,28 +584,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -632,17 +618,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -896,15 +874,15 @@
               "role": "MEMBER",
               "rosterPosition": 4,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 0,
+              "matchesPlayed": 4,
+              "matchesWon": 1,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": 2,
+              "rank": 5,
               "team": {
                 "id": 13138608,
                 "name": "The Railhouse",

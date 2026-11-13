@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:24:43.451Z",
+  "fetchedAt": "2026-11-13T20:36:52.711Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
+            "pa": 0.06666666666666667,
+            "ppm": 0.2,
+            "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 3,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.16666666666666666,
-            "ppm": 0.5,
+            "pa": 0.1111111111111111,
+            "ppm": 0.3333333333333333,
             "eightBallMatchPointsEarned": 1,
             "matchesWon": 0,
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -743,11 +743,11 @@
           {
             "id": 802911113,
             "matchesWon": 87,
-            "matchesPlayed": 169,
+            "matchesPlayed": 174,
             "CLA": 0,
-            "defensiveShotAvg": 1.51,
-            "matchCountForLastTwoYrs": 92,
-            "lastPlayed": "2026-10-15T00:00:00+00:00",
+            "defensiveShotAvg": 1.59,
+            "matchCountForLastTwoYrs": 97,
+            "lastPlayed": "2026-11-12T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -898,10 +898,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1044,28 +1041,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1089,17 +1075,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1434,7 +1412,7 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 3,
+              "matchesPlayed": 5,
               "matchesWon": 0,
               "session": {
                 "id": 140,
@@ -1442,7 +1420,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 2,
+              "rank": 7,
               "team": {
                 "id": 13138887,
                 "name": "Nailed It!!",
@@ -1461,7 +1439,7 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 2,
+              "matchesPlayed": 3,
               "matchesWon": 0,
               "session": {
                 "id": 140,
@@ -1469,7 +1447,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 10,
               "team": {
                 "id": 13138980,
                 "name": "Wanna talk about it?",

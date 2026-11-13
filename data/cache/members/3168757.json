@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T18:53:40.775Z",
+  "fetchedAt": "2026-11-13T20:27:28.712Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.7777777777777778,
-            "ppm": 2.3333333333333335,
-            "eightBallMatchPointsEarned": 7,
-            "matchesWon": 2,
-            "matchesPlayed": 3,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "eightBallMatchPointsEarned": 9,
+            "matchesWon": 3,
+            "matchesPlayed": 6,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -502,7 +502,7 @@
               "id": 140,
               "__typename": "Session"
             },
-            "nineOnSnaps": 0,
+            "nineOnSnaps": 1,
             "nineBallBreakAndRuns": 0,
             "miniSlams": 0,
             "skunks": 0,
@@ -850,24 +850,24 @@
         "EightBallStats": [
           {
             "id": 802915214,
-            "matchesWon": 79,
-            "matchesPlayed": 181,
+            "matchesWon": 80,
+            "matchesPlayed": 185,
             "CLA": 0,
-            "defensiveShotAvg": 0.84,
-            "matchCountForLastTwoYrs": 69,
-            "lastPlayed": "2026-10-06T00:00:00+00:00",
+            "defensiveShotAvg": 0.85,
+            "matchCountForLastTwoYrs": 70,
+            "lastPlayed": "2026-11-10T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902915214,
-            "matchesWon": 48,
-            "matchesPlayed": 89,
+            "matchesWon": 51,
+            "matchesPlayed": 93,
             "CLA": 0,
-            "defensiveShotAvg": 0.79,
-            "matchCountForLastTwoYrs": 68,
-            "lastPlayed": "2026-10-05T00:00:00+00:00",
+            "defensiveShotAvg": 0.8,
+            "matchCountForLastTwoYrs": 70,
+            "lastPlayed": "2026-11-09T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -989,11 +989,6 @@
         "league": {
           "news": [
             {
-              "id": 57849,
-              "title": "NEW APA Ultra Lightweight Pullover Presale Offer",
-              "__typename": "News"
-            },
-            {
               "id": 57704,
               "title": "Scorekeeper Tablet Mode Is Available Now",
               "__typename": "News"
@@ -1022,10 +1017,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1168,28 +1160,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 321459950,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 320372185,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-02T20:49:12+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1213,17 +1194,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1559,15 +1532,15 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 6,
+              "matchesWon": 4,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13139032,
                 "name": "Sinking D's Balls",
@@ -1586,15 +1559,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": null,
-              "matchesPlayed": 3,
-              "matchesWon": 2,
+              "matchesPlayed": 6,
+              "matchesWon": 3,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 3,
-              "rank": null,
+              "rank": 3,
               "team": {
                 "id": 13139030,
                 "name": "Top Dawgs",

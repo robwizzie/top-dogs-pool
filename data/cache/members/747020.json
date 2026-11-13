@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T18:54:31.890Z",
+  "fetchedAt": "2026-11-13T20:28:19.415Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
+            "pa": 0.5,
+            "ppm": 1.5,
             "eightBallMatchPointsEarned": 6,
             "matchesWon": 2,
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -830,24 +830,24 @@
         "EightBallStats": [
           {
             "id": 802915042,
-            "matchesWon": 90,
-            "matchesPlayed": 224,
+            "matchesWon": 91,
+            "matchesPlayed": 226,
             "CLA": 4,
             "defensiveShotAvg": 1.78,
             "matchCountForLastTwoYrs": 50,
-            "lastPlayed": "2026-10-06T00:00:00+00:00",
+            "lastPlayed": "2026-11-10T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 902915042,
-            "matchesWon": 47,
-            "matchesPlayed": 102,
+            "matchesWon": 48,
+            "matchesPlayed": 107,
             "CLA": 0,
-            "defensiveShotAvg": 0.77,
-            "matchCountForLastTwoYrs": 64,
-            "lastPlayed": "2026-10-05T00:00:00+00:00",
+            "defensiveShotAvg": 0.75,
+            "matchCountForLastTwoYrs": 66,
+            "lastPlayed": "2026-11-02T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -1156,11 +1156,6 @@
         "league": {
           "news": [
             {
-              "id": 57849,
-              "title": "NEW APA Ultra Lightweight Pullover Presale Offer",
-              "__typename": "News"
-            },
-            {
               "id": 57704,
               "title": "Scorekeeper Tablet Mode Is Available Now",
               "__typename": "News"
@@ -1189,10 +1184,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1335,28 +1327,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 321459950,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 320372185,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-02T20:49:12+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1380,17 +1361,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1726,7 +1699,7 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": "Pete",
-              "matchesPlayed": 3,
+              "matchesPlayed": 4,
               "matchesWon": 2,
               "session": {
                 "id": 140,
@@ -1734,7 +1707,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 6,
               "team": {
                 "id": 13139029,
                 "name": "Lights Out",
@@ -1753,15 +1726,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": "Pete",
-              "matchesPlayed": 2,
-              "matchesWon": 0,
+              "matchesPlayed": 7,
+              "matchesWon": 1,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 3,
               "team": {
                 "id": 13139032,
                 "name": "Sinking D's Balls",

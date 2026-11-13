@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:15:06.723Z",
+  "fetchedAt": "2026-11-13T20:38:17.295Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -22,13 +22,13 @@
             },
             "pa": 0.3333333333333333,
             "ppm": 1,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 1,
-            "matchesPlayed": 5,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 2,
+            "matchesPlayed": 8,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 1,
+            "rackless": 2,
             "__typename": "EightBallPlayer"
           },
           {
@@ -42,9 +42,9 @@
             },
             "pa": 0.6666666666666666,
             "ppm": 2,
-            "eightBallMatchPointsEarned": 12,
-            "matchesWon": 4,
-            "matchesPlayed": 6,
+            "eightBallMatchPointsEarned": 16,
+            "matchesWon": 5,
+            "matchesPlayed": 8,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1199,7 +1199,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 1,
+            "rackless": 2,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -1833,12 +1833,12 @@
         "EightBallStats": [
           {
             "id": 802570386,
-            "matchesWon": 301,
-            "matchesPlayed": 611,
+            "matchesWon": 304,
+            "matchesPlayed": 618,
             "CLA": 4,
-            "defensiveShotAvg": 0.81,
+            "defensiveShotAvg": 0.82,
             "matchCountForLastTwoYrs": 167,
-            "lastPlayed": "2026-10-13T00:00:00+00:00",
+            "lastPlayed": "2026-11-12T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1862,7 +1862,7 @@
         "id": 2570386,
         "member": {
           "id": 2935467,
-          "consecutiveYearsPlayed": 11,
+          "consecutiveYearsPlayed": 12,
           "membershipHistory": [
             {
               "id": 5296589,
@@ -1984,6 +1984,17 @@
                 "__typename": "League"
               },
               "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7869647,
+              "year": 2027,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
             }
           ],
           "__typename": "Member"
@@ -2055,10 +2066,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -2201,28 +2209,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -2246,17 +2243,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -2592,15 +2581,15 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 1,
+              "matchesPlayed": 8,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 7,
               "team": {
                 "id": 13138979,
                 "name": "All Pockets Available",
@@ -2619,15 +2608,15 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 6,
-              "matchesWon": 4,
+              "matchesPlayed": 8,
+              "matchesWon": 5,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 1,
+              "rank": 3,
               "team": {
                 "id": 13138982,
                 "name": "Break 8 Away",

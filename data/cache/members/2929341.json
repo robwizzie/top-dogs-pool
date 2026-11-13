@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:17:52.802Z",
+  "fetchedAt": "2026-11-13T20:32:46.860Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -351,23 +351,23 @@
           {
             "id": 803215822,
             "matchesWon": 61,
-            "matchesPlayed": 125,
+            "matchesPlayed": 126,
             "CLA": 0,
-            "defensiveShotAvg": 2.88,
-            "matchCountForLastTwoYrs": 50,
-            "lastPlayed": "2026-10-13T00:00:00+00:00",
+            "defensiveShotAvg": 2.86,
+            "matchCountForLastTwoYrs": 51,
+            "lastPlayed": "2026-11-10T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 903215822,
-            "matchesWon": 90,
-            "matchesPlayed": 173,
+            "matchesWon": 91,
+            "matchesPlayed": 174,
             "CLA": 0,
             "defensiveShotAvg": 1.56,
-            "matchCountForLastTwoYrs": 63,
-            "lastPlayed": "2026-10-12T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 62,
+            "lastPlayed": "2026-11-09T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -539,10 +539,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -685,28 +682,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -730,17 +716,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1111,7 +1089,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": 2,
+              "rank": 6,
               "team": {
                 "id": 13139029,
                 "name": "Lights Out",

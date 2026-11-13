@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-02T21:12:47.409Z",
+  "fetchedAt": "2026-11-13T20:36:59.729Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 1,
-            "ppm": 3,
-            "eightBallMatchPointsEarned": 3,
-            "matchesWon": 1,
-            "matchesPlayed": 1,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "eightBallMatchPointsEarned": 6,
+            "matchesWon": 2,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 1,
+            "pa": 0.3333333333333333,
+            "ppm": 1,
+            "eightBallMatchPointsEarned": 4,
+            "matchesWon": 2,
+            "matchesPlayed": 4,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -60,15 +60,15 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.6666666666666666,
-            "ppm": 2,
-            "eightBallMatchPointsEarned": 6,
-            "matchesWon": 3,
-            "matchesPlayed": 3,
+            "pa": 0.5238095238095238,
+            "ppm": 1.5714285714285714,
+            "eightBallMatchPointsEarned": 11,
+            "matchesWon": 5,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
-            "rackless": 0,
+            "rackless": 1,
             "__typename": "EightBallPlayer"
           },
           {
@@ -2243,7 +2243,7 @@
             },
             "eightOnBreaks": 0,
             "eightBallBreakAndRuns": 0,
-            "rackless": 0,
+            "rackless": 1,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
           },
@@ -2266,7 +2266,7 @@
               "__typename": "Session"
             },
             "nineOnSnaps": 0,
-            "nineBallBreakAndRuns": 0,
+            "nineBallBreakAndRuns": 1,
             "miniSlams": 0,
             "skunks": 0,
             "__typename": "NineBallPlayer"
@@ -4401,24 +4401,24 @@
         "EightBallStats": [
           {
             "id": 800524547,
-            "matchesWon": 445,
-            "matchesPlayed": 897,
+            "matchesWon": 450,
+            "matchesPlayed": 908,
             "CLA": 5,
-            "defensiveShotAvg": 1.3,
-            "matchCountForLastTwoYrs": 119,
-            "lastPlayed": "2026-10-01T00:00:00+00:00",
+            "defensiveShotAvg": 1.32,
+            "matchCountForLastTwoYrs": 126,
+            "lastPlayed": "2026-11-12T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
         "NineBallStats": [
           {
             "id": 900524547,
-            "matchesWon": 421,
-            "matchesPlayed": 839,
+            "matchesWon": 423,
+            "matchesPlayed": 844,
             "CLA": 0,
             "defensiveShotAvg": 1.42,
-            "matchCountForLastTwoYrs": 137,
-            "lastPlayed": "2026-09-14T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 132,
+            "lastPlayed": "2026-11-09T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -4694,18 +4694,8 @@
         "league": {
           "news": [
             {
-              "id": 57749,
-              "title": "15% Off American Poolplayer T-shirts",
-              "__typename": "News"
-            },
-            {
               "id": 57704,
               "title": "Scorekeeper Tablet Mode Is Available Now",
-              "__typename": "News"
-            },
-            {
-              "id": 57490,
-              "title": "Update Scorekeeper Today!!!",
               "__typename": "News"
             },
             {
@@ -4732,10 +4722,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -4878,28 +4865,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 320372185,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-02T20:49:12+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 319191433,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-09-25T17:19:23+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13901948,\"leagueDivisionSessionScheduleMatchId\":51767512,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -4923,17 +4899,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -5269,15 +5237,15 @@
               "role": "MEMBER",
               "rosterPosition": 7,
               "nickName": "Fred",
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 4,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13138887,
                 "name": "Nailed It!!",
@@ -5296,15 +5264,15 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "Fred",
-              "matchesPlayed": 1,
-              "matchesWon": 0,
+              "matchesPlayed": 4,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13138917,
                 "name": "One More Pool Team",
@@ -5323,15 +5291,15 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "Fred",
-              "matchesPlayed": 3,
-              "matchesWon": 3,
+              "matchesPlayed": 7,
+              "matchesWon": 5,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13138980,
                 "name": "Wanna talk about it?",
@@ -5377,15 +5345,15 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "Fred",
-              "matchesPlayed": 1,
-              "matchesWon": 1,
+              "matchesPlayed": 5,
+              "matchesWon": 2,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13138984,
                 "name": "What Would Fred Do??",

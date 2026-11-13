@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:27:49.238Z",
+  "fetchedAt": "2026-11-13T20:38:08.474Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,12 +20,12 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.3333333333333333,
-            "ppm": 1,
-            "eightBallMatchPointsEarned": 2,
-            "matchesWon": 1,
-            "matchesPlayed": 2,
-            "eightBallBreakAndRuns": 0,
+            "pa": 0.5,
+            "ppm": 1.5,
+            "eightBallMatchPointsEarned": 6,
+            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 0,
             "miniSlams": 0,
             "rackless": 0,
@@ -60,11 +60,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5333333333333333,
-            "ppm": 1.6,
-            "eightBallMatchPointsEarned": 8,
-            "matchesWon": 4,
-            "matchesPlayed": 5,
+            "pa": 0.5238095238095238,
+            "ppm": 1.5714285714285714,
+            "eightBallMatchPointsEarned": 11,
+            "matchesWon": 5,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 1,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -568,7 +568,7 @@
               "__typename": "Session"
             },
             "eightOnBreaks": 0,
-            "eightBallBreakAndRuns": 0,
+            "eightBallBreakAndRuns": 1,
             "rackless": 0,
             "miniSlams": 0,
             "__typename": "EightBallPlayer"
@@ -1035,12 +1035,12 @@
         "EightBallStats": [
           {
             "id": 803061590,
-            "matchesWon": 142,
-            "matchesPlayed": 228,
+            "matchesWon": 145,
+            "matchesPlayed": 233,
             "CLA": 0,
-            "defensiveShotAvg": 3.35,
+            "defensiveShotAvg": 3.36,
             "matchCountForLastTwoYrs": 84,
-            "lastPlayed": "2026-10-13T00:00:00+00:00",
+            "lastPlayed": "2026-11-10T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1051,7 +1051,7 @@
             "matchesPlayed": 130,
             "CLA": 0,
             "defensiveShotAvg": 3.69,
-            "matchCountForLastTwoYrs": 63,
+            "matchCountForLastTwoYrs": 60,
             "lastPlayed": "2026-08-24T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
@@ -1180,10 +1180,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1326,28 +1323,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1371,17 +1357,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1717,8 +1695,8 @@
               "role": "MEMBER",
               "rosterPosition": 8,
               "nickName": null,
-              "matchesPlayed": 2,
-              "matchesWon": 1,
+              "matchesPlayed": 4,
+              "matchesWon": 3,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
@@ -1771,15 +1749,15 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": null,
-              "matchesPlayed": 5,
-              "matchesWon": 4,
+              "matchesPlayed": 7,
+              "matchesWon": 5,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 6,
-              "rank": null,
+              "rank": 1,
               "team": {
                 "id": 13138987,
                 "name": "What’s your Safe Word?",

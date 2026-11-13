@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-09T18:58:09.419Z",
+  "fetchedAt": "2026-11-13T20:36:46.713Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.7777777777777778,
-            "ppm": 2.3333333333333335,
-            "eightBallMatchPointsEarned": 7,
-            "matchesWon": 3,
-            "matchesPlayed": 3,
+            "pa": 0.6666666666666666,
+            "ppm": 2,
+            "eightBallMatchPointsEarned": 14,
+            "matchesWon": 6,
+            "matchesPlayed": 7,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -397,12 +397,12 @@
         "EightBallStats": [
           {
             "id": 803167012,
-            "matchesWon": 45,
-            "matchesPlayed": 99,
+            "matchesWon": 48,
+            "matchesPlayed": 103,
             "CLA": 0,
-            "defensiveShotAvg": 1.4,
-            "matchCountForLastTwoYrs": 74,
-            "lastPlayed": "2026-10-06T00:00:00+00:00",
+            "defensiveShotAvg": 1.46,
+            "matchCountForLastTwoYrs": 73,
+            "lastPlayed": "2026-11-03T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -426,7 +426,7 @@
         "id": 3167012,
         "member": {
           "id": 3341918,
-          "consecutiveYearsPlayed": 3,
+          "consecutiveYearsPlayed": 4,
           "membershipHistory": [
             {
               "id": 7213311,
@@ -453,6 +453,17 @@
             {
               "id": 7589649,
               "year": 2026,
+              "leaguePaidIn": {
+                "id": 890,
+                "name": "APA of South Jersey",
+                "salutation": "Dave Piotrowski & Michelle Miller",
+                "__typename": "League"
+              },
+              "__typename": "MembershipHistory"
+            },
+            {
+              "id": 7861706,
+              "year": 2027,
               "leaguePaidIn": {
                 "id": 890,
                 "name": "APA of South Jersey",
@@ -503,11 +514,6 @@
         "league": {
           "news": [
             {
-              "id": 57849,
-              "title": "NEW APA Ultra Lightweight Pullover Presale Offer",
-              "__typename": "News"
-            },
-            {
               "id": 57704,
               "title": "Scorekeeper Tablet Mode Is Available Now",
               "__typename": "News"
@@ -536,10 +542,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -682,28 +685,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 321459950,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 320372185,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-02T20:49:12+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13951357,\"leagueDivisionSessionScheduleMatchId\":51767517,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -727,17 +719,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1045,15 +1029,15 @@
               "role": "MEMBER",
               "rosterPosition": 5,
               "nickName": "Joe Rogan",
-              "matchesPlayed": 3,
-              "matchesWon": 3,
+              "matchesPlayed": 7,
+              "matchesWon": 6,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 4,
-              "rank": null,
+              "rank": 3,
               "team": {
                 "id": 13138887,
                 "name": "Nailed It!!",

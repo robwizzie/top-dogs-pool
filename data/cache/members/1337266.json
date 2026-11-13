@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:29:15.770Z",
+  "fetchedAt": "2026-11-13T20:41:49.186Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.5833333333333334,
-            "ppm": 1.75,
+            "pa": 0.4666666666666666,
+            "ppm": 1.4,
             "eightBallMatchPointsEarned": 7,
             "matchesWon": 3,
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 1,
             "miniSlams": 0,
@@ -40,11 +40,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0,
-            "ppm": 0,
-            "eightBallMatchPointsEarned": 0,
-            "matchesWon": 0,
-            "matchesPlayed": 0,
+            "pa": 0.5333333333333333,
+            "ppm": 1.6,
+            "eightBallMatchPointsEarned": 8,
+            "matchesWon": 4,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -1116,12 +1116,12 @@
         "EightBallStats": [
           {
             "id": 802952454,
-            "matchesWon": 217,
-            "matchesPlayed": 366,
+            "matchesWon": 221,
+            "matchesPlayed": 372,
             "CLA": 6,
-            "defensiveShotAvg": 1.65,
-            "matchCountForLastTwoYrs": 115,
-            "lastPlayed": "2026-10-13T00:00:00+00:00",
+            "defensiveShotAvg": 1.64,
+            "matchCountForLastTwoYrs": 119,
+            "lastPlayed": "2026-11-01T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -1374,15 +1374,6 @@
       }
     },
     "memberTeams": {
-      "RaygunUserTracking": {
-        "viewer": {
-          "id": 3175746,
-          "firstName": "Robert",
-          "lastName": "Wiscount",
-          "emailAddress": "robertwiscount@gmail.com",
-          "__typename": "Member"
-        }
-      },
       "viewerLeagues": {
         "viewer": {
           "id": 3175746,
@@ -1446,10 +1437,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1563,6 +1551,15 @@
           "__typename": "Member"
         }
       },
+      "RaygunUserTracking": {
+        "viewer": {
+          "id": 3175746,
+          "firstName": "Robert",
+          "lastName": "Wiscount",
+          "emailAddress": "robertwiscount@gmail.com",
+          "__typename": "Member"
+        }
+      },
       "viewerCountryQuery": {
         "viewer": {
           "id": 3175746,
@@ -1583,28 +1580,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -1628,17 +1614,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -1974,7 +1952,7 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": null,
-              "matchesPlayed": 4,
+              "matchesPlayed": 5,
               "matchesWon": 3,
               "session": {
                 "id": 140,
@@ -2001,15 +1979,15 @@
               "role": "CAPTAIN",
               "rosterPosition": 1,
               "nickName": null,
-              "matchesPlayed": 0,
-              "matchesWon": 0,
+              "matchesPlayed": 5,
+              "matchesWon": 4,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 6,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13153711,
                 "name": "Shooting Impaired",

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-16T17:16:37.885Z",
+  "fetchedAt": "2026-11-13T20:31:54.471Z",
   "data": {
     "aliasSessionStats": {
       "alias": {
@@ -20,11 +20,11 @@
               "active": true,
               "__typename": "Team"
             },
-            "pa": 0.4166666666666667,
-            "ppm": 1.25,
-            "eightBallMatchPointsEarned": 5,
-            "matchesWon": 2,
-            "matchesPlayed": 4,
+            "pa": 0.4666666666666666,
+            "ppm": 1.4,
+            "eightBallMatchPointsEarned": 7,
+            "matchesWon": 3,
+            "matchesPlayed": 5,
             "eightBallBreakAndRuns": 0,
             "eightOnBreaks": 0,
             "miniSlams": 0,
@@ -3796,12 +3796,12 @@
         "EightBallStats": [
           {
             "id": 800706436,
-            "matchesWon": 605,
-            "matchesPlayed": 1052,
+            "matchesWon": 607,
+            "matchesPlayed": 1054,
             "CLA": null,
-            "defensiveShotAvg": 1.59,
+            "defensiveShotAvg": 1.6,
             "matchCountForLastTwoYrs": 107,
-            "lastPlayed": "2026-10-15T00:00:00+00:00",
+            "lastPlayed": "2026-11-12T00:00:00+00:00",
             "__typename": "EightBallLifetimeStatistics"
           }
         ],
@@ -3809,11 +3809,11 @@
           {
             "id": 900706436,
             "matchesWon": 260,
-            "matchesPlayed": 462,
+            "matchesPlayed": 464,
             "CLA": null,
             "defensiveShotAvg": 1.11,
-            "matchCountForLastTwoYrs": 102,
-            "lastPlayed": "2026-10-12T00:00:00+00:00",
+            "matchCountForLastTwoYrs": 103,
+            "lastPlayed": "2026-11-02T00:00:00+00:00",
             "__typename": "NineBallLifetimeStatistics"
           }
         ],
@@ -4150,10 +4150,7 @@
       "MembershipBannerQuery": {
         "viewer": {
           "id": 3175746,
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -4296,28 +4293,17 @@
       "notificationBell": {
         "viewer": {
           "id": 3175746,
-          "notificationBellCount": 2,
+          "notificationBellCount": 1,
           "notifications": [
             {
-              "id": 322640538,
+              "id": 326264045,
               "type": "scoreSheetsReady",
               "title": "Scoresheets and Stats have been updated!",
               "body": "Scoresheets have been released and Stats for Division 068 have been updated",
               "isRead": false,
-              "createdDate": "2026-10-16T15:34:02+00:00",
+              "createdDate": "2026-11-06T16:17:52+00:00",
               "typeId": null,
-              "metaData": "{\"reportId\":14043779,\"leagueDivisionSessionScheduleMatchId\":51767530,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
-              "__typename": "Notification"
-            },
-            {
-              "id": 321459950,
-              "type": "scoreSheetsReady",
-              "title": "Scoresheets and Stats have been updated!",
-              "body": "Scoresheets have been released and Stats for Division 068 have been updated",
-              "isRead": false,
-              "createdDate": "2026-10-09T15:44:20+00:00",
-              "typeId": null,
-              "metaData": "{\"reportId\":13995673,\"leagueDivisionSessionScheduleMatchId\":51767522,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
+              "metaData": "{\"reportId\":14193083,\"leagueDivisionSessionScheduleMatchId\":51767544,\"format\":\"8-Ball\",\"slug\":\"southjersey\"}",
               "__typename": "Notification"
             }
           ],
@@ -4341,17 +4327,9 @@
               }
             }
           ],
-          "membershipExpires": "2026-12-31T23:59:59Z",
+          "membershipExpires": "2027-12-31T23:59:59Z",
           "setting": "890",
-          "fee": {
-            "message": "Click Here to Renew Your 2027 Membership!",
-            "discount": 0,
-            "year": 2027,
-            "amount": 30,
-            "tax": 0,
-            "total": 30,
-            "__typename": "MemberFee"
-          },
+          "fee": null,
           "__typename": "Member"
         }
       },
@@ -4395,7 +4373,7 @@
                 },
                 {
                   "__typename": "NineBallLifetimeStatistics",
-                  "skillLevel": 6,
+                  "skillLevel": 5,
                   "CLA": null
                 }
               ],
@@ -4687,15 +4665,15 @@
               "role": "MEMBER",
               "rosterPosition": 6,
               "nickName": "The Dude",
-              "matchesPlayed": 4,
-              "matchesWon": 2,
+              "matchesPlayed": 5,
+              "matchesWon": 3,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 5,
               "team": {
                 "id": 13138979,
                 "name": "All Pockets Available",
@@ -4714,14 +4692,14 @@
               "role": "CO_CAPTAIN",
               "rosterPosition": 2,
               "nickName": "The Dude",
-              "matchesPlayed": 2,
+              "matchesPlayed": 4,
               "matchesWon": 1,
               "session": {
                 "id": 140,
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 6,
+              "skillLevel": 5,
               "rank": null,
               "team": {
                 "id": 13139216,
@@ -4749,7 +4727,7 @@
                 "__typename": "Session"
               },
               "skillLevel": 5,
-              "rank": null,
+              "rank": 2,
               "team": {
                 "id": 13139029,
                 "name": "Lights Out",
@@ -4775,7 +4753,7 @@
                 "name": "Fall 2026",
                 "__typename": "Session"
               },
-              "skillLevel": 6,
+              "skillLevel": 5,
               "rank": null,
               "team": {
                 "id": 13139032,
